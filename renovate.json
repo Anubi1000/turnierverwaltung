@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": ["dependency"],
+  "packageRules": [
+    {
+      "matchDepNames": ["com.google.devtools.ksp", "org.jetbrains.kotlin.**"],
+      "groupName": "Kotlin"
+    },
+    {
+      "matchFileNames": ["app/**"],
+      "addLabels": ["app"]
+    },
+    {
+      "matchFileNames": ["scoreboard/**"],
+      "addLabels": ["scoreboard"]
+    }
+  ]
+}
