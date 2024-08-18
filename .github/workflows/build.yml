@@ -69,7 +69,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build program
-        working-directory: scoreboard
+        working-directory: app
         run: chmod +x ./gradlew && ./gradlew createDistributable
       
       - name: Save build output
