@@ -7,7 +7,9 @@ import Table from "./table";
 
 export default function Home() {
   return (
-    <>
+    <Stack 
+      direction="column"
+    >
       <AppBar position="static" elevation={0}>
         <Toolbar>
           <Stack 
@@ -25,15 +27,17 @@ export default function Home() {
           </Stack>
         </Toolbar>
       </AppBar>
-      <Container 
-        maxWidth={false}
-        sx={{ 
-          border: 1,
-          borderRadius: 2
-        }}
+      <Stack 
+            direction="row" 
+            justifyContent="center" 
+            alignItems="center" 
+            sx={{ width: 1 }}
       >
-          <Table/>
-      </Container> 
-    </>
+        <Typography variant="h5">
+          Name der Disziplin
+        </Typography>       
+      </Stack>
+      <Table/>
+    </Stack>
   );
 }
