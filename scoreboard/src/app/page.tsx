@@ -1,8 +1,11 @@
+"use client";
 import { AppBar, Toolbar, Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
 
 import Clock from "./clock";
+import DisciplineModal from "./discipline_modal";
 import Table from "./table";
+import DisciplineCarousel from "./disclipline_carousel";
 
 export default function Home() {
   return (
@@ -15,7 +18,9 @@ export default function Home() {
             alignItems="center"
             sx={{ width: 1 }}
           >
-            <Typography variant="h6">Turniername hier</Typography>
+            <Typography variant="h6">
+              Turniername hier
+            </Typography>
             <Typography variant="h6">
               <Clock />
             </Typography>
@@ -23,16 +28,8 @@ export default function Home() {
         </Toolbar>
       </AppBar>
 
-      <Stack
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        sx={{ width: 1 }}
-      >
-        <Typography variant="h5">Name der Disziplin</Typography>
-      </Stack>
+      <DisciplineCarousel/>
 
-      <Table />
     </Stack>
   );
 }
