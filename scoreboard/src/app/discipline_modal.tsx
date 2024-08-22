@@ -4,14 +4,15 @@ import Stack from "@mui/material/Stack";
 import { Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 
-import Table from "./table";
-import { table } from 'console';
-
-interface ModalProps {
-    label: string;
-}
-
-export default function DisciplineModal({label}: ModalProps) {
+export default function DisciplineModal(
+    {
+        label,
+        table
+    }: {
+        label: string,
+        table: React.ReactNode
+    }
+) {
     const theme = useTheme();
 
     return (
@@ -34,7 +35,7 @@ export default function DisciplineModal({label}: ModalProps) {
                     {label}
                 </Typography>
             </Stack>   
-            <Table/>
+            {table}
       </>
       );
 }

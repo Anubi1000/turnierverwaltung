@@ -69,16 +69,25 @@ const rows = [
   createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-export default function CustomizedTables() {
+export default function CustomizedTables(
+      {
+        moveNext
+      }: {
+        moveNext: () => void
+      }
+) {
   const tableRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
     let scrollToBottom = true;
     let runInterval = true;
+    let scrolledTimes = 0;
+
     const interval = setInterval(async () => {
       if (!runInterval) return;
 
       const tableContainer = tableRef.current as unknown as HTMLDivElement;
+
       if (tableContainer) {
         // ensure ref object exists
         if (scrollToBottom) {
@@ -92,6 +101,7 @@ export default function CustomizedTables() {
           setTimeout(() => {
             scrollToBottom = true;
             runInterval = true;
+            scrolledTimes++;
           }, 5000); // wait five seconds then scroll down
         } else if (
           tableContainer.scrollTop + tableContainer.clientHeight ==
@@ -102,7 +112,12 @@ export default function CustomizedTables() {
           setTimeout(() => {
             scrollToBottom = false;
             runInterval = true;
+            scrolledTimes++;
           }, 5000); // wait five seconds then scroll up
+        }
+        if (scrolledTimes >= 4) {
+          scrolledTimes = 0;
+          moveNext()
         }
       }
     }, 25);
@@ -113,7 +128,7 @@ export default function CustomizedTables() {
   }, []);
 
   return (
-    <TableContainer ref={tableRef} style={{ overflowY: "hidden", flexGrow: 1 }}>
+    <TableContainer ref={tableRef} style={{ overflowY: "auto", flexGrow: 1 }}>
       <Table stickyHeader>
         <TableHead>
           <TableRow>
