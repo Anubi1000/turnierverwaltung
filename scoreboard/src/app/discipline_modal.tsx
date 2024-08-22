@@ -29,6 +29,7 @@ export default function DisciplineModal(
                     sx={{ 
                         backgroundColor: theme.palette.primary.main,
                         color: theme.palette.common.white,
+                        fontWeight: "bold",
                         width: 1
                     }}
                 >
