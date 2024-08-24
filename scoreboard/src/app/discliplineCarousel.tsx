@@ -7,7 +7,8 @@ function DisciplineTitleBar({
   disciplines,
   index,
 }: {
-  disciplines: { // all disciplines with tables
+  disciplines: {
+    // all disciplines with tables
     label: string;
     table: React.ReactNode;
   }[];
@@ -67,22 +68,24 @@ export function DisciplineCarousel() {
     calories: string,
     fat: string,
     carbs: string,
-    protein: string
+    protein: string,
   ) {
     return [name, calories, fat, carbs, protein];
   }
 
   function generateData() {
-    var list = []
+    var list = [];
     for (var _i = 0; _i < 13; _i++) {
-      list.push(createRow(_i.toString(), "159", "6.0", "24", "4.0"))
+      list.push(createRow(_i.toString(), "159", "6.0", "24", "4.0"));
     }
     return list;
   }
 
-  const rows = generateData()
+  const rows = generateData();
 
-  const columns = ["Dessert", "Calories", "Fat", "Carbs", "Protein"]
+  const columns = ["Dessert", "Calories", "Fat", "Carbs", "Protein"];
+
+  const widths = [10, 0.2, 0.2, 0.2, 0.2];
 
   const disciplines = [
     "Disziplin 1",
@@ -91,7 +94,14 @@ export function DisciplineCarousel() {
     "Disziplin 4",
   ].map((label) => ({
     label,
-    table: <DisciplineTable moveNext={nextDiscipline} columns={columns} rows={rows}/>,
+    table: (
+      <DisciplineTable
+        moveNext={nextDiscipline}
+        columns={columns}
+        rows={rows}
+        widths={widths}
+      />
+    ),
   }));
 
   return (

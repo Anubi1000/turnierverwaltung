@@ -41,7 +41,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export function DisciplineTable({ moveNext, columns, rows }: { moveNext: () => void, columns: string[], rows: string[][] }) {
+export function DisciplineTable({
+  moveNext,
+  columns,
+  rows,
+  widths,
+}: {
+  moveNext: () => void;
+  columns: string[];
+  rows: string[][];
+  widths: number[];
+}) {
   const tableRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
@@ -98,27 +108,33 @@ export function DisciplineTable({ moveNext, columns, rows }: { moveNext: () => v
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-          <StyledTableCell>{columns[0]}</StyledTableCell>
-            {columns.slice(1).map((column) => (
-              <StyledTableCell key={column} align="right">{column}</StyledTableCell>)
+            {columns.map((column, index) =>
+              index == 0 ? (
+                <StyledTableCell key={column}>{column}</StyledTableCell>
+              ) : (
+                <StyledTableCell key={column} align="right">
+                  {column}
+                </StyledTableCell>
+              ),
             )}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(
-            (row, index) => (
-            <StyledTableRow key={index}> 
-              <StyledTableCell component="th" scope="row">
-                {row[0]}
-              </StyledTableCell>
-              {row.slice(1).map(
-                (entry, index) => (             
-                <StyledTableCell key={index} align="right">{entry}</StyledTableCell>
-                )
-              )}     
+          {rows.map((row, index) => (
+            <StyledTableRow key={index}>
+              {row.map((entry, index) =>
+                index == 0 ? (
+                  <StyledTableCell component="th" scope="row">
+                    {entry}
+                  </StyledTableCell>
+                ) : (
+                  <StyledTableCell key={index} align="right">
+                    {entry}
+                  </StyledTableCell>
+                ),
+              )}
             </StyledTableRow>
-            )
-          )}
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
