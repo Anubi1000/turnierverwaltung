@@ -1,4 +1,3 @@
-"use client";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
@@ -69,22 +68,16 @@ const rows = [
   createData("Gingerbread", 356, 16.0, 49, 3.9),
 ];
 
-export default function CustomizedTables(
-      {
-        moveNext
-      }: {
-        moveNext: () => void
-      }
-) {
+export function DisciplineTable({ moveNext }: { moveNext: () => void }) {
   const tableRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
     let scrollToBottom = true;
-    let runInterval = true;
-    let scrolledTimes = 0;
+    let isScrolling = true;
+    let scrollCount = 0;
 
     const interval = setInterval(async () => {
-      if (!runInterval) return;
+      if (!isScrolling) return;
 
       const tableContainer = tableRef.current as unknown as HTMLDivElement;
 
@@ -97,27 +90,27 @@ export default function CustomizedTables(
         }
         if (tableContainer.scrollTop == 0 && !scrollToBottom) {
           // at top of table
-          runInterval = false;
+          isScrolling = false;
           setTimeout(() => {
             scrollToBottom = true;
-            runInterval = true;
-            scrolledTimes++;
+            isScrolling = true;
+            scrollCount++;
           }, 5000); // wait five seconds then scroll down
         } else if (
           tableContainer.scrollTop + tableContainer.clientHeight ==
             tableContainer.scrollHeight &&
           scrollToBottom // reached bottom
         ) {
-          runInterval = false;
+          isScrolling = false;
           setTimeout(() => {
             scrollToBottom = false;
-            runInterval = true;
-            scrolledTimes++;
+            isScrolling = true;
+            scrollCount++;
           }, 5000); // wait five seconds then scroll up
         }
-        if (scrolledTimes >= 4) {
-          scrolledTimes = 0;
-          moveNext()
+        if (scrollCount >= 4) {
+          scrollCount = 0;
+          moveNext();
         }
       }
     }, 25);
@@ -128,7 +121,7 @@ export default function CustomizedTables(
   }, []);
 
   return (
-    <TableContainer ref={tableRef} style={{ overflowY: "auto", flexGrow: 1 }}>
+    <TableContainer ref={tableRef} style={{ overflowY: "hidden" }}>
       <Table stickyHeader>
         <TableHead>
           <TableRow>

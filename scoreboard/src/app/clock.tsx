@@ -1,9 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-export default function Clock() {
-  const [hours, setHours] = useState("");
-  const [minutes, setMinutes] = useState("");
-  const [seconds, setSeconds] = useState("");
+
+export function Clock() {
+  const [hours, setHours] = useState("00");
+  const [minutes, setMinutes] = useState("00");
+  const [seconds, setSeconds] = useState("00");
 
   useEffect(() => {
     setInterval(() => {
