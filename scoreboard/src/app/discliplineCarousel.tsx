@@ -7,7 +7,7 @@ function DisciplineTitleBar({
   disciplines,
   index,
 }: {
-  disciplines: {
+  disciplines: { // all disciplines with tables
     label: string;
     table: React.ReactNode;
   }[];
@@ -29,7 +29,7 @@ function DisciplineTitleBar({
         <Grid container spacing={0} style={{ width: "100%" }}>
           <Grid xs>
             <Typography variant="h6" color="lightGray" align="right">
-              {disciplines[firstLabelIndex].label}
+              {disciplines[firstLabelIndex].label} {/*previous disclipline*/}
             </Typography>
           </Grid>
 
@@ -38,13 +38,13 @@ function DisciplineTitleBar({
               variant="h5"
               style={{ paddingLeft: 64, paddingRight: 64 }}
             >
-              {disciplines[index].label}
+              {disciplines[index].label} {/*current discipline*/}
             </Typography>
           </Grid>
 
           <Grid xs>
             <Typography variant="h6" color="lightGray">
-              {disciplines[lastLabelIndex].label}
+              {disciplines[lastLabelIndex].label} {/*next disclipline*/}
             </Typography>
           </Grid>
         </Grid>
@@ -62,6 +62,28 @@ export function DisciplineCarousel() {
     );
   }, []);
 
+  function createRow(
+    name: string,
+    calories: string,
+    fat: string,
+    carbs: string,
+    protein: string
+  ) {
+    return [name, calories, fat, carbs, protein];
+  }
+
+  function generateData() {
+    var list = []
+    for (var _i = 0; _i < 13; _i++) {
+      list.push(createRow(_i.toString(), "159", "6.0", "24", "4.0"))
+    }
+    return list;
+  }
+
+  const rows = generateData()
+
+  const columns = ["Dessert", "Calories", "Fat", "Carbs", "Protein"]
+
   const disciplines = [
     "Disziplin 1",
     "Disziplin 2",
@@ -69,7 +91,7 @@ export function DisciplineCarousel() {
     "Disziplin 4",
   ].map((label) => ({
     label,
-    table: <DisciplineTable moveNext={nextDiscipline} />,
+    table: <DisciplineTable moveNext={nextDiscipline} columns={columns} rows={rows}/>,
   }));
 
   return (

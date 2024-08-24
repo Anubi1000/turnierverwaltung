@@ -41,34 +41,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
-export function DisciplineTable({ moveNext }: { moveNext: () => void }) {
+export function DisciplineTable({ moveNext, columns, rows }: { moveNext: () => void, columns: string[], rows: string[][] }) {
   const tableRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
@@ -108,7 +81,7 @@ export function DisciplineTable({ moveNext }: { moveNext: () => void }) {
             scrollCount++;
           }, 5000); // wait five seconds then scroll up
         }
-        if (scrollCount >= 4) {
+        if (scrollCount >= 2) {
           scrollCount = 0;
           moveNext();
         }
@@ -125,25 +98,27 @@ export function DisciplineTable({ moveNext }: { moveNext: () => void }) {
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <StyledTableCell>Dessert (100g serving)</StyledTableCell>
-            <StyledTableCell align="right">Calories</StyledTableCell>
-            <StyledTableCell align="right">Fat&nbsp;(g)</StyledTableCell>
-            <StyledTableCell align="right">Carbs&nbsp;(g)</StyledTableCell>
-            <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
+          <StyledTableCell>{columns[0]}</StyledTableCell>
+            {columns.slice(1).map((column) => (
+              <StyledTableCell key={column} align="right">{column}</StyledTableCell>)
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
+          {rows.map(
+            (row, index) => (
+            <StyledTableRow key={index}> 
               <StyledTableCell component="th" scope="row">
-                {row.name}
+                {row[0]}
               </StyledTableCell>
-              <StyledTableCell align="right">{row.calories}</StyledTableCell>
-              <StyledTableCell align="right">{row.fat}</StyledTableCell>
-              <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-              <StyledTableCell align="right">{row.protein}</StyledTableCell>
+              {row.slice(1).map(
+                (entry, index) => (             
+                <StyledTableCell key={index} align="right">{entry}</StyledTableCell>
+                )
+              )}     
             </StyledTableRow>
-          ))}
+            )
+          )}
         </TableBody>
       </Table>
     </TableContainer>
