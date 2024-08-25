@@ -49,8 +49,11 @@ export default function Page() {
           </Stack>
         </Toolbar>
       </AppBar>
-
-      <DisciplineCarousel tables={tables} />
+      {tables.length == 0 ? (
+        <div>Kein Turnier ausgewählt</div>
+      ) : (
+        <DisciplineCarousel tables={tables} />
+      )}
     </Stack>
   );
 }
