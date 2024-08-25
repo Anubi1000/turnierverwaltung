@@ -31,6 +31,7 @@ data class Strings(
     val participants: String = "Teilnehmer",
     val save: String = "Speichern",
     val scoreboard: String = "Scoreboard",
+    val showOnScoreboard: String = "Auf Scoreboard anzeigen",
     val subtract: String = "Abziehen",
     val tournament: String = "Turnier",
     val tournaments: String = "Turniere",

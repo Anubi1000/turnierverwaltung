@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.Scoreboard
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.ui.tournament.TournamentDeleteDialog
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
+import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailItem
@@ -32,7 +34,8 @@ import de.anubi1000.turnierverwaltung.viewmodel.TournamentDetailViewModel
 fun TournamentDetailScreen(
     navController: NavController,
     state: TournamentDetailViewModel.State,
-    onDeleteButtonClick: () -> Unit
+    onDeleteButtonClick: () -> Unit,
+    showOnScoreboard: () -> Unit
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -55,12 +58,20 @@ fun TournamentDetailScreen(
         onDeleteButtonClick = {
             showDeleteDialog = true
         },
+        additionalActions = {
+            TooltipIconButton(
+                icon = Icons.Default.Scoreboard,
+                tooltip = strings.showOnScoreboard,
+                onClick = showOnScoreboard,
+                enabled = state is TournamentDetailViewModel.State.Loaded
+            )
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
                     TODO("Open tournament")
                 },
-                text = { Text(LocalStrings.current.openTournament) },
+                text = { Text(strings.openTournament) },
                 icon = { Icon(Icons.AutoMirrored.Filled.OpenInNew) }
             )
         }
@@ -81,7 +92,7 @@ fun TournamentDetailScreen(
             onConfirmButtonClicked = {
                 showDeleteDialog = false
                 navController.popBackStack()
-                oneDeleteButtonClick()
+                onDeleteButtonClick()
             }
         )
     }

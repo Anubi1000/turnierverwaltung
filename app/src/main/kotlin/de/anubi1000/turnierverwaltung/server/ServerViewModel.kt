@@ -2,6 +2,7 @@ package de.anubi1000.turnierverwaltung.server
 
 import androidx.compose.ui.res.useResource
 import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
+import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.server.messages.Message
 import de.anubi1000.turnierverwaltung.server.messages.toSetTournamentMessage
 import io.ktor.http.ContentType
@@ -22,11 +23,12 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.apache.logging.log4j.kotlin.logger
 import org.mongodb.kbson.ObjectId
 import java.io.InputStream
 
 class ServerViewModel(private val tournamentRepository: TournamentRepository) {
-    private val messageFlow = MutableSharedFlow<Message>()
+    private val messageFlow = MutableSharedFlow<Message>(extraBufferCapacity = 3)
     private var currentTournamentId: ObjectId? = null
 
     private val server = embeddedServer(Netty, port = 8080) {
@@ -37,7 +39,11 @@ class ServerViewModel(private val tournamentRepository: TournamentRepository) {
             staticResources("/", "scoreboard")
 
             webSocket("/ws") {
+                val clientId = hashCode()
+                log.info("Client with id $clientId connected")
+
                 currentTournamentId?.let { id ->
+                    log.info("Sending current tournament to newly connected client")
                     val tournament = tournamentRepository.getTournamentById(id) ?: return@let
                     sendSerialized(tournament.toSetTournamentMessage())
                 }
@@ -45,18 +51,26 @@ class ServerViewModel(private val tournamentRepository: TournamentRepository) {
                 val job = launch {
                     messageFlow.asSharedFlow()
                         .collect { message ->
+                            log.debug { "Sending message of type ${message.javaClass.name} to client with id $clientId" }
                             sendSerialized(message)
                         }
                 }
 
                 // Wait for websocket close
                 closeReason.await()
+                log.info("Client with id $clientId disconnected")
 
                 job.cancel()
             }
         }
     }
 
+    fun setCurrentTournament(tournament: Tournament) {
+        log.debug { "Changing tournament for scoreboard. id=${tournament.id.toHexString()}" }
+        currentTournamentId = tournament.id
+        // TODO: Add handling when value was not emitted
+        messageFlow.tryEmit(tournament.toSetTournamentMessage())
+    }
 
     fun start() {
         server.start()
@@ -64,6 +78,10 @@ class ServerViewModel(private val tournamentRepository: TournamentRepository) {
 
     fun stop() {
         server.stop()
+    }
+
+    companion object {
+        private val log = logger()
     }
 }
 

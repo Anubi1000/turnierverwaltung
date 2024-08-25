@@ -7,11 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
 import de.anubi1000.turnierverwaltung.database.model.Tournament
+import de.anubi1000.turnierverwaltung.server.ServerViewModel
 import kotlinx.coroutines.launch
 import org.apache.logging.log4j.kotlin.logger
 import org.mongodb.kbson.ObjectId
 
-class TournamentDetailViewModel(private val tournamentRepository: TournamentRepository) : ViewModel() {
+class TournamentDetailViewModel(
+    private val tournamentRepository: TournamentRepository,
+    private val serverViewModel: ServerViewModel
+) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
         private set
 
@@ -26,10 +30,19 @@ class TournamentDetailViewModel(private val tournamentRepository: TournamentRepo
     fun deleteTournament() {
         val state = state
         require(state is State.Loaded) { "Tournament needs to be loaded" }
+
         log.debug("Deleting tournament ${state.tournament.id.toHexString()}")
         viewModelScope.launch {
             tournamentRepository.deleteTournament(state.tournament.id)
         }
+    }
+
+    fun showTournamentOnScoreboard() {
+        val state = state
+        require(state is State.Loaded) { "Tournament needs to be loaded" }
+
+        log.debug("Changing tournament for scoreboard to current one")
+        serverViewModel.setCurrentTournament(state.tournament)
     }
 
     companion object {
