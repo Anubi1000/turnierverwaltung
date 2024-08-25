@@ -18,10 +18,6 @@ dependencies {
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
 
-    implementation(libs.kodein)
-    implementation(libs.kodein.compose)
-    implementation(libs.kodein.ktor)
-
     implementation(libs.koin.core)
     implementation(libs.koin.core.viewmodel)
     implementation(libs.koin.compose)
@@ -38,6 +34,8 @@ dependencies {
     implementation(libs.ktor.server.hosts)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.statusPages)
+    implementation(libs.ktor.server.contentNegotiation)
+    implementation(libs.ktor.serialization.json)
 
     implementation(libs.realm)
 
@@ -47,11 +45,6 @@ dependencies {
 
     implementation(libs.lyricist)
     ksp(libs.lyricist.processor)
-
-    implementation(libs.voyager.navigator)
-    implementation(libs.voyager.screenModel)
-    implementation(libs.voyager.kodein)
-    implementation(libs.voyager.lifecycle)
 
     @OptIn(ExperimentalComposeLibrary::class)
     testImplementation(compose.uiTest)

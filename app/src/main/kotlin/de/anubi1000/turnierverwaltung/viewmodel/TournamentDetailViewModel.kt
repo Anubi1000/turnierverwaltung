@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
-import de.anubi1000.turnierverwaltung.data.tournament.Tournament
+import de.anubi1000.turnierverwaltung.database.model.Tournament
 import kotlinx.coroutines.launch
 import org.apache.logging.log4j.kotlin.logger
 import org.mongodb.kbson.ObjectId
@@ -16,6 +16,7 @@ class TournamentDetailViewModel(private val tournamentRepository: TournamentRepo
         private set
 
     fun loadTournament(id: ObjectId) {
+        log.debug { "Loading tournament for detail screen. id=${id.toHexString()}" }
         viewModelScope.launch {
             val tournament = tournamentRepository.getTournamentById(id)
             state = State.Loaded(tournament!!)

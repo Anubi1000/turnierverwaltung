@@ -1,43 +1,59 @@
 package de.anubi1000.turnierverwaltung
 
-import androidx.compose.foundation.layout.Row
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Scoreboard
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import cafe.adriel.lyricist.LocalStrings
-import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
-import cafe.adriel.voyager.jetpack.ProvideNavigatorLifecycleKMPSupport
-import cafe.adriel.voyager.navigator.CurrentScreen
-import cafe.adriel.voyager.navigator.Navigator
 import de.anubi1000.turnierverwaltung.data.repository.repositoryModule
 import de.anubi1000.turnierverwaltung.database.databaseModule
-import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
-import de.anubi1000.turnierverwaltung.ui.app.NavigationList
-import de.anubi1000.turnierverwaltung.ui.app.NavigationMenu
+import de.anubi1000.turnierverwaltung.navigation.TournamentListDestination
+import de.anubi1000.turnierverwaltung.navigation.tournamentDetailDestinations
+import de.anubi1000.turnierverwaltung.navigation.tournamentEditDestination
+import de.anubi1000.turnierverwaltung.navigation.tournamentListDestination
+import de.anubi1000.turnierverwaltung.server.ServerViewModel
+import de.anubi1000.turnierverwaltung.server.serverModule
+import de.anubi1000.turnierverwaltung.ui.shared.TopLevelNavigationLayout
 import de.anubi1000.turnierverwaltung.ui.theme.AppTheme
 import de.anubi1000.turnierverwaltung.viewmodel.viewModelModule
 import io.realm.kotlin.Realm
 import org.apache.logging.log4j.kotlin.logger
 import org.koin.compose.KoinContext
 import org.koin.core.context.startKoin
+import java.awt.Dimension
 import kotlin.system.exitProcess
 
 private val log = logger("de.anubi1000.turnierverwaltung.MainKt")
 
-@OptIn(ExperimentalVoyagerApi::class)
 @Composable
 fun App() {
     AppTheme(darkTheme = false) {
-        ProvideNavigatorLifecycleKMPSupport {
-            Navigator(TournamentListDestination()) {
-                Row {
-                    NavigationMenu()
-                    NavigationList()
-                    CurrentScreen()
+        val navController = rememberNavController()
+        TopLevelNavigationLayout(
+            navController = navController
+        ) {
+            NavHost(
+                navController = navController,
+                startDestination = TournamentListDestination,
+                enterTransition = {
+                    EnterTransition.None
+                },
+                exitTransition = {
+                    ExitTransition.None
                 }
+            ) {
+                tournamentEditDestination(navController)
+                tournamentDetailDestinations(navController)
+                tournamentListDestination(navController)
             }
         }
     }
@@ -46,14 +62,14 @@ fun App() {
 private fun appMain() {
     log.info("Hi from main")
     val koinApplication = startKoin {
-        modules(databaseModule, repositoryModule, viewModelModule)
+        modules(databaseModule, repositoryModule, serverModule, viewModelModule)
 
         createEagerInstances()
     }
 
-    //log.info("Starting server")
-    //val server: ServerViewModel by di.instance()
-    //server.start()
+    log.info("Starting webserver")
+    val server: ServerViewModel by koinApplication.koin.inject()
+    server.start()
 
     log.info("Starting application")
     application(exitProcessOnExit = false) {
@@ -62,15 +78,28 @@ private fun appMain() {
             title = LocalStrings.current.appName,
             icon = rememberVectorPainter(Icons.Default.Scoreboard),
         ) {
+            val density = LocalDensity.current
+            LaunchedEffect(Unit) {
+                with(density) {
+                    window.minimumSize = Dimension(
+                        960.dp.roundToPx(),
+                        540.dp.roundToPx()
+                    )
+                }
+            }
             KoinContext {
                 App()
             }
         }
     }
 
+    log.info("Stopping webserver")
+    server.stop()
+
     log.info("Saving realm database")
     val realm: Realm by koinApplication.koin.inject()
     realm.close()
+
     log.info("Bye bye")
 }
 

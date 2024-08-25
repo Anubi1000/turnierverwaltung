@@ -1,82 +1,58 @@
 package de.anubi1000.turnierverwaltung.data.repository
 
-import de.anubi1000.turnierverwaltung.data.tournament.ListTournament
-import de.anubi1000.turnierverwaltung.data.tournament.Tournament
-import de.anubi1000.turnierverwaltung.data.tournament.toListTournament
-import de.anubi1000.turnierverwaltung.data.tournament.toTournament
-import de.anubi1000.turnierverwaltung.database.model.ParticipantModel
-import de.anubi1000.turnierverwaltung.database.model.TournamentModel
+import de.anubi1000.turnierverwaltung.data.tournament.EditTournament
+import de.anubi1000.turnierverwaltung.database.model.Tournament
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.Sort
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.apache.logging.log4j.kotlin.logger
 import org.mongodb.kbson.ObjectId
 
 class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository {
-    override fun getAllAsFlow(): Flow<ImmutableList<ListTournament>> {
+    override fun getAllAsFlow(): Flow<List<Tournament>> {
         log.debug("Getting tournaments as flow")
-        return realm.query<TournamentModel>()
+        return realm.query<Tournament>()
             .sort("date" to Sort.DESCENDING, "name" to Sort.ASCENDING)
             .asFlow()
-            .map { resultsChange ->
-                resultsChange.list.map(TournamentModel::toListTournament).toImmutableList()
-            }
+            .map { it.list }
     }
 
     override suspend fun getTournamentById(id: ObjectId): Tournament? {
-        log.debug { "Getting tournament with id ${id.toHexString()}" }
-        return realm
-            .query<TournamentModel>("_id == $0", id)
-            .asFlow()
+        log.debug { "Querying tournament by id. id=${id.toHexString()}" }
+        return realm.query<Tournament>("_id == $0", id)
             .first()
-            .list
-            .firstOrNull()
-            ?.toTournament()
+            .find()
     }
 
     override suspend fun insertTournament(tournament: Tournament) {
-        log.debug("Inserting new tournament")
+        log.debug { "Inserting new tournament. id=${tournament.id.toHexString()}" }
         realm.write {
-            val model = tournament.toTournamentModel()
-            copyToRealm(model)
+            copyToRealm(tournament)
         }
     }
 
-    override suspend fun updateTournament(tournament: Tournament) {
-        log.debug { "Updating tournament with id ${tournament.id.toHexString()}" }
+    override suspend fun updateTournament(editTournament: EditTournament) {
+        log.debug { "Updating existing tournament. id=${editTournament.id.toHexString()}" }
         realm.write {
-            val liveTournament = query<TournamentModel>("_id == $0", tournament.id)
-                .find()
+            val tournament = query<Tournament>("_id == $0", editTournament.id)
                 .first()
+                .find()!!
 
-            liveTournament.name = tournament.name
-            liveTournament.date = tournament.date
-            tournament.values.forEach { value ->
-                val liveValue = liveTournament.values.find {
-                    it.id == value.id
-                }!!
-                liveValue.name = value.name
-                liveValue.subtract = value.subtract
-            }
+            tournament.name = editTournament.name
+            tournament.date = editTournament.date
         }
     }
 
     override suspend fun deleteTournament(id: ObjectId) {
-        log.debug { "Deleting tournament with id ${id.toHexString()}" }
+        log.debug { "Deleting tournament by id. id=${id.toHexString()}" }
         realm.write {
-            query<ParticipantModel>("tournament._id == $0", id)
-                .find()
-                .forEach(::delete)
-
-            query<TournamentModel>("_id == $0", id)
-                .find()
+            val tournament = query<Tournament>("_id == $0", id)
                 .first()
-                .also(::delete)
+                .find()!!
+
+            delete(tournament)
         }
     }
 

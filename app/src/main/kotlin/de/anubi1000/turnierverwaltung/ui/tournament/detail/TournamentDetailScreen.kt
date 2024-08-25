@@ -1,21 +1,13 @@
 package de.anubi1000.turnierverwaltung.ui.tournament.detail
 
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,79 +15,62 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import de.anubi1000.turnierverwaltung.data.tournament.Tournament
-import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
+import de.anubi1000.turnierverwaltung.navigation.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.ui.tournament.TournamentDeleteDialog
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
-import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
+import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailCard
+import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailContent
+import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailItem
+import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailScreenBase
+import de.anubi1000.turnierverwaltung.util.Icon
+import de.anubi1000.turnierverwaltung.util.formatAsDate
 import de.anubi1000.turnierverwaltung.viewmodel.TournamentDetailViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TournamentDetailScreen(
+    navController: NavController,
     state: TournamentDetailViewModel.State,
-    deleteTournament: (Tournament) -> Unit,
+    oneDeleteButtonClick: () -> Unit
 ) {
-    val navigator = LocalNavigator.currentOrThrow
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(LocalStrings.current.tournament) },
-                navigationIcon = {
-                    TooltipIconButton(
-                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        tooltip = LocalStrings.current.back,
-                        onClick = {
-                            navigator.pop()
-                        }
-                    )
-                },
-                actions = {
-                    TooltipIconButton(
-                        icon = Icons.Default.Delete,
-                        tooltip = LocalStrings.current.delete,
-                        onClick = {
-                            showDeleteDialog = true
-                        }
-                    )
+    val strings = LocalStrings.current
 
-                    TooltipIconButton(
-                        icon = Icons.Default.Edit,
-                        tooltip = LocalStrings.current.edit,
-                        onClick = {
-                            if (state is TournamentDetailViewModel.State.Loaded) {
-                                navigator.push(TournamentEditDestination(state.tournament.id))
-                            }
-                        }
-                    )
-                }
-            )
+    DetailScreenBase(
+        navController = navController,
+        title = remember(state) {
+            var text = strings.tournament
+            if (state is TournamentDetailViewModel.State.Loaded) {
+                text += ": ${state.tournament.name}"
+            }
+            text
+        },
+        onEditButtonClick = {
+            if (state is TournamentDetailViewModel.State.Loaded) {
+                navController.navigate(TournamentEditDestination(state.tournament.id))
+            }
+        },
+        onDeleteButtonClick = {
+            showDeleteDialog = true
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = {},
+                onClick = {
+                    TODO("Open tournament")
+                },
                 text = { Text(LocalStrings.current.openTournament) },
-                icon = { Icon(Icons.AutoMirrored.Filled.OpenInNew, null) }
+                icon = { Icon(Icons.AutoMirrored.Filled.OpenInNew) }
             )
         }
-    ) {
-        Card(
-            modifier = Modifier.padding(it).padding(bottom = 16.dp, end = 16.dp).fillMaxSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+    ) { padding ->
+        when (state) {
+            is TournamentDetailViewModel.State.Loading -> LoadingIndicator()
+            is TournamentDetailViewModel.State.Loaded -> LoadedContent(
+                state = state,
+                modifier = Modifier.padding(padding)
             )
-        ) {
-            when (state) {
-                is TournamentDetailViewModel.State.Loading -> LoadingIndicator()
-                is TournamentDetailViewModel.State.Loaded -> {
-                    LoadedContent(state)
-                }
-            }
         }
     }
 
@@ -105,9 +80,67 @@ fun TournamentDetailScreen(
             onDismissRequest = { showDeleteDialog = false },
             onConfirmButtonClicked = {
                 showDeleteDialog = false
-                navigator.pop()
-                deleteTournament(state.tournament)
+                navController.popBackStack()
+                oneDeleteButtonClick()
             }
         )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun LoadedContent(
+    state: TournamentDetailViewModel.State.Loaded,
+    modifier: Modifier = Modifier
+) {
+    DetailContent(
+        modifier = modifier
+    ) {
+        val strings = LocalStrings.current
+
+        DetailCard(
+            title = strings.general,
+            modifier = Modifier.width(450.dp).fillMaxRowHeight()
+        ) {
+            DetailItem(
+                headlineText = state.tournament.name,
+                overlineText = strings.name
+            )
+            DetailItem(
+                headlineText = state.tournament.date.formatAsDate(),
+                overlineText = strings.dateOfTournament
+            )
+        }
+
+        DetailCard(
+            title = strings.general,
+            modifier = Modifier.width(450.dp).fillMaxRowHeight()
+        ) {
+            FlowRow(
+                maxItemsInEachRow = 2
+            ) {
+                val weightModifier = Modifier.weight(1f)
+                DetailItem(
+                    headlineText = state.tournament.participants.size.toString(),
+                    overlineText = "Anzahl Teilnehmer",
+                    modifier = weightModifier
+                )
+                DetailItem(
+                    headlineText = state.tournament.clubs.size.toString(),
+                    overlineText = "Anzahl Vereine",
+                    modifier = weightModifier
+                )
+                DetailItem(
+                    headlineText = state.tournament.teams.size.toString(),
+                    overlineText = "Anzahl Teams",
+                    modifier = weightModifier
+                )
+                DetailItem(
+                    headlineText = (state.tournament.disciplines.size + state.tournament.teamDisciplines.size).toString(),
+                    overlineText = "Anzahl Disziplinen",
+                    modifier = weightModifier
+                )
+            }
+        }
     }
 }

@@ -44,13 +44,13 @@ data class Strings(
             append("\" wirklich löschen?")
         }
     },
-    val wantToDeleteTournament: (name: String) -> AnnotatedString = {
+    val wantToDeleteTournament: (name: String) -> AnnotatedString = { arg1 ->
         buildAnnotatedString {
-            append("Möchtest du das Turnier \"")
+            append("Möchtest du das Turnier ")
             withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                append(name)
+                append(arg1)
             }
-            append("\" wirklich löschen?")
+            append(" wirklich löschen?")
         }
     },
     val yesno: (Boolean) -> String = { if (it) "Ja" else "Nein" },

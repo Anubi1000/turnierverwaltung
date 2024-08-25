@@ -9,7 +9,4 @@ val repositoryModule = module {
     factoryOf(::TournamentRepositoryImpl) withOptions {
         bind<TournamentRepository>()
     }
-    factoryOf(::ParticipantRepositoryImpl) withOptions {
-        bind<ParticipantRepository>()
-    }
 }
