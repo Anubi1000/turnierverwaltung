@@ -14,7 +14,7 @@ group = "de.anubi1000"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-    implementation(compose.desktop.windows_x64)
+    implementation(compose.desktop.currentOs)
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
 
