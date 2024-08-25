@@ -39,7 +39,7 @@ fun NavGraphBuilder.tournamentDetailDestinations(navController: NavController) =
         TournamentDetailScreen(
             navController = navController,
             state = viewModel.state,
-            oneDeleteButtonClick = {
+            onDeleteButtonClick = {
                 viewModel.deleteTournament()
             }
         )

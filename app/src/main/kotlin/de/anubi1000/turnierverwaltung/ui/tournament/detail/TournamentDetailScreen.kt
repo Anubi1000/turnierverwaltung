@@ -32,7 +32,7 @@ import de.anubi1000.turnierverwaltung.viewmodel.TournamentDetailViewModel
 fun TournamentDetailScreen(
     navController: NavController,
     state: TournamentDetailViewModel.State,
-    oneDeleteButtonClick: () -> Unit
+    onDeleteButtonClick: () -> Unit
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
