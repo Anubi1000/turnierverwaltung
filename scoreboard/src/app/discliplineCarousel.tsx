@@ -51,24 +51,25 @@ function DisciplineTitleBar({
   );
 }
 
-export function DisciplineCarousel({ tables }: { tables: DisciplineDataTable[] }) {
+export function DisciplineCarousel({
+  tables,
+}: {
+  tables: DisciplineDataTable[];
+}) {
   const [index, setIndex] = useState(0);
-  
+
   const nextDiscipline = useCallback(() => {
     setIndex((prevIndex) =>
       prevIndex >= disciplines.length - 1 ? 0 : prevIndex + 1,
     );
   }, []);
 
-  const disciplines = tables.map((table) => (table.name));
+  const disciplines = tables.map((table) => table.name);
 
   return (
     <>
       <DisciplineTitleBar disciplines={disciplines} index={index} />
-      <DisciplineTable
-        moveNext={nextDiscipline}
-        table={tables[index]}
-      />
+      <DisciplineTable moveNext={nextDiscipline} table={tables[index]} />
     </>
   );
 }

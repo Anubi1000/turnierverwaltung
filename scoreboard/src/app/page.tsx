@@ -21,7 +21,6 @@ export default function Page() {
   });
 
   function handleMessage(messageEvent: WebSocketEventMap["message"]) {
-
     var data = JSON.parse(messageEvent.data);
     if (data.type == "set_tournament") {
       const message = data as SetTournamentMessage;

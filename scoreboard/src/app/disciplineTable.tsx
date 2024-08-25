@@ -51,8 +51,8 @@ export function DisciplineTable({
 }) {
   const tableRef = useRef<null | HTMLDivElement>(null);
 
-  const rows = table.rows
-  const columns = table.columns
+  const rows = table.rows;
+  const columns = table.columns;
 
   useEffect(() => {
     let scrollToBottom = true;
