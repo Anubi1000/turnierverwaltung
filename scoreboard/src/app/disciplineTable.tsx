@@ -7,6 +7,7 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { Row, Column, DisciplineDataTable } from "./interfaces";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -43,16 +44,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export function DisciplineTable({
   moveNext,
-  columns,
-  rows,
-  widths,
+  table,
 }: {
   moveNext: () => void;
-  columns: string[];
-  rows: string[][];
-  widths: number[];
+  table: DisciplineDataTable;
 }) {
   const tableRef = useRef<null | HTMLDivElement>(null);
+
+  const rows = table.rows
+  const columns = table.columns
 
   useEffect(() => {
     let scrollToBottom = true;
@@ -110,10 +110,19 @@ export function DisciplineTable({
           <TableRow>
             {columns.map((column, index) =>
               index == 0 ? (
-                <StyledTableCell key={column}>{column}</StyledTableCell>
+                <StyledTableCell
+                  key={column.name}
+                  style={{ width: column.width }}
+                >
+                  {column.name}
+                </StyledTableCell>
               ) : (
-                <StyledTableCell key={column} align="right">
-                  {column}
+                <StyledTableCell
+                  key={column.name}
+                  style={{ width: column.width }}
+                  align="right"
+                >
+                  {column.name}
                 </StyledTableCell>
               ),
             )}
@@ -122,9 +131,9 @@ export function DisciplineTable({
         <TableBody>
           {rows.map((row, index) => (
             <StyledTableRow key={index}>
-              {row.map((entry, index) =>
+              {row.values.map((entry, index) =>
                 index == 0 ? (
-                  <StyledTableCell component="th" scope="row">
+                  <StyledTableCell key={index} component="th" scope="row">
                     {entry}
                   </StyledTableCell>
                 ) : (
