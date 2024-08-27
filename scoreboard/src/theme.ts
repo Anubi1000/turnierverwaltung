@@ -20,6 +20,7 @@ const theme = createTheme({
       main: "#1b5e1f",
     },
   },
+  cssVariables: true,
 });
 
 export default theme;

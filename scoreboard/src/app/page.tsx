@@ -4,14 +4,13 @@ import { AppBar, Stack, Toolbar, Typography } from "@mui/material";
 import { Clock } from "@/app/clock";
 import { DisciplineCarousel } from "@/app/discliplineCarousel";
 import useWebSocket from "react-use-websocket";
-import { SetTournamentMessage } from "./interfaces";
-import { DisciplineDataTable } from "./interfaces";
+import { SetTournamentMessage, TournamentTable } from "@/app/interfaces";
 
 const socketUrl = "ws://127.0.0.1:8080/ws";
 
 export default function Page() {
   const [title, setTitle] = useState("");
-  const [tables, setTables] = useState<DisciplineDataTable[]>([]);
+  const [tables, setTables] = useState<TournamentTable[]>([]);
 
   useWebSocket(socketUrl, {
     onOpen: () => console.log("opened"),
@@ -21,7 +20,7 @@ export default function Page() {
   });
 
   function handleMessage(messageEvent: WebSocketEventMap["message"]) {
-    var data = JSON.parse(messageEvent.data);
+    const data = JSON.parse(messageEvent.data);
     if (data.type == "set_tournament") {
       const message = data as SetTournamentMessage;
       const title = message.title;

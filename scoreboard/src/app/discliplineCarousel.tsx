@@ -1,8 +1,7 @@
 import React, { useState, useCallback } from "react";
-import { AppBar, Stack, Toolbar, Typography } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import { DisciplineTable } from "@/app/disciplineTable";
-import { Row, Column, DisciplineDataTable } from "./interfaces";
+import { TournamentTable } from "@/app/interfaces";
 
 function DisciplineTitleBar({
   disciplines,
@@ -24,38 +23,35 @@ function DisciplineTitleBar({
   return (
     <AppBar position="static" elevation={0}>
       <Toolbar>
-        <Grid container spacing={0} style={{ width: "100%" }}>
-          <Grid xs>
-            <Typography variant="h6" color="lightGray" align="right">
-              {disciplines[firstLabelIndex]} {/*previous disclipline*/}
-            </Typography>
-          </Grid>
+        <div
+          style={{
+            width: "100%",
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+          }}
+        >
+          <Typography variant="h6" color="lightGray" align="right">
+            {disciplines[firstLabelIndex]} {/*previous discipline*/}
+          </Typography>
 
-          <Grid>
-            <Typography
-              variant="h5"
-              style={{ paddingLeft: 64, paddingRight: 64 }}
-            >
-              {disciplines[index]} {/*current discipline*/}
-            </Typography>
-          </Grid>
+          <Typography
+            variant="h5"
+            style={{ paddingLeft: 64, paddingRight: 64 }}
+            align="center"
+          >
+            {disciplines[index]} {/*current discipline*/}
+          </Typography>
 
-          <Grid xs>
-            <Typography variant="h6" color="lightGray">
-              {disciplines[lastLabelIndex]} {/*next disclipline*/}
-            </Typography>
-          </Grid>
-        </Grid>
+          <Typography variant="h6" color="lightGray">
+            {disciplines[lastLabelIndex]} {/*next discipline*/}
+          </Typography>
+        </div>
       </Toolbar>
     </AppBar>
   );
 }
 
-export function DisciplineCarousel({
-  tables,
-}: {
-  tables: DisciplineDataTable[];
-}) {
+export function DisciplineCarousel({ tables }: { tables: TournamentTable[] }) {
   const [index, setIndex] = useState(0);
 
   const nextDiscipline = useCallback(() => {

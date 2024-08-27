@@ -1,31 +1,31 @@
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
-import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import { Row, Column, DisciplineDataTable } from "./interfaces";
+import { useEffect, useRef } from "react";
+import { TournamentTable } from "@/app/interfaces";
+import {
+  styled,
+  Table,
+  TableBody,
+  TableCell,
+  tableCellClasses,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.primary.main, // header in green
     color: theme.palette.common.white,
-    fontSize: 20,
   },
-  [`&.${tableCellClasses.body}`]: {
+  [`&.${tableCellClasses.root}`]: {
     fontSize: 20,
+    border: 0,
   },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(even)": {
-    backgroundColor: "#ffffff",
-  },
   "&:nth-of-type(odd)": {
-    backgroundColor: "#90ee90",
+    backgroundColor: "#bbe0bb",
   },
   "&:nth-of-type(1)": {
     backgroundColor: "#ffd700", // gold
@@ -36,10 +36,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(3)": {
     backgroundColor: "#bf8970", // bronze
   },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
 }));
 
 export function DisciplineTable({
@@ -47,7 +43,7 @@ export function DisciplineTable({
   table,
 }: {
   moveNext: () => void;
-  table: DisciplineDataTable;
+  table: TournamentTable;
 }) {
   const tableRef = useRef<null | HTMLDivElement>(null);
 
@@ -104,44 +100,32 @@ export function DisciplineTable({
   }, []);
 
   return (
-    <TableContainer ref={tableRef} style={{ overflowY: "hidden" }}>
+    <TableContainer ref={tableRef} style={{ overflowY: "scroll" }}>
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            {columns.map((column, index) =>
-              index == 0 ? (
-                <StyledTableCell
-                  key={column.name}
-                  style={{ width: column.width }}
-                >
-                  {column.name}
-                </StyledTableCell>
-              ) : (
-                <StyledTableCell
-                  key={column.name}
-                  style={{ width: column.width }}
-                  align="right"
-                >
-                  {column.name}
-                </StyledTableCell>
-              ),
-            )}
+            {columns.map((column, index) => (
+              <StyledTableCell
+                key={column.name}
+                style={{ width: column.width }}
+                align={index == 0 ? "left" : "right"}
+              >
+                {column.name}
+              </StyledTableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row, index) => (
-            <StyledTableRow key={index}>
-              {row.values.map((entry, index) =>
-                index == 0 ? (
-                  <StyledTableCell key={index} component="th" scope="row">
-                    {entry}
-                  </StyledTableCell>
-                ) : (
-                  <StyledTableCell key={index} align="right">
-                    {entry}
-                  </StyledTableCell>
-                ),
-              )}
+            <StyledTableRow key={row.id}>
+              {row.values.map((entry, index) => (
+                <StyledTableCell
+                  key={index}
+                  align={index == 0 ? "left" : "right"}
+                >
+                  {entry}
+                </StyledTableCell>
+              ))}
             </StyledTableRow>
           ))}
         </TableBody>
