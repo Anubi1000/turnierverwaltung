@@ -1,22 +1,22 @@
-export interface Column {
+export interface SetTournamentMessage {
+  title: string;
+  tables: TournamentTable[];
+  type: "set_tournament";
+}
+
+export interface TournamentTable {
+  id: string;
+  name: string;
+  columns: TournamentTableColumn[];
+  rows: TournamentTableRow[];
+}
+
+export interface TournamentTableColumn {
   name: string;
   width: string;
 }
 
-export interface Row {
+export interface TournamentTableRow {
   id: string;
   values: string[];
-}
-
-export interface DisciplineDataTable {
-  id: string;
-  name: string;
-  columns: Column[];
-  rows: Row[];
-}
-
-export interface SetTournamentMessage {
-  title: string;
-  tables: DisciplineDataTable[];
-  type: "set_tournament";
 }
