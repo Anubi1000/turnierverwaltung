@@ -1,14 +1,17 @@
-package de.anubi1000.turnierverwaltung.navigation
+package de.anubi1000.turnierverwaltung.navigation.tournament
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import de.anubi1000.turnierverwaltung.navigation.AppDestination
+import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
+import de.anubi1000.turnierverwaltung.ui.shared.TopLevelNavigationLayout
 import de.anubi1000.turnierverwaltung.ui.shared.TournamentListLayout
 import de.anubi1000.turnierverwaltung.ui.tournament.detail.TournamentDetailScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
-import de.anubi1000.turnierverwaltung.viewmodel.TournamentDetailViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentDetailViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.koin.compose.viewmodel.koinViewModel
@@ -27,24 +30,24 @@ data class TournamentDetailDestination(
 fun NavGraphBuilder.tournamentDetailDestinations(navController: NavController) = composable<TournamentDetailDestination> { backStackEntry ->
     val args = backStackEntry.toRoute<TournamentDetailDestination>()
 
-    TournamentListLayout(
-        navController = navController
-    ) {
-        val viewModel: TournamentDetailViewModel = koinViewModel()
+    TopLevelNavigationLayout(navController) {
+        TournamentListLayout(navController) {
+            val viewModel: TournamentDetailViewModel = koinViewModel()
 
-        LaunchedEffect(viewModel) {
-            viewModel.loadTournament(args.tournamentId.toObjectId())
-        }
-
-        TournamentDetailScreen(
-            navController = navController,
-            state = viewModel.state,
-            onDeleteButtonClick = {
-                viewModel.deleteTournament()
-            },
-            showOnScoreboard = {
-                viewModel.showTournamentOnScoreboard()
+            LaunchedEffect(viewModel) {
+                viewModel.loadTournament(args.tournamentId.toObjectId())
             }
-        )
+
+            TournamentDetailScreen(
+                navController = navController,
+                state = viewModel.state,
+                onDeleteButtonClick = {
+                    viewModel.deleteTournament()
+                },
+                showOnScoreboard = {
+                    viewModel.showTournamentOnScoreboard()
+                }
+            )
+        }
     }
 }

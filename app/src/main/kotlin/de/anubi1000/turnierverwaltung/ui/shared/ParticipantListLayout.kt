@@ -14,16 +14,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
+import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
+import de.anubi1000.turnierverwaltung.ui.participant.list.ParticipantList
 import de.anubi1000.turnierverwaltung.ui.tournament.list.TournamentList
+import de.anubi1000.turnierverwaltung.viewmodel.ParticipantListViewModel
 import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentListViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun TournamentListLayout(
+fun ParticipantListLayout(
     navController: NavController,
-    viewModel: TournamentListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<TournamentListDestination>()
+    viewModel: ParticipantListViewModel = koinViewModel(
+        viewModelStoreOwner = navController.getBackStackEntry<TournamentDetailDestination>()
     ),
     content: @Composable () -> Unit
 ) {
@@ -39,7 +41,7 @@ fun TournamentListLayout(
         val secondWidth = availableWidth - firstWidth
 
         Row {
-            TournamentList(
+            ParticipantList(
                 navController = navController,
                 state = viewModel.state,
                 modifier = Modifier.width(firstWidth).padding(end = 8.dp),

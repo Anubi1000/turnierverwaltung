@@ -1,6 +1,6 @@
 package de.anubi1000.turnierverwaltung.data.repository
 
-import de.anubi1000.turnierverwaltung.data.tournament.EditTournament
+import de.anubi1000.turnierverwaltung.data.EditTournament
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
@@ -12,7 +12,7 @@ import org.mongodb.kbson.ObjectId
 
 class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository {
     override fun getAllAsFlow(): Flow<List<Tournament>> {
-        log.debug("Getting tournaments as flow")
+        log.debug("Retrieving all tournaments as flow")
         return realm.query<Tournament>()
             .sort("date" to Sort.DESCENDING, "name" to Sort.ASCENDING)
             .asFlow()

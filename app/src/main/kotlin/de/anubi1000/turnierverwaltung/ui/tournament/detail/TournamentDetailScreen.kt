@@ -18,7 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.navigation.TournamentEditDestination
+import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
+import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.ui.tournament.TournamentDeleteDialog
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
@@ -28,7 +29,7 @@ import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailScreenBase
 import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.util.formatAsDate
-import de.anubi1000.turnierverwaltung.viewmodel.TournamentDetailViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentDetailViewModel
 
 @Composable
 fun TournamentDetailScreen(
@@ -69,7 +70,7 @@ fun TournamentDetailScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
-                    TODO("Open tournament")
+                    navController.navigate(ParticipantListDestination)
                 },
                 text = { Text(strings.openTournament) },
                 icon = { Icon(Icons.AutoMirrored.Filled.OpenInNew) }

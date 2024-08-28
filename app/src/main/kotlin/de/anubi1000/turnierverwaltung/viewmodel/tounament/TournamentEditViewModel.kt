@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.viewmodel
+package de.anubi1000.turnierverwaltung.viewmodel.tounament
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -7,8 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
-import de.anubi1000.turnierverwaltung.data.tournament.EditTournament
-import de.anubi1000.turnierverwaltung.data.tournament.toEditTournament
+import de.anubi1000.turnierverwaltung.data.EditTournament
+import de.anubi1000.turnierverwaltung.data.toEditTournament
 import kotlinx.coroutines.launch
 import org.apache.logging.log4j.kotlin.logger
 import org.mongodb.kbson.ObjectId

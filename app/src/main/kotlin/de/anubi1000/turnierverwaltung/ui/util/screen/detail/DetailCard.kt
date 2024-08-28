@@ -20,7 +20,7 @@ fun DetailCard(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
         ),
         modifier = modifier
     ) {

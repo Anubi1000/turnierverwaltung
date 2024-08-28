@@ -5,5 +5,8 @@ interface AppDestination {
 }
 
 enum class NavigationMenuOption {
-    TOURNAMENTS
+    TOURNAMENTS,
+    PARTICIPANTS,
+    TEAMS,
+    CLUBS,
 }

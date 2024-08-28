@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
-import de.anubi1000.turnierverwaltung.navigation.TournamentListDestination
+import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
 import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
 import de.anubi1000.turnierverwaltung.util.topAppBarPadding

@@ -13,7 +13,7 @@ import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditScreenBase
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.TextField
-import de.anubi1000.turnierverwaltung.viewmodel.TournamentEditViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentEditViewModel
 
 @Composable
 fun TournamentEditScreen(

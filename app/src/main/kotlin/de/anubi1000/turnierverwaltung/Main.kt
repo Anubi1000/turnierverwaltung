@@ -16,13 +16,13 @@ import androidx.navigation.compose.rememberNavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.data.repository.repositoryModule
 import de.anubi1000.turnierverwaltung.database.databaseModule
-import de.anubi1000.turnierverwaltung.navigation.TournamentListDestination
-import de.anubi1000.turnierverwaltung.navigation.tournamentDetailDestinations
-import de.anubi1000.turnierverwaltung.navigation.tournamentEditDestination
-import de.anubi1000.turnierverwaltung.navigation.tournamentListDestination
+import de.anubi1000.turnierverwaltung.navigation.participant.participantListDestination
+import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
+import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentDetailDestinations
+import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentEditDestination
+import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentListDestination
 import de.anubi1000.turnierverwaltung.server.ServerViewModel
 import de.anubi1000.turnierverwaltung.server.serverModule
-import de.anubi1000.turnierverwaltung.ui.shared.TopLevelNavigationLayout
 import de.anubi1000.turnierverwaltung.ui.theme.AppTheme
 import de.anubi1000.turnierverwaltung.viewmodel.viewModelModule
 import io.realm.kotlin.Realm
@@ -38,23 +38,21 @@ private val log = logger("de.anubi1000.turnierverwaltung.MainKt")
 fun App() {
     AppTheme(darkTheme = false) {
         val navController = rememberNavController()
-        TopLevelNavigationLayout(
-            navController = navController
-        ) {
-            NavHost(
-                navController = navController,
-                startDestination = TournamentListDestination,
-                enterTransition = {
-                    EnterTransition.None
-                },
-                exitTransition = {
-                    ExitTransition.None
-                }
-            ) {
-                tournamentEditDestination(navController)
-                tournamentDetailDestinations(navController)
-                tournamentListDestination(navController)
+        NavHost(
+            navController = navController,
+            startDestination = TournamentListDestination,
+            enterTransition = {
+                EnterTransition.None
+            },
+            exitTransition = {
+                ExitTransition.None
             }
+        ) {
+            tournamentListDestination(navController)
+            tournamentDetailDestinations(navController)
+            tournamentEditDestination(navController)
+
+            participantListDestination(navController)
         }
     }
 }

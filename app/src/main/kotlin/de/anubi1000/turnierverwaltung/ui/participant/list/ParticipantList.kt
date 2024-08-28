@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.ui.tournament.list
+package de.anubi1000.turnierverwaltung.ui.participant.list
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,54 +16,52 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
+import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
+import de.anubi1000.turnierverwaltung.ui.tournament.list.TournamentListItem
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.ListBase
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
-import de.anubi1000.turnierverwaltung.util.getCurrentDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.base.BaseListViewModel
-import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentEditViewModel
 
 @Composable
-fun TournamentList(
+fun ParticipantList(
     navController: NavController,
     state: BaseListViewModel.State,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     ListBase(
-        title = LocalStrings.current.tournaments,
+        title = LocalStrings.current.participants,
         onCreateButtonClick = {
-            if (navController.getCurrentDestination() !is TournamentEditDestination) {
-                navController.navigate(TournamentEditDestination())
-            }
+            TODO("Create")
         },
-        modifier = modifier
+        modifier = modifier,
     ) {
         @Suppress("UNCHECKED_CAST")
         when (state) {
             is BaseListViewModel.State.Loading -> LoadingIndicator()
             is BaseListViewModel.State.Loaded<*> -> LoadedContent(
                 navController = navController,
-                state = state as BaseListViewModel.State.Loaded<Tournament>
+                state = state as BaseListViewModel.State.Loaded<Participant>
             )
         }
     }
 }
 
 @Composable
-private fun LoadedContent(navController: NavController, state: BaseListViewModel.State.Loaded<Tournament>, modifier: Modifier = Modifier) {
-    val tournaments by state.itemFlow.collectAsStateWithLifecycle()
+private fun LoadedContent(navController: NavController, state: BaseListViewModel.State.Loaded<Participant>, modifier: Modifier = Modifier) {
+    val participants by state.itemFlow.collectAsStateWithLifecycle()
 
-    if (tournaments.isEmpty()) {
+    if (participants.isEmpty()) {
         Box(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(LocalStrings.current.noTournamentsExist)
+            Text(LocalStrings.current.noParticipantsExist)
         }
     } else {
         val currentDestination by navController.currentDestinationAsState()
@@ -71,8 +69,6 @@ private fun LoadedContent(navController: NavController, state: BaseListViewModel
         val currentTournamentId by remember(navController) {
             derivedStateOf {
                 when (val destination = currentDestination) {
-                    is TournamentDetailDestination -> destination.tournamentId
-                    is TournamentEditDestination -> destination.tournamentId
                     else -> null
                 }?.toObjectId()
             }
@@ -81,15 +77,13 @@ private fun LoadedContent(navController: NavController, state: BaseListViewModel
         LazyColumn(
             modifier = modifier
         ) {
-            items(tournaments, key = { it.id }) { item ->
-                TournamentListItem(
-                    tournament = item,
+            items(participants, key = { it.id }) { item ->
+                ParticipantListItem(
+                    participant = item,
                     selected = currentTournamentId == item.id,
                     onClick = {
                         if (currentTournamentId != item.id) {
-                            navController.navigate(TournamentDetailDestination(item.id)) {
-                                popUpTo<TournamentListDestination>()
-                            }
+                            TODO("Detail")
                         }
                     },
                     modifier = Modifier.padding(2.dp)

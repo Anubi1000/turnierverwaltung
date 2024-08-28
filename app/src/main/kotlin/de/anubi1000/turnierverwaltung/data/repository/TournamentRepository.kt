@@ -1,6 +1,6 @@
 package de.anubi1000.turnierverwaltung.data.repository
 
-import de.anubi1000.turnierverwaltung.data.tournament.EditTournament
+import de.anubi1000.turnierverwaltung.data.EditTournament
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import kotlinx.coroutines.flow.Flow
 import org.mongodb.kbson.ObjectId

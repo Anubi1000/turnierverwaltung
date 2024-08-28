@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.navigation
+package de.anubi1000.turnierverwaltung.navigation.tournament
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,25 +9,29 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import cafe.adriel.lyricist.LocalStrings
+import de.anubi1000.turnierverwaltung.navigation.AppDestination
+import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
+import de.anubi1000.turnierverwaltung.ui.shared.TopLevelNavigationLayout
 import de.anubi1000.turnierverwaltung.ui.shared.TournamentListLayout
 import de.anubi1000.turnierverwaltung.util.topAppBarPadding
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
-object TournamentListDestination : AppDestination {
+data object TournamentListDestination : AppDestination {
     @Transient
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.TOURNAMENTS
 }
 
 fun NavGraphBuilder.tournamentListDestination(navController: NavController) = composable<TournamentListDestination> {
-    TournamentListLayout(
-        navController = navController
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize().topAppBarPadding(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(LocalStrings.current.noTournamentSelected)
+    TopLevelNavigationLayout(navController) {
+        TournamentListLayout(navController) {
+            Box(
+                modifier = Modifier.fillMaxSize().topAppBarPadding(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(LocalStrings.current.noTournamentSelected)
+            }
         }
     }
 }

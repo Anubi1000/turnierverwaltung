@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.viewmodel
+package de.anubi1000.turnierverwaltung.viewmodel.tounament
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

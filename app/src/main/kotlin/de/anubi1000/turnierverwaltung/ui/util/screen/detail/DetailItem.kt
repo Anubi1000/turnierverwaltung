@@ -31,7 +31,7 @@ fun DetailItem(
             }
         },
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
         ),
         modifier = modifier
     )
