@@ -10,6 +10,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Stack,
+  Typography,
 } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -99,7 +101,19 @@ export function DisciplineTable({
     };
   }, []);
 
-  return (
+  return columns.length == 0 ? (
+    <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+      <Typography variant="h4" align="center">
+        Keine Spaltendefinition
+      </Typography>
+    </Stack>
+  ) : rows.length == 0 ? (
+    <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+      <Typography variant="h4" align="center">
+        Keine Einträge vorhanden
+      </Typography>
+    </Stack>
+  ) : (
     <TableContainer ref={tableRef} style={{ overflowY: "scroll" }}>
       <Table stickyHeader>
         <TableHead>

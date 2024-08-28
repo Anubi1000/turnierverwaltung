@@ -49,7 +49,11 @@ export default function Page() {
         </Toolbar>
       </AppBar>
       {tables.length == 0 ? (
-        <div>Kein Turnier ausgewählt</div>
+        <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+          <Typography variant="h4" align="center">
+            Kein Turnier ausgewählt
+          </Typography>
+        </Stack>
       ) : (
         <DisciplineCarousel tables={tables} />
       )}
