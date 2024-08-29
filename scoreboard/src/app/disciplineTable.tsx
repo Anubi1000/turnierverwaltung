@@ -101,19 +101,27 @@ export function DisciplineTable({
     };
   }, []);
 
-  return columns.length == 0 ? (
-    <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-      <Typography variant="h4" align="center">
-        Keine Spaltendefinition
-      </Typography>
-    </Stack>
-  ) : rows.length == 0 ? (
-    <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-      <Typography variant="h4" align="center">
-        Keine Einträge vorhanden
-      </Typography>
-    </Stack>
-  ) : (
+  if (columns.length == 0) {
+    return (
+      <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+        <Typography variant="h4" align="center">
+          Keine Spaltendefinition
+        </Typography>
+      </Stack>
+    );
+  }
+
+  if (rows.length == 0) {
+    return (
+      <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+        <Typography variant="h4" align="center">
+          Keine Einträge vorhanden
+        </Typography>
+      </Stack>
+    );
+  }
+
+  return (
     <TableContainer ref={tableRef} style={{ overflowY: "scroll" }}>
       <Table stickyHeader>
         <TableHead>
