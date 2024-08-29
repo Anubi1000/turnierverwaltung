@@ -12,7 +12,7 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.ui.shared.TopLevelNavigationLayout
-import de.anubi1000.turnierverwaltung.ui.shared.TournamentListLayout
+import de.anubi1000.turnierverwaltung.ui.shared.list.TournamentListLayout
 import de.anubi1000.turnierverwaltung.util.topAppBarPadding
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient

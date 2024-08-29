@@ -2,29 +2,19 @@ package de.anubi1000.turnierverwaltung.ui.shared
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.DrawerValue
+import androidx.compose.material.icons.filled.Queue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.PermanentDrawerSheet
-import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,7 +29,8 @@ import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
-import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
+import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
+import de.anubi1000.turnierverwaltung.ui.shared.list.TeamListLayout
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
@@ -78,7 +69,7 @@ fun TournamentNavigationLayout(
                 selected = currentMenuOption == NavigationMenuOption.PARTICIPANTS,
                 onClick = {
                     if (currentMenuOption != NavigationMenuOption.PARTICIPANTS) {
-                        navController.navigate(ParticipantListDestination)
+                        navController.popBackStack<ParticipantListDestination>(false)
                     }
                 },
                 label = { Text(LocalStrings.current.participants) },
@@ -89,10 +80,10 @@ fun TournamentNavigationLayout(
                 selected = currentMenuOption == NavigationMenuOption.TEAMS,
                 onClick = {
                     if (currentMenuOption != NavigationMenuOption.TEAMS) {
-                        TODO("Teams")
+                       navController.navigate(TeamListDestination)
                     }
                 },
-                label = { Text("Teams") },
+                label = { Text(LocalStrings.current.teams) },
                 icon = { Icon(Icons.Default.People) }
             )
 
@@ -115,7 +106,7 @@ fun TournamentNavigationLayout(
                     }
                 },
                 label = { Text("Disziplinen") },
-                icon = { Icon(Icons.Default.Close) }
+                icon = { Icon(Icons.Default.AddBox) }
             )
 
             NavigationRailItem(
@@ -131,7 +122,7 @@ fun TournamentNavigationLayout(
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     ) },
-                icon = { Icon(Icons.Default.Close) }
+                icon = { Icon(Icons.Default.Queue) }
             )
         }
 

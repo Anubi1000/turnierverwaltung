@@ -10,6 +10,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.serialization.decodeArguments
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
+import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
+import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
@@ -19,9 +21,13 @@ import kotlin.reflect.KClass
 
 @OptIn(InternalSerializationApi::class)
 private val destinations: Map<Int, KClass<out AppDestination>> = listOf(
-    TournamentEditDestination::class,
+    TournamentListDestination::class,
     TournamentDetailDestination::class,
-    TournamentListDestination::class
+    TournamentEditDestination::class,
+
+    ParticipantListDestination::class,
+
+    TeamListDestination::class,
 ).associateBy { it.serializer().hashCode() }
 
 @OptIn(InternalSerializationApi::class)

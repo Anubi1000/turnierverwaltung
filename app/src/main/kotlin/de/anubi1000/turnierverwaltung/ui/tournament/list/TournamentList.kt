@@ -26,7 +26,6 @@ import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
 import de.anubi1000.turnierverwaltung.util.getCurrentDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.base.BaseListViewModel
-import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentEditViewModel
 
 @Composable
 fun TournamentList(
@@ -63,7 +62,7 @@ private fun LoadedContent(navController: NavController, state: BaseListViewModel
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(LocalStrings.current.noTournamentsExist)
+            Text(LocalStrings.current.doesntExist(LocalStrings.current.tournaments))
         }
     } else {
         val currentDestination by navController.currentDestinationAsState()

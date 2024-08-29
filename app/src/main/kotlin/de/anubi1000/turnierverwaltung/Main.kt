@@ -17,6 +17,7 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.data.repository.repositoryModule
 import de.anubi1000.turnierverwaltung.database.databaseModule
 import de.anubi1000.turnierverwaltung.navigation.participant.participantListDestination
+import de.anubi1000.turnierverwaltung.navigation.team.teamListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentDetailDestinations
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentEditDestination
@@ -53,6 +54,8 @@ fun App() {
             tournamentEditDestination(navController)
 
             participantListDestination(navController)
+
+            teamListDestination(navController)
         }
     }
 }

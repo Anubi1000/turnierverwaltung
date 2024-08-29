@@ -8,7 +8,7 @@ import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.ui.shared.TopLevelNavigationLayout
-import de.anubi1000.turnierverwaltung.ui.shared.TournamentListLayout
+import de.anubi1000.turnierverwaltung.ui.shared.list.TournamentListLayout
 import de.anubi1000.turnierverwaltung.ui.tournament.detail.TournamentDetailScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentDetailViewModel

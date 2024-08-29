@@ -20,10 +20,16 @@ data class Strings(
     val general: String = "Allgemein",
     val name: String = "Name",
 
+    val doesntExist: (name: String) -> String = { arg1 ->
+        buildString {
+            append("Es existieren noch keine ")
+            append(arg1)
+        }
+    },
+
     val tournament: String = "Turnier",
     val tournaments: String = "Turniere",
     val noTournamentSelected: String = "Kein Turnier ausgewählt",
-    val noTournamentsExist: String = "Es existieren noch keine Turniere",
     val createTournament: String = "Turnier erstellen",
     val deleteTournament: String = "Turnier löschen",
     val editTournament: String = "Turnier bearbeiten",
@@ -41,7 +47,6 @@ data class Strings(
     val participant: String = "Teilnehmer",
     val participants: String = participant,
     val noParticipantSelected: String = "Keinen Teilnehmer ausgewählt",
-    val noParticipantsExist: String = "Es existieren noch keine Teilnehmer",
     val createParticipant: String = "Teilnehmer erstellen",
     val deleteParticipant: String = "Teilnehmer löschen",
     val editParticipant: String = "Teilnehmer bearbeiten",
@@ -54,6 +59,9 @@ data class Strings(
             append(" wirklich löschen?")
         }
     },
+
+    val teams: String = "Teams",
+    val noTeamSelected: String = "Kein Team ausgewählt",
 
     val scoreboard: String = "Scoreboard",
     val showOnScoreboard: String = "Auf Scoreboard anzeigen",

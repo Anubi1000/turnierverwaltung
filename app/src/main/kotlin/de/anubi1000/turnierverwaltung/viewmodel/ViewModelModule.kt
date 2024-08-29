@@ -12,4 +12,5 @@ val viewModelModule = module {
     viewModelOf(::TournamentEditViewModel)
 
     viewModelOf(::ParticipantListViewModel)
+    viewModelOf(::TeamListViewModel)
 }

@@ -1,6 +1,5 @@
 package de.anubi1000.turnierverwaltung.ui.util.screen.list
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold

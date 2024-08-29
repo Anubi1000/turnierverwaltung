@@ -13,4 +13,8 @@ val repositoryModule = module {
     factoryOf(::ParticipantRepositoryImpl) withOptions {
         bind<ParticipantRepository>()
     }
+
+    factoryOf(::TeamRepositoryImpl) withOptions {
+        bind<TeamRepository>()
+    }
 }
