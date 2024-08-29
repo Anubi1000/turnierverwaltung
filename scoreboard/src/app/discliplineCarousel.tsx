@@ -10,17 +10,47 @@ function DisciplineTitleBar({
   disciplines: string[];
   index: number;
 }) {
-  let firstLabelIndex = index - 1;
-  if (firstLabelIndex == -1) {
-    firstLabelIndex = disciplines.length - 1;
+  let previousLabelIndex = index - 1;
+  if (previousLabelIndex == -1) {
+    previousLabelIndex = disciplines.length - 1;
   }
 
-  let lastLabelIndex = index + 1;
-  if (lastLabelIndex == disciplines.length) {
-    lastLabelIndex = 0;
+  let nextLabelIndex = index + 1;
+  if (nextLabelIndex == disciplines.length) {
+    nextLabelIndex = 0;
   }
 
-  return (
+  return disciplines.length == 1 ? (
+    <></>
+  ) : disciplines.length == 2 ? (
+    <AppBar position="static" elevation={0}>
+      <Toolbar>
+        <div
+          style={{
+            width: "100%",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+          }}
+        >
+          <Typography
+            variant="h5"
+            color={index == 0 ? "white" : "lightgray"}
+            style={{ paddingRight: 32 }}
+          >
+            {disciplines[0]} {/*left discipline*/}
+          </Typography>
+
+          <Typography
+            variant="h5"
+            color={index == 1 ? "white" : "lightgray"}
+            style={{ paddingLeft: 32 }}
+          >
+            {disciplines[1]} {/*right discipline*/}
+          </Typography>
+        </div>
+      </Toolbar>
+    </AppBar>
+  ) : (
     <AppBar position="static" elevation={0}>
       <Toolbar>
         <div
@@ -31,7 +61,7 @@ function DisciplineTitleBar({
           }}
         >
           <Typography variant="h6" color="lightGray" align="right">
-            {disciplines[firstLabelIndex]} {/*previous discipline*/}
+            {disciplines[previousLabelIndex]} {/*previous discipline*/}
           </Typography>
 
           <Typography
@@ -43,14 +73,13 @@ function DisciplineTitleBar({
           </Typography>
 
           <Typography variant="h6" color="lightGray">
-            {disciplines[lastLabelIndex]} {/*next discipline*/}
+            {disciplines[nextLabelIndex]} {/*next discipline*/}
           </Typography>
         </div>
       </Toolbar>
     </AppBar>
   );
 }
-
 export function DisciplineCarousel({ tables }: { tables: TournamentTable[] }) {
   const [index, setIndex] = useState(0);
 

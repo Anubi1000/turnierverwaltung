@@ -133,10 +133,7 @@ export function DisciplineTable({
           {rows.map((row, index) => (
             <StyledTableRow key={row.id}>
               {row.values.map((entry, index) => (
-                <StyledTableCell
-                  key={index}
-                  align={columns[index].alignment}
-                >
+                <StyledTableCell key={index} align={columns[index].alignment}>
                   {entry}
                 </StyledTableCell>
               ))}
