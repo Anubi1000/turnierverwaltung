@@ -79,8 +79,6 @@ compose.desktop {
             packageName = "turnierverwaltung"
             packageVersion = "1.0.0"
 
-            includeAllModules = true
-
             windows {
                 perUserInstall = true
                 shortcut = true

@@ -6,6 +6,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.core.bundle.Bundle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.serialization.decodeArguments
@@ -30,9 +31,21 @@ private val destinations: Map<Int, KClass<out AppDestination>> = listOf(
     TeamListDestination::class,
 ).associateBy { it.serializer().hashCode() }
 
+fun NavController.getCurrentDestination(): AppDestination? = getDestination(currentBackStackEntry)
+
+@Composable
+fun NavController.currentDestinationAsState(): State<AppDestination?> {
+    val backStackEntry by currentBackStackEntryAsState()
+    return remember(this) {
+        derivedStateOf {
+            getDestination(backStackEntry)
+        }
+    }
+}
+
 @OptIn(InternalSerializationApi::class)
-fun NavController.getCurrentDestination(): AppDestination? {
-    val backStackEntry = currentBackStackEntry ?: return null
+private fun getDestination(backStackEntry: NavBackStackEntry?): AppDestination? {
+    if (backStackEntry == null) return null
 
     val id = backStackEntry.destination.id
     val destinationClass = destinations[id] ?: return null
@@ -40,22 +53,4 @@ fun NavController.getCurrentDestination(): AppDestination? {
     val arguments = backStackEntry.arguments ?: Bundle()
     val typeMap = backStackEntry.destination.arguments.mapValues { it.value.type }
     return destinationClass.serializer().decodeArguments(arguments, typeMap)
-}
-
-@OptIn(InternalSerializationApi::class)
-@Composable
-fun NavController.currentDestinationAsState(): State<AppDestination?> {
-    val backStackEntry by currentBackStackEntryAsState()
-    return remember(this) {
-        derivedStateOf {
-            val entry = backStackEntry ?: return@derivedStateOf null
-
-            val id = entry.destination.id
-            val destinationClass = destinations[id] ?: return@derivedStateOf null
-
-            val arguments = entry.arguments ?: Bundle()
-            val typeMap = entry.destination.arguments.mapValues { it.value.type }
-            return@derivedStateOf destinationClass.serializer().decodeArguments(arguments, typeMap)
-        }
-    }
 }
