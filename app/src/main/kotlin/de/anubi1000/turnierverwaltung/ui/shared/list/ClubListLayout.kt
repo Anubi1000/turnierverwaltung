@@ -8,17 +8,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
-import de.anubi1000.turnierverwaltung.ui.tournament.list.TournamentList
+import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
+import de.anubi1000.turnierverwaltung.ui.club.list.ClubList
 import de.anubi1000.turnierverwaltung.ui.util.ListDetailLayout
-import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentListViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.ClubListViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun TournamentListLayout(
+fun ClubListLayout(
     navController: NavController,
-    viewModel: TournamentListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<TournamentListDestination>()
+    viewModel: ClubListViewModel = koinViewModel(
+        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>()
     ),
     content: @Composable () -> Unit
 ) {
@@ -28,7 +28,7 @@ fun TournamentListLayout(
 
     ListDetailLayout(
         listContent = {
-            TournamentList(
+            ClubList(
                 navController = navController,
                 state = viewModel.state,
                 modifier = Modifier.padding(end = 8.dp)

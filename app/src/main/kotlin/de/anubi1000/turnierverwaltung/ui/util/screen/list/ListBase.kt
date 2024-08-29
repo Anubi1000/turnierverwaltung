@@ -31,7 +31,7 @@ fun ListBase(
                     onCreateButtonClick?.let { onClick ->
                         TooltipIconButton(
                             icon = Icons.Default.Add,
-                            tooltip = LocalStrings.current.createTournament,
+                            tooltip = LocalStrings.current.create,
                             onClick = onClick
                         )
                     }

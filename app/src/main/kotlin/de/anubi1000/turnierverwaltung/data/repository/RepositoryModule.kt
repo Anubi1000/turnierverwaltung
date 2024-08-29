@@ -1,20 +1,8 @@
 package de.anubi1000.turnierverwaltung.data.repository
 
-import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.factoryOf
-import org.koin.core.module.dsl.withOptions
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-val repositoryModule = module {
-    factoryOf(::TournamentRepositoryImpl) withOptions {
-        bind<TournamentRepository>()
-    }
-
-    factoryOf(::ParticipantRepositoryImpl) withOptions {
-        bind<ParticipantRepository>()
-    }
-
-    factoryOf(::TeamRepositoryImpl) withOptions {
-        bind<TeamRepository>()
-    }
-}
+@Module
+@ComponentScan
+class RepositoryModule

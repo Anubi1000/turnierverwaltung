@@ -27,7 +27,7 @@ import de.anubi1000.turnierverwaltung.viewmodel.base.BaseListViewModel
 fun ParticipantList(
     navController: NavController,
     state: BaseListViewModel.State,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     ListBase(
         title = LocalStrings.current.participants,

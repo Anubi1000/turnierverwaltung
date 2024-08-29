@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.navigation.team
+package de.anubi1000.turnierverwaltung.navigation.club
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,25 +12,25 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.ui.shared.TournamentNavigationLayout
-import de.anubi1000.turnierverwaltung.ui.shared.list.TeamListLayout
+import de.anubi1000.turnierverwaltung.ui.shared.list.ClubListLayout
 import de.anubi1000.turnierverwaltung.util.topAppBarPadding
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-data object TeamListDestination : AppDestination {
+data object ClubListDestination : AppDestination {
     @Transient
-    override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.TEAMS
+    override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.CLUBS
 }
 
-fun NavGraphBuilder.teamListDestination(navController: NavController) = composable<TeamListDestination> {
+fun NavGraphBuilder.clubListDestination(navController: NavController) = composable<ClubListDestination> {
     TournamentNavigationLayout(navController) {
-        TeamListLayout(navController) {
+        ClubListLayout(navController) {
             Box(
                 modifier = Modifier.fillMaxSize().topAppBarPadding(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(LocalStrings.current.noTeamSelected)
+                Text(LocalStrings.current.noClubSelected)
             }
         }
     }

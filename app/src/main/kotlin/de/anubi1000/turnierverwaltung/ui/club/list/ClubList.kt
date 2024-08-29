@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.ui.team.list
+package de.anubi1000.turnierverwaltung.ui.club.list
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.database.model.Team
+import de.anubi1000.turnierverwaltung.database.model.Club
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.ListBase
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
@@ -24,13 +24,13 @@ import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.base.BaseListViewModel
 
 @Composable
-fun TeamList(
+fun ClubList(
     navController: NavController,
     state: BaseListViewModel.State,
     modifier: Modifier = Modifier
 ) {
     ListBase(
-        title = LocalStrings.current.teams,
+        title = LocalStrings.current.clubs,
         onCreateButtonClick = {
             TODO("Create")
         },
@@ -41,22 +41,22 @@ fun TeamList(
             is BaseListViewModel.State.Loading -> LoadingIndicator()
             is BaseListViewModel.State.Loaded<*> -> LoadedContent(
                 navController = navController,
-                state = state as BaseListViewModel.State.Loaded<Team>
+                state = state as BaseListViewModel.State.Loaded<Club>
             )
         }
     }
 }
 
 @Composable
-private fun LoadedContent(navController: NavController, state: BaseListViewModel.State.Loaded<Team>, modifier: Modifier = Modifier) {
-    val teams by state.itemFlow.collectAsStateWithLifecycle()
+private fun LoadedContent(navController: NavController, state: BaseListViewModel.State.Loaded<Club>, modifier: Modifier = Modifier) {
+    val clubs by state.itemFlow.collectAsStateWithLifecycle()
 
-    if (teams.isEmpty()) {
+    if (clubs.isEmpty()) {
         Box(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(LocalStrings.current.doesntExist(LocalStrings.current.teams))
+            Text(LocalStrings.current.doesntExist(LocalStrings.current.clubs))
         }
     } else {
         val currentDestination by navController.currentDestinationAsState()
@@ -72,9 +72,9 @@ private fun LoadedContent(navController: NavController, state: BaseListViewModel
         LazyColumn(
             modifier = modifier
         ) {
-            items(teams, key = { it.id }) { item ->
-                TeamListItem(
-                    team = item,
+            items(clubs, key = { it.id }) { item ->
+                ClubListItem(
+                    club = item,
                     selected = currentTournamentId == item.id,
                     onClick = {
                         if (currentTournamentId != item.id) {

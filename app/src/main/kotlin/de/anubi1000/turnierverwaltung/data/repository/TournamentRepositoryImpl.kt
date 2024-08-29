@@ -8,8 +8,10 @@ import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.apache.logging.log4j.kotlin.logger
+import org.koin.core.annotation.Factory
 import org.mongodb.kbson.ObjectId
 
+@Factory
 class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository {
     override fun getAllAsFlow(): Flow<List<Tournament>> {
         log.debug("Retrieving all tournaments as flow")

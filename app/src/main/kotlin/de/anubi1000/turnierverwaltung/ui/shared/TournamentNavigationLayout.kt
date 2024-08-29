@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Queue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
@@ -28,14 +27,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
+import de.anubi1000.turnierverwaltung.navigation.club.ClubListDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
-import de.anubi1000.turnierverwaltung.ui.shared.list.TeamListLayout
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TournamentNavigationLayout(
     navController: NavController,
@@ -91,10 +89,10 @@ fun TournamentNavigationLayout(
                 selected = currentMenuOption == NavigationMenuOption.CLUBS,
                 onClick = {
                     if (currentMenuOption != NavigationMenuOption.CLUBS) {
-                        TODO("Vereine")
+                        navController.navigate(ClubListDestination)
                     }
                 },
-                label = { Text("Vereine") },
+                label = { Text(LocalStrings.current.clubs) },
                 icon = { Icon(Icons.Default.Groups) }
             )
 

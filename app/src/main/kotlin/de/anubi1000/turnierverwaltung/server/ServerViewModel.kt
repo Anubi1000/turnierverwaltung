@@ -24,9 +24,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.kotlin.logger
+import org.koin.core.annotation.Single
 import org.mongodb.kbson.ObjectId
 import java.io.InputStream
 
+@Single
 class ServerViewModel(private val tournamentRepository: TournamentRepository) {
     private val messageFlow = MutableSharedFlow<Message>(extraBufferCapacity = 3)
     private var currentTournamentId: ObjectId? = null

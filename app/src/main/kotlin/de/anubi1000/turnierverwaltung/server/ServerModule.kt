@@ -1,8 +1,8 @@
 package de.anubi1000.turnierverwaltung.server
 
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-val serverModule = module {
-    singleOf(::ServerViewModel)
-}
+@Module
+@ComponentScan
+class ServerModule

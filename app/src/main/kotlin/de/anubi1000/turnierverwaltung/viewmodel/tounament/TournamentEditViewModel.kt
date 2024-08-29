@@ -11,9 +11,11 @@ import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
 import de.anubi1000.turnierverwaltung.data.toEditTournament
 import kotlinx.coroutines.launch
 import org.apache.logging.log4j.kotlin.logger
+import org.koin.android.annotation.KoinViewModel
 import org.mongodb.kbson.ObjectId
 import androidx.compose.runtime.State as ComposeState
 
+@KoinViewModel
 class TournamentEditViewModel(private val tournamentRepository: TournamentRepository) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
         private set

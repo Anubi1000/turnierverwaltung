@@ -1,6 +1,6 @@
 package de.anubi1000.turnierverwaltung.data.repository
 
-import de.anubi1000.turnierverwaltung.database.model.Participant
+import de.anubi1000.turnierverwaltung.database.model.Club
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.Sort
@@ -10,10 +10,10 @@ import org.apache.logging.log4j.kotlin.logger
 import org.koin.core.annotation.Factory
 
 @Factory
-class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepository {
-    override fun getAllAsFlow(): Flow<List<Participant>> {
-        log.debug("Retrieving all participants as flow")
-        return realm.query<Participant>()
+class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
+    override fun getAllAsFlow(): Flow<List<Club>> {
+        log.debug("Retrieving all clubs as flow")
+        return realm.query<Club>()
             .sort("name", Sort.ASCENDING)
             .asFlow()
             .map { it.list }

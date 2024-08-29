@@ -31,7 +31,7 @@ fun ParticipantListLayout(
             ParticipantList(
                 navController = navController,
                 state = viewModel.state,
-                modifier = Modifier.padding(end = 8.dp),
+                modifier = Modifier.padding(end = 8.dp)
             )
         },
         detailContent = content,

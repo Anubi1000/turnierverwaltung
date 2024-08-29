@@ -18,6 +18,8 @@ dependencies {
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
 
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.annotations.ksp)
     implementation(libs.koin.core)
     implementation(libs.koin.core.viewmodel)
     implementation(libs.koin.compose)
@@ -67,6 +69,10 @@ tasks.withType<Test>().configureEach {
 
 composeCompiler {
     stabilityConfigurationFile = projectDir.resolve("compose_stability.conf")
+}
+
+ksp {
+    arg("KOIN_USE_COMPOSE_VIEWMODEL","true")
 }
 
 compose.desktop {

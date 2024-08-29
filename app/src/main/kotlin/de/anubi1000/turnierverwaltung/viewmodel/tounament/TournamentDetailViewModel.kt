@@ -10,8 +10,10 @@ import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.server.ServerViewModel
 import kotlinx.coroutines.launch
 import org.apache.logging.log4j.kotlin.logger
+import org.koin.android.annotation.KoinViewModel
 import org.mongodb.kbson.ObjectId
 
+@KoinViewModel
 class TournamentDetailViewModel(
     private val tournamentRepository: TournamentRepository,
     private val serverViewModel: ServerViewModel

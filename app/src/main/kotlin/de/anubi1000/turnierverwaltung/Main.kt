@@ -14,22 +14,24 @@ import androidx.compose.ui.window.application
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.data.repository.repositoryModule
+import de.anubi1000.turnierverwaltung.data.repository.RepositoryModule
 import de.anubi1000.turnierverwaltung.database.databaseModule
+import de.anubi1000.turnierverwaltung.navigation.club.clubListDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.participantListDestination
 import de.anubi1000.turnierverwaltung.navigation.team.teamListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentDetailDestinations
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentListDestination
+import de.anubi1000.turnierverwaltung.server.ServerModule
 import de.anubi1000.turnierverwaltung.server.ServerViewModel
-import de.anubi1000.turnierverwaltung.server.serverModule
 import de.anubi1000.turnierverwaltung.ui.theme.AppTheme
-import de.anubi1000.turnierverwaltung.viewmodel.viewModelModule
+import de.anubi1000.turnierverwaltung.viewmodel.ViewModelModule
 import io.realm.kotlin.Realm
 import org.apache.logging.log4j.kotlin.logger
 import org.koin.compose.KoinContext
 import org.koin.core.context.startKoin
+import org.koin.ksp.generated.module
 import java.awt.Dimension
 import kotlin.system.exitProcess
 
@@ -56,6 +58,8 @@ fun App() {
             participantListDestination(navController)
 
             teamListDestination(navController)
+
+            clubListDestination(navController)
         }
     }
 }
@@ -63,7 +67,7 @@ fun App() {
 private fun appMain() {
     log.info("Hi from main")
     val koinApplication = startKoin {
-        modules(databaseModule, repositoryModule, serverModule, viewModelModule)
+        modules(databaseModule, RepositoryModule().module, ServerModule().module, ViewModelModule().module)
 
         createEagerInstances()
     }

@@ -12,6 +12,7 @@ data class Strings(
     val back: String = "Zurück",
     val cancel: String = "Abbrechen",
     val confirm: String = "Bestätigen",
+    val create: String = "Neu",
     val delete: String = "Löschen",
     val edit: String = "Bearbeiten",
     val save: String = "Speichern",
@@ -62,6 +63,9 @@ data class Strings(
 
     val teams: String = "Teams",
     val noTeamSelected: String = "Kein Team ausgewählt",
+
+    val clubs: String = "Vereine",
+    val noClubSelected: String = "Kein Verein ausgewählt",
 
     val scoreboard: String = "Scoreboard",
     val showOnScoreboard: String = "Auf Scoreboard anzeigen",

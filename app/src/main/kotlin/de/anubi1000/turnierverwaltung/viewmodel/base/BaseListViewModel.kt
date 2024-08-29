@@ -24,13 +24,13 @@ abstract class BaseListViewModel<T, R>(private val repository: R) : ViewModel() 
         }
 
         viewModelScope.launch {
-            val flow = getFlowFromRepository(repository)
+            val flow = repository.getItemFlow()
                 .stateIn(scope = viewModelScope)
             state = State.Loaded(flow)
         }
     }
 
-    protected abstract suspend fun getFlowFromRepository(repository: R): Flow<List<T>>
+    protected abstract suspend fun R.getItemFlow(): Flow<List<T>>
 
     companion object {
         private val log = logger()
