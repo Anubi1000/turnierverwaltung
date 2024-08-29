@@ -14,6 +14,7 @@ export interface TournamentTable {
 export interface TournamentTableColumn {
   name: string;
   width: string;
+  alignment: "left" | "center" | "right";
 }
 
 export interface TournamentTableRow {

@@ -122,7 +122,7 @@ export function DisciplineTable({
               <StyledTableCell
                 key={column.name}
                 style={{ width: column.width }}
-                align={index == 0 ? "left" : "right"}
+                align={column.alignment}
               >
                 {column.name}
               </StyledTableCell>
@@ -135,7 +135,7 @@ export function DisciplineTable({
               {row.values.map((entry, index) => (
                 <StyledTableCell
                   key={index}
-                  align={index == 0 ? "left" : "right"}
+                  align={columns[index].alignment}
                 >
                   {entry}
                 </StyledTableCell>
