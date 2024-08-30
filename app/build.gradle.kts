@@ -78,7 +78,7 @@ ksp {
 compose.desktop {
     application {
         mainClass = "de.anubi1000.turnierverwaltung.MainKt"
-        this.jvmArgs("-Dlog4j.skipJansi=\"false\"")
+        jvmArgs("-Dlog4j.skipJansi=\"false\"")
 
         nativeDistributions {
             targetFormats(TargetFormat.Msi)

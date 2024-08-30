@@ -8,5 +8,5 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class ParticipantListViewModel(participantRepository: ParticipantRepository) : BaseListViewModel<Participant, ParticipantRepository>(participantRepository) {
-    override suspend fun ParticipantRepository.getItemFlow(): Flow<List<Participant>> = getAllAsFlow()
+    override fun ParticipantRepository.getItemFlow(): Flow<List<Participant>> = getAllAsFlow()
 }

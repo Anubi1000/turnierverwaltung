@@ -30,7 +30,7 @@ abstract class BaseListViewModel<T, R>(private val repository: R) : ViewModel() 
         }
     }
 
-    protected abstract suspend fun R.getItemFlow(): Flow<List<T>>
+    protected abstract fun R.getItemFlow(): Flow<List<T>>
 
     companion object {
         private val log = logger()

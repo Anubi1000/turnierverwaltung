@@ -11,7 +11,7 @@ import androidx.navigation.NavController
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.ui.club.list.ClubList
 import de.anubi1000.turnierverwaltung.ui.util.ListDetailLayout
-import de.anubi1000.turnierverwaltung.viewmodel.ClubListViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.club.ClubListViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.serialization.decodeArguments
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
+import de.anubi1000.turnierverwaltung.navigation.club.ClubEditDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubListDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
@@ -32,6 +33,7 @@ private val destinations: Map<Int, KClass<out AppDestination>> = listOf(
     TeamListDestination::class,
 
     ClubListDestination::class,
+    ClubEditDestination::class,
 ).associateBy { it.serializer().hashCode() }
 
 fun NavController.getCurrentDestination(): AppDestination? = getDestination(currentBackStackEntry)

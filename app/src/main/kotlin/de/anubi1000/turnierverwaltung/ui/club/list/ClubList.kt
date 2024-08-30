@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.database.model.Club
+import de.anubi1000.turnierverwaltung.navigation.club.ClubEditDestination
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.ListBase
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
@@ -32,7 +33,7 @@ fun ClubList(
     ListBase(
         title = LocalStrings.current.clubs,
         onCreateButtonClick = {
-            TODO("Create")
+            navController.navigate(ClubEditDestination(null))
         },
         modifier = modifier,
     ) {
@@ -64,6 +65,7 @@ private fun LoadedContent(navController: NavController, state: BaseListViewModel
         val currentTournamentId by remember(navController) {
             derivedStateOf {
                 when (val destination = currentDestination) {
+                    is ClubEditDestination -> destination.clubId
                     else -> null
                 }?.toObjectId()
             }

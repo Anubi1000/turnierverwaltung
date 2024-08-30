@@ -8,5 +8,5 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class TeamListViewModel(teamRepository: TeamRepository) : BaseListViewModel<Team, TeamRepository>(teamRepository) {
-    override suspend fun TeamRepository.getItemFlow(): Flow<List<Team>> = getAllAsFlow()
+    override fun TeamRepository.getItemFlow(): Flow<List<Team>> = getAllAsFlow()
 }

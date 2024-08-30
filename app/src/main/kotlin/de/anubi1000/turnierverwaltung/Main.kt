@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.data.repository.RepositoryModule
 import de.anubi1000.turnierverwaltung.database.databaseModule
+import de.anubi1000.turnierverwaltung.navigation.club.clubEditDestination
 import de.anubi1000.turnierverwaltung.navigation.club.clubListDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.participantListDestination
 import de.anubi1000.turnierverwaltung.navigation.team.teamListDestination
@@ -60,6 +61,7 @@ fun App() {
             teamListDestination(navController)
 
             clubListDestination(navController)
+            clubEditDestination(navController)
         }
     }
 }

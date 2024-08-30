@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class TournamentListViewModel(tournamentRepository: TournamentRepository) : BaseListViewModel<Tournament, TournamentRepository>(tournamentRepository) {
-    override suspend fun TournamentRepository.getItemFlow(): Flow<List<Tournament>> = getAllAsFlow()
+class TournamentListViewModel(repository: TournamentRepository) : BaseListViewModel<Tournament, TournamentRepository>(repository) {
+    override fun TournamentRepository.getItemFlow(): Flow<List<Tournament>> = getAllAsFlow()
 }

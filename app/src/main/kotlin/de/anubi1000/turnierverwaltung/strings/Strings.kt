@@ -27,6 +27,16 @@ data class Strings(
             append(arg1)
         }
     },
+    val editScreenTitle: (isEditMode: Boolean, name: String) -> String = { arg1, arg2 ->
+        buildString {
+            append(arg2)
+            if (arg1) {
+                append(" bearbeiten")
+            } else {
+                append(" erstellen")
+            }
+        }
+    },
 
     val tournament: String = "Turnier",
     val tournaments: String = "Turniere",
@@ -64,8 +74,11 @@ data class Strings(
     val teams: String = "Teams",
     val noTeamSelected: String = "Kein Team ausgewählt",
 
+    val club: String = "Verein",
     val clubs: String = "Vereine",
     val noClubSelected: String = "Kein Verein ausgewählt",
+    val createClub: String = "Verein erstellen",
+    val editClub: String = "Verein bearbeiten",
 
     val scoreboard: String = "Scoreboard",
     val showOnScoreboard: String = "Auf Scoreboard anzeigen",
