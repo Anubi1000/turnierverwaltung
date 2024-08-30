@@ -48,6 +48,8 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
         realm.write {
             val tournament = getById<Tournament>(id)!!
 
+            delete(tournament.clubs)
+
             delete(tournament)
         }
     }

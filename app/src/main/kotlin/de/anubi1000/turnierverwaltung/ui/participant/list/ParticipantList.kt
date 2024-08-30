@@ -56,7 +56,7 @@ private fun LoadedContent(navController: NavController, state: BaseListViewModel
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(LocalStrings.current.doesntExist(LocalStrings.current.participants))
+            Text(LocalStrings.current.xDontExist(LocalStrings.current.participants))
         }
     } else {
         val currentDestination by navController.currentDestinationAsState()

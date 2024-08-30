@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.navigation.tournament
+package de.anubi1000.turnierverwaltung.navigation.club
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
@@ -7,45 +7,42 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
+import de.anubi1000.turnierverwaltung.ui.club.detail.ClubDetailScreen
 import de.anubi1000.turnierverwaltung.ui.shared.TopLevelNavigationLayout
-import de.anubi1000.turnierverwaltung.ui.shared.list.TournamentListLayout
-import de.anubi1000.turnierverwaltung.ui.tournament.detail.TournamentDetailScreen
+import de.anubi1000.turnierverwaltung.ui.shared.list.ClubListLayout
 import de.anubi1000.turnierverwaltung.util.toObjectId
-import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentDetailViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.club.ClubDetailViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.koin.compose.viewmodel.koinViewModel
 import org.mongodb.kbson.ObjectId
 
 @Serializable
-data class TournamentDetailDestination(
-    val tournamentId: String
+data class ClubDetailDestination(
+    val id: String
 ) : AppDestination {
-    constructor(tournamentId: ObjectId) : this(tournamentId.toHexString())
+    constructor(id: ObjectId) : this(id.toHexString())
 
     @Transient
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.TOURNAMENTS
 }
 
-fun NavGraphBuilder.tournamentDetailDestinations(navController: NavController) = composable<TournamentDetailDestination> { backStackEntry ->
-    val args = backStackEntry.toRoute<TournamentDetailDestination>()
+fun NavGraphBuilder.clubDetailDestinations(navController: NavController) = composable<ClubDetailDestination> { backStackEntry ->
+    val args = backStackEntry.toRoute<ClubDetailDestination>()
 
     TopLevelNavigationLayout(navController) {
-        TournamentListLayout(navController) {
-            val viewModel: TournamentDetailViewModel = koinViewModel()
+        ClubListLayout(navController) {
+            val viewModel: ClubDetailViewModel = koinViewModel()
 
             LaunchedEffect(viewModel) {
-                viewModel.loadItem(args.tournamentId.toObjectId())
+                viewModel.loadItem(args.id.toObjectId())
             }
 
-            TournamentDetailScreen(
+            ClubDetailScreen(
                 navController = navController,
                 state = viewModel.state,
                 onDeleteButtonClick = {
                     viewModel.deleteItem()
-                },
-                showOnScoreboard = {
-                    viewModel.showTournamentOnScoreboard()
                 }
             )
         }

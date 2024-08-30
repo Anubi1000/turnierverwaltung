@@ -18,9 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
+import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
-import de.anubi1000.turnierverwaltung.ui.tournament.TournamentDeleteDialog
+import de.anubi1000.turnierverwaltung.ui.util.DeleteDialog
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailCard
@@ -29,12 +30,12 @@ import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailScreenBase
 import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.util.formatAsDate
-import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentDetailViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.base.BaseDetailViewModel
 
 @Composable
 fun TournamentDetailScreen(
     navController: NavController,
-    state: TournamentDetailViewModel.State,
+    state: BaseDetailViewModel.State,
     onDeleteButtonClick: () -> Unit,
     showOnScoreboard: () -> Unit
 ) {
@@ -46,14 +47,20 @@ fun TournamentDetailScreen(
         navController = navController,
         title = remember(state) {
             var text = strings.tournament
-            if (state is TournamentDetailViewModel.State.Loaded) {
-                text += ": ${state.tournament.name}"
+            if (state is BaseDetailViewModel.State.Loaded<*>) {
+                @Suppress("UNCHECKED_CAST")
+                state as BaseDetailViewModel.State.Loaded<Tournament>
+
+                text += ": ${state.item.name}"
             }
             text
         },
         onEditButtonClick = {
-            if (state is TournamentDetailViewModel.State.Loaded) {
-                navController.navigate(TournamentEditDestination(state.tournament.id))
+            if (state is BaseDetailViewModel.State.Loaded<*>) {
+                @Suppress("UNCHECKED_CAST")
+                state as BaseDetailViewModel.State.Loaded<Tournament>
+
+                navController.navigate(TournamentEditDestination(state.item.id))
             }
         },
         onDeleteButtonClick = {
@@ -64,7 +71,7 @@ fun TournamentDetailScreen(
                 icon = Icons.Default.Scoreboard,
                 tooltip = strings.showOnScoreboard,
                 onClick = showOnScoreboard,
-                enabled = state is TournamentDetailViewModel.State.Loaded
+                enabled = state is BaseDetailViewModel.State.Loaded<*>
             )
         },
         floatingActionButton = {
@@ -77,20 +84,24 @@ fun TournamentDetailScreen(
             )
         }
     ) { padding ->
+        @Suppress("UNCHECKED_CAST")
         when (state) {
-            is TournamentDetailViewModel.State.Loading -> LoadingIndicator()
-            is TournamentDetailViewModel.State.Loaded -> LoadedContent(
-                state = state,
+            is BaseDetailViewModel.State.Loading -> LoadingIndicator()
+            is BaseDetailViewModel.State.Loaded<*> -> LoadedContent(
+                state = state as BaseDetailViewModel.State.Loaded<Tournament>,
                 modifier = Modifier.padding(padding)
             )
         }
     }
 
-    if (showDeleteDialog && state is TournamentDetailViewModel.State.Loaded) {
-        TournamentDeleteDialog(
-            tournamentName = state.tournament.name,
+    if (showDeleteDialog && state is BaseDetailViewModel.State.Loaded<*>) {
+        @Suppress("UNCHECKED_CAST")
+        state as BaseDetailViewModel.State.Loaded<Tournament>
+
+        DeleteDialog(
+            itemName = state.item.name,
             onDismissRequest = { showDeleteDialog = false },
-            onConfirmButtonClicked = {
+            onConfirmButtonClick = {
                 showDeleteDialog = false
                 navController.popBackStack()
                 onDeleteButtonClick()
@@ -102,7 +113,7 @@ fun TournamentDetailScreen(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LoadedContent(
-    state: TournamentDetailViewModel.State.Loaded,
+    state: BaseDetailViewModel.State.Loaded<Tournament>,
     modifier: Modifier = Modifier
 ) {
     DetailContent(
@@ -115,11 +126,11 @@ private fun LoadedContent(
             modifier = Modifier.width(450.dp).fillMaxRowHeight()
         ) {
             DetailItem(
-                headlineText = state.tournament.name,
+                headlineText = state.item.name,
                 overlineText = strings.name
             )
             DetailItem(
-                headlineText = state.tournament.date.formatAsDate(),
+                headlineText = state.item.date.formatAsDate(),
                 overlineText = strings.dateOfTournament
             )
         }
@@ -133,22 +144,22 @@ private fun LoadedContent(
             ) {
                 val weightModifier = Modifier.weight(1f)
                 DetailItem(
-                    headlineText = state.tournament.participants.size.toString(),
+                    headlineText = state.item.participants.size.toString(),
                     overlineText = "Anzahl Teilnehmer",
                     modifier = weightModifier
                 )
                 DetailItem(
-                    headlineText = state.tournament.clubs.size.toString(),
+                    headlineText = state.item.clubs.size.toString(),
                     overlineText = "Anzahl Vereine",
                     modifier = weightModifier
                 )
                 DetailItem(
-                    headlineText = state.tournament.teams.size.toString(),
+                    headlineText = state.item.teams.size.toString(),
                     overlineText = "Anzahl Teams",
                     modifier = weightModifier
                 )
                 DetailItem(
-                    headlineText = (state.tournament.disciplines.size + state.tournament.teamDisciplines.size).toString(),
+                    headlineText = (state.item.disciplines.size + state.item.teamDisciplines.size).toString(),
                     overlineText = "Anzahl Disziplinen",
                     modifier = weightModifier
                 )

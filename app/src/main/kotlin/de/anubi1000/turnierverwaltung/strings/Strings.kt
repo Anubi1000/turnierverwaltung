@@ -21,10 +21,19 @@ data class Strings(
     val general: String = "Allgemein",
     val name: String = "Name",
 
-    val doesntExist: (name: String) -> String = { arg1 ->
+    val xDontExist: (name: String) -> String = { arg1 ->
         buildString {
             append("Es existieren noch keine ")
             append(arg1)
+        }
+    },
+    val wantToDeleteX: (name: String) -> AnnotatedString = { arg1 ->
+        buildAnnotatedString {
+            append("Möchtest du ")
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                append(arg1)
+            }
+            append(" wirklich löschen?")
         }
     },
     val editScreenTitle: (isEditMode: Boolean, name: String) -> String = { arg1, arg2 ->
@@ -56,7 +65,7 @@ data class Strings(
     },
 
     val participant: String = "Teilnehmer",
-    val participants: String = participant,
+    val participants: String = "Teilnehmer",
     val noParticipantSelected: String = "Keinen Teilnehmer ausgewählt",
     val createParticipant: String = "Teilnehmer erstellen",
     val deleteParticipant: String = "Teilnehmer löschen",

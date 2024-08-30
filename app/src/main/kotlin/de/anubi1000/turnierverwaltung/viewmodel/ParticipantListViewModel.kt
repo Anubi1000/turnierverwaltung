@@ -5,6 +5,7 @@ import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.viewmodel.base.BaseListViewModel
 import kotlinx.coroutines.flow.Flow
 import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.InjectedParam
 
 @KoinViewModel
 class ParticipantListViewModel(participantRepository: ParticipantRepository) : BaseListViewModel<Participant, ParticipantRepository>(participantRepository) {

@@ -1,58 +1,36 @@
 package de.anubi1000.turnierverwaltung.viewmodel.tounament
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.server.ServerViewModel
-import kotlinx.coroutines.launch
+import de.anubi1000.turnierverwaltung.viewmodel.base.BaseDetailViewModel
 import org.apache.logging.log4j.kotlin.logger
 import org.koin.android.annotation.KoinViewModel
 import org.mongodb.kbson.ObjectId
 
 @KoinViewModel
 class TournamentDetailViewModel(
-    private val tournamentRepository: TournamentRepository,
+    repository: TournamentRepository,
     private val serverViewModel: ServerViewModel
-) : ViewModel() {
-    var state: State by mutableStateOf(State.Loading)
-        private set
+) : BaseDetailViewModel<Tournament, TournamentRepository>(repository) {
+    override suspend fun TournamentRepository.getItemById(id: ObjectId): Tournament? = getTournamentById(id)
 
-    fun loadTournament(id: ObjectId) {
-        log.debug { "Loading tournament for detail screen. id=${id.toHexString()}" }
-        viewModelScope.launch {
-            val tournament = tournamentRepository.getTournamentById(id)
-            state = State.Loaded(tournament!!)
-        }
-    }
-
-    fun deleteTournament() {
-        val state = state
-        require(state is State.Loaded) { "Tournament needs to be loaded" }
-
-        log.debug("Deleting tournament ${state.tournament.id.toHexString()}")
-        viewModelScope.launch {
-            tournamentRepository.deleteTournament(state.tournament.id)
-        }
+    override suspend fun TournamentRepository.deleteItem(item: Tournament) {
+        deleteTournament(item.id)
     }
 
     fun showTournamentOnScoreboard() {
-        val state = state
-        require(state is State.Loaded) { "Tournament needs to be loaded" }
+        val currentState = state
+        require(currentState is State.Loaded<*>) { "Tournament needs to be loaded" }
+
+        @Suppress("UNCHECKED_CAST")
+        currentState as State.Loaded<Tournament>
 
         log.debug("Changing tournament for scoreboard to current one")
-        serverViewModel.setCurrentTournament(state.tournament)
+        serverViewModel.setCurrentTournament(currentState.item)
     }
 
     companion object {
         private val log = logger()
-    }
-
-    sealed interface State {
-        data object Loading : State
-        data class Loaded(val tournament: Tournament) : State
     }
 }

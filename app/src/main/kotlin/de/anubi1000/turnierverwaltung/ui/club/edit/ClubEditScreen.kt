@@ -7,7 +7,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.data.EditClub
-import de.anubi1000.turnierverwaltung.data.EditTournament
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditContent

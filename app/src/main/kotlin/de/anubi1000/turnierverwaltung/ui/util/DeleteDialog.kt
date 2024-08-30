@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.ui.tournament
+package de.anubi1000.turnierverwaltung.ui.util
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeleteForever
@@ -10,16 +10,16 @@ import androidx.compose.runtime.Composable
 import cafe.adriel.lyricist.LocalStrings
 
 @Composable
-fun TournamentDeleteDialog(
-    tournamentName: String,
+fun DeleteDialog(
+    itemName: String,
     onDismissRequest: () -> Unit,
-    onConfirmButtonClicked: () -> Unit
+    onConfirmButtonClick: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         confirmButton = {
-            TextButton(onClick = onConfirmButtonClicked) {
-                Text(LocalStrings.current.delete)
+            TextButton(onClick = onConfirmButtonClick) {
+                Text(LocalStrings.current.confirm)
             }
         },
         dismissButton = {
@@ -28,9 +28,9 @@ fun TournamentDeleteDialog(
             }
         },
         icon = { Icon(Icons.Outlined.DeleteForever, null) },
-        title = { Text(LocalStrings.current.deleteTournament) },
+        title = { Text(LocalStrings.current.delete) },
         text = {
-            Text(LocalStrings.current.wantToDeleteTournament(tournamentName))
+            Text(LocalStrings.current.wantToDeleteX(itemName))
         }
     )
 }

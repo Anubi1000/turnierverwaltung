@@ -2,13 +2,11 @@ package de.anubi1000.turnierverwaltung.ui.tournament.edit
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.data.EditTournament
-import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.DateField
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditCard
@@ -16,7 +14,6 @@ import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditScreenBase
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.TextField
 import de.anubi1000.turnierverwaltung.viewmodel.base.BaseEditViewModel
-import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentEditViewModel
 
 @Composable
 fun TournamentEditScreen(
@@ -25,9 +22,11 @@ fun TournamentEditScreen(
     onSaveButtonClick: () -> Unit,
     isEditMode: Boolean = false
 ) {
+    val strings = LocalStrings.current
+
     EditScreenBase(
         navController = navController,
-        title = if (isEditMode) LocalStrings.current.editTournament else LocalStrings.current.createTournament,
+        title = strings.editScreenTitle(isEditMode, strings.tournament),
         onSaveButtonClick = if (state is BaseEditViewModel.State.Loaded<*> && state.isValid.value) onSaveButtonClick else null
     ) { padding ->
         @Suppress("UNCHECKED_CAST")

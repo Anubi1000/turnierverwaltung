@@ -1,5 +1,6 @@
 package de.anubi1000.turnierverwaltung.database.model
 
+import de.anubi1000.turnierverwaltung.util.Identifiable
 import de.anubi1000.turnierverwaltung.util.toInstant
 import de.anubi1000.turnierverwaltung.util.toRealmInstant
 import io.realm.kotlin.ext.realmListOf
@@ -15,13 +16,13 @@ import java.time.Instant
 /**
  * Represents a tournament.
  */
-class Tournament() : RealmObject {
+class Tournament() : RealmObject, Identifiable {
     /**
      * The id of the tournament.
      */
     @PrimaryKey
     @PersistedName("_id")
-    var id: ObjectId = ObjectId()
+    override var id: ObjectId = ObjectId()
 
     /**
      * The name of the tournament.
