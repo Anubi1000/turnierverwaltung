@@ -21,3 +21,7 @@ export interface TournamentTableRow {
   id: string;
   values: string[];
 }
+export interface Tournament {
+  title: string;
+  tables: TournamentTable[];
+}

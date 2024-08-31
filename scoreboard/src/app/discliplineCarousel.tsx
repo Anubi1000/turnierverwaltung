@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { AppBar, Stack, Toolbar, Typography } from "@mui/material";
 import { DisciplineTable } from "@/app/disciplineTable";
 import { TournamentTable } from "@/app/interfaces";
 
@@ -20,37 +20,44 @@ function DisciplineTitleBar({
     nextLabelIndex = 0;
   }
 
-  return disciplines.length == 1 ? (
-    <></>
-  ) : disciplines.length == 2 ? (
-    <AppBar position="static" elevation={0}>
-      <Toolbar>
-        <div
-          style={{
-            width: "100%",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-          }}
-        >
-          <Typography
-            variant="h5"
-            color={index == 0 ? "white" : "lightgray"}
-            style={{ paddingRight: 32 }}
-          >
-            {disciplines[0]} {/*left discipline*/}
-          </Typography>
+  if (disciplines.length == 1) {
+    return <></>;
+  }
 
-          <Typography
-            variant="h5"
-            color={index == 1 ? "white" : "lightgray"}
-            style={{ paddingLeft: 32 }}
+  if (disciplines.length == 2) {
+    return (
+      <AppBar position="static" elevation={0}>
+        <Toolbar>
+          <div
+            style={{
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+            }}
           >
-            {disciplines[1]} {/*right discipline*/}
-          </Typography>
-        </div>
-      </Toolbar>
-    </AppBar>
-  ) : (
+            <Typography
+              variant={index == 0 ? "h5" : "h6"}
+              color={index == 0 ? "white" : "lightgray"}
+              style={{ paddingRight: 32 }}
+              align="right"
+            >
+              {disciplines[0]} {/*left discipline*/}
+            </Typography>
+
+            <Typography
+              variant={index == 1 ? "h5" : "h6"}
+              color={index == 1 ? "white" : "lightgray"}
+              style={{ paddingLeft: 32 }}
+            >
+              {disciplines[1]} {/*right discipline*/}
+            </Typography>
+          </div>
+        </Toolbar>
+      </AppBar>
+    );
+  }
+
+  return (
     <AppBar position="static" elevation={0}>
       <Toolbar>
         <div
@@ -66,7 +73,11 @@ function DisciplineTitleBar({
 
           <Typography
             variant="h5"
-            style={{ paddingLeft: 64, paddingRight: 64 }}
+            style={{
+              paddingLeft: 64,
+              paddingRight: 64,
+              textDecoration: "underline",
+            }}
             align="center"
           >
             {disciplines[index]} {/*current discipline*/}
@@ -88,6 +99,16 @@ export function DisciplineCarousel({ tables }: { tables: TournamentTable[] }) {
       prevIndex >= disciplines.length - 1 ? 0 : prevIndex + 1,
     );
   }, []);
+
+  if (tables.length == 0) {
+    return (
+      <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+        <Typography variant="h4" align="center">
+          Keine Disziplinen vorhanden
+        </Typography>
+      </Stack>
+    );
+  }
 
   const disciplines = tables.map((table) => table.name);
 

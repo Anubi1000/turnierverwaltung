@@ -45,6 +45,10 @@ jobs:
         working-directory: scoreboard
         run: pnpm run build
       
+      - name: Run tests
+        working-directory: scoreboard
+        run: pnpm run test
+      
       - name: Save build output
         uses: actions/upload-artifact@v4
         with:

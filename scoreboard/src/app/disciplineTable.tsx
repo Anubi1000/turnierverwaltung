@@ -105,7 +105,7 @@ export function DisciplineTable({
     return (
       <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
         <Typography variant="h4" align="center">
-          Keine Spaltendefinition
+          Keine Spaltendefinition vorhanden
         </Typography>
       </Stack>
     );
@@ -126,7 +126,7 @@ export function DisciplineTable({
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            {columns.map((column, index) => (
+            {columns.map((column) => (
               <StyledTableCell
                 key={column.name}
                 style={{ width: column.width }}
@@ -138,7 +138,7 @@ export function DisciplineTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
+          {rows.map((row) => (
             <StyledTableRow key={row.id}>
               {row.values.map((entry, index) => (
                 <StyledTableCell key={index} align={columns[index].alignment}>
