@@ -18,7 +18,7 @@ class EditCardScope {}
 @Composable
 fun EditContentScope.EditCard(
     title: String,
-    width: Dp,
+    width: Dp = 450.dp,
     content: @Composable EditCardScope.() -> Unit
 ) {
     Card(

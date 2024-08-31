@@ -1,6 +1,6 @@
 package de.anubi1000.turnierverwaltung.data.repository
 
-import de.anubi1000.turnierverwaltung.database.getById
+import de.anubi1000.turnierverwaltung.database.queryById
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
@@ -23,7 +23,7 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
 
     override suspend fun getTournamentById(id: ObjectId): Tournament? {
         log.debug { "Querying tournament by id(${id.toHexString()})" }
-        return realm.getById(id)
+        return realm.queryById(id)
     }
 
     override suspend fun insertTournament(tournament: Tournament) {
@@ -36,7 +36,7 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
     override suspend fun updateTournament(tournament: Tournament) {
         log.debug { "Updating existing tournament with id(${tournament.id.toHexString()})" }
         realm.write {
-            val databaseTournament = getById<Tournament>(tournament.id)!!
+            val databaseTournament = queryById<Tournament>(tournament.id)!!
 
             databaseTournament.name = tournament.name
             databaseTournament.date = tournament.date
@@ -46,7 +46,7 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
     override suspend fun deleteTournament(id: ObjectId) {
         log.debug { "Deleting tournament by id(${id.toHexString()})" }
         realm.write {
-            val tournament = getById<Tournament>(id)!!
+            val tournament = queryById<Tournament>(id)!!
 
             delete(tournament.clubs)
 

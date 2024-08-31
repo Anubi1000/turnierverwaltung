@@ -1,7 +1,9 @@
 package de.anubi1000.turnierverwaltung.database.model
 
+import io.realm.kotlin.ext.backlinks
 import io.realm.kotlin.ext.realmDictionaryOf
 import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.query.RealmResults
 import io.realm.kotlin.types.EmbeddedRealmObject
 import io.realm.kotlin.types.RealmDictionary
 import io.realm.kotlin.types.RealmList
@@ -59,6 +61,8 @@ class Participant() : RealmObject {
      * The [Club] of the participant.
      */
     var club: Club? = null
+
+    val tournament: RealmResults<Tournament> by backlinks(Tournament::participants)
 
     /**
      * The results for the individual disciplines of a participant.

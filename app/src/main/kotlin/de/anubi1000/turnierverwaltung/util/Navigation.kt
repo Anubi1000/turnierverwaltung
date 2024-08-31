@@ -10,10 +10,12 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.serialization.decodeArguments
+import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubEditDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubListDestination
+import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
@@ -30,6 +32,7 @@ private val destinations: Map<Int, KClass<out AppDestination>> = listOf(
     TournamentEditDestination::class,
 
     ParticipantListDestination::class,
+    ParticipantEditDestination::class,
 
     TeamListDestination::class,
 
@@ -48,6 +51,10 @@ fun NavController.currentDestinationAsState(): State<AppDestination?> {
             getDestination(backStackEntry)
         }
     }
+}
+
+inline fun <reified T : AppDestination> NavController.getDestination(): T {
+    return getBackStackEntry<T>().toRoute<T>()
 }
 
 @OptIn(InternalSerializationApi::class)

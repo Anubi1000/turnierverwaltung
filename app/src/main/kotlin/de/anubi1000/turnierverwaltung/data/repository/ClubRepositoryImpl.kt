@@ -1,6 +1,6 @@
 package de.anubi1000.turnierverwaltung.data.repository
 
-import de.anubi1000.turnierverwaltung.database.getById
+import de.anubi1000.turnierverwaltung.database.queryById
 import de.anubi1000.turnierverwaltung.database.model.Club
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import io.realm.kotlin.Realm
@@ -14,7 +14,7 @@ import org.mongodb.kbson.ObjectId
 
 @Factory
 class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
-    override fun getAllAsFlow(tournamentId: ObjectId): Flow<List<Club>> {
+    override fun getAllForTournamentAsFlow(tournamentId: ObjectId): Flow<List<Club>> {
         log.debug("Retrieving all clubs as flow")
         return realm.query<Club>("tournament._id == $0", tournamentId)
             .sort("name", Sort.ASCENDING)
@@ -22,23 +22,30 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
             .map { it.list }
     }
 
+    override suspend fun getAllForTournament(tournamentId: ObjectId): List<Club> {
+        log.debug("Retrieving all clubs as flow")
+        return realm.query<Club>("tournament._id == $0", tournamentId)
+            .sort("name", Sort.ASCENDING)
+            .find()
+    }
+
     override suspend fun getClubById(id: ObjectId): Club? {
         log.debug { "Querying club by id(${id.toHexString()})" }
-        return realm.getById(id)
+        return realm.queryById(id)
     }
 
     override suspend fun insertClub(club: Club, tournamentId: ObjectId) {
         log.debug { "Inserting new club with id(${club.id.toHexString()})" }
         realm.write {
             val insertedClub = copyToRealm(club)
-            getById<Tournament>(tournamentId)!!.clubs.add(insertedClub)
+            queryById<Tournament>(tournamentId)!!.clubs.add(insertedClub)
         }
     }
 
     override suspend fun updateClub(club: Club) {
         log.debug { "Updating club with id(${club.id.toHexString()})" }
         realm.write {
-            val databaseClub = getById<Club>(club.id)!!
+            val databaseClub = queryById<Club>(club.id)!!
 
             databaseClub.name = club.name
         }
@@ -47,7 +54,7 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
     override suspend fun deleteClub(id: ObjectId) {
         log.debug { "Deleting club with id(${id.toHexString()})" }
         realm.write {
-            delete(getById<Club>(id)!!)
+            delete(queryById<Club>(id)!!)
         }
     }
 

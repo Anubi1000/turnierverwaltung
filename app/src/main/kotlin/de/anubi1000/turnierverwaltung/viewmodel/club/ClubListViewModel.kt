@@ -10,5 +10,5 @@ import org.mongodb.kbson.ObjectId
 
 @KoinViewModel
 class ClubListViewModel(repository: ClubRepository, @InjectedParam private val tournamentId: ObjectId) : BaseListViewModel<Club, ClubRepository>(repository) {
-    override fun ClubRepository.getItemFlow(): Flow<List<Club>> = getAllAsFlow(tournamentId)
+    override fun ClubRepository.getItemFlow(): Flow<List<Club>> = getAllForTournamentAsFlow(tournamentId)
 }

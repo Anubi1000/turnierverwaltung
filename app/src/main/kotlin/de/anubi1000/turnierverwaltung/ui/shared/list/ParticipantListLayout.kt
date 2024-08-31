@@ -11,15 +11,20 @@ import androidx.navigation.NavController
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.ui.participant.list.ParticipantList
 import de.anubi1000.turnierverwaltung.ui.util.ListDetailLayout
-import de.anubi1000.turnierverwaltung.viewmodel.ParticipantListViewModel
+import de.anubi1000.turnierverwaltung.util.getDestination
+import de.anubi1000.turnierverwaltung.util.toObjectId
+import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantListViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ParticipantListLayout(
     navController: NavController,
     viewModel: ParticipantListViewModel = koinViewModel(
         viewModelStoreOwner = navController.getBackStackEntry<TournamentDetailDestination>()
-    ),
+    ) {
+        parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
+    },
     content: @Composable () -> Unit
 ) {
     LaunchedEffect(viewModel) {

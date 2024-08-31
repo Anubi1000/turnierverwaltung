@@ -13,6 +13,7 @@ import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDest
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.ui.club.list.ClubList
 import de.anubi1000.turnierverwaltung.ui.util.ListDetailLayout
+import de.anubi1000.turnierverwaltung.util.getDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.club.ClubListViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -24,8 +25,7 @@ fun ClubListLayout(
     viewModel: ClubListViewModel = koinViewModel(
         viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>()
     ) {
-        val args: TournamentDetailDestination = navController.getBackStackEntry<TournamentDetailDestination>().toRoute()
-        parametersOf(args.tournamentId.toObjectId())
+        parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
     },
     content: @Composable () -> Unit
 ) {
