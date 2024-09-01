@@ -14,8 +14,8 @@ import de.anubi1000.turnierverwaltung.util.formatAsDate
 @Composable
 fun TournamentListItem(
     tournament: Tournament,
-    selected: Boolean,
-    onClick: () -> Unit,
+    selected: Boolean = false,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     ListItem(

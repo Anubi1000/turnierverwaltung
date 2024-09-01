@@ -7,15 +7,13 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
-import de.anubi1000.turnierverwaltung.data.club.ListClub
-import de.anubi1000.turnierverwaltung.util.formatAsDate
+import de.anubi1000.turnierverwaltung.database.model.Club
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import java.time.Instant
 
-private val club = ListClub(
-    name = "Club",
-)
+private val club = Club().apply {
+    name = "Test"
+}
 
 @OptIn(ExperimentalTestApi::class)
 class ClubListItemTest : FunSpec({
@@ -70,7 +68,7 @@ class ClubListItemTest : FunSpec({
                 )
             }
 
-            onNodeWithText(click.name)
+            onNodeWithText(club.name)
                 .performClick()
 
             clicked shouldBe true

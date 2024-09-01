@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.ui.tournament.list
+package de.anubi1000.turnierverwaltung.ui.team.list
 
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
@@ -7,15 +7,13 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
-import de.anubi1000.turnierverwaltung.data.tournament.ListTeam
-import de.anubi1000.turnierverwaltung.util.formatAsDate
+import de.anubi1000.turnierverwaltung.database.model.Team
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import java.time.Instant
 
-private val team = ListTeam(
-    name = "Team",
-)
+private val team = Team().apply {
+    name = "Test"
+}
 
 @OptIn(ExperimentalTestApi::class)
 class TeamListItemTest : FunSpec({
@@ -40,7 +38,7 @@ class TeamListItemTest : FunSpec({
                 )
             }
 
-            onNodeWithText(tournament.name)
+            onNodeWithText(team.name)
                 .assertIsSelected()
         }
     }

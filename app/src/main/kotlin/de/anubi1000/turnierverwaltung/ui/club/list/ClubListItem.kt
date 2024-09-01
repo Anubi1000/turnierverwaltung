@@ -13,8 +13,8 @@ import de.anubi1000.turnierverwaltung.database.model.Club
 @Composable
 fun ClubListItem(
     club: Club,
-    selected: Boolean,
-    onClick: () -> Unit,
+    selected: Boolean = false,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     ListItem(

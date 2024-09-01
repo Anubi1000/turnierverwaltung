@@ -7,16 +7,14 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
-import de.anubi1000.turnierverwaltung.data.tournament.ListTournament
+import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.util.formatAsDate
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import java.time.Instant
 
-private val tournament = ListTournament(
-    name = "Tournament",
-    date = Instant.EPOCH
-)
+private val tournament = Tournament().apply {
+    name = "Test"
+}
 
 @OptIn(ExperimentalTestApi::class)
 class TournamentListItemTest : FunSpec({

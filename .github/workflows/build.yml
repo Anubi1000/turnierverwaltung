@@ -94,6 +94,10 @@ jobs:
         working-directory: app
         run: ./gradlew createDistributable
       
+      - name: Run tests
+        working-directory: app
+        run: ./gradlew test
+      
       - name: Save build output
         uses: actions/upload-artifact@v4
         with:
