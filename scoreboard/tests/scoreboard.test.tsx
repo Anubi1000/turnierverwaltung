@@ -3,8 +3,8 @@ import { Scoreboard } from "@/app/scoreboard";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/jest-globals";
 
-describe("No tournament test", () => {
-  it("checks if no tournament selected text is displayed", () => {
+describe("Scoreboard", () => {
+  it("check if no tournament selected text is displayed", () => {
     render(<Scoreboard />);
 
     const errorText = screen.getByRole("heading", { level: 4 });
