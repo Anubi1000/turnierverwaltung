@@ -15,6 +15,7 @@ import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubEditDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubListDestination
+import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
@@ -32,6 +33,7 @@ private val destinations: Map<Int, KClass<out AppDestination>> = listOf(
     TournamentEditDestination::class,
 
     ParticipantListDestination::class,
+    ParticipantDetailDestination::class,
     ParticipantEditDestination::class,
 
     TeamListDestination::class,

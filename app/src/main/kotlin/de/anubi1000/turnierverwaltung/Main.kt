@@ -19,6 +19,7 @@ import de.anubi1000.turnierverwaltung.database.databaseModule
 import de.anubi1000.turnierverwaltung.navigation.club.clubDetailDestinations
 import de.anubi1000.turnierverwaltung.navigation.club.clubEditDestination
 import de.anubi1000.turnierverwaltung.navigation.club.clubListDestination
+import de.anubi1000.turnierverwaltung.navigation.participant.participantDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.participantEditDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.participantListDestination
 import de.anubi1000.turnierverwaltung.navigation.team.teamListDestination
@@ -59,6 +60,7 @@ fun App() {
             tournamentEditDestination(navController)
 
             participantListDestination(navController)
+            participantDetailDestination(navController)
             participantEditDestination(navController)
 
             teamListDestination(navController)

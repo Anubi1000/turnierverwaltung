@@ -9,6 +9,7 @@ import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.ui.club.detail.ClubDetailScreen
 import de.anubi1000.turnierverwaltung.ui.shared.TopLevelNavigationLayout
+import de.anubi1000.turnierverwaltung.ui.shared.TournamentNavigationLayout
 import de.anubi1000.turnierverwaltung.ui.shared.list.ClubListLayout
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.club.ClubDetailViewModel
@@ -24,13 +25,13 @@ data class ClubDetailDestination(
     constructor(id: ObjectId) : this(id.toHexString())
 
     @Transient
-    override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.TOURNAMENTS
+    override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.CLUBS
 }
 
 fun NavGraphBuilder.clubDetailDestinations(navController: NavController) = composable<ClubDetailDestination> { backStackEntry ->
     val args = backStackEntry.toRoute<ClubDetailDestination>()
 
-    TopLevelNavigationLayout(navController) {
+    TournamentNavigationLayout(navController) {
         ClubListLayout(navController) {
             val viewModel: ClubDetailViewModel = koinViewModel()
 

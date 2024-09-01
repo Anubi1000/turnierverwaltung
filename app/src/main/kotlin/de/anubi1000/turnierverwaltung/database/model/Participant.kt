@@ -1,5 +1,6 @@
 package de.anubi1000.turnierverwaltung.database.model
 
+import de.anubi1000.turnierverwaltung.util.Identifiable
 import io.realm.kotlin.ext.backlinks
 import io.realm.kotlin.ext.realmDictionaryOf
 import io.realm.kotlin.ext.realmListOf
@@ -16,13 +17,13 @@ import org.mongodb.kbson.ObjectId
 /**
  * Represents a participant in a [Tournament].
  */
-class Participant() : RealmObject {
+class Participant() : RealmObject, Identifiable {
     /**
      * The id of the participant.
      */
     @PrimaryKey
     @PersistedName("_id")
-    var id: ObjectId = ObjectId()
+    override var id: ObjectId = ObjectId()
 
     /**
      * The name of the participant.

@@ -3,6 +3,7 @@ package de.anubi1000.turnierverwaltung.data.repository
 import de.anubi1000.turnierverwaltung.database.queryById
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import io.realm.kotlin.Realm
+import io.realm.kotlin.delete
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.flow.Flow
@@ -49,6 +50,7 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
             val tournament = queryById<Tournament>(id)!!
 
             delete(tournament.clubs)
+            delete(tournament.participants)
 
             delete(tournament)
         }

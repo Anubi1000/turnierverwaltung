@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.ui.participant.list
+package de.anubi1000.turnierverwaltung.ui.participant.edit
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenuItem
@@ -71,26 +71,18 @@ private fun LoadedContent(
                 },
                 label = "Geschlecht"
             ) {
-                DropdownMenuItem(
-                    text = {
-                        Text("Männlich")
-                    },
-                    onClick = {
-                        state.participant.gender = Participant.Gender.MALE
-                        it()
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                )
-                DropdownMenuItem(
-                    text =  {
-                        Text("Weiblich")
-                    },
-                    onClick = {
-                        state.participant.gender = Participant.Gender.FEMALE
-                        it()
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                )
+                Participant.Gender.entries.forEach { entry ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(if (entry == Participant.Gender.MALE) "Männlich" else "Weiblich")
+                        },
+                        onClick = {
+                            state.participant.gender = entry
+                            it()
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
             }
             DropdownMenu(
                 value = remember(state.participant.clubId) {

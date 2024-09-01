@@ -8,11 +8,13 @@ import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
+import de.anubi1000.turnierverwaltung.ui.participant.detail.ParticipantDetailScreen
 import de.anubi1000.turnierverwaltung.ui.participant.edit.ParticipantEditScreen
 import de.anubi1000.turnierverwaltung.ui.shared.TournamentNavigationLayout
 import de.anubi1000.turnierverwaltung.ui.shared.list.ParticipantListLayout
 import de.anubi1000.turnierverwaltung.util.getDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
+import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantDetailViewModel
 import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantEditViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -21,39 +23,30 @@ import org.koin.core.parameter.parametersOf
 import org.mongodb.kbson.ObjectId
 
 @Serializable
-data class ParticipantEditDestination(val participantId: String?) : AppDestination {
-    constructor(participantId: ObjectId? = null) : this(participantId?.toHexString())
+data class ParticipantDetailDestination(val participantId: String) : AppDestination {
+    constructor(participantId: ObjectId) : this(participantId.toHexString())
 
     @Transient
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.PARTICIPANTS
 }
 
-fun NavGraphBuilder.participantEditDestination(navController: NavController) = composable<ParticipantEditDestination> { backStackEntry ->
-    val args: ParticipantEditDestination = backStackEntry.toRoute()
+fun NavGraphBuilder.participantDetailDestination(navController: NavController) = composable<ParticipantDetailDestination> { backStackEntry ->
+    val args: ParticipantDetailDestination = backStackEntry.toRoute()
 
     TournamentNavigationLayout(navController) {
         ParticipantListLayout(navController) {
-            val viewModel: ParticipantEditViewModel = koinViewModel {
-                parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
-            }
+            val viewModel: ParticipantDetailViewModel = koinViewModel()
 
             LaunchedEffect(viewModel) {
-                if (args.participantId == null) {
-                    viewModel.loadCreate()
-                } else {
-                    viewModel.loadEdit(args.participantId.toObjectId())
-                }
+                viewModel.loadItem(args.participantId.toObjectId())
             }
 
-            ParticipantEditScreen(
+            ParticipantDetailScreen(
                 navController = navController,
                 state = viewModel.state,
-                onSaveButtonClick = {
-                    viewModel.saveChanges {
-                        navController.popBackStack()
-                    }
-                },
-                isEditMode = args.participantId != null
+                onDeleteButtonClick = {
+                    viewModel.deleteItem()
+                }
             )
         }
     }

@@ -43,6 +43,13 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
         return realm.queryById(id)
     }
 
+    override suspend fun deleteParticipant(id: ObjectId) {
+        realm.write {
+            val participant = queryById<Participant>(id)!!
+            delete(participant)
+        }
+    }
+
     companion object {
         private val log = logger()
     }
