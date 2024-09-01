@@ -27,3 +27,11 @@ export interface Tournament {
   title: string;
   tables: TournamentTable[];
 }
+
+export interface UpdateRowMessage {
+  tableId: string;
+  rowId: string;
+  values: string[];
+  points: number;
+  type: "update_row";
+}
