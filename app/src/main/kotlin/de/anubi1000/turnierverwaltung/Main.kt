@@ -27,7 +27,7 @@ import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentDetailDest
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentListDestination
 import de.anubi1000.turnierverwaltung.server.ServerModule
-import de.anubi1000.turnierverwaltung.server.ServerViewModel
+import de.anubi1000.turnierverwaltung.server.Server
 import de.anubi1000.turnierverwaltung.ui.theme.AppTheme
 import de.anubi1000.turnierverwaltung.viewmodel.ViewModelModule
 import io.realm.kotlin.Realm
@@ -79,7 +79,7 @@ private fun appMain() {
     }
 
     log.info("Starting webserver")
-    val server: ServerViewModel by koinApplication.koin.inject()
+    val server: Server by koinApplication.koin.inject()
     server.start()
 
     log.info("Starting application")

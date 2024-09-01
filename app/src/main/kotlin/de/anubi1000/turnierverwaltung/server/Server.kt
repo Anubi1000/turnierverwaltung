@@ -29,7 +29,7 @@ import org.mongodb.kbson.ObjectId
 import java.io.InputStream
 
 @Single
-class ServerViewModel(private val tournamentRepository: TournamentRepository) {
+class Server(private val tournamentRepository: TournamentRepository) {
     private val messageFlow = MutableSharedFlow<Message>(extraBufferCapacity = 3)
     private var currentTournamentId: ObjectId? = null
 

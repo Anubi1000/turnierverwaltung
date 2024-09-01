@@ -20,7 +20,9 @@ export interface TournamentTableColumn {
 export interface TournamentTableRow {
   id: string;
   values: string[];
+  points: number;
 }
+
 export interface Tournament {
   title: string;
   tables: TournamentTable[];

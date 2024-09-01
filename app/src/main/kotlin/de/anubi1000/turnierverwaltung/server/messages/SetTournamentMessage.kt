@@ -37,7 +37,8 @@ data class SetTournamentMessage(
         @Serializable
         data class Row(
             val id: String,
-            val values: List<String>
+            val values: List<String>,
+            val points: Int
         )
     }
 }
@@ -66,7 +67,8 @@ fun Tournament.toSetTournamentMessage(): SetTournamentMessage {
                         id = rowIndex.toString(),
                         values = IntRange(1, 5).map { valueIndex ->
                             "Row $rowIndex, Value $valueIndex"
-                        }
+                        },
+                        points = rowIndex * 3
                     )
                 }
             )

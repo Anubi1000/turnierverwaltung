@@ -2,7 +2,7 @@ package de.anubi1000.turnierverwaltung.viewmodel.tounament
 
 import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
 import de.anubi1000.turnierverwaltung.database.model.Tournament
-import de.anubi1000.turnierverwaltung.server.ServerViewModel
+import de.anubi1000.turnierverwaltung.server.Server
 import de.anubi1000.turnierverwaltung.viewmodel.base.BaseDetailViewModel
 import org.apache.logging.log4j.kotlin.logger
 import org.koin.android.annotation.KoinViewModel
@@ -11,7 +11,7 @@ import org.mongodb.kbson.ObjectId
 @KoinViewModel
 class TournamentDetailViewModel(
     repository: TournamentRepository,
-    private val serverViewModel: ServerViewModel
+    private val server: Server
 ) : BaseDetailViewModel<Tournament, TournamentRepository>(repository) {
     override suspend fun TournamentRepository.getItemById(id: ObjectId): Tournament? = getTournamentById(id)
 
@@ -27,7 +27,7 @@ class TournamentDetailViewModel(
         currentState as State.Loaded<Tournament>
 
         log.debug("Changing tournament for scoreboard to current one")
-        serverViewModel.setCurrentTournament(currentState.item)
+        server.setCurrentTournament(currentState.item)
     }
 
     companion object {
