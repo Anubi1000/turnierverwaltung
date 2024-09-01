@@ -9,6 +9,7 @@
     "lint": "next lint",
     "format": "prettier . --write",
     "test": "jest",
+    "test_verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },
   "engines": {
@@ -20,6 +21,7 @@
     "@emotion/cache": "11.13.1",
     "@emotion/react": "11.13.3",
     "@emotion/styled": "11.13.0",
+    "@jest/globals": "^29.7.0",
     "@mui/material": "6.0.0",
     "@mui/material-nextjs": "6.0.0",
     "immer": "10.1.1",
