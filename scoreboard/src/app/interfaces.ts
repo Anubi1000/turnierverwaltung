@@ -20,7 +20,7 @@ export interface TournamentTableColumn {
 export interface TournamentTableRow {
   id: string;
   values: string[];
-  points: number;
+  sortValues: string[];
 }
 
 export interface Tournament {
@@ -32,6 +32,6 @@ export interface UpdateRowMessage {
   tableId: string;
   rowId: string;
   values: string[];
-  points: number;
+  sortValues: string[];
   type: "update_row";
 }
