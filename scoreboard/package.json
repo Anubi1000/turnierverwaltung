@@ -9,7 +9,7 @@
     "lint": "next lint",
     "format": "prettier . --write",
     "test": "jest",
-    "test_verbose": "jest --verbose",
+    "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },
   "engines": {

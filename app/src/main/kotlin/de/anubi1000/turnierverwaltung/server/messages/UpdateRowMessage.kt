@@ -4,7 +4,7 @@ data class UpdateRowMessage(
     val tableId: String,
     val rowId: String,
     val values: List<String>,
-    val points: Int,
+    val sortValues: List<Int>,
 ) : Message {
     override val type: Message.Type = Message.Type.UPDATE_ROW
 }

@@ -38,7 +38,7 @@ data class SetTournamentMessage(
         data class Row(
             val id: String,
             val values: List<String>,
-            val points: Int
+            val sortValues: List<Int>,
         )
     }
 }
@@ -68,7 +68,7 @@ fun Tournament.toSetTournamentMessage(): SetTournamentMessage {
                         values = IntRange(1, 5).map { valueIndex ->
                             "Row $rowIndex, Value $valueIndex"
                         },
-                        points = rowIndex * 3
+                        sortValues = listOf(rowIndex)
                     )
                 }
             )
