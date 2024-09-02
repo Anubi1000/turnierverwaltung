@@ -6,7 +6,7 @@ import {
   Tournament,
   TournamentTable,
   TournamentTableRow,
-  UpdateRowMessage
+  UpdateRowMessage,
 } from "@/app/interfaces";
 import { Scoreboard } from "@/app/scoreboard";
 import { useImmer } from "use-immer";

@@ -29,10 +29,10 @@ export function Scoreboard({ tournament }: { tournament?: Tournament }) {
             alignItems="center"
             sx={{ width: 1 }}
           >
-            <Typography variant="h6">
+            <Typography id="TournamentTitle" variant="h6">
               {tournament ? tournament.title : ""}
             </Typography>
-            <Typography variant="h6">
+            <Typography id="Clock" variant="h6">
               <Clock />
             </Typography>
           </Stack>
