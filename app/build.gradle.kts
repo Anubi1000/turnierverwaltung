@@ -24,6 +24,7 @@ dependencies {
     implementation(libs.koin.core.viewmodel)
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
+    implementation(libs.koin.compose.viewmodel.navigation)
 
     implementation(libs.kotlinx.coroutines.swing)
 
