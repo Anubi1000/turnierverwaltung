@@ -37,7 +37,14 @@ fun EditCardScope.TextField(
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (singleLine) {
+                val newValue = it.replace("\n", "")
+                if (newValue != value) onValueChange(newValue)
+            } else {
+                onValueChange(it)
+            }
+        },
         label = { Text(label) },
         singleLine = singleLine,
         modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp).fillMaxWidth()

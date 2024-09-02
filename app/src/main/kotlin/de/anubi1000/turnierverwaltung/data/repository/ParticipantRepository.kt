@@ -6,6 +6,7 @@ import org.mongodb.kbson.ObjectId
 
 interface ParticipantRepository {
     fun getAllForTournamentAsFlow(tournamentId: ObjectId): Flow<List<Participant>>
+    suspend fun getAllForTournament(tournamentId: ObjectId): List<Participant>
     suspend fun getParticipantById(id: ObjectId): Participant?
     suspend fun insertParticipant(participant: Participant, tournamentId: ObjectId)
     suspend fun updateParticipant(participant: Participant)

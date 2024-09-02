@@ -22,6 +22,12 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
             .map { it.list }
     }
 
+    override suspend fun getAllForTournament(tournamentId: ObjectId): List<Participant> {
+        return realm.query<Participant>("tournament._id == $0", tournamentId)
+            .sort("name", Sort.ASCENDING)
+            .find()
+    }
+
     override suspend fun insertParticipant(participant: Participant, tournamentId: ObjectId) {
         realm.write {
             participant.club = findLatest(participant.club!!)

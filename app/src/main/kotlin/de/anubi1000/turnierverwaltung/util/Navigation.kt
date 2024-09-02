@@ -18,10 +18,13 @@ import de.anubi1000.turnierverwaltung.navigation.club.ClubListDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
+import de.anubi1000.turnierverwaltung.navigation.team.TeamDetailDestination
+import de.anubi1000.turnierverwaltung.navigation.team.TeamEditDestination
 import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
+import de.anubi1000.turnierverwaltung.ui.team.edit.TeamEditScreen
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
 import kotlin.reflect.KClass
@@ -37,6 +40,8 @@ private val destinations: Map<Int, KClass<out AppDestination>> = listOf(
     ParticipantEditDestination::class,
 
     TeamListDestination::class,
+    TeamDetailDestination::class,
+    TeamEditDestination::class,
 
     ClubListDestination::class,
     ClubDetailDestination::class,

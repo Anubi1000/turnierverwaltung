@@ -80,6 +80,7 @@ data class Strings(
         }
     },
 
+    val team: String = "Team",
     val teams: String = "Teams",
     val noTeamSelected: String = "Kein Team ausgewählt",
 
