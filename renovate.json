@@ -16,6 +16,10 @@
     {
       "matchFileNames": ["scoreboard/**"],
       "addLabels": ["scoreboard"]
+    },
+    {
+      "matchDepNames": ["@jest/types", "@types/node", "@types/react", "@types/react-dom"],
+      "automerge": true
     }
   ]
 }
