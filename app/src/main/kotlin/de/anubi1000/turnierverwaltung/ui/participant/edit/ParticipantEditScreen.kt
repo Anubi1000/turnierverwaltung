@@ -64,6 +64,11 @@ private fun LoadedContent(
                 onValueChange = { state.participant.name = it.replace("\n", "") },
                 label = strings.name
             )
+            TextField(
+                value = state.participant.startNumber.toString(),
+                onValueChange = { newValue -> newValue.toIntOrNull()?.let { state.participant.startNumber = it } },
+                label = "Startnummer"
+            )
             DropdownMenu(
                 value = when (state.participant.gender) {
                     Participant.Gender.MALE -> "Männlich"

@@ -90,6 +90,8 @@ data class Strings(
     val createClub: String = "Verein erstellen",
     val editClub: String = "Verein bearbeiten",
 
+    val noDisciplineSelected: String = "Keine Disziplin ausgewählt",
+
     val scoreboard: String = "Scoreboard",
     val showOnScoreboard: String = "Auf Scoreboard anzeigen",
 )

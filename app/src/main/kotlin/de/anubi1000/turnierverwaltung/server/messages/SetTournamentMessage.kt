@@ -62,13 +62,13 @@ fun Tournament.toSetTournamentMessage(): SetTournamentMessage {
                         }
                     )
                 },
-                rows = IntRange(1, 50).map { rowIndex ->
+                rows = participants.map { participant ->
                     SetTournamentMessage.Table.Row(
-                        id = rowIndex.toString(),
+                        id = participant.id.toHexString(),
                         values = IntRange(1, 5).map { valueIndex ->
-                            "Row $rowIndex, Value $valueIndex"
+                            "Row ${participant.name}, Value $valueIndex"
                         },
-                        sortValues = listOf(rowIndex)
+                        sortValues = listOf(participant.startNumber)
                     )
                 }
             )

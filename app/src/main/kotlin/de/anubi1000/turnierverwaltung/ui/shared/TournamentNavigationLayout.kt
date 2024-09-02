@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.navigation.club.ClubListDestination
+import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineListDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
@@ -97,10 +98,10 @@ fun TournamentNavigationLayout(
             )
 
             NavigationRailItem(
-                selected = currentMenuOption == NavigationMenuOption.PARTICIPANTS,
+                selected = currentMenuOption == NavigationMenuOption.DISCIPLINES,
                 onClick = {
-                    if (currentMenuOption != NavigationMenuOption.PARTICIPANTS) {
-                        navController.navigate(ParticipantListDestination)
+                    if (currentMenuOption != NavigationMenuOption.DISCIPLINES) {
+                        navController.navigate(DisciplineListDestination)
                     }
                 },
                 label = { Text("Disziplinen") },

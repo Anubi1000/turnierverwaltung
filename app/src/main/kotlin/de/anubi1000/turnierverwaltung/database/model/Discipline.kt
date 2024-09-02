@@ -1,6 +1,8 @@
 package de.anubi1000.turnierverwaltung.database.model
 
+import io.realm.kotlin.ext.backlinks
 import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.query.RealmResults
 import io.realm.kotlin.types.EmbeddedRealmObject
 import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
@@ -19,6 +21,8 @@ class Discipline() : RealmObject {
 
     // isGenderSeparated
     var isGenderSeparated: Boolean = false
+
+    val tournament: RealmResults<Tournament> by backlinks(Tournament::disciplines)
 
     // values
     var values: RealmList<Value> = realmListOf()

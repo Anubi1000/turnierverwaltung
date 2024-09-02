@@ -12,10 +12,12 @@ import org.mongodb.kbson.ObjectId
 class EditParticipant(
     override val id: ObjectId = ObjectId(),
     name: String = "",
+    startNumber: Int = 0,
     gender: Participant.Gender = Participant.Gender.MALE,
     clubId: ObjectId? = null,
 ) : Identifiable {
     var name by mutableStateOf(name)
+    var startNumber by mutableStateOf(startNumber)
     var gender by mutableStateOf(gender)
     var clubId by mutableStateOf(clubId)
 }
@@ -23,6 +25,7 @@ class EditParticipant(
 fun Participant.toEditParticipant() = EditParticipant(
     id = this.id,
     name = this.name,
+    startNumber = this.startNumber,
     gender = this.gender,
     clubId = this.club!!.id
 )

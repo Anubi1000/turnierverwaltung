@@ -73,6 +73,7 @@ class ParticipantEditViewModel(
             val participant = Participant().also {
                 it.id = currentState.participant.id
                 it.name = currentState.participant.name
+                it.startNumber = currentState.participant.startNumber
                 it.gender = currentState.participant.gender
 
                 it.club = clubRepository.getClubById(currentState.participant.clubId!!)
