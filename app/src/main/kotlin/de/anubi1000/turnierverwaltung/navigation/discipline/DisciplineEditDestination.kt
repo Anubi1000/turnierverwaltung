@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.navigation.club
+package de.anubi1000.turnierverwaltung.navigation.discipline
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
@@ -8,10 +8,9 @@ import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
-import de.anubi1000.turnierverwaltung.ui.club.edit.ClubEditScreen
 import de.anubi1000.turnierverwaltung.ui.discipline.edit.DisciplineEditScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
-import de.anubi1000.turnierverwaltung.viewmodel.club.ClubEditViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineEditViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.koin.compose.viewmodel.koinViewModel
@@ -19,40 +18,38 @@ import org.koin.core.parameter.parametersOf
 import org.mongodb.kbson.ObjectId
 
 @Serializable
-data class ClubEditDestination(
-    val clubId: String?
+data class DisciplineEditDestination(
+    val id: String?
 ) : AppDestination {
     constructor(id: ObjectId? = null) : this(id?.toHexString())
 
     @Transient
-    override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.CLUBS
+    override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.DISCIPLINES
 }
 
-fun NavGraphBuilder.clubEditDestination(navController: NavController) = composable<ClubEditDestination> { backStackEntry ->
-    val args: ClubEditDestination = backStackEntry.toRoute()
-    val viewModel: ClubEditViewModel = koinViewModel {
+fun NavGraphBuilder.disciplineEditDestination(navController: NavController) = composable<DisciplineEditDestination> { backStackEntry ->
+    val args: DisciplineEditDestination = backStackEntry.toRoute()
+    val viewModel: DisciplineEditViewModel = koinViewModel {
         val destination: TournamentDetailDestination = navController.getBackStackEntry<TournamentDetailDestination>().toRoute()
         parametersOf(destination.tournamentId.toObjectId())
     }
 
     LaunchedEffect(viewModel) {
-        if (args.clubId == null) {
+        if (args.id == null) {
             viewModel.loadCreate()
         } else {
-            viewModel.loadEdit(args.clubId.toObjectId())
+            viewModel.loadEdit(args.id.toObjectId())
         }
     }
 
-    ClubEditScreen(
+    DisciplineEditScreen(
         navController = navController,
         state = viewModel.state,
         onSaveButtonClick = {
             viewModel.saveChanges {
-                navController.navigate(ClubListDestination) {
-                    popUpTo<ClubListDestination>()
-                }
+                navController.popBackStack()
             }
         },
-        isEditMode = args.clubId != null
+        isEditMode = args.id != null
     )
 }

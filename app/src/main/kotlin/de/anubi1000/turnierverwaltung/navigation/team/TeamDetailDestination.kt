@@ -7,13 +7,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
-import de.anubi1000.turnierverwaltung.ui.participant.detail.ParticipantDetailScreen
 import de.anubi1000.turnierverwaltung.ui.shared.TournamentNavigationLayout
-import de.anubi1000.turnierverwaltung.ui.shared.list.ParticipantListLayout
 import de.anubi1000.turnierverwaltung.ui.shared.list.TeamListLayout
 import de.anubi1000.turnierverwaltung.ui.team.detail.TeamDetailScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
-import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantDetailViewModel
 import de.anubi1000.turnierverwaltung.viewmodel.team.TeamDetailViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient

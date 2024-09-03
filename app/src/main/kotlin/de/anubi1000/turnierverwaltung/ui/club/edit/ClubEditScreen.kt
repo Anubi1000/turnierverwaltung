@@ -25,7 +25,7 @@ fun ClubEditScreen(
 
     EditScreenBase(
         navController = navController,
-        title = strings.editScreenTitle(isEditMode, strings.club),
+        title = strings.editScreenTitle(isEditMode, "Disziplin"),
         onSaveButtonClick = if (state is BaseEditViewModel.State.Loaded<*> && state.isValid.value) onSaveButtonClick else null
     ) { padding ->
         @Suppress("UNCHECKED_CAST")

@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.apache.logging.log4j.kotlin.logger
@@ -102,6 +101,12 @@ class Server(private val tournamentRepository: TournamentRepository) {
 
     fun stop() {
         server.stop()
+    }
+
+    suspend fun sendCurrentTournament() {
+        val tournamentId = currentTournamentId ?: return
+        val tournament = tournamentRepository.getTournamentById(tournamentId)
+        messageFlow.tryEmit(tournament!!.toSetTournamentMessage())
     }
 
     companion object {

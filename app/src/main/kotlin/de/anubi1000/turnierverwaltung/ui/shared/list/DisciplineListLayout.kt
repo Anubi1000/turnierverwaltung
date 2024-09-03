@@ -11,12 +11,10 @@ import androidx.navigation.NavController
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.ui.discipline.list.DisciplineList
-import de.anubi1000.turnierverwaltung.ui.team.list.TeamList
 import de.anubi1000.turnierverwaltung.ui.util.ListDetailLayout
 import de.anubi1000.turnierverwaltung.util.getDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineListViewModel
-import de.anubi1000.turnierverwaltung.viewmodel.team.TeamListViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 

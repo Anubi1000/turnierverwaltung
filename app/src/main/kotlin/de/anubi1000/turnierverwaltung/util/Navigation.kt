@@ -15,6 +15,8 @@ import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubEditDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubListDestination
+import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineDetailDestination
+import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineEditDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineListDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
@@ -25,13 +27,11 @@ import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
-import de.anubi1000.turnierverwaltung.ui.team.edit.TeamEditScreen
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
 import kotlin.reflect.KClass
 
-@OptIn(InternalSerializationApi::class)
-private val destinations: Map<Int, KClass<out AppDestination>> = listOf(
+private val destinations: Map<String, KClass<out AppDestination>> = listOf(
     TournamentListDestination::class,
     TournamentDetailDestination::class,
     TournamentEditDestination::class,
@@ -48,8 +48,10 @@ private val destinations: Map<Int, KClass<out AppDestination>> = listOf(
     ClubDetailDestination::class,
     ClubEditDestination::class,
 
-    DisciplineListDestination::class
-).associateBy { it.serializer().hashCode() }
+    DisciplineListDestination::class,
+    DisciplineDetailDestination::class,
+    DisciplineEditDestination::class
+).associateBy { it.qualifiedName!! }
 
 fun NavController.getCurrentDestination(): AppDestination? = getDestination(currentBackStackEntry)
 
@@ -71,8 +73,9 @@ inline fun <reified T : AppDestination> NavController.getDestination(): T {
 private fun getDestination(backStackEntry: NavBackStackEntry?): AppDestination? {
     if (backStackEntry == null) return null
 
-    val id = backStackEntry.destination.id
-    val destinationClass = destinations[id] ?: return null
+    val route = backStackEntry.destination.route ?: return null
+    val matchedRoute = destinations.keys.find { route.startsWith(it) }
+    val destinationClass = destinations[matchedRoute] ?: return null
 
     val arguments = backStackEntry.arguments ?: Bundle()
     val typeMap = backStackEntry.destination.arguments.mapValues { it.value.type }

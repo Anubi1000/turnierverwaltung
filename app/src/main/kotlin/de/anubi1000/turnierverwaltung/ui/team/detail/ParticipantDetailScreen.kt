@@ -12,9 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Team
-import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
 import de.anubi1000.turnierverwaltung.navigation.team.TeamEditDestination
 import de.anubi1000.turnierverwaltung.ui.util.DeleteDialog
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator

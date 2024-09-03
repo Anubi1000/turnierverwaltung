@@ -13,7 +13,6 @@ import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.ui.shared.TournamentNavigationLayout
 import de.anubi1000.turnierverwaltung.ui.shared.list.DisciplineListLayout
-import de.anubi1000.turnierverwaltung.ui.shared.list.ParticipantListLayout
 import de.anubi1000.turnierverwaltung.util.topAppBarPadding
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -25,14 +24,10 @@ data object DisciplineListDestination : AppDestination {
 }
 
 fun NavGraphBuilder.disciplineListDestination(navController: NavController) = composable<DisciplineListDestination> {
-    TournamentNavigationLayout(navController) {
-        DisciplineListLayout(navController) {
-            Box(
-                modifier = Modifier.fillMaxSize().topAppBarPadding(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(LocalStrings.current.noDisciplineSelected)
-            }
-        }
+    Box(
+        modifier = Modifier.fillMaxSize().topAppBarPadding(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(LocalStrings.current.noDisciplineSelected)
     }
 }

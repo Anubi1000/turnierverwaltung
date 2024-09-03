@@ -16,9 +16,11 @@ import androidx.navigation.compose.rememberNavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.data.repository.RepositoryModule
 import de.anubi1000.turnierverwaltung.database.databaseModule
-import de.anubi1000.turnierverwaltung.navigation.club.clubDetailDestinations
+import de.anubi1000.turnierverwaltung.navigation.club.clubDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.club.clubEditDestination
 import de.anubi1000.turnierverwaltung.navigation.club.clubListDestination
+import de.anubi1000.turnierverwaltung.navigation.discipline.disciplineDetailDestination
+import de.anubi1000.turnierverwaltung.navigation.discipline.disciplineEditDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.disciplineListDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.participantDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.participantEditDestination
@@ -30,8 +32,9 @@ import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestin
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentDetailDestinations
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentListDestination
-import de.anubi1000.turnierverwaltung.server.ServerModule
 import de.anubi1000.turnierverwaltung.server.Server
+import de.anubi1000.turnierverwaltung.server.ServerModule
+import de.anubi1000.turnierverwaltung.ui.shared.NavigationMenuLayout
 import de.anubi1000.turnierverwaltung.ui.theme.AppTheme
 import de.anubi1000.turnierverwaltung.viewmodel.ViewModelModule
 import io.realm.kotlin.Realm
@@ -48,33 +51,37 @@ private val log = logger("de.anubi1000.turnierverwaltung.MainKt")
 fun App() {
     AppTheme(darkTheme = false) {
         val navController = rememberNavController()
-        NavHost(
-            navController = navController,
-            startDestination = TournamentListDestination,
-            enterTransition = {
-                EnterTransition.None
-            },
-            exitTransition = {
-                ExitTransition.None
+        NavigationMenuLayout(navController) {
+            NavHost(
+                navController = navController,
+                startDestination = TournamentListDestination,
+                enterTransition = {
+                    EnterTransition.None
+                },
+                exitTransition = {
+                    ExitTransition.None
+                }
+            ) {
+                tournamentListDestination(navController)
+                tournamentDetailDestinations(navController)
+                tournamentEditDestination(navController)
+
+                participantListDestination(navController)
+                participantDetailDestination(navController)
+                participantEditDestination(navController)
+
+                teamListDestination(navController)
+                teamDetailDestination(navController)
+                teamEditDestination(navController)
+
+                clubListDestination(navController)
+                clubDetailDestination(navController)
+                clubEditDestination(navController)
+
+                disciplineListDestination(navController)
+                disciplineDetailDestination(navController)
+                disciplineEditDestination(navController)
             }
-        ) {
-            tournamentListDestination(navController)
-            tournamentDetailDestinations(navController)
-            tournamentEditDestination(navController)
-
-            participantListDestination(navController)
-            participantDetailDestination(navController)
-            participantEditDestination(navController)
-
-            teamListDestination(navController)
-            teamDetailDestination(navController)
-            teamEditDestination(navController)
-
-            clubListDestination(navController)
-            clubDetailDestinations(navController)
-            clubEditDestination(navController)
-
-            disciplineListDestination(navController)
         }
     }
 }

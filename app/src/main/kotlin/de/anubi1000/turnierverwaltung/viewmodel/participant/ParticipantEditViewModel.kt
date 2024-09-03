@@ -12,6 +12,7 @@ import de.anubi1000.turnierverwaltung.data.repository.ParticipantRepository
 import de.anubi1000.turnierverwaltung.data.toEditParticipant
 import de.anubi1000.turnierverwaltung.database.model.Club
 import de.anubi1000.turnierverwaltung.database.model.Participant
+import de.anubi1000.turnierverwaltung.server.Server
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
@@ -22,6 +23,7 @@ import androidx.compose.runtime.State as ComposeState
 class ParticipantEditViewModel(
     private val participantRepository: ParticipantRepository,
     private val clubRepository: ClubRepository,
+    private val server: Server,
     @InjectedParam private val tournamentId: ObjectId
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
@@ -88,6 +90,7 @@ class ParticipantEditViewModel(
                 )
             }
             onSaved(participant.id)
+            server.sendCurrentTournament()
         }
     }
 

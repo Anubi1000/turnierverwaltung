@@ -21,8 +21,10 @@ import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDest
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
+import de.anubi1000.turnierverwaltung.ui.util.SelectableListItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.ListBase
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
+import de.anubi1000.turnierverwaltung.util.formatAsDate
 import de.anubi1000.turnierverwaltung.util.getCurrentDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.base.BaseListViewModel
@@ -77,12 +79,15 @@ private fun LoadedContent(navController: NavController, state: BaseListViewModel
             }
         }
 
+        val itemModifier = Modifier.padding(2.dp)
+
         LazyColumn(
             modifier = modifier
         ) {
             items(tournaments, key = { it.id }) { item ->
-                TournamentListItem(
-                    tournament = item,
+                SelectableListItem(
+                    headlineContent = { Text(text = item.name) },
+                    supportingContent = { Text(text = item.date.formatAsDate()) },
                     selected = currentTournamentId == item.id,
                     onClick = {
                         if (currentTournamentId != item.id) {
@@ -91,7 +96,7 @@ private fun LoadedContent(navController: NavController, state: BaseListViewModel
                             }
                         }
                     },
-                    modifier = Modifier.padding(2.dp)
+                    modifier = itemModifier
                 )
             }
         }

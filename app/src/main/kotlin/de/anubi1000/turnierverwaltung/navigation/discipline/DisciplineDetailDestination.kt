@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.navigation.club
+package de.anubi1000.turnierverwaltung.navigation.discipline
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
@@ -8,32 +8,33 @@ import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.ui.club.detail.ClubDetailScreen
+import de.anubi1000.turnierverwaltung.ui.discipline.detail.DisciplineDetailScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
-import de.anubi1000.turnierverwaltung.viewmodel.club.ClubDetailViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineDetailViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.koin.compose.viewmodel.koinViewModel
 import org.mongodb.kbson.ObjectId
 
 @Serializable
-data class ClubDetailDestination(
+data class DisciplineDetailDestination(
     val id: String
 ) : AppDestination {
     constructor(id: ObjectId) : this(id.toHexString())
 
     @Transient
-    override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.CLUBS
+    override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.DISCIPLINES
 }
 
-fun NavGraphBuilder.clubDetailDestination(navController: NavController) = composable<ClubDetailDestination> { backStackEntry ->
-    val args = backStackEntry.toRoute<ClubDetailDestination>()
-    val viewModel: ClubDetailViewModel = koinViewModel()
+fun NavGraphBuilder.disciplineDetailDestination(navController: NavController) = composable<DisciplineDetailDestination> { backStackEntry ->
+    val args = backStackEntry.toRoute<DisciplineDetailDestination>()
+    val viewModel: DisciplineDetailViewModel = koinViewModel()
 
     LaunchedEffect(viewModel) {
         viewModel.loadItem(args.id.toObjectId())
     }
 
-    ClubDetailScreen(
+    DisciplineDetailScreen(
         navController = navController,
         state = viewModel.state,
         onDeleteButtonClick = {

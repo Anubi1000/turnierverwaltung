@@ -17,6 +17,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.database.model.Discipline
+import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineDetailDestination
+import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineEditDestination
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.ListBase
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
@@ -32,7 +34,7 @@ fun DisciplineList(
     ListBase(
         title = "Disziplinen",
         onCreateButtonClick = {
-
+            navController.navigate(DisciplineEditDestination())
         },
         modifier = modifier,
     ) {
@@ -64,7 +66,8 @@ private fun LoadedContent(navController: NavController, state: BaseListViewModel
         val currentTournamentId by remember(navController) {
             derivedStateOf {
                 when (val destination = currentDestination) {
-
+                    is DisciplineDetailDestination -> destination.id
+                    is DisciplineEditDestination -> destination.id
                     else -> null
                 }?.toObjectId()
             }
@@ -79,7 +82,7 @@ private fun LoadedContent(navController: NavController, state: BaseListViewModel
                     selected = currentTournamentId == item.id,
                     onClick = {
                         if (currentTournamentId != item.id) {
-                            //navController.navigate(TeamDetailDestination(item.id))
+                            navController.navigate(DisciplineDetailDestination(item.id))
                         }
                     },
                     modifier = Modifier.padding(2.dp)

@@ -9,8 +9,6 @@ import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.ui.participant.edit.ParticipantEditScreen
-import de.anubi1000.turnierverwaltung.ui.shared.TournamentNavigationLayout
-import de.anubi1000.turnierverwaltung.ui.shared.list.ParticipantListLayout
 import de.anubi1000.turnierverwaltung.util.getDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantEditViewModel
@@ -30,31 +28,26 @@ data class ParticipantEditDestination(val participantId: String?) : AppDestinati
 
 fun NavGraphBuilder.participantEditDestination(navController: NavController) = composable<ParticipantEditDestination> { backStackEntry ->
     val args: ParticipantEditDestination = backStackEntry.toRoute()
+    val viewModel: ParticipantEditViewModel = koinViewModel {
+        parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
+    }
 
-    TournamentNavigationLayout(navController) {
-        ParticipantListLayout(navController) {
-            val viewModel: ParticipantEditViewModel = koinViewModel {
-                parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
-            }
-
-            LaunchedEffect(viewModel) {
-                if (args.participantId == null) {
-                    viewModel.loadCreate()
-                } else {
-                    viewModel.loadEdit(args.participantId.toObjectId())
-                }
-            }
-
-            ParticipantEditScreen(
-                navController = navController,
-                state = viewModel.state,
-                onSaveButtonClick = {
-                    viewModel.saveChanges {
-                        navController.popBackStack()
-                    }
-                },
-                isEditMode = args.participantId != null
-            )
+    LaunchedEffect(viewModel) {
+        if (args.participantId == null) {
+            viewModel.loadCreate()
+        } else {
+            viewModel.loadEdit(args.participantId.toObjectId())
         }
     }
+
+    ParticipantEditScreen(
+        navController = navController,
+        state = viewModel.state,
+        onSaveButtonClick = {
+            viewModel.saveChanges {
+                navController.popBackStack()
+            }
+        },
+        isEditMode = args.participantId != null
+    )
 }

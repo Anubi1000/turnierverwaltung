@@ -1,6 +1,5 @@
 package de.anubi1000.turnierverwaltung.viewmodel.participant
 
-import androidx.lifecycle.ViewModel
 import de.anubi1000.turnierverwaltung.data.repository.ParticipantRepository
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.viewmodel.base.BaseDetailViewModel

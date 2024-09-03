@@ -1,28 +1,28 @@
-package de.anubi1000.turnierverwaltung.ui.discipline.list
+package de.anubi1000.turnierverwaltung.ui.util
 
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import de.anubi1000.turnierverwaltung.database.model.Discipline
 
 @Composable
-fun DisciplineListItem(
-    discipline: Discipline,
-    selected: Boolean = false,
-    onClick: () -> Unit = {},
+fun SelectableListItem(
+    headlineContent: @Composable () -> Unit,
+    selected: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    overlineContent: @Composable (() -> Unit)? = null,
+    supportingContent: @Composable (() -> Unit)? = null
 ) {
     ListItem(
-        headlineContent = {
-            Text(text = discipline.name)
-        },
+        headlineContent = headlineContent,
+        supportingContent = supportingContent,
+        overlineContent = overlineContent,
         colors = ListItemDefaults.colors(
-            containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer
+            containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
         ),
         modifier = modifier
             .clip(MaterialTheme.shapes.medium)
