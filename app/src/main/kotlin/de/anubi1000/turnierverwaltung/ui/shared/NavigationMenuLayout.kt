@@ -1,6 +1,5 @@
 package de.anubi1000.turnierverwaltung.ui.shared
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -18,6 +17,7 @@ import androidx.compose.material.icons.filled.Scoreboard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +40,6 @@ import de.anubi1000.turnierverwaltung.ui.club.list.ClubList
 import de.anubi1000.turnierverwaltung.ui.discipline.list.DisciplineList
 import de.anubi1000.turnierverwaltung.ui.participant.list.ParticipantList
 import de.anubi1000.turnierverwaltung.ui.tournament.list.TournamentList
-import de.anubi1000.turnierverwaltung.ui.util.ListDetailLayout
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
@@ -61,33 +60,35 @@ fun NavigationMenuLayout(
 ) {
     val currentDestination by navController.currentDestinationAsState()
 
-    Row(
-        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+    Surface(
+        color = MaterialTheme.colorScheme.background
     ) {
-        if (currentDestination != null) {
-            val destination = currentDestination!!
-            when (destination.navigationMenuOption) {
-                NavigationMenuOption.TOURNAMENTS -> TopLevelNavigationMenu(
-                    navController = navController,
-                    currentDestination = destination
-                )
-                NavigationMenuOption.PARTICIPANTS, NavigationMenuOption.TEAMS, NavigationMenuOption.CLUBS, NavigationMenuOption.DISCIPLINES -> TournamentNavigationMenu(
-                    navController = navController,
-                    currentDestination = destination
-                )
-                else -> {}
+        Row {
+            if (currentDestination != null) {
+                val destination = currentDestination!!
+                when (destination.navigationMenuOption) {
+                    NavigationMenuOption.TOURNAMENTS -> TopLevelNavigationMenu(
+                        navController = navController,
+                        currentDestination = destination
+                    )
+                    NavigationMenuOption.PARTICIPANTS, NavigationMenuOption.TEAMS, NavigationMenuOption.CLUBS, NavigationMenuOption.DISCIPLINES -> TournamentNavigationMenu(
+                        navController = navController,
+                        currentDestination = destination
+                    )
+                    else -> {}
+                }
+
+                when (destination.navigationMenuOption) {
+                    NavigationMenuOption.TOURNAMENTS -> TournamentListLayout(navController = navController)
+                    NavigationMenuOption.PARTICIPANTS -> ParticipantListLayout(navController = navController)
+                    NavigationMenuOption.CLUBS -> ClubListLayout(navController = navController)
+                    NavigationMenuOption.DISCIPLINES -> DisciplineListLayout(navController = navController)
+                    else -> {}
+                }
             }
 
-            when (destination.navigationMenuOption) {
-                NavigationMenuOption.TOURNAMENTS -> TournamentListLayout(navController = navController)
-                NavigationMenuOption.PARTICIPANTS -> ParticipantListLayout(navController = navController)
-                NavigationMenuOption.CLUBS -> ClubListLayout(navController = navController)
-                NavigationMenuOption.DISCIPLINES -> DisciplineListLayout(navController = navController)
-                else -> {}
-            }
+            content()
         }
-
-        content()
     }
 }
 
@@ -99,7 +100,7 @@ private fun TournamentListLayout(
     )
 ) {
     LaunchedEffect(viewModel) {
-        viewModel.loadItems()
+        viewModel.loadList()
     }
 
     TournamentList(

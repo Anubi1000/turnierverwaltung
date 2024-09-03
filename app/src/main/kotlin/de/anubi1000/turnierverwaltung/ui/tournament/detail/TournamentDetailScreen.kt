@@ -41,20 +41,9 @@ fun TournamentDetailScreen(
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    val strings = LocalStrings.current
-
     DetailScreenBase(
         navController = navController,
-        title = remember(state) {
-            var text = strings.tournament
-            if (state is BaseDetailViewModel.State.Loaded<*>) {
-                @Suppress("UNCHECKED_CAST")
-                state as BaseDetailViewModel.State.Loaded<Tournament>
-
-                text += ": ${state.item.name}"
-            }
-            text
-        },
+        title = LocalStrings.current.tournament,
         onEditButtonClick = {
             if (state is BaseDetailViewModel.State.Loaded<*>) {
                 @Suppress("UNCHECKED_CAST")
@@ -69,7 +58,7 @@ fun TournamentDetailScreen(
         additionalActions = {
             TooltipIconButton(
                 icon = Icons.Default.Scoreboard,
-                tooltip = strings.showOnScoreboard,
+                tooltip = LocalStrings.current.showOnScoreboard,
                 onClick = showOnScoreboard,
                 enabled = state is BaseDetailViewModel.State.Loaded<*>
             )
@@ -79,7 +68,7 @@ fun TournamentDetailScreen(
                 onClick = {
                     navController.navigate(ParticipantListDestination)
                 },
-                text = { Text(strings.openTournament) },
+                text = { Text(LocalStrings.current.openTournament) },
                 icon = { Icon(Icons.AutoMirrored.Filled.OpenInNew) }
             )
         }
@@ -133,37 +122,6 @@ private fun LoadedContent(
                 headlineText = state.item.date.formatAsDate(),
                 overlineText = strings.dateOfTournament
             )
-        }
-
-        DetailCard(
-            title = strings.general,
-            modifier = Modifier.width(450.dp).fillMaxRowHeight()
-        ) {
-            FlowRow(
-                maxItemsInEachRow = 2
-            ) {
-                val weightModifier = Modifier.weight(1f)
-                DetailItem(
-                    headlineText = state.item.participants.size.toString(),
-                    overlineText = "Anzahl Teilnehmer",
-                    modifier = weightModifier
-                )
-                DetailItem(
-                    headlineText = state.item.clubs.size.toString(),
-                    overlineText = "Anzahl Vereine",
-                    modifier = weightModifier
-                )
-                DetailItem(
-                    headlineText = state.item.teams.size.toString(),
-                    overlineText = "Anzahl Teams",
-                    modifier = weightModifier
-                )
-                DetailItem(
-                    headlineText = (state.item.disciplines.size + state.item.teamDisciplines.size).toString(),
-                    overlineText = "Anzahl Disziplinen",
-                    modifier = weightModifier
-                )
-            }
         }
     }
 }
