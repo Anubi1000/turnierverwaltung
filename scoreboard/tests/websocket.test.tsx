@@ -68,11 +68,13 @@ describe("web socket tests", () => {
     expect(col1).toBeInTheDocument()
     expect(col2).toBeInTheDocument()
 
-    // ensure single row is set
+    // ensure single row is set and values amtch
     const rows = screen.getAllByTestId("OnlyRow")    
     rows.forEach(row => {
       expect(row).toBeInTheDocument()
+      expect(row.textContent).toBe("12")
     });
+
     WS.clean();
   });
 
@@ -111,8 +113,6 @@ describe("web socket tests", () => {
     var rows = screen.getAllByTestId("OnlyRow")    
     rows.forEach(row => {
       expect(row).toBeInTheDocument()
-    });
-    rows.forEach(row => {
       expect(row.textContent).toBe("12") // initial values from table
     });
     
@@ -148,14 +148,10 @@ describe("web socket tests", () => {
     expect(col1).toBeInTheDocument()
     expect(col2).toBeInTheDocument()
 
-    // ensure single row is set
+    // ensure single row is set and values in row match updated values
     rows = screen.getAllByTestId("OnlyRow")    
     rows.forEach(row => {
       expect(row).toBeInTheDocument()
-    });
-
-    // ensure values in row match updated values
-    rows.forEach(row => {
       expect(row.textContent).toBe("34")
     });
 
