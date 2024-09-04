@@ -1,9 +1,7 @@
-export interface SetTournamentMessage {
+export interface Tournament {
   title: string;
   tables: TournamentTable[];
-  type: "set_tournament";
 }
-
 export interface TournamentTable {
   id: string;
   name: string;
@@ -23,9 +21,10 @@ export interface TournamentTableRow {
   sortValues: number[];
 }
 
-export interface Tournament {
+export interface SetTournamentMessage {
   title: string;
   tables: TournamentTable[];
+  type: "set_tournament";
 }
 
 export interface UpdateRowMessage {
