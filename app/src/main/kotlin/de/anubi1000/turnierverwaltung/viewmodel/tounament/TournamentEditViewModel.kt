@@ -25,7 +25,7 @@ class TournamentEditViewModel(
     fun loadCreate() {
         val tournament = EditTournament()
         state = State.Loaded(
-            tournament = tournament,
+            item = tournament,
             isValid = getValidationState(tournament)
         )
         isEditMode = false
@@ -35,7 +35,7 @@ class TournamentEditViewModel(
         viewModelScope.launch {
             val tournament = tournamentRepository.getById(id)!!.toEditTournament()
             state = State.Loaded(
-                tournament = tournament,
+                item = tournament,
                 isValid = getValidationState(tournament)
             )
             isEditMode = true
@@ -47,7 +47,7 @@ class TournamentEditViewModel(
         require(currentState is State.Loaded && currentState.isValid.value)
 
         viewModelScope.launch {
-            val tournament = currentState.tournament.toTournament()
+            val tournament = currentState.item.toTournament()
             if (!isEditMode) {
                 tournamentRepository.insert(tournament)
             } else {
@@ -58,11 +58,11 @@ class TournamentEditViewModel(
     }
 
     private fun getValidationState(tournament: EditTournament): ComposeState<Boolean> = derivedStateOf {
-        tournament.name.isNotEmpty()
+        tournament.name.isNotBlank()
     }
 
     sealed interface State {
         data object Loading : State
-        data class Loaded(val tournament: EditTournament, val isValid: ComposeState<Boolean>) : State
+        data class Loaded(val item: EditTournament, val isValid: ComposeState<Boolean>) : State
     }
 }

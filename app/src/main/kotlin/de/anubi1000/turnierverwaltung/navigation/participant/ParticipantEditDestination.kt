@@ -29,7 +29,7 @@ data class ParticipantEditDestination(val participantId: String?) : AppDestinati
 fun NavGraphBuilder.participantEditDestination(navController: NavController) = composable<ParticipantEditDestination> { backStackEntry ->
     val args: ParticipantEditDestination = backStackEntry.toRoute()
     val viewModel: ParticipantEditViewModel = koinViewModel {
-        parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
+        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
     }
 
     LaunchedEffect(viewModel) {

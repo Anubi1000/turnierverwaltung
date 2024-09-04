@@ -57,17 +57,17 @@ private fun LoadedEditContent(
         ) {
             TextField(
                 label = strings.name,
-                value = state.tournament.name,
+                value = state.item.name,
                 onValueChange = {
-                    state.tournament.setName(it)
+                    state.item.name = it
                 }
             )
 
             DateField(
                 label = strings.dateOfTournament,
-                date = state.tournament.date,
+                date = state.item.date,
                 onDateChange = {
-                    state.tournament.setDate(it)
+                    state.item.date = it
                 }
             )
         }

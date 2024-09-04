@@ -24,7 +24,7 @@ fun TeamListLayout(
     viewModel: TeamListViewModel = koinViewModel(
         viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>()
     ) {
-        parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
+        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
     },
     content: @Composable () -> Unit
 ) {

@@ -10,7 +10,6 @@ import de.anubi1000.turnierverwaltung.database.model.Tournament
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.apache.logging.log4j.kotlin.logger
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
@@ -27,10 +26,6 @@ class TournamentListViewModel(
                 .stateIn(scope = viewModelScope)
             state = State.Loaded(flow)
         }
-    }
-
-    companion object {
-        private val log = logger()
     }
 
     sealed interface State {

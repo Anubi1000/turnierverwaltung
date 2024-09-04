@@ -41,7 +41,7 @@ fun TournamentDetailScreen(
         title = LocalStrings.current.tournament,
         onEditButtonClick = {
             if (state is TournamentDetailViewModel.State.Loaded) {
-                navController.navigate(TournamentEditDestination(state.tournament.id))
+                navController.navigate(TournamentEditDestination(state.item.id))
             }
         },
         onDeleteButtonClick = {
@@ -76,11 +76,10 @@ fun TournamentDetailScreen(
 
     if (showDeleteDialog && state is TournamentDetailViewModel.State.Loaded) {
         DeleteDialog(
-            itemName = state.tournament.name,
+            itemName = state.item.name,
             onDismissRequest = { showDeleteDialog = false },
             onConfirmButtonClick = {
                 showDeleteDialog = false
-                navController.popBackStack()
                 onDeleteButtonClick()
             }
         )
@@ -101,11 +100,11 @@ private fun LoadedDetailContent(
             title = strings.general
         ) {
             DetailItem(
-                headlineText = state.tournament.name,
+                headlineText = state.item.name,
                 overlineText = strings.name
             )
             DetailItem(
-                headlineText = state.tournament.date.formatAsDate(),
+                headlineText = state.item.date.formatAsDate(),
                 overlineText = strings.dateOfTournament
             )
         }

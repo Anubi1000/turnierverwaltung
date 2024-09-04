@@ -33,17 +33,17 @@ class TournamentDetailViewModel(
         require(currentState is State.Loaded)
 
         viewModelScope.launch {
-            tournamentRepository.delete(currentState.tournament.id)
+            tournamentRepository.delete(currentState.item.id)
             onDeleted()
         }
     }
 
     fun showTournamentOnScoreboard() {
         val currentState = state
-        require(currentState is State.Loaded) { "Tournament needs to be loaded" }
+        require(currentState is State.Loaded)
 
         log.debug("Changing tournament for scoreboard to current one")
-        server.setCurrentTournament(currentState.tournament)
+        server.setCurrentTournament(currentState.item)
     }
 
     companion object {
@@ -52,6 +52,6 @@ class TournamentDetailViewModel(
 
     sealed interface State {
         data object Loading : State
-        data class Loaded(val tournament: Tournament) : State
+        data class Loaded(val item: Tournament) : State
     }
 }

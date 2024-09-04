@@ -31,7 +31,7 @@ fun NavGraphBuilder.disciplineEditDestination(navController: NavController) = co
     val args: DisciplineEditDestination = backStackEntry.toRoute()
     val viewModel: DisciplineEditViewModel = koinViewModel {
         val destination: TournamentDetailDestination = navController.getBackStackEntry<TournamentDetailDestination>().toRoute()
-        parametersOf(destination.tournamentId.toObjectId())
+        parametersOf(destination.id.toObjectId())
     }
 
     LaunchedEffect(viewModel) {

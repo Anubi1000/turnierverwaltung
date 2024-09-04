@@ -1,32 +1,70 @@
 package de.anubi1000.turnierverwaltung.viewmodel.club
 
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.EditClub
 import de.anubi1000.turnierverwaltung.data.repository.ClubRepository
 import de.anubi1000.turnierverwaltung.data.toEditClub
-import de.anubi1000.turnierverwaltung.viewmodel.base.BaseEditViewModel
+import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
 import org.mongodb.kbson.ObjectId
 import androidx.compose.runtime.State as ComposeState
 
 @KoinViewModel
-class ClubEditViewModel(repository: ClubRepository, @InjectedParam private val tournamentId: ObjectId) : BaseEditViewModel<EditClub, ClubRepository>(repository) {
-    override fun getDefaultItem(): EditClub = EditClub()
+class ClubEditViewModel(
+    private val clubRepository: ClubRepository,
+    @InjectedParam private val tournamentId: ObjectId
+) : ViewModel() {
+    var state: State by mutableStateOf(State.Loading)
 
-    override suspend fun ClubRepository.getItemById(id: ObjectId): EditClub? = getClubById(id)?.toEditClub()
+    private var isEditMode = false
 
-    override fun getValidationState(item: EditClub): ComposeState<Boolean> {
-        return derivedStateOf {
-            item.name.isNotBlank()
+    fun loadCreate() {
+        val club = EditClub()
+        state = State.Loaded(
+            item = club,
+            isValid = getValidationState(club)
+        )
+        isEditMode = false
+    }
+
+    fun loadEdit(id: ObjectId) {
+        viewModelScope.launch {
+            val club = clubRepository.getById(id)!!.toEditClub()
+            state = State.Loaded(
+                item = club,
+                isValid = getValidationState(club)
+            )
+            isEditMode = true
         }
     }
 
-    override suspend fun ClubRepository.insertItem(item: EditClub) {
-        insertClub(item.toClub(), tournamentId)
+    fun saveChanges(onSaved: (ObjectId) -> Unit) {
+        val currentState = state
+        require(currentState is State.Loaded && currentState.isValid.value)
+
+        viewModelScope.launch {
+            val club = currentState.item.toClub()
+            if (!isEditMode) {
+                clubRepository.insert(club, tournamentId)
+            } else {
+                clubRepository.update(club)
+            }
+            onSaved(club.id)
+        }
     }
 
-    override suspend fun ClubRepository.updateItem(item: EditClub) {
-        updateClub(item.toClub())
+    private fun getValidationState(club: EditClub): ComposeState<Boolean> = derivedStateOf {
+        club.name.isNotBlank()
+    }
+
+    sealed interface State {
+        data object Loading : State
+        data class Loaded(val item: EditClub, val isValid: ComposeState<Boolean>) : State
     }
 }

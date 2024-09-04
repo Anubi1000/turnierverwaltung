@@ -34,7 +34,7 @@ fun NavGraphBuilder.teamEditDestination(navController: NavController) = composab
     TournamentNavigationLayout(navController) {
         TeamListLayout(navController) {
             val viewModel: TeamEditViewModel = koinViewModel {
-                parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
+                parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
             }
 
             LaunchedEffect(viewModel) {

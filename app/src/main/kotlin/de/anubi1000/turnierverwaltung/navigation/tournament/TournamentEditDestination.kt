@@ -1,7 +1,6 @@
 package de.anubi1000.turnierverwaltung.navigation.tournament
 
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -11,7 +10,6 @@ import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.ui.tournament.TournamentEditScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentEditViewModel
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.koin.compose.viewmodel.koinViewModel
@@ -19,7 +17,7 @@ import org.mongodb.kbson.ObjectId
 
 @Serializable
 data class TournamentEditDestination(
-    val tournamentId: String?
+    val id: String?
 ) : AppDestination {
     constructor(tournamentId: ObjectId? = null) : this(tournamentId?.toHexString())
 
@@ -32,10 +30,10 @@ fun NavGraphBuilder.tournamentEditDestination(navController: NavController) = co
     val viewModel: TournamentEditViewModel = koinViewModel()
 
     LaunchedEffect(viewModel) {
-        if (args.tournamentId == null) {
+        if (args.id == null) {
             viewModel.loadCreate()
         } else {
-            viewModel.loadEdit(args.tournamentId.toObjectId())
+            viewModel.loadEdit(args.id.toObjectId())
         }
     }
 
@@ -49,6 +47,6 @@ fun NavGraphBuilder.tournamentEditDestination(navController: NavController) = co
                 }
             }
         },
-        isEditMode = args.tournamentId != null
+        isEditMode = args.id != null
     )
 }

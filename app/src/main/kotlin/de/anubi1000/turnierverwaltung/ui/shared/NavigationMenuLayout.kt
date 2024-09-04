@@ -36,7 +36,7 @@ import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDest
 import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
-import de.anubi1000.turnierverwaltung.ui.club.list.ClubList
+import de.anubi1000.turnierverwaltung.ui.club.ClubList
 import de.anubi1000.turnierverwaltung.ui.discipline.list.DisciplineList
 import de.anubi1000.turnierverwaltung.ui.participant.list.ParticipantList
 import de.anubi1000.turnierverwaltung.ui.tournament.TournamentList
@@ -116,7 +116,7 @@ private fun ParticipantListLayout(
     viewModel: ParticipantListViewModel = koinViewModel(
         viewModelStoreOwner = navController.getBackStackEntry<TournamentDetailDestination>()
     ) {
-        parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
+        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
     }
 ) {
     LaunchedEffect(viewModel) {
@@ -136,11 +136,11 @@ private fun ClubListLayout(
     viewModel: ClubListViewModel = koinViewModel(
         viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>()
     ) {
-        parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
+        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
     }
 ) {
     LaunchedEffect(viewModel) {
-        viewModel.loadItems()
+        viewModel.loadList()
     }
 
     ClubList(
@@ -156,7 +156,7 @@ private fun DisciplineListLayout(
     viewModel: DisciplineListViewModel = koinViewModel(
         viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>()
     ) {
-        parametersOf(navController.getDestination<TournamentDetailDestination>().tournamentId.toObjectId())
+        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
     }
 ) {
     LaunchedEffect(viewModel) {

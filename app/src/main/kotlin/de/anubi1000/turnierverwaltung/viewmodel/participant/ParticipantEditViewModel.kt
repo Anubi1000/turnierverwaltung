@@ -78,7 +78,7 @@ class ParticipantEditViewModel(
                 it.startNumber = currentState.participant.startNumber
                 it.gender = currentState.participant.gender
 
-                it.club = clubRepository.getClubById(currentState.participant.clubId!!)
+                it.club = clubRepository.getById(currentState.participant.clubId!!)
             }
 
             if (isEditMode) {

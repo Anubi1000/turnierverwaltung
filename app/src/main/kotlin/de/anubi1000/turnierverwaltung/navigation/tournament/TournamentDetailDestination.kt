@@ -17,7 +17,7 @@ import org.mongodb.kbson.ObjectId
 
 @Serializable
 data class TournamentDetailDestination(
-    val tournamentId: String
+    val id: String
 ) : AppDestination {
     constructor(tournamentId: ObjectId) : this(tournamentId.toHexString())
 
@@ -30,7 +30,7 @@ fun NavGraphBuilder.tournamentDetailDestinations(navController: NavController) =
     val viewModel: TournamentDetailViewModel = koinViewModel()
 
     LaunchedEffect(viewModel) {
-        viewModel.loadItem(args.tournamentId.toObjectId())
+        viewModel.loadItem(args.id.toObjectId())
     }
 
     TournamentDetailScreen(
@@ -38,7 +38,7 @@ fun NavGraphBuilder.tournamentDetailDestinations(navController: NavController) =
         state = viewModel.state,
         onDeleteButtonClick = {
             viewModel.deleteItem {
-                navController.navigateUp()
+                navController.popBackStack()
             }
         },
         showOnScoreboard = {
