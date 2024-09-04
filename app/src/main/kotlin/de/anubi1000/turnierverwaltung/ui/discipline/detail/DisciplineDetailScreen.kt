@@ -3,18 +3,15 @@ package de.anubi1000.turnierverwaltung.ui.discipline.detail
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.database.model.Discipline
-import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
 import de.anubi1000.turnierverwaltung.ui.util.DeleteDialog
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
@@ -85,8 +82,7 @@ private fun LoadedContent(
         val strings = LocalStrings.current
 
         DetailCard(
-            title = strings.general,
-            modifier = Modifier.width(450.dp).fillMaxRowHeight()
+            title = strings.general
         ) {
             DetailItem(
                 headlineText = state.item.name,
@@ -95,8 +91,7 @@ private fun LoadedContent(
         }
 
         DetailCard(
-            title = "Werte",
-            modifier = Modifier.width(450.dp).fillMaxRowHeight()
+            title = "Werte"
         ) {
             Column {
                 state.item.values.forEach { item ->

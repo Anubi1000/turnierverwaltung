@@ -1,16 +1,14 @@
 package de.anubi1000.turnierverwaltung.ui.util.screen.detail
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import de.anubi1000.turnierverwaltung.ui.theme.AppTheme
 
 @Composable
-fun DetailItem(
+fun DetailCardScope.DetailItem(
     headlineText: String,
     modifier: Modifier = Modifier,
     supportingText: String? = null,
@@ -35,16 +33,4 @@ fun DetailItem(
         ),
         modifier = modifier
     )
-}
-
-@Composable
-@Preview
-private fun DetailItemPreview() {
-    AppTheme {
-        DetailItem(
-            headlineText = "Headline",
-            supportingText = "Supporting",
-            overlineText = "Overline"
-        )
-    }
 }

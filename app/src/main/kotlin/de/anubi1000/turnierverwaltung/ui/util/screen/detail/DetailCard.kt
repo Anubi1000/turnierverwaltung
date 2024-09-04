@@ -1,28 +1,33 @@
 package de.anubi1000.turnierverwaltung.ui.util.screen.detail
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import de.anubi1000.turnierverwaltung.ui.theme.AppTheme
 
+class DetailCardScope {}
+
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DetailCard(
+fun DetailContentScope.DetailCard(
     title: String,
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
+    width: Dp = 450.dp,
+    content: @Composable DetailCardScope.() -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
         ),
-        modifier = modifier
+        modifier = with(flowRowScope) {
+            Modifier.fillMaxRowHeight().width(width)
+        }
     ) {
         Text(
             text = title,
@@ -31,23 +36,6 @@ fun DetailCard(
             modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp)
         )
 
-        content()
-    }
-}
-
-@Composable
-@Preview
-private fun DetailCardPreview() {
-    AppTheme {
-        DetailCard(
-            title = "Title"
-        ) {
-            repeat(4) { index ->
-                DetailItem(
-                    headlineText = "Headline $index",
-                    overlineText = "Overline $index"
-                )
-            }
-        }
+        DetailCardScope().content()
     }
 }

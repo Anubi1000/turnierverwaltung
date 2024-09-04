@@ -39,7 +39,7 @@ import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestin
 import de.anubi1000.turnierverwaltung.ui.club.list.ClubList
 import de.anubi1000.turnierverwaltung.ui.discipline.list.DisciplineList
 import de.anubi1000.turnierverwaltung.ui.participant.list.ParticipantList
-import de.anubi1000.turnierverwaltung.ui.tournament.list.TournamentList
+import de.anubi1000.turnierverwaltung.ui.tournament.TournamentList
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState

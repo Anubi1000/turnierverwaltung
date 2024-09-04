@@ -6,8 +6,8 @@ import org.mongodb.kbson.ObjectId
 
 interface TournamentRepository {
     fun getAllAsFlow(): Flow<List<Tournament>>
-    suspend fun getTournamentById(id: ObjectId): Tournament?
-    suspend fun insertTournament(tournament: Tournament)
-    suspend fun updateTournament(tournament: Tournament)
-    suspend fun deleteTournament(id: ObjectId)
+    suspend fun getById(id: ObjectId): Tournament?
+    suspend fun insert(tournament: Tournament)
+    suspend fun update(tournament: Tournament)
+    suspend fun delete(id: ObjectId)
 }

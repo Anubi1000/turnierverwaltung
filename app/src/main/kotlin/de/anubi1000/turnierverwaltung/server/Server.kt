@@ -51,7 +51,7 @@ class Server(private val tournamentRepository: TournamentRepository) {
 
                 currentTournamentId?.let { id ->
                     log.info("Sending current tournament to newly connected client")
-                    val tournament = tournamentRepository.getTournamentById(id) ?: return@let
+                    val tournament = tournamentRepository.getById(id) ?: return@let
                     sendSerialized(tournament.toSetTournamentMessage())
                 }
 
@@ -72,7 +72,7 @@ class Server(private val tournamentRepository: TournamentRepository) {
                         val type = json["type"]!!.jsonPrimitive.content
                         when (type) {
                             "resend_tournament" -> {
-                                val tournament = tournamentRepository.getTournamentById(currentTournamentId!!) ?: return@consumeEach
+                                val tournament = tournamentRepository.getById(currentTournamentId!!) ?: return@consumeEach
                                 sendSerialized(tournament.toSetTournamentMessage())
                             }
                         }
@@ -105,7 +105,7 @@ class Server(private val tournamentRepository: TournamentRepository) {
 
     suspend fun sendCurrentTournament() {
         val tournamentId = currentTournamentId ?: return
-        val tournament = tournamentRepository.getTournamentById(tournamentId)
+        val tournament = tournamentRepository.getById(tournamentId)
         messageFlow.tryEmit(tournament!!.toSetTournamentMessage())
     }
 

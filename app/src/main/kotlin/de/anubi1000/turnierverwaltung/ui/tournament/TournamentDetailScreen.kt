@@ -1,9 +1,6 @@
-package de.anubi1000.turnierverwaltung.ui.tournament.detail
+package de.anubi1000.turnierverwaltung.ui.tournament
 
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Scoreboard
@@ -15,10 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.ui.util.DeleteDialog
@@ -30,12 +25,12 @@ import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailScreenBase
 import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.util.formatAsDate
-import de.anubi1000.turnierverwaltung.viewmodel.base.BaseDetailViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentDetailViewModel
 
 @Composable
 fun TournamentDetailScreen(
     navController: NavController,
-    state: BaseDetailViewModel.State,
+    state: TournamentDetailViewModel.State,
     onDeleteButtonClick: () -> Unit,
     showOnScoreboard: () -> Unit
 ) {
@@ -45,11 +40,8 @@ fun TournamentDetailScreen(
         navController = navController,
         title = LocalStrings.current.tournament,
         onEditButtonClick = {
-            if (state is BaseDetailViewModel.State.Loaded<*>) {
-                @Suppress("UNCHECKED_CAST")
-                state as BaseDetailViewModel.State.Loaded<Tournament>
-
-                navController.navigate(TournamentEditDestination(state.item.id))
+            if (state is TournamentDetailViewModel.State.Loaded) {
+                navController.navigate(TournamentEditDestination(state.tournament.id))
             }
         },
         onDeleteButtonClick = {
@@ -60,7 +52,7 @@ fun TournamentDetailScreen(
                 icon = Icons.Default.Scoreboard,
                 tooltip = LocalStrings.current.showOnScoreboard,
                 onClick = showOnScoreboard,
-                enabled = state is BaseDetailViewModel.State.Loaded<*>
+                enabled = state is TournamentDetailViewModel.State.Loaded
             )
         },
         floatingActionButton = {
@@ -73,22 +65,18 @@ fun TournamentDetailScreen(
             )
         }
     ) { padding ->
-        @Suppress("UNCHECKED_CAST")
         when (state) {
-            is BaseDetailViewModel.State.Loading -> LoadingIndicator()
-            is BaseDetailViewModel.State.Loaded<*> -> LoadedContent(
-                state = state as BaseDetailViewModel.State.Loaded<Tournament>,
+            TournamentDetailViewModel.State.Loading -> LoadingIndicator()
+            is TournamentDetailViewModel.State.Loaded -> LoadedDetailContent(
+                state = state,
                 modifier = Modifier.padding(padding)
             )
         }
     }
 
-    if (showDeleteDialog && state is BaseDetailViewModel.State.Loaded<*>) {
-        @Suppress("UNCHECKED_CAST")
-        state as BaseDetailViewModel.State.Loaded<Tournament>
-
+    if (showDeleteDialog && state is TournamentDetailViewModel.State.Loaded) {
         DeleteDialog(
-            itemName = state.item.name,
+            itemName = state.tournament.name,
             onDismissRequest = { showDeleteDialog = false },
             onConfirmButtonClick = {
                 showDeleteDialog = false
@@ -99,10 +87,9 @@ fun TournamentDetailScreen(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun LoadedContent(
-    state: BaseDetailViewModel.State.Loaded<Tournament>,
+private fun LoadedDetailContent(
+    state: TournamentDetailViewModel.State.Loaded,
     modifier: Modifier = Modifier
 ) {
     DetailContent(
@@ -111,15 +98,14 @@ private fun LoadedContent(
         val strings = LocalStrings.current
 
         DetailCard(
-            title = strings.general,
-            modifier = Modifier.width(450.dp).fillMaxRowHeight()
+            title = strings.general
         ) {
             DetailItem(
-                headlineText = state.item.name,
+                headlineText = state.tournament.name,
                 overlineText = strings.name
             )
             DetailItem(
-                headlineText = state.item.date.formatAsDate(),
+                headlineText = state.tournament.date.formatAsDate(),
                 overlineText = strings.dateOfTournament
             )
         }

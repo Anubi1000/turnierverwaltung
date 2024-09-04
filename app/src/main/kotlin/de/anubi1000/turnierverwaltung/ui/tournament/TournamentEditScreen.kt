@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.ui.tournament.edit
+package de.anubi1000.turnierverwaltung.ui.tournament
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -6,19 +6,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.data.EditTournament
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.DateField
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditScreenBase
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.TextField
-import de.anubi1000.turnierverwaltung.viewmodel.base.BaseEditViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentEditViewModel
 
 @Composable
 fun TournamentEditScreen(
     navController: NavController,
-    state: BaseEditViewModel.State,
+    state: TournamentEditViewModel.State,
     onSaveButtonClick: () -> Unit,
     isEditMode: Boolean = false
 ) {
@@ -27,22 +26,24 @@ fun TournamentEditScreen(
     EditScreenBase(
         navController = navController,
         title = strings.editScreenTitle(isEditMode, strings.tournament),
-        onSaveButtonClick = if (state is BaseEditViewModel.State.Loaded<*> && state.isValid.value) onSaveButtonClick else null
+        onSaveButtonClick = if (state is TournamentEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null
     ) { padding ->
-        @Suppress("UNCHECKED_CAST")
+        val modifier = Modifier.padding(padding)
         when (state) {
-            is BaseEditViewModel.State.Loading -> LoadingIndicator()
-            is BaseEditViewModel.State.Loaded<*> -> LoadedContent(
-                state = state as BaseEditViewModel.State.Loaded<EditTournament>,
-                modifier = Modifier.padding(padding)
+            is TournamentEditViewModel.State.Loading -> LoadingIndicator(
+                modifier = modifier
+            )
+            is TournamentEditViewModel.State.Loaded -> LoadedEditContent(
+                state = state,
+                modifier = modifier
             )
         }
     }
 }
 
 @Composable
-private fun LoadedContent(
-    state: BaseEditViewModel.State.Loaded<EditTournament>,
+private fun LoadedEditContent(
+    state: TournamentEditViewModel.State.Loaded,
     modifier: Modifier = Modifier
 ) {
     val strings = LocalStrings.current
@@ -56,17 +57,17 @@ private fun LoadedContent(
         ) {
             TextField(
                 label = strings.name,
-                value = state.item.name,
+                value = state.tournament.name,
                 onValueChange = {
-                    state.item.setName(it.replace("\n", ""))
+                    state.tournament.setName(it)
                 }
             )
 
             DateField(
                 label = strings.dateOfTournament,
-                date = state.item.date,
+                date = state.tournament.date,
                 onDateChange = {
-                    state.item.setDate(it)
+                    state.tournament.setDate(it)
                 }
             )
         }

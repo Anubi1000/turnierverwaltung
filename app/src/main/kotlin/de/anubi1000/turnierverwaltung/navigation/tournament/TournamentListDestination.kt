@@ -1,5 +1,6 @@
 package de.anubi1000.turnierverwaltung.navigation.tournament
 
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -7,6 +8,7 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.ui.util.CenteredText
+import de.anubi1000.turnierverwaltung.util.topAppBarPadding
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -18,6 +20,7 @@ data object TournamentListDestination : AppDestination {
 
 fun NavGraphBuilder.tournamentListDestination(navController: NavController) = composable<TournamentListDestination> {
     CenteredText(
-        text = LocalStrings.current.noTournamentSelected
+        text = LocalStrings.current.noTournamentSelected,
+        modifier = Modifier.topAppBarPadding()
     )
 }

@@ -4,16 +4,15 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import de.anubi1000.turnierverwaltung.database.model.Tournament
-import de.anubi1000.turnierverwaltung.util.Identifiable
 import org.mongodb.kbson.ObjectId
 import java.time.Instant
 
 @Stable
 class EditTournament(
-    override val id: ObjectId = ObjectId(),
+    val id: ObjectId = ObjectId(),
     name: String = "",
     date: Instant = Instant.now(),
-) : Identifiable {
+) {
     private var _name = mutableStateOf(name)
     private var _date = mutableStateOf(date)
 

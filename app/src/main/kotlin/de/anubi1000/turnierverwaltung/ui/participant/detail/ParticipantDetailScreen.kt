@@ -2,14 +2,12 @@ package de.anubi1000.turnierverwaltung.ui.participant.detail
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.database.model.Participant
@@ -83,8 +81,7 @@ private fun LoadedContent(
         val strings = LocalStrings.current
 
         DetailCard(
-            title = strings.general,
-            modifier = Modifier.width(450.dp).fillMaxRowHeight()
+            title = strings.general
         ) {
             DetailItem(
                 headlineText = state.item.name,

@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
-import de.anubi1000.turnierverwaltung.ui.tournament.detail.TournamentDetailScreen
+import de.anubi1000.turnierverwaltung.ui.tournament.TournamentDetailScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentDetailViewModel
 import kotlinx.serialization.Serializable
@@ -37,7 +37,9 @@ fun NavGraphBuilder.tournamentDetailDestinations(navController: NavController) =
         navController = navController,
         state = viewModel.state,
         onDeleteButtonClick = {
-            viewModel.deleteItem()
+            viewModel.deleteItem {
+                navController.navigateUp()
+            }
         },
         showOnScoreboard = {
             viewModel.showTournamentOnScoreboard()
