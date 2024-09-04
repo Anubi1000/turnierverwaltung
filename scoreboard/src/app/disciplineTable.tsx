@@ -131,6 +131,7 @@ export function DisciplineTable({
                 key={column.name}
                 style={{ width: column.width }}
                 align={column.alignment}
+                data-testid={column.name}
               >
                 {column.name}
               </StyledTableCell>
@@ -139,7 +140,7 @@ export function DisciplineTable({
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <StyledTableRow key={row.id}>
+            <StyledTableRow key={row.id} data-testid={row.id}>
               {row.values.map((entry, index) => (
                 <StyledTableCell key={index} align={columns[index].alignment}>
                   {entry}
