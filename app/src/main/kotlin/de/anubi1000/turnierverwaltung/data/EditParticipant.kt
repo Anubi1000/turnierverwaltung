@@ -5,17 +5,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import de.anubi1000.turnierverwaltung.database.model.Participant
-import de.anubi1000.turnierverwaltung.util.Identifiable
 import org.mongodb.kbson.ObjectId
 
 @Stable
 class EditParticipant(
-    override val id: ObjectId = ObjectId(),
+    val id: ObjectId = ObjectId(),
     name: String = "",
     startNumber: Int = 0,
     gender: Participant.Gender = Participant.Gender.MALE,
     clubId: ObjectId? = null,
-) : Identifiable {
+) {
     var name by mutableStateOf(name)
     var startNumber by mutableStateOf(startNumber)
     var gender by mutableStateOf(gender)

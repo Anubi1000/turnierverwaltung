@@ -24,6 +24,19 @@ data class Strings(
     val name: String = "Name",
     val startNumber: String = "Startnummer",
 
+    val values: String = "Werte",
+    val newValue: String = "Neuer Wert",
+    val isAdded: String = "Wird addiert",
+    val isAddedYesNo: (isAdded: Boolean) -> String = { arg1 ->
+        buildString {
+            append(isAdded)
+            append(": ")
+            append(if (arg1) "Ja" else "Nein")
+        }
+    },
+
+    val genderSeparated: String = "Geschlechter getrennt",
+
     val genderName: (Participant.Gender) -> String = { arg1 ->
         when (arg1) {
             Participant.Gender.MALE -> "Männlich"
@@ -100,6 +113,8 @@ data class Strings(
     val createClub: String = "Verein erstellen",
     val editClub: String = "Verein bearbeiten",
 
+    val discipline: String = "Disziplin",
+    val disciplines: String = "Disziplinen",
     val noDisciplineSelected: String = "Keine Disziplin ausgewählt",
 
     val scoreboard: String = "Scoreboard",

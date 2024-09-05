@@ -35,7 +35,6 @@ class ParticipantDetailViewModel(
         }
     }
 
-
     sealed interface State {
         data object Loading : State
         data class Loaded(val item: Participant) : State

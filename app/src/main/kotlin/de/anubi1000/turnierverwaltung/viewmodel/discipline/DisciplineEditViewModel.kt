@@ -1,12 +1,17 @@
 package de.anubi1000.turnierverwaltung.viewmodel.discipline
 
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.EditDiscipline
 import de.anubi1000.turnierverwaltung.data.repository.DisciplineRepository
+import de.anubi1000.turnierverwaltung.data.toEditDiscipline
 import de.anubi1000.turnierverwaltung.database.model.Discipline
-import de.anubi1000.turnierverwaltung.server.Server
-import de.anubi1000.turnierverwaltung.viewmodel.base.BaseEditViewModel
 import io.realm.kotlin.ext.toRealmList
+import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
 import org.mongodb.kbson.ObjectId
@@ -14,44 +19,69 @@ import androidx.compose.runtime.State as ComposeState
 
 @KoinViewModel
 class DisciplineEditViewModel(
-    repository: DisciplineRepository,
-    private val server: Server,
+    private val disciplineRepository: DisciplineRepository,
     @InjectedParam private val tournamentId: ObjectId
-) : BaseEditViewModel<EditDiscipline, DisciplineRepository>(repository) {
-    override fun getDefaultItem(): EditDiscipline = EditDiscipline()
+) : ViewModel() {
+    var state: State by mutableStateOf(State.Loading)
+        private set
 
-    override suspend fun DisciplineRepository.updateItem(item: EditDiscipline) {
-        TODO("Not yet implemented")
-    }
+    private var isEditMode = false
 
-    override suspend fun DisciplineRepository.insertItem(item: EditDiscipline) {
-        insertDiscipline(
-            discipline = Discipline().apply {
-                id = item.id
-                name = item.name
-                isGenderSeparated = item.isGenderSeparated
-                values = item.values.map { value -> Discipline.Value().apply {
-                    id = value.id
-                    name = value.name
-                    isAdded = value.isAdded
-                }}.toRealmList()
-            },
-            tournamentId = tournamentId
+    fun loadCreate() {
+        val discipline = EditDiscipline()
+        state = State.Loaded(
+            item = discipline,
+            isValid = getValidationState(discipline)
         )
-        server.sendCurrentTournament()
+        isEditMode = false
     }
 
-
-    override fun getValidationState(item: EditDiscipline): ComposeState<Boolean> {
-        return derivedStateOf {
-            item.name.isNotBlank() &&
-                    item.values.isNotEmpty() &&
-                    item.values.all { it.name.isNotEmpty() }
+    fun loadEdit(id: ObjectId) {
+        viewModelScope.launch {
+            val club = disciplineRepository.getById(id)!!.toEditDiscipline()
+            state = State.Loaded(
+                item = club,
+                isValid = getValidationState(club)
+            )
+            isEditMode = true
         }
     }
 
-    override suspend fun DisciplineRepository.getItemById(id: ObjectId): EditDiscipline? {
-        TODO("Not yet implemented")
+    fun saveChanges(onSaved: (ObjectId) -> Unit) {
+        val currentState = state
+        require(currentState is State.Loaded && currentState.isValid.value)
+
+        viewModelScope.launch {
+            val discipline = Discipline().also { discipline ->
+                discipline.id = currentState.item.id
+                discipline.name = currentState.item.name
+
+                discipline.values = currentState.item.values.map { value ->
+                    Discipline.Value().also {
+                        it.id = value.id
+                        it.name = value.name
+                        it.isAdded = value.isAdded
+                    }
+                }.toRealmList()
+            }
+
+            if (!isEditMode) {
+                disciplineRepository.insert(discipline, tournamentId)
+            } else {
+                disciplineRepository.update(discipline)
+            }
+            onSaved(discipline.id)
+        }
     }
 
+    private fun getValidationState(discipline: EditDiscipline): ComposeState<Boolean> = derivedStateOf {
+        discipline.name.isNotBlank() &&
+                discipline.values.isNotEmpty() &&
+                discipline.values.all { it.name.isNotBlank() }
+    }
+
+    sealed interface State {
+        data object Loading : State
+        data class Loaded(val item: EditDiscipline, val isValid: ComposeState<Boolean>) : State
+    }
 }

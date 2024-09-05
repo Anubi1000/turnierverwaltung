@@ -8,7 +8,7 @@ import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
-import de.anubi1000.turnierverwaltung.ui.discipline.edit.DisciplineEditScreen
+import de.anubi1000.turnierverwaltung.ui.discipline.DisciplineEditScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineEditViewModel
 import kotlinx.serialization.Serializable

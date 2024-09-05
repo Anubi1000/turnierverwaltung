@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
-import de.anubi1000.turnierverwaltung.ui.discipline.detail.DisciplineDetailScreen
+import de.anubi1000.turnierverwaltung.ui.discipline.DisciplineDetailScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineDetailViewModel
 import kotlinx.serialization.Serializable
@@ -37,7 +37,9 @@ fun NavGraphBuilder.disciplineDetailDestination(navController: NavController) = 
         navController = navController,
         state = viewModel.state,
         onDeleteButtonClick = {
-            viewModel.deleteItem()
+            viewModel.deleteItem {
+                navController.popBackStack()
+            }
         }
     )
 }

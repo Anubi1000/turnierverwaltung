@@ -35,7 +35,6 @@ class ClubDetailViewModel(
         }
     }
 
-
     sealed interface State {
         data object Loading : State
         data class Loaded(val item: Club) : State
