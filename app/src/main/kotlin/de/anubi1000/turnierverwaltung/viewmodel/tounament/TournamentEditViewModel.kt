@@ -19,6 +19,7 @@ class TournamentEditViewModel(
     private val tournamentRepository: TournamentRepository
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
+        private set
 
     private var isEditMode = false
 

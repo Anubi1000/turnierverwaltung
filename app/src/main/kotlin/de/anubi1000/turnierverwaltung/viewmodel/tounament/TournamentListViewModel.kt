@@ -30,6 +30,6 @@ class TournamentListViewModel(
 
     sealed interface State {
         data object Loading : State
-        data class Loaded(val tournamentFlow: StateFlow<List<Tournament>>) : State
+        data class Loaded(val itemFlow: StateFlow<List<Tournament>>) : State
     }
 }

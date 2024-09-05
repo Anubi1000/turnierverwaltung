@@ -57,7 +57,7 @@ private fun LoadedContent(
     state: ClubListViewModel.State.Loaded,
     modifier: Modifier = Modifier
 ) {
-    val items by state.clubFlow.collectAsStateWithLifecycle()
+    val items by state.itemFlow.collectAsStateWithLifecycle()
 
     if (items.isEmpty()) {
         CenteredText(

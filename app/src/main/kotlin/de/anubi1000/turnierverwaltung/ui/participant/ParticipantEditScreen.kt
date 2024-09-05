@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.ui.participant.edit
+package de.anubi1000.turnierverwaltung.ui.participant
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenuItem
@@ -33,13 +33,14 @@ fun ParticipantEditScreen(
         title = strings.editScreenTitle(isEditMode, strings.participant),
         onSaveButtonClick = if (state is ParticipantEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null
     ) { padding ->
+        val modifier = Modifier.padding(padding)
         when (state) {
             is ParticipantEditViewModel.State.Loading -> LoadingIndicator(
-                modifier = Modifier.padding(padding)
+                modifier = modifier
             )
             is ParticipantEditViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = Modifier.padding(padding)
+                modifier = modifier
             )
         }
     }
@@ -60,38 +61,38 @@ private fun LoadedContent(
             title = strings.general
         ) {
             TextField(
-                value = state.participant.name,
-                onValueChange = { state.participant.name = it.replace("\n", "") },
+                value = state.item.name,
+                onValueChange = { state.item.name = it },
                 label = strings.name
             )
+
             TextField(
-                value = state.participant.startNumber.toString(),
-                onValueChange = { newValue -> newValue.toIntOrNull()?.let { state.participant.startNumber = it } },
-                label = "Startnummer"
+                value = state.item.startNumber.toString(),
+                onValueChange = { newValue -> newValue.toIntOrNull()?.let { state.item.startNumber = it } },
+                label = strings.startNumber
             )
+
             DropdownMenu(
-                value = when (state.participant.gender) {
-                    Participant.Gender.MALE -> "Männlich"
-                    Participant.Gender.FEMALE -> "Weiblich"
-                },
-                label = "Geschlecht"
+                value = strings.genderName(state.item.gender),
+                label = strings.gender
             ) {
                 Participant.Gender.entries.forEach { entry ->
                     DropdownMenuItem(
                         text = {
-                            Text(if (entry == Participant.Gender.MALE) "Männlich" else "Weiblich")
+                            Text(strings.genderName(entry))
                         },
                         onClick = {
-                            state.participant.gender = entry
+                            state.item.gender = entry
                             it()
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
                 }
             }
+
             DropdownMenu(
-                value = remember(state.participant.clubId) {
-                    val club = state.clubs.find { it.id == state.participant.clubId }
+                value = remember(state.item.clubId) {
+                    val club = state.clubs.find { it.id == state.item.clubId }
                     club?.name ?: ""
                 },
                 label = strings.club
@@ -100,7 +101,7 @@ private fun LoadedContent(
                     DropdownMenuItem(
                         text = { Text(club.name) },
                         onClick = {
-                            state.participant.clubId = club.id
+                            state.item.clubId = club.id
                             it()
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding

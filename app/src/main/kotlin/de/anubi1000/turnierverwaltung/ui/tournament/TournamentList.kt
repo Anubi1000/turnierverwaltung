@@ -59,7 +59,7 @@ private fun LoadedListContent(
     state: TournamentListViewModel.State.Loaded,
     modifier: Modifier = Modifier
 ) {
-    val items by state.tournamentFlow.collectAsStateWithLifecycle()
+    val items by state.itemFlow.collectAsStateWithLifecycle()
 
     if (items.isEmpty()) {
         val strings = LocalStrings.current

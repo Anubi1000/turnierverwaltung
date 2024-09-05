@@ -38,7 +38,7 @@ import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDest
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
 import de.anubi1000.turnierverwaltung.ui.club.ClubList
 import de.anubi1000.turnierverwaltung.ui.discipline.list.DisciplineList
-import de.anubi1000.turnierverwaltung.ui.participant.list.ParticipantList
+import de.anubi1000.turnierverwaltung.ui.participant.ParticipantList
 import de.anubi1000.turnierverwaltung.ui.tournament.TournamentList
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.util.Icon
@@ -120,7 +120,7 @@ private fun ParticipantListLayout(
     }
 ) {
     LaunchedEffect(viewModel) {
-        viewModel.loadItems()
+        viewModel.loadList()
     }
 
     ParticipantList(

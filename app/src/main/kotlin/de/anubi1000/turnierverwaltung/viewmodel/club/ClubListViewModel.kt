@@ -33,6 +33,6 @@ class ClubListViewModel(
 
     sealed interface State {
         data object Loading : State
-        data class Loaded(val clubFlow: StateFlow<List<Club>>) : State
+        data class Loaded(val itemFlow: StateFlow<List<Club>>) : State
     }
 }

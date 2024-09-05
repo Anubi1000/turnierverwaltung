@@ -6,8 +6,10 @@ import de.anubi1000.turnierverwaltung.database.queryById
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.Sort
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import org.apache.logging.log4j.kotlin.logger
 import org.koin.core.annotation.Factory
 import org.mongodb.kbson.ObjectId
@@ -28,31 +30,42 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
             .find()
     }
 
-    override suspend fun insertParticipant(participant: Participant, tournamentId: ObjectId) {
-        realm.write {
-            participant.club = findLatest(participant.club!!)
-            val dbParticipant = copyToRealm(participant)
-            queryById<Tournament>(tournamentId)!!.participants.add(dbParticipant)
+    override suspend fun insert(participant: Participant, tournamentId: ObjectId) {
+        withContext(Dispatchers.IO) {
+            realm.write {
+                require(participant.club != null) {
+                    "Participant needs to have club"
+                }
+                participant.club = findLatest(participant.club!!)
+                val dbParticipant = copyToRealm(participant)
+                queryById<Tournament>(tournamentId)!!.participants.add(dbParticipant)
+            }
         }
     }
 
-    override suspend fun updateParticipant(participant: Participant) {
-        realm.write {
-            val dbParticipant = queryById<Participant>(participant.id)!!
-            dbParticipant.name = participant.name
-            dbParticipant.gender = participant.gender
-            dbParticipant.club = findLatest(participant.club!!)
+    override suspend fun update(participant: Participant) {
+        withContext(Dispatchers.IO) {
+            realm.write {
+                val dbParticipant = queryById<Participant>(participant.id)!!
+                dbParticipant.name = participant.name
+                dbParticipant.startNumber = participant.startNumber
+                dbParticipant.gender = participant.gender
+                dbParticipant.club = findLatest(participant.club!!)
+            }
         }
     }
 
-    override suspend fun getParticipantById(id: ObjectId): Participant? {
-        return realm.queryById(id)
+    override suspend fun getById(id: ObjectId): Participant? {
+        return withContext(Dispatchers.IO) {
+            realm.queryById(id)
+        }
     }
 
-    override suspend fun deleteParticipant(id: ObjectId) {
-        realm.write {
-            val participant = queryById<Participant>(id)!!
-            delete(participant)
+    override suspend fun delete(id: ObjectId) {
+        withContext(Dispatchers.IO) {
+            realm.write {
+                delete(queryById<Participant>(id)!!)
+            }
         }
     }
 

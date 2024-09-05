@@ -26,11 +26,14 @@ fun ClubEditScreen(
         title = strings.editScreenTitle(isEditMode, LocalStrings.current.club),
         onSaveButtonClick = if (state is ClubEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null
     ) { padding ->
+        val modifier = Modifier.padding(padding)
         when (state) {
-            is ClubEditViewModel.State.Loading -> LoadingIndicator()
+            is ClubEditViewModel.State.Loading -> LoadingIndicator(
+                modifier = modifier
+            )
             is ClubEditViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = Modifier.padding(padding)
+                modifier = modifier
             )
         }
     }

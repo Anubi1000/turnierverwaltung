@@ -12,7 +12,6 @@ import de.anubi1000.turnierverwaltung.data.repository.ParticipantRepository
 import de.anubi1000.turnierverwaltung.data.toEditParticipant
 import de.anubi1000.turnierverwaltung.database.model.Club
 import de.anubi1000.turnierverwaltung.database.model.Participant
-import de.anubi1000.turnierverwaltung.server.Server
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
@@ -23,7 +22,6 @@ import androidx.compose.runtime.State as ComposeState
 class ParticipantEditViewModel(
     private val participantRepository: ParticipantRepository,
     private val clubRepository: ClubRepository,
-    private val server: Server,
     @InjectedParam private val tournamentId: ObjectId
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
@@ -32,72 +30,61 @@ class ParticipantEditViewModel(
     private var isEditMode = false
 
     fun loadCreate() {
-        val participant = EditParticipant()
-
         viewModelScope.launch {
+            val participant = EditParticipant()
+            state = State.Loaded(
+                item = participant,
+                clubs = clubRepository.getAllForTournament(tournamentId),
+                isValid = getValidationState(participant)
+            )
             isEditMode = false
-
-            state = State.Loaded(
-                participant = participant,
-                clubs = clubRepository.getAllForTournament(tournamentId),
-                isValid = getValidationState(participant)
-            )
         }
     }
 
-    fun loadEdit(participantId: ObjectId) {
+    fun loadEdit(id: ObjectId) {
         viewModelScope.launch {
-            isEditMode = true
-
-            val participant = participantRepository.getParticipantById(participantId)!!.toEditParticipant()
+            val participant = participantRepository.getById(id)!!.toEditParticipant()
             state = State.Loaded(
-                participant = participant,
+                item = participant,
                 clubs = clubRepository.getAllForTournament(tournamentId),
                 isValid = getValidationState(participant)
             )
-        }
-    }
-
-    private fun getValidationState(participant: EditParticipant): ComposeState<Boolean> {
-        return derivedStateOf {
-            participant.name.isNotBlank() &&
-                    participant.clubId != null
+            isEditMode = true
         }
     }
 
     fun saveChanges(onSaved: (ObjectId) -> Unit) {
         val currentState = state
-
-        require(currentState is State.Loaded)
-        require(currentState.isValid.value)
+        require(currentState is State.Loaded && currentState.isValid.value)
 
         viewModelScope.launch {
             val participant = Participant().also {
-                it.id = currentState.participant.id
-                it.name = currentState.participant.name
-                it.startNumber = currentState.participant.startNumber
-                it.gender = currentState.participant.gender
+                it.id = currentState.item.id
+                it.name = currentState.item.name
+                it.startNumber = currentState.item.startNumber
+                it.gender = currentState.item.gender
 
-                it.club = clubRepository.getById(currentState.participant.clubId!!)
+                it.club = currentState.clubs.find { it.id == currentState.item.clubId }!!
             }
 
-            if (isEditMode) {
-                participantRepository.updateParticipant(participant)
+            if (!isEditMode) {
+                participantRepository.insert(participant, tournamentId)
             } else {
-                participantRepository.insertParticipant(
-                    participant = participant,
-                    tournamentId = tournamentId
-                )
+                participantRepository.update(participant)
             }
             onSaved(participant.id)
-            server.sendCurrentTournament()
         }
+    }
+
+    private fun getValidationState(participant: EditParticipant): ComposeState<Boolean> = derivedStateOf {
+        participant.name.isNotBlank() &&
+                participant.clubId != null
     }
 
     sealed interface State {
         data object Loading : State
         data class Loaded(
-            val participant: EditParticipant,
+            val item: EditParticipant,
             val clubs: List<Club>,
             val isValid: ComposeState<Boolean>
         ) : State

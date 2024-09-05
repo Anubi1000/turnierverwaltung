@@ -5,6 +5,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import de.anubi1000.turnierverwaltung.database.model.Participant
 
 data class Strings(
     val appName: String = "Turnierverwaltung",
@@ -18,8 +19,17 @@ data class Strings(
     val save: String = "Speichern",
 
     val dateOfTournament: String = "Datum des Turniers",
+    val gender: String = "Geschlecht",
     val general: String = "Allgemein",
     val name: String = "Name",
+    val startNumber: String = "Startnummer",
+
+    val genderName: (Participant.Gender) -> String = { arg1 ->
+        when (arg1) {
+            Participant.Gender.MALE -> "Männlich"
+            Participant.Gender.FEMALE -> "Weiblich"
+        }
+    },
 
     val xDontExist: (name: String) -> String = { arg1 ->
         buildString {

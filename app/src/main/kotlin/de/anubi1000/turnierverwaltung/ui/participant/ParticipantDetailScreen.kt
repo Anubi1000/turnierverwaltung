@@ -1,6 +1,5 @@
-package de.anubi1000.turnierverwaltung.ui.participant.detail
+package de.anubi1000.turnierverwaltung.ui.participant
 
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -10,7 +9,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
 import de.anubi1000.turnierverwaltung.ui.util.DeleteDialog
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
@@ -18,12 +16,12 @@ import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailScreenBase
-import de.anubi1000.turnierverwaltung.viewmodel.base.BaseDetailViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantDetailViewModel
 
 @Composable
 fun ParticipantDetailScreen(
     navController: NavController,
-    state: BaseDetailViewModel.State,
+    state: ParticipantDetailViewModel.State,
     onDeleteButtonClick: () -> Unit,
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -32,10 +30,7 @@ fun ParticipantDetailScreen(
         navController = navController,
         title = LocalStrings.current.participant,
         onEditButtonClick = {
-            if (state is BaseDetailViewModel.State.Loaded<*>) {
-                @Suppress("UNCHECKED_CAST")
-                state as BaseDetailViewModel.State.Loaded<Participant>
-
+            if (state is ParticipantDetailViewModel.State.Loaded) {
                 navController.navigate(ParticipantEditDestination(state.item.id))
             }
         },
@@ -43,36 +38,30 @@ fun ParticipantDetailScreen(
             showDeleteDialog = true
         }
     ) { padding ->
-        @Suppress("UNCHECKED_CAST")
         when (state) {
-            is BaseDetailViewModel.State.Loading -> LoadingIndicator()
-            is BaseDetailViewModel.State.Loaded<*> -> LoadedContent(
-                state = state as BaseDetailViewModel.State.Loaded<Participant>,
+            is ParticipantDetailViewModel.State.Loading -> LoadingIndicator()
+            is ParticipantDetailViewModel.State.Loaded -> LoadedContent(
+                state = state,
                 modifier = Modifier.padding(padding)
             )
         }
     }
 
-    if (showDeleteDialog && state is BaseDetailViewModel.State.Loaded<*>) {
-        @Suppress("UNCHECKED_CAST")
-        state as BaseDetailViewModel.State.Loaded<Participant>
-
+    if (showDeleteDialog && state is ParticipantDetailViewModel.State.Loaded) {
         DeleteDialog(
             itemName = state.item.name,
             onDismissRequest = { showDeleteDialog = false },
             onConfirmButtonClick = {
                 showDeleteDialog = false
-                navController.popBackStack()
                 onDeleteButtonClick()
             }
         )
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun LoadedContent(
-    state: BaseDetailViewModel.State.Loaded<Participant>,
+    state: ParticipantDetailViewModel.State.Loaded,
     modifier: Modifier = Modifier
 ) {
     DetailContent(
@@ -90,17 +79,17 @@ private fun LoadedContent(
 
             DetailItem(
                 headlineText = state.item.startNumber.toString(),
-                overlineText = "Startnummer"
+                overlineText = strings.startNumber
             )
 
             DetailItem(
-                headlineText = if (state.item.gender == Participant.Gender.MALE) "Männlich" else "Weiblich",
-                overlineText = "Geschlecht"
+                headlineText = strings.genderName(state.item.gender),
+                overlineText = strings.gender
             )
 
             DetailItem(
                 headlineText = state.item.club!!.name,
-                overlineText = strings.clubs
+                overlineText = strings.club
             )
         }
     }

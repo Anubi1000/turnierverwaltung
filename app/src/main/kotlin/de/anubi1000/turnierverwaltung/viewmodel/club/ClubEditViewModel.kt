@@ -21,6 +21,7 @@ class ClubEditViewModel(
     @InjectedParam private val tournamentId: ObjectId
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
+        private set
 
     private var isEditMode = false
 

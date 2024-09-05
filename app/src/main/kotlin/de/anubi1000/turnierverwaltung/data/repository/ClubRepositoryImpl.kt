@@ -8,6 +8,7 @@ import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.apache.logging.log4j.kotlin.logger
@@ -26,9 +27,13 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
 
     override suspend fun getAllForTournament(tournamentId: ObjectId): List<Club> {
         log.debug("Retrieving all clubs as flow")
-        return realm.query<Club>("tournament._id == $0", tournamentId)
-            .sort("name", Sort.ASCENDING)
-            .find()
+        return withContext(Dispatchers.IO) {
+            realm.query<Club>("tournament._id == $0", tournamentId)
+                .sort("name", Sort.ASCENDING)
+                .asFlow()
+                .first()
+                .list
+        }
     }
 
     override suspend fun getById(id: ObjectId): Club? {
