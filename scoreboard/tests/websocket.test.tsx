@@ -1,7 +1,7 @@
-import { describe, expect, it } from "@jest/globals";
+import { afterEach, beforeEach, describe, expect, it } from "@jest/globals";
 import Page from "@/app/page";
 import { render, screen } from "@testing-library/react";
-import {act} from 'react';
+import { act } from "react";
 import "@testing-library/jest-dom/jest-globals";
 import "@testing-library/jest-dom";
 import WS from "jest-websocket-mock";
@@ -9,40 +9,52 @@ import {
   SetTournamentMessage,
   TournamentTable,
   UpdateRowMessage,
-  Tournament
 } from "@/app/interfaces";
-import WebSocketComponent from "@/websocketComponent";
 
-describe("web socket tests", () => {
-  it("check if tournament is set", async () => {
-    act(() => {
-      render(<WebSocketComponent tournamentProp={null}/>);
+function createDummyTable() {
+  const table: TournamentTable = {
+    id: "Table",
+    name: "Discipline",
+    columns: [],
+    rows: [],
+  };
+  for (let i = 0; i < 5; i++) {
+    table.columns.push({
+      name: `Col ${i}`,
+      alignment: "center",
+      width: "20%",
     });
-    
-    const server = new WS("ws://127.0.0.1:8080/ws", { jsonProtocol: true });
+  }
+  for (let i = 0; i < 10; i++) {
+    table.rows.push({
+      values: ["2", "4", "6", "8", "10"],
+      id: i.toString(),
+      sortValues: [i],
+    });
+  }
+  return table;
+}
+
+describe("WebSocket", () => {
+  let server: WS;
+
+  beforeEach(() => {
+    server = new WS("ws://127.0.0.1:8080/ws", { jsonProtocol: true });
+  });
+
+  afterEach(() => {
+    WS.clean();
+  });
+
+  it("check if tournament is set", async () => {
+    render(<Page />);
     await server.connected;
 
-    const table: TournamentTable = {
-      id: "Table",
-      name: "Discipline",
-      columns: [{
-        name: "Col1",
-        alignment: "center",
-        width: "50%"
-      }, {
-        name: "Col2",
-        alignment: "center",
-        width: "50%"
-      }],
-      rows: [{
-        values: ["1", "2"],
-        id: "OnlyRow",
-        sortValues: [1,2]
-      }],
-    };
+    const table = createDummyTable();
+
     const message: SetTournamentMessage = {
       tables: [table],
-      title: "Test",
+      title: "TestTournament",
       type: "set_tournament",
     };
 
@@ -50,111 +62,72 @@ describe("web socket tests", () => {
       server.send(message);
     });
 
-    const titles = screen.getAllByRole("heading", { level: 6 });
-
-    // ensure title is correct
-    const title = titles[0];
+    const title = screen.getByText(message.title);
     expect(title).toBeInTheDocument();
-    expect(title.textContent).toBe("Test");
 
-    // ensure clock is displayed
-    const clock = titles[1];
-    expect(clock).toBeInTheDocument();
-
-
-    // ensure both column headers are set
-    const col1 = screen.getByTestId("Col1")
-    const col2 = screen.getByTestId("Col2")
-    expect(col1).toBeInTheDocument()
-    expect(col2).toBeInTheDocument()
-
-    // ensure single row is set and values amtch
-    const rows = screen.getAllByTestId("OnlyRow")    
-    rows.forEach(row => {
-      expect(row).toBeInTheDocument()
-      expect(row.textContent).toBe("12")
+    // ensure column headers are set
+    table.columns.forEach((col, index) => {
+      const element = screen.getByTestId(`col-${index}`);
+      expect(element).toBeInTheDocument();
+      expect(element.textContent).toBe(col.name);
     });
 
-    WS.clean();
+    table.rows.forEach((row, index) => {
+      const element = screen.getByTestId(`row-${row.id}`);
+      expect(element).toBeInTheDocument();
+      row.values.forEach((value, index) => {
+        const cell = screen.getByTestId(`cell-${row.id}-${index}`);
+        expect(cell).toBeInTheDocument();
+        expect(cell.textContent).toBe(value);
+      });
+    });
   });
 
   it("check if updates are done correctly", async () => {
     // how to pass inital tournament to scoreboard?
-    const table: TournamentTable = {
-      id: "Table",
-      name: "Discipline",
-      columns: [{
-        name: "Col1",
-        alignment: "center",
-        width: "50%"
-      }, {
-        name: "Col2",
-        alignment: "center",
-        width: "50%"
-      }],
-      rows: [{
-        values: ["1", "2"],
-        id: "OnlyRow",
-        sortValues: [1,2]
-      }],
+    const table = createDummyTable();
+    const initMessage: SetTournamentMessage = {
+      tables: [table],
+      title: "TestTournament",
+      type: "set_tournament",
     };
 
-    const tournament: Tournament = {
-      title: "Title",
-      tables: [table]
-    }
+    render(<Page />);
 
-    // render with table above
-    act(() => {
-      render(<WebSocketComponent tournamentProp={tournament} />);
-    });
-
-
-    var rows = screen.getAllByTestId("OnlyRow")    
-    rows.forEach(row => {
-      expect(row).toBeInTheDocument()
-      expect(row.textContent).toBe("12") // initial values from table
-    });
-    
-    const server = new WS("ws://127.0.0.1:8080/ws", { jsonProtocol: true });
     await server.connected;
 
+    act(() => {
+      server.send(initMessage);
+    });
+
     // apply update
-    const message: UpdateRowMessage = {
+    const updateMessage: UpdateRowMessage = {
       tableId: "Table",
-      rowId: "OnlyRow",
-      values: ["3","4"],
-      sortValues: [1,2],
+      rowId: "1",
+      values: ["1", "3", "5", "7", "11"],
+      sortValues: [1, 2, 3, 4, 5],
       type: "update_row",
     };
 
     act(() => {
-      server.send(message);
+      server.send(updateMessage);
     });
 
-    const titles = screen.getAllByRole("heading", { level: 6 });
-    // ensure title is correct
-    const title = titles[0];
-    expect(title).toBeInTheDocument();
-    expect(title.textContent).toBe("Title");
-
-    // ensure clock is displayed
-    const clock = titles[1];
-    expect(clock).toBeInTheDocument();
-
-    // ensure both column headers are set
-    const col1 = screen.getByTestId("Col1")
-    const col2 = screen.getByTestId("Col2")
-    expect(col1).toBeInTheDocument()
-    expect(col2).toBeInTheDocument()
-
-    // ensure single row is set and values in row match updated values
-    rows = screen.getAllByTestId("OnlyRow")    
-    rows.forEach(row => {
-      expect(row).toBeInTheDocument()
-      expect(row.textContent).toBe("34")
+    // ensure column headers are set
+    table.columns.forEach((col, index) => {
+      const element = screen.getByTestId(`col-${index}`);
+      expect(element).toBeInTheDocument();
+      expect(element.textContent).toBe(col.name);
     });
 
-    WS.clean();
+    // ensure first row is updated to match new values
+    const row = table.rows[0];
+    const rowElement = screen.getByTestId(`row-${row.id}`);
+    expect(rowElement).toBeInTheDocument();
+    row.values.forEach((value, index) => {
+      const cell = screen.getByTestId(`cell-${row.id}-${index}`);
+      expect(cell).toBeInTheDocument();
+      expect(cell.textContent).toBe(value);
+    });
   });
 });

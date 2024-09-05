@@ -9,6 +9,7 @@
     "lint": "next lint",
     "format": "prettier . --write",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },

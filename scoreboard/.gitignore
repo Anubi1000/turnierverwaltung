@@ -1,5 +1,7 @@
 /.idea
 /.next
+/.swc
+/coverage
 /dist
 /node_modules
 next-env.d.ts

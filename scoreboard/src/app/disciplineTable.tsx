@@ -126,12 +126,12 @@ export function DisciplineTable({
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            {columns.map((column) => (
+            {columns.map((column, index) => (
               <StyledTableCell
                 key={column.name}
                 style={{ width: column.width }}
                 align={column.alignment}
-                data-testid={column.name}
+                data-testid={`col-${index}`}
               >
                 {column.name}
               </StyledTableCell>
@@ -140,9 +140,13 @@ export function DisciplineTable({
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <StyledTableRow key={row.id} data-testid={row.id}>
+            <StyledTableRow key={row.id} data-testid={`row-${row.id}`}>
               {row.values.map((entry, index) => (
-                <StyledTableCell key={index} align={columns[index].alignment}>
+                <StyledTableCell
+                  key={index}
+                  align={columns[index].alignment}
+                  data-testid={`cell-${row.id}-${index}`}
+                >
                   {entry}
                 </StyledTableCell>
               ))}
