@@ -19,9 +19,22 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
     override fun getAllForTournamentAsFlow(tournamentId: ObjectId): Flow<List<Participant>> {
         log.debug("Retrieving all participants as flow")
         return realm.query<Participant>("tournament._id == $0", tournamentId)
-            .sort("name", Sort.ASCENDING)
+            .sort("startNumber", Sort.ASCENDING)
             .asFlow()
             .map { it.list }
+    }
+
+    override suspend fun updateResult(
+        participantId: ObjectId,
+        disciplineId: ObjectId,
+        result: Participant.DisciplineResult
+    ) {
+        withContext(Dispatchers.IO) {
+            realm.write {
+                val dbParticipant = queryById<Participant>(participantId)!!
+                dbParticipant.results[disciplineId.toHexString()] = result
+            }
+        }
     }
 
     override suspend fun getAllForTournament(tournamentId: ObjectId): List<Participant> {

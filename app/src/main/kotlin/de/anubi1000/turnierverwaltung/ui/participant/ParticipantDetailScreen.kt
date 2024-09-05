@@ -1,6 +1,13 @@
 package de.anubi1000.turnierverwaltung.ui.participant
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,13 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
+import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantResultDestination
 import de.anubi1000.turnierverwaltung.ui.util.DeleteDialog
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailScreenBase
+import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantDetailViewModel
+import org.mongodb.kbson.ObjectId
 
 @Composable
 fun ParticipantDetailScreen(
@@ -42,6 +52,9 @@ fun ParticipantDetailScreen(
             is ParticipantDetailViewModel.State.Loading -> LoadingIndicator()
             is ParticipantDetailViewModel.State.Loaded -> LoadedContent(
                 state = state,
+                onDisciplineClick = {
+                    navController.navigate(ParticipantResultDestination(state.item.id, it))
+                },
                 modifier = Modifier.padding(padding)
             )
         }
@@ -62,6 +75,7 @@ fun ParticipantDetailScreen(
 @Composable
 private fun LoadedContent(
     state: ParticipantDetailViewModel.State.Loaded,
+    onDisciplineClick: (ObjectId) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     DetailContent(
@@ -91,6 +105,25 @@ private fun LoadedContent(
                 headlineText = state.item.club!!.name,
                 overlineText = strings.club
             )
+        }
+
+        DetailCard(
+            title = LocalStrings.current.disciplines
+        ) {
+            val colors = ListItemDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+            )
+
+            state.item.tournament.first().disciplines.forEach { discipline ->
+                ListItem(
+                    headlineContent = { Text(discipline.name) },
+                    trailingContent = {
+                        Icon(Icons.Default.ChevronRight)
+                    },
+                    colors = colors,
+                    modifier = Modifier.clickable(onClick = { onDisciplineClick(discipline.id) })
+                )
+            }
         }
     }
 }

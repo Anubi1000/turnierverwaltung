@@ -35,6 +35,10 @@ data class Strings(
         }
     },
 
+    val points: String = "Punkte",
+    val inputPoints: String = "Punkte eintragen",
+    val newRound: String = "Neue Runde",
+
     val genderSeparated: String = "Geschlechter getrennt",
 
     val genderName: (Participant.Gender) -> String = { arg1 ->

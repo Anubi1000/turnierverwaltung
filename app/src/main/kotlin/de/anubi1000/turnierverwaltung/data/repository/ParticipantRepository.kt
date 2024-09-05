@@ -10,5 +10,6 @@ interface ParticipantRepository {
     suspend fun getById(id: ObjectId): Participant?
     suspend fun insert(participant: Participant, tournamentId: ObjectId)
     suspend fun update(participant: Participant)
+    suspend fun updateResult(participantId: ObjectId, disciplineId: ObjectId, result: Participant.DisciplineResult)
     suspend fun delete(id: ObjectId)
 }

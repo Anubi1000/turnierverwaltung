@@ -24,12 +24,14 @@ class SelectableListItemTest : FunSpec({
                     headlineContent = { Text("Headline") },
                     supportingContent = { Text("Supporting") },
                     overlineContent = { Text("Overline") },
+                    leadingContent = { Text("Leading") },
+                    trailingContent = { Text("Trailing") },
                     selected = false,
                     onClick = {}
                 )
             }
 
-            arrayOf("Headline", "Supporting", "Overline").forEach {
+            arrayOf("Headline", "Supporting", "Overline", "Leading", "Trailing").forEach {
                 onNodeWithText(it).assertIsDisplayed()
             }
         }

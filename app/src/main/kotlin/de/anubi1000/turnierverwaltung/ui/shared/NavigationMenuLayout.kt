@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.People
@@ -24,7 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
@@ -259,23 +257,7 @@ private fun TournamentNavigationMenu(
                     navController.navigate(DisciplineListDestination)
                 }
             },
-            label = { Text("Disziplinen") },
-            icon = { Icon(Icons.Default.AddBox) }
-        )
-
-        NavigationRailItem(
-            selected = currentMenuOption == NavigationMenuOption.PARTICIPANTS,
-            onClick = {
-                if (currentMenuOption != NavigationMenuOption.PARTICIPANTS) {
-                    navController.navigate(ParticipantListDestination)
-                }
-            },
-            label = {
-                Text(
-                    text = "Team-Disziplinen",
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                ) },
+            label = { Text(LocalStrings.current.disciplines) },
             icon = { Icon(Icons.Default.Queue) }
         )
     }

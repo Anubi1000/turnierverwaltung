@@ -15,12 +15,16 @@ fun SelectableListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     overlineContent: @Composable (() -> Unit)? = null,
-    supportingContent: @Composable (() -> Unit)? = null
+    supportingContent: @Composable (() -> Unit)? = null,
+    leadingContent: @Composable (() -> Unit)? = null,
+    trailingContent: @Composable (() -> Unit)? = null
 ) {
     ListItem(
         headlineContent = headlineContent,
         supportingContent = supportingContent,
         overlineContent = overlineContent,
+        leadingContent = leadingContent,
+        trailingContent = trailingContent,
         colors = ListItemDefaults.colors(
             containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
         ),
