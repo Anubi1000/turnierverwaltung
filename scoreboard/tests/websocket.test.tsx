@@ -130,4 +130,64 @@ describe("WebSocket", () => {
       expect(cell.textContent).toBe(value);
     });
   });
+
+  it("check if new rows are inserted correctly", async () => {
+    // how to pass inital tournament to scoreboard?
+    const table = createDummyTable();
+    const initMessage: SetTournamentMessage = {
+      tables: [table],
+      title: "TestTournament",
+      type: "set_tournament",
+    };
+
+    render(<Page />);
+
+    await server.connected;
+
+    act(() => {
+      server.send(initMessage);
+    });
+
+    // apply update
+    const newRowId = "42"
+    const updateMessage: UpdateRowMessage = {
+      tableId: "Table",
+      rowId: newRowId,
+      values: ["1", "3", "5", "7", "11"],
+      sortValues: [1, 2, 3, 4, 5],
+      type: "update_row",
+    };
+
+    act(() => {
+      server.send(updateMessage);
+    });
+
+    // ensure column headers are set
+    table.columns.forEach((col, index) => {
+      const element = screen.getByTestId(`col-${index}`);
+      expect(element).toBeInTheDocument();
+      expect(element.textContent).toBe(col.name);
+    });
+
+    // ensure old rows are still present
+    table.rows.forEach((row, index) => {
+      const element = screen.getByTestId(`row-${row.id}`);
+      expect(element).toBeInTheDocument();
+      row.values.forEach((value, index) => {
+        const cell = screen.getByTestId(`cell-${row.id}-${index}`);
+        expect(cell).toBeInTheDocument();
+        expect(cell.textContent).toBe(value);
+      });
+    });
+
+    // ensure new row is present as well
+    const rowElement = screen.getByTestId(`row-${newRowId}`);
+    expect(rowElement).toBeInTheDocument();
+    updateMessage.values.forEach((value, index) => {
+      const cell = screen.getByTestId(`cell-${newRowId}-${index}`);
+      expect(cell).toBeInTheDocument();
+      expect(cell.textContent).toBe(value);
+    });
+
+  });
 });
