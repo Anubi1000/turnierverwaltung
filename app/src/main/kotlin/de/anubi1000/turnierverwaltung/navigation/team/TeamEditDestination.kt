@@ -8,9 +8,7 @@ import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
-import de.anubi1000.turnierverwaltung.ui.shared.TournamentNavigationLayout
-import de.anubi1000.turnierverwaltung.ui.shared.list.TeamListLayout
-import de.anubi1000.turnierverwaltung.ui.team.edit.TeamEditScreen
+import de.anubi1000.turnierverwaltung.ui.team.TeamEditScreen
 import de.anubi1000.turnierverwaltung.util.getDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.team.TeamEditViewModel
@@ -30,31 +28,26 @@ data class TeamEditDestination(val id: String?) : AppDestination {
 
 fun NavGraphBuilder.teamEditDestination(navController: NavController) = composable<TeamEditDestination> { backStackEntry ->
     val args: TeamEditDestination = backStackEntry.toRoute()
+    val viewModel: TeamEditViewModel = koinViewModel {
+        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
+    }
 
-    TournamentNavigationLayout(navController) {
-        TeamListLayout(navController) {
-            val viewModel: TeamEditViewModel = koinViewModel {
-                parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
-            }
-
-            LaunchedEffect(viewModel) {
-                if (args.id == null) {
-                    viewModel.loadCreate()
-                } else {
-                    viewModel.loadEdit(args.id.toObjectId())
-                }
-            }
-
-            TeamEditScreen(
-                navController = navController,
-                state = viewModel.state,
-                onSaveButtonClick = {
-                    viewModel.saveChanges {
-                        navController.navigateUp()
-                    }
-                },
-                isEditMode = args.id != null
-            )
+    LaunchedEffect(viewModel) {
+        if (args.id == null) {
+            viewModel.loadCreate()
+        } else {
+            viewModel.loadEdit(args.id.toObjectId())
         }
     }
+
+    TeamEditScreen(
+        navController = navController,
+        state = viewModel.state,
+        onSaveButtonClick = {
+            viewModel.saveChanges {
+                navController.popBackStack()
+            }
+        },
+        isEditMode = args.id != null
+    )
 }

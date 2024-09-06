@@ -7,8 +7,10 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.query.Sort
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import org.apache.logging.log4j.kotlin.logger
 import org.koin.core.annotation.Factory
 import org.mongodb.kbson.ObjectId
@@ -23,32 +25,39 @@ class TeamRepositoryImpl(private val realm: Realm) : TeamRepository {
             .map { it.list }
     }
 
-    override suspend fun updateTeam(team: Team) {
-        realm.write {
-            val dbTeam = queryById<Team>(team.id)!!
-            dbTeam.name = team.name
-            dbTeam.startNumber = team.startNumber
-            dbTeam.members = team.members.map { findLatest(it)!! }.toRealmList()
+    override suspend fun update(team: Team) {
+       withContext(Dispatchers.IO) {
+           realm.write {
+               val dbTeam = queryById<Team>(team.id)!!
+               dbTeam.name = team.name
+               dbTeam.startNumber = team.startNumber
+               dbTeam.members = team.members.map { findLatest(it)!! }.toRealmList()
+           }
+       }
+    }
 
+    override suspend fun getById(id: ObjectId): Team? {
+        return withContext(Dispatchers.IO) {
+            realm.queryById<Team>(id)
         }
     }
 
-    override suspend fun getTeamById(id: ObjectId): Team? {
-        return realm.queryById<Team>(id)
-    }
-
-    override suspend fun deleteTeamById(id: ObjectId) {
-        realm.write {
-            delete(queryById<Team>(id)!!)
+    override suspend fun delete(id: ObjectId) {
+        withContext(Dispatchers.IO) {
+            realm.write {
+                delete(queryById<Team>(id)!!)
+            }
         }
     }
 
-    override suspend fun insertTeam(team: Team, tournamentId: ObjectId) {
-        realm.write {
-            val tournament = queryById<Tournament>(tournamentId)!!
-            team.members = team.members.map { findLatest(it)!! }.toRealmList()
-            val dbTeam = copyToRealm(team)
-            tournament.teams.add(dbTeam)
+    override suspend fun insert(team: Team, tournamentId: ObjectId) {
+        withContext(Dispatchers.IO) {
+            realm.write {
+                val tournament = queryById<Tournament>(tournamentId)!!
+                team.members = team.members.map { findLatest(it)!! }.toRealmList()
+                val dbTeam = copyToRealm(team)
+                tournament.teams.add(dbTeam)
+            }
         }
     }
 

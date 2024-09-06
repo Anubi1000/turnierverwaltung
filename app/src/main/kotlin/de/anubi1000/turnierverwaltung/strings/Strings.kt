@@ -21,6 +21,7 @@ data class Strings(
     val dateOfTournament: String = "Datum des Turniers",
     val gender: String = "Geschlecht",
     val general: String = "Allgemein",
+    val members: String = "Mitglieder",
     val name: String = "Name",
     val startNumber: String = "Startnummer",
 

@@ -37,6 +37,7 @@ import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestin
 import de.anubi1000.turnierverwaltung.ui.club.ClubList
 import de.anubi1000.turnierverwaltung.ui.discipline.DisciplineList
 import de.anubi1000.turnierverwaltung.ui.participant.ParticipantList
+import de.anubi1000.turnierverwaltung.ui.team.TeamList
 import de.anubi1000.turnierverwaltung.ui.tournament.TournamentList
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.util.Icon
@@ -47,6 +48,7 @@ import de.anubi1000.turnierverwaltung.util.topAppBarPadding
 import de.anubi1000.turnierverwaltung.viewmodel.club.ClubListViewModel
 import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineListViewModel
 import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantListViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.team.TeamListViewModel
 import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentListViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -79,6 +81,7 @@ fun NavigationMenuLayout(
                 when (destination.navigationMenuOption) {
                     NavigationMenuOption.TOURNAMENTS -> TournamentListLayout(navController = navController)
                     NavigationMenuOption.PARTICIPANTS -> ParticipantListLayout(navController = navController)
+                    NavigationMenuOption.TEAMS -> TeamListLayout(navController = navController)
                     NavigationMenuOption.CLUBS -> ClubListLayout(navController = navController)
                     NavigationMenuOption.DISCIPLINES -> DisciplineListLayout(navController = navController)
                     else -> {}
@@ -122,6 +125,26 @@ private fun ParticipantListLayout(
     }
 
     ParticipantList(
+        navController = navController,
+        state = viewModel.state,
+        modifier = Modifier.padding(end = 8.dp).width(400.dp)
+    )
+}
+
+@Composable
+private fun TeamListLayout(
+    navController: NavController,
+    viewModel: TeamListViewModel = koinViewModel(
+        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>()
+    ) {
+        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
+    }
+) {
+    LaunchedEffect(viewModel) {
+        viewModel.loadList()
+    }
+
+    TeamList(
         navController = navController,
         state = viewModel.state,
         modifier = Modifier.padding(end = 8.dp).width(400.dp)

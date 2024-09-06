@@ -33,29 +33,24 @@ class TeamEditViewModel(
     fun loadCreate() {
         viewModelScope.launch {
             val team = EditTeam()
-            val participants = participantRepository.getAllForTournament(tournamentId)
-
+            state = State.Loaded(
+                item = team,
+                participants = participantRepository.getAllForTournament(tournamentId),
+                isValid = getValidationState(team)
+            )
             isEditMode = false
-
-            state = State.Loaded(team, getValidationState(team), participants)
         }
     }
 
     fun loadEdit(id: ObjectId) {
         viewModelScope.launch {
-            val team = teamRepository.getTeamById(id)!!.toEditTeam()
-            val participants = participantRepository.getAllForTournament(tournamentId)
-
+            val team = teamRepository.getById(id)!!.toEditTeam()
+            state = State.Loaded(
+                item = team,
+                participants = participantRepository.getAllForTournament(tournamentId),
+                isValid = getValidationState(team)
+            )
             isEditMode = true
-
-            state = State.Loaded(team, getValidationState(team), participants)
-        }
-    }
-
-    private fun getValidationState(team: EditTeam): ComposeState<Boolean> {
-        return derivedStateOf {
-            team.name.isNotBlank() &&
-                    team.members.isNotEmpty()
         }
     }
 
@@ -64,31 +59,34 @@ class TeamEditViewModel(
         require(currentState is State.Loaded && currentState.isValid.value)
 
         viewModelScope.launch {
-            val team = Team().apply {
-                id = currentState.team.id
-                name = currentState.team.name
-                startNumber = currentState.team.startNumber
-                members = currentState.team.members.map { memberId -> currentState.participants.find { it.id == memberId }!! }.toRealmList()
+            val team = Team().also {
+                it.id = currentState.item.id
+                it.name = currentState.item.name
+                it.startNumber = currentState.item.startNumber
+
+                it.members = currentState.item.members.map { id -> currentState.participants.find { participant -> participant.id == id }!! }.toRealmList()
             }
 
-            if (isEditMode) {
-                teamRepository.updateTeam(team)
+            if (!isEditMode) {
+                teamRepository.insert(team, tournamentId)
             } else {
-                teamRepository.insertTeam(
-                    team = team,
-                    tournamentId = tournamentId
-                )
+                teamRepository.update(team)
             }
-            onSaved(currentState.team.id)
+            onSaved(team.id)
         }
+    }
+
+    private fun getValidationState(team: EditTeam): ComposeState<Boolean> = derivedStateOf {
+        team.name.isNotBlank() &&
+                team.members.isNotEmpty()
     }
 
     sealed interface State {
         data object Loading : State
         data class Loaded(
-            val team: EditTeam,
-            val isValid: ComposeState<Boolean>,
-            val participants: List<Participant>
+            val item: EditTeam,
+            val participants: List<Participant>,
+            val isValid: ComposeState<Boolean>
         ) : State
     }
 }

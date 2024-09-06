@@ -38,9 +38,11 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
     }
 
     override suspend fun getAllForTournament(tournamentId: ObjectId): List<Participant> {
-        return realm.query<Participant>("tournament._id == $0", tournamentId)
-            .sort("name", Sort.ASCENDING)
-            .find()
+        return withContext(Dispatchers.IO) {
+            realm.query<Participant>("tournament._id == $0", tournamentId)
+                .sort("name", Sort.ASCENDING)
+                .find()
+        }
     }
 
     override suspend fun insert(participant: Participant, tournamentId: ObjectId) {

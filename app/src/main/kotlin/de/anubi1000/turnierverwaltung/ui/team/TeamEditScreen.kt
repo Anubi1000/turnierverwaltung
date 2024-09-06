@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.ui.team.edit
+package de.anubi1000.turnierverwaltung.ui.team
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -55,30 +55,31 @@ private fun LoadedContent(
     EditContent(
         modifier = modifier
     ) {
+        val strings = LocalStrings.current
         EditCard(
-            title = LocalStrings.current.general
+            title = strings.general
         ) {
             TextField(
-                value = state.team.name,
-                onValueChange = { state.team.name = it },
-                label = LocalStrings.current.name
+                value = state.item.name,
+                onValueChange = { state.item.name = it },
+                label = strings.name
             )
 
             TextField(
-                value = state.team.startNumber.toString(),
-                onValueChange = { newValue -> newValue.toIntOrNull()?.let { state.team.startNumber = it } },
-                label = "Startnummer"
+                value = state.item.startNumber.toString(),
+                onValueChange = { newValue -> newValue.toIntOrNull()?.let { state.item.startNumber = it } },
+                label = strings.startNumber
             )
         }
 
         EditCard(
-            title = "Mitglieder"
+            title = strings.members
         ) {
             Column {
                 val listItemColors = ListItemDefaults.colors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                 )
-                state.team.members.forEach { memberId ->
+                state.item.members.forEach { memberId ->
                     ListItem(
                         headlineContent = {
                             Text(state.participants.find { it.id == memberId }!!.name)
@@ -86,9 +87,9 @@ private fun LoadedContent(
                         trailingContent = {
                             TooltipIconButton(
                                 icon = Icons.Default.Delete,
-                                tooltip = LocalStrings.current.delete,
+                                tooltip = strings.delete,
                                 onClick = {
-                                    state.team.members.remove(memberId)
+                                    state.item.members.remove(memberId)
                                 }
                             )
                         },
@@ -100,11 +101,11 @@ private fun LoadedContent(
                     value = "",
                     label = "",
                 ) {
-                    state.participants.filter { !state.team.members.contains(it.id) }.forEach { participant ->
+                    state.participants.filter { !state.item.members.contains(it.id) }.forEach { participant ->
                         DropdownMenuItem(
                             text = { Text(participant.name) },
                             onClick = {
-                                state.team.members.add(participant.id)
+                                state.item.members.add(participant.id)
                                 it()
                             },
                             contentPadding = MenuDefaults.DropdownMenuItemContentPadding
