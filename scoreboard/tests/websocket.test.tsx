@@ -149,7 +149,7 @@ describe("WebSocket", () => {
     });
 
     // apply update
-    const newRowId = "42"
+    const newRowId = "42";
     const updateMessage: UpdateRowMessage = {
       tableId: "Table",
       rowId: newRowId,
@@ -188,6 +188,5 @@ describe("WebSocket", () => {
       expect(cell).toBeInTheDocument();
       expect(cell.textContent).toBe(value);
     });
-
   });
 });

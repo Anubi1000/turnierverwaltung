@@ -91,12 +91,13 @@ function DisciplineTitleBar({
     </AppBar>
   );
 }
+
 export function DisciplineCarousel({ tables }: { tables: TournamentTable[] }) {
   const [index, setIndex] = useState(0);
 
   const nextDiscipline = useCallback(() => {
     setIndex((prevIndex) =>
-      prevIndex >= disciplines.length - 1 ? 0 : prevIndex + 1,
+      prevIndex >= tables.length - 1 ? 0 : prevIndex + 1,
     );
   }, []);
 
