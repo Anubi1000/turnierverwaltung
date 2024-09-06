@@ -9,7 +9,7 @@ import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.ui.participant.ParticipantResultScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
-import de.anubi1000.turnierverwaltung.viewmodel.discipline.ParticipantResultViewModel
+import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantResultViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.koin.compose.viewmodel.koinViewModel

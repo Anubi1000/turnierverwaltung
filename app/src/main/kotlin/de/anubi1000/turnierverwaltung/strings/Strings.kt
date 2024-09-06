@@ -24,6 +24,10 @@ data class Strings(
     val name: String = "Name",
     val startNumber: String = "Startnummer",
 
+    val yesno: (Boolean) -> String = { arg1 ->
+        if (arg1) "Ja" else "Nein"
+    },
+
     val values: String = "Werte",
     val newValue: String = "Neuer Wert",
     val isAdded: String = "Wird addiert",
@@ -31,7 +35,7 @@ data class Strings(
         buildString {
             append(isAdded)
             append(": ")
-            append(if (arg1) "Ja" else "Nein")
+            append(yesno(arg1))
         }
     },
 
@@ -40,7 +44,6 @@ data class Strings(
     val newRound: String = "Neue Runde",
 
     val genderSeparated: String = "Geschlechter getrennt",
-
     val genderName: (Participant.Gender) -> String = { arg1 ->
         when (arg1) {
             Participant.Gender.MALE -> "Männlich"

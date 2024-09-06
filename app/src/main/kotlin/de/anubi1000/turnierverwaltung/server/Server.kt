@@ -1,6 +1,7 @@
 package de.anubi1000.turnierverwaltung.server
 
 import androidx.compose.ui.res.useResource
+import de.anubi1000.turnierverwaltung.database.model.Club
 import de.anubi1000.turnierverwaltung.database.model.Discipline
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Tournament
@@ -33,10 +34,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.kotlin.logger
 import org.koin.core.annotation.Single
@@ -63,6 +64,13 @@ class Server(private val realm: Realm) {
     }
 
     private suspend fun DefaultWebSocketServerSession.handleConnection() {
+        currentTournamentId.value?.let { tournamentId ->
+            val message = withContext(Dispatchers.IO) {
+                realm.queryById<Tournament>(tournamentId)!!.toSetTournamentMessage()
+            }
+            sendSerialized(message)
+        }
+
         val job = launch {
             messageFlow.asSharedFlow()
                 .collect(this@handleConnection::sendSerialized)
@@ -77,51 +85,52 @@ class Server(private val realm: Realm) {
 
         var job: Job? = null
         currentTournamentId.onEach { id ->
-            if (id == null) return@onEach
             job?.cancel()
+            if (id == null) return@onEach
+
             job = coroutineScope.launch {
-                launch {
-                    handelTournamentUpdates(id)
-                }
-                launch {
-                    handleParticipantUpdates(id)
-                }
-                launch {
-                    handleDisciplineUpdates(id)
-                }
+                handelTournamentUpdates(id)
+                handleParticipantUpdates(id)
+                handleClubUpdates(id)
+                handleDisciplineUpdates(id)
             }
         }.launchIn(coroutineScope)
     }
 
-    private suspend fun handelTournamentUpdates(id: ObjectId) {
+    private fun CoroutineScope.handelTournamentUpdates(id: ObjectId) = launch {
         realm.query<Tournament>("_id == $0", id).first().asFlow(
             keyPaths = listOf("name")
-        ).collectLatest { change ->
+        ).collect { change ->
             val obj = change.obj
             if (obj != null) {
                 messageFlow.emit(obj.toSetTournamentMessage())
+            } else {
+                currentTournamentId.value = null
             }
         }
     }
 
-    private suspend fun handleDisciplineUpdates(id: ObjectId) {
-        realm.query<Discipline>("tournament._id == $0", id).asFlow().collectLatest { change ->
-            if (change !is UpdatedResults) return@collectLatest
+    private fun CoroutineScope.handleDisciplineUpdates(id: ObjectId) = launch {
+        realm.query<Discipline>("tournament._id == $0", id).asFlow().collect { change ->
+            if (change !is UpdatedResults) return@collect
 
             messageFlow.emit(realm.queryById<Tournament>(id)!!.toSetTournamentMessage())
         }
     }
 
-    private suspend fun handleParticipantUpdates(id: ObjectId) {
-        realm.query<Participant>("tournament._id == $0", id).asFlow().collectLatest { change ->
-            if (change !is UpdatedResults) return@collectLatest
-
-            if (change.deletions.isNotEmpty()) {
-                messageFlow.emit(realm.queryById<Tournament>(id)!!.toSetTournamentMessage())
-                return@collectLatest
-            }
+    private fun CoroutineScope.handleParticipantUpdates(id: ObjectId) = launch {
+        realm.query<Participant>("tournament._id == $0", id).asFlow().collect { change ->
+            if (change !is UpdatedResults) return@collect
 
             // TODO: Change to update message
+            messageFlow.emit(realm.queryById<Tournament>(id)!!.toSetTournamentMessage())
+        }
+    }
+
+    private fun CoroutineScope.handleClubUpdates(id: ObjectId) = launch {
+        realm.query<Club>("tournament._id == $0", id).asFlow().collect { change ->
+            if (change !is UpdatedResults) return@collect
+
             messageFlow.emit(realm.queryById<Tournament>(id)!!.toSetTournamentMessage())
         }
     }

@@ -80,6 +80,10 @@ private fun LoadedContent(
                 headlineText = state.item.name,
                 overlineText = strings.name
             )
+            DetailItem(
+                headlineText = strings.yesno(state.item.isGenderSeparated),
+                overlineText = strings.genderSeparated
+            )
         }
 
         DetailCard(

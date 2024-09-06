@@ -55,6 +55,7 @@ class DisciplineEditViewModel(
             val discipline = Discipline().also { discipline ->
                 discipline.id = currentState.item.id
                 discipline.name = currentState.item.name
+                discipline.isGenderSeparated = currentState.item.isGenderSeparated
 
                 discipline.values = currentState.item.values.map { value ->
                     Discipline.Value().also {
