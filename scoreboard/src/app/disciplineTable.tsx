@@ -2,6 +2,7 @@ import * as React from "react";
 import { useEffect, useRef } from "react";
 import { TournamentTable } from "@/app/interfaces";
 import {
+  Stack,
   styled,
   Table,
   TableBody,
@@ -10,7 +11,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Stack,
   Typography,
 } from "@mui/material";
 

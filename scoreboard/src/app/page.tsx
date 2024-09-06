@@ -11,8 +11,6 @@ import {
 import useWebSocket from "react-use-websocket";
 import { Scoreboard } from "@/app/scoreboard";
 
-const socketUrl = "ws://127.0.0.1:8080/ws";
-
 function compareRows(
   firstRow: TournamentTableRow,
   secondRow: TournamentTableRow,
@@ -36,12 +34,28 @@ function sortTables(tables: TournamentTable[]) {
   });
 }
 
+function getWebsocketUrl(): string {
+  let socketUrl;
+  if (process.env.NODE_ENV == "production") {
+    const location = window.location;
+    if (location.protocol === "https:") {
+      socketUrl = "wss:";
+    } else {
+      socketUrl = "ws:";
+    }
+    socketUrl += "//" + location.host + "/ws";
+  } else {
+    socketUrl = "ws://127.0.0.1:8080/ws";
+  }
+  return socketUrl;
+}
+
 export default function Page() {
   const [tournament, updateTournament] = useImmer<Tournament | undefined>(
     undefined,
   );
 
-  const webSocket = useWebSocket(socketUrl, {
+  const webSocket = useWebSocket(getWebsocketUrl, {
     onOpen: () => console.log("opened"),
     // Will attempt to reconnect on all close events, such as server shutting down
     shouldReconnect: (closeEvent) => true,

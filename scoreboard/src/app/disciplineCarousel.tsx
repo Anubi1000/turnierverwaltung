@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { AppBar, Stack, Toolbar, Typography } from "@mui/material";
 import { DisciplineTable } from "@/app/disciplineTable";
 import { TournamentTable } from "@/app/interfaces";

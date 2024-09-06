@@ -1,4 +1,4 @@
-import { Tournament, TournamentTable } from "@/app/interfaces";
+import { Tournament } from "@/app/interfaces";
 import { AppBar, Stack, Toolbar, Typography } from "@mui/material";
 import { Clock } from "@/app/clock";
 import { DisciplineCarousel } from "@/app/disciplineCarousel";
