@@ -1,5 +1,6 @@
 package de.anubi1000.turnierverwaltung.server.messages
 
+import de.anubi1000.turnierverwaltung.database.model.Discipline
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import kotlinx.serialization.Required
@@ -39,12 +40,75 @@ data class SetTournamentMessage(
         data class Row(
             val id: String,
             val values: List<String>,
-            val sortValues: List<Int>,
+            val sortValues: List<Double>,
         )
     }
 }
 
 fun Tournament.toSetTournamentMessage(): SetTournamentMessage {
+    return SetTournamentMessage(
+        title = this.name,
+        tables = this.disciplines.flatMap { discipline ->
+            getDisciplineTables(discipline)
+        }
+    )
+}
+
+private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTournamentMessage.Table> {
+    return if (discipline.isGenderSeparated) {
+        listOf()
+    } else {
+        listOf(SetTournamentMessage.Table(
+            id = discipline.id.toHexString(),
+            name = discipline.name,
+            columns = listOf(
+                SetTournamentMessage.Table.Column(
+                    name = "Name",
+                    width = "100%",
+                    alignment = SetTournamentMessage.Table.Column.Alignment.LEFT,
+                ),
+                SetTournamentMessage.Table.Column(
+                    name = "Punkte",
+                    width = "200px",
+                    alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
+                )
+            ),
+            rows = participants.filter { participant ->
+                val disciplineResult = participant.results[discipline.id.toHexString()]
+                disciplineResult != null && disciplineResult.rounds.isNotEmpty()
+            }.map { getParticipantRow(it, discipline) }
+        ))
+    }
+}
+
+private fun getParticipantRow(participant: Participant, discipline: Discipline): SetTournamentMessage.Table.Row {
+    val disciplineResult = participant.results[discipline.id.toHexString()]!!
+    val points = disciplineResult.rounds.map { round ->
+        var points = 0.0
+        discipline.values.forEach { disciplineValue ->
+            val value = round.values[disciplineValue.id.toHexString()]!!
+            if (disciplineValue.isAdded) {
+                points += value
+            } else {
+                points -= value
+            }
+        }
+        points
+    }.max()
+
+    return SetTournamentMessage.Table.Row(
+        id = participant.id.toHexString(),
+        values = listOf(
+            participant.name,
+            points.toString()
+        ),
+        sortValues = listOf(
+            points
+        )
+    )
+}
+
+/*fun Tournament.toSetTournamentMessage(): SetTournamentMessage {
     return SetTournamentMessage(
         title = this.name,
         // Some temp data
@@ -128,4 +192,4 @@ fun Tournament.toSetTournamentMessage(): SetTournamentMessage {
             }
         }
     )
-}
+}*/

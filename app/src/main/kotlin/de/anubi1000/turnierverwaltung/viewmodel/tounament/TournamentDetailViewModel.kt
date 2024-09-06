@@ -43,7 +43,7 @@ class TournamentDetailViewModel(
         require(currentState is State.Loaded)
 
         log.debug("Changing tournament for scoreboard to current one")
-        server.setCurrentTournament(currentState.item)
+        server.setCurrentTournament(currentState.item.id)
     }
 
     companion object {
