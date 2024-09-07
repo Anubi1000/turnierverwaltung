@@ -1,6 +1,5 @@
 package de.anubi1000.turnierverwaltung.database.model
 
-import de.anubi1000.turnierverwaltung.util.Identifiable
 import io.realm.kotlin.ext.backlinks
 import io.realm.kotlin.ext.realmDictionaryOf
 import io.realm.kotlin.ext.realmListOf
@@ -12,11 +11,11 @@ import io.realm.kotlin.types.annotations.PersistedName
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mongodb.kbson.ObjectId
 
-class Team() : RealmObject, Identifiable {
+class Team() : RealmObject {
     // id
     @PrimaryKey
     @PersistedName("_id")
-    override var id: ObjectId = ObjectId()
+    var id: ObjectId = ObjectId()
 
     // name
     var name: String = ""

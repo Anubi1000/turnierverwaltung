@@ -3,11 +3,14 @@ package de.anubi1000.turnierverwaltung.ui.discipline
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -16,6 +19,7 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineEditDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineListDestination
+import de.anubi1000.turnierverwaltung.navigation.discipline.TeamDisciplineEditDestination
 import de.anubi1000.turnierverwaltung.ui.util.CenteredText
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.SelectableListItem
@@ -31,12 +35,14 @@ fun DisciplineList(
     state: DisciplineListViewModel.State,
     modifier: Modifier = Modifier
 ) {
+    var showCreateDialog by remember { mutableStateOf(false) }
+
     ListBase(
         title = LocalStrings.current.disciplines,
         onCreateButtonClick = {
             val currentDestination = navController.getCurrentDestination()
             if (currentDestination !is DisciplineEditDestination || currentDestination.id != null) {
-                navController.navigate(DisciplineEditDestination())
+                showCreateDialog = true
             }
         },
         modifier = modifier
@@ -49,6 +55,22 @@ fun DisciplineList(
             )
         }
     }
+
+    if (showCreateDialog) {
+        CreateDisciplineDialog(
+            onDismissRequest = {
+                showCreateDialog = false
+            },
+            onCreateDiscipline = {
+                showCreateDialog = false
+                navController.navigate(DisciplineEditDestination())
+            },
+            onCreateTeamDiscipline = {
+                showCreateDialog = false
+                navController.navigate(TeamDisciplineEditDestination())
+            }
+        )
+    }
 }
 
 @Composable
@@ -57,17 +79,17 @@ private fun LoadedContent(
     state: DisciplineListViewModel.State.Loaded,
     modifier: Modifier = Modifier
 ) {
-    val items by state.itemFlow.collectAsStateWithLifecycle()
+    val disciplines by state.disciplineFlow.collectAsStateWithLifecycle()
 
-    if (items.isEmpty()) {
+    if (disciplines.isEmpty()) {
         val strings = LocalStrings.current
 
         CenteredText(
             text = strings.xDontExist(strings.disciplines)
         )
     } else {
+        val teamDisciplines by state.teamDisciplineFlow.collectAsStateWithLifecycle()
         val currentDestination by navController.currentDestinationAsState()
-
         val currentItemId by remember(navController) {
             derivedStateOf {
                 when (val destination = currentDestination) {
@@ -82,7 +104,37 @@ private fun LoadedContent(
         LazyColumn(
             modifier = modifier
         ) {
-            items(items, key = { it.id }) { item ->
+            item(key = "disciplines", contentType = 0) {
+                Text(
+                    text = LocalStrings.current.disciplines,
+                    modifier = Modifier.padding(start = 10.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+            items(disciplines, key = { it.id }, contentType = { 1 }) { item ->
+                SelectableListItem(
+                    headlineContent = { Text(item.name) },
+                    selected = currentItemId == item.id,
+                    onClick = {
+                        if (currentItemId != item.id) {
+                            navController.navigate(DisciplineDetailDestination(item.id)) {
+                                popUpTo<DisciplineListDestination>()
+                            }
+                        }
+                    },
+                    modifier = itemModifier
+                )
+            }
+
+            item(key = "team_disciplines", contentType = 2) {
+                Text(
+                    text = LocalStrings.current.teamDisciplines,
+                    modifier = Modifier.padding(start = 10.dp, top = 16.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            items(teamDisciplines, key = { it.id }, contentType = { 3 }) { item ->
                 SelectableListItem(
                     headlineContent = { Text(item.name) },
                     selected = currentItemId == item.id,

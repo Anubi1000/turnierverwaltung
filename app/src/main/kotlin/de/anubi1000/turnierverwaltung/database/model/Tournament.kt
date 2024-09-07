@@ -67,5 +67,5 @@ class Tournament() : RealmObject {
     /**
      * The list of team disciplines that are in the tournament.
      */
-    var teamDisciplines: RealmList<Team> = realmListOf()
+    var teamDisciplines: RealmList<TeamDiscipline> = realmListOf()
 }

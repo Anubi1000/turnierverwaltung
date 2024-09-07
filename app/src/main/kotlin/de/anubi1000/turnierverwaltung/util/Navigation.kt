@@ -18,6 +18,7 @@ import de.anubi1000.turnierverwaltung.navigation.club.ClubListDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineEditDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineListDestination
+import de.anubi1000.turnierverwaltung.navigation.discipline.TeamDisciplineEditDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
@@ -52,7 +53,8 @@ private val destinations: Map<String, KClass<out AppDestination>> = listOf(
 
     DisciplineListDestination::class,
     DisciplineDetailDestination::class,
-    DisciplineEditDestination::class
+    DisciplineEditDestination::class,
+    TeamDisciplineEditDestination::class
 ).associateBy { it.qualifiedName!! }
 
 fun NavController.getCurrentDestination(): AppDestination? = getDestination(currentBackStackEntry)

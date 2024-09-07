@@ -18,6 +18,7 @@ data class Strings(
     val edit: String = "Bearbeiten",
     val save: String = "Speichern",
 
+    val basedOn: String = "Basiert auf",
     val dateOfTournament: String = "Datum des Turniers",
     val gender: String = "Geschlecht",
     val general: String = "Allgemein",
@@ -123,6 +124,9 @@ data class Strings(
 
     val discipline: String = "Disziplin",
     val disciplines: String = "Disziplinen",
+    val teamDiscipline: String = "Team-Disziplin",
+    val teamDisciplines: String = "Team-Disziplinen",
+    val newDiscipline: String = "Neue Disziplin",
     val noDisciplineSelected: String = "Keine Disziplin ausgewählt",
 
     val scoreboard: String = "Scoreboard",
