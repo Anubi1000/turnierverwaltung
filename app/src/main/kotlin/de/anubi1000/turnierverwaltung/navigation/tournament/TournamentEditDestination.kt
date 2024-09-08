@@ -17,7 +17,7 @@ import org.mongodb.kbson.ObjectId
 
 @Serializable
 data class TournamentEditDestination(
-    val id: String?
+    val id: String?,
 ) : AppDestination {
     constructor(tournamentId: ObjectId? = null) : this(tournamentId?.toHexString())
 
@@ -47,6 +47,6 @@ fun NavGraphBuilder.tournamentEditDestination(navController: NavController) = co
                 }
             }
         },
-        isEditMode = args.id != null
+        isEditMode = args.id != null,
     )
 }

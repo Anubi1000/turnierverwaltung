@@ -56,12 +56,12 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun NavigationMenuLayout(
     navController: NavController,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val currentDestination by navController.currentDestinationAsState()
 
     Surface(
-        color = MaterialTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.background,
     ) {
         Row {
             if (currentDestination != null) {
@@ -69,11 +69,11 @@ fun NavigationMenuLayout(
                 when (destination.navigationMenuOption) {
                     NavigationMenuOption.TOURNAMENTS -> TopLevelNavigationMenu(
                         navController = navController,
-                        currentDestination = destination
+                        currentDestination = destination,
                     )
                     NavigationMenuOption.PARTICIPANTS, NavigationMenuOption.TEAMS, NavigationMenuOption.CLUBS, NavigationMenuOption.DISCIPLINES -> TournamentNavigationMenu(
                         navController = navController,
-                        currentDestination = destination
+                        currentDestination = destination,
                     )
                     else -> {}
                 }
@@ -97,8 +97,8 @@ fun NavigationMenuLayout(
 private fun TournamentListLayout(
     navController: NavController,
     viewModel: TournamentListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<TournamentListDestination>()
-    )
+        viewModelStoreOwner = navController.getBackStackEntry<TournamentListDestination>(),
+    ),
 ) {
     LaunchedEffect(viewModel) {
         viewModel.loadList()
@@ -107,7 +107,7 @@ private fun TournamentListLayout(
     TournamentList(
         navController = navController,
         state = viewModel.state,
-        modifier = Modifier.padding(end = 8.dp).width(400.dp)
+        modifier = Modifier.padding(end = 8.dp).width(400.dp),
     )
 }
 
@@ -115,10 +115,10 @@ private fun TournamentListLayout(
 private fun ParticipantListLayout(
     navController: NavController,
     viewModel: ParticipantListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<TournamentDetailDestination>()
+        viewModelStoreOwner = navController.getBackStackEntry<TournamentDetailDestination>(),
     ) {
         parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
-    }
+    },
 ) {
     LaunchedEffect(viewModel) {
         viewModel.loadList()
@@ -127,7 +127,7 @@ private fun ParticipantListLayout(
     ParticipantList(
         navController = navController,
         state = viewModel.state,
-        modifier = Modifier.padding(end = 8.dp).width(400.dp)
+        modifier = Modifier.padding(end = 8.dp).width(400.dp),
     )
 }
 
@@ -135,10 +135,10 @@ private fun ParticipantListLayout(
 private fun TeamListLayout(
     navController: NavController,
     viewModel: TeamListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>()
+        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>(),
     ) {
         parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
-    }
+    },
 ) {
     LaunchedEffect(viewModel) {
         viewModel.loadList()
@@ -147,7 +147,7 @@ private fun TeamListLayout(
     TeamList(
         navController = navController,
         state = viewModel.state,
-        modifier = Modifier.padding(end = 8.dp).width(400.dp)
+        modifier = Modifier.padding(end = 8.dp).width(400.dp),
     )
 }
 
@@ -155,10 +155,10 @@ private fun TeamListLayout(
 private fun ClubListLayout(
     navController: NavController,
     viewModel: ClubListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>()
+        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>(),
     ) {
         parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
-    }
+    },
 ) {
     LaunchedEffect(viewModel) {
         viewModel.loadList()
@@ -167,7 +167,7 @@ private fun ClubListLayout(
     ClubList(
         navController = navController,
         state = viewModel.state,
-        modifier = Modifier.padding(end = 8.dp).width(400.dp)
+        modifier = Modifier.padding(end = 8.dp).width(400.dp),
     )
 }
 
@@ -175,10 +175,10 @@ private fun ClubListLayout(
 private fun DisciplineListLayout(
     navController: NavController,
     viewModel: DisciplineListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>()
+        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>(),
     ) {
         parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
-    }
+    },
 ) {
     LaunchedEffect(viewModel) {
         viewModel.loadList()
@@ -187,14 +187,14 @@ private fun DisciplineListLayout(
     DisciplineList(
         navController = navController,
         state = viewModel.state,
-        modifier = Modifier.padding(end = 8.dp).width(400.dp)
+        modifier = Modifier.padding(end = 8.dp).width(400.dp),
     )
 }
 
 @Composable
 private fun TopLevelNavigationMenu(
     navController: NavController,
-    currentDestination: AppDestination
+    currentDestination: AppDestination,
 ) {
     NavigationRail {
         val currentMenuOption = currentDestination.navigationMenuOption
@@ -208,13 +208,13 @@ private fun TopLevelNavigationMenu(
             },
             label = { Text(LocalStrings.current.tournaments) },
             icon = { Icon(Icons.Default.Dashboard) },
-            modifier = Modifier.topAppBarPadding()
+            modifier = Modifier.topAppBarPadding(),
         )
         NavigationRailItem(
             selected = false,
             onClick = {},
             label = { Text(LocalStrings.current.scoreboard) },
-            icon = { Icon(Icons.Default.Scoreboard) }
+            icon = { Icon(Icons.Default.Scoreboard) },
         )
     }
 }
@@ -222,21 +222,21 @@ private fun TopLevelNavigationMenu(
 @Composable
 private fun TournamentNavigationMenu(
     navController: NavController,
-    currentDestination: AppDestination
+    currentDestination: AppDestination,
 ) {
     NavigationRail(
-        modifier = Modifier.width(80.dp)
+        modifier = Modifier.width(80.dp),
     ) {
         val currentMenuOption = currentDestination.navigationMenuOption
 
         Box(
             modifier = Modifier.size(width = 80.dp, height = 60.dp),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             TooltipIconButton(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
                 tooltip = LocalStrings.current.back,
-                onClick = { navController.popBackStack<TournamentDetailDestination>(false) }
+                onClick = { navController.popBackStack<TournamentDetailDestination>(false) },
             )
         }
 
@@ -248,7 +248,7 @@ private fun TournamentNavigationMenu(
                 }
             },
             label = { Text(LocalStrings.current.participants) },
-            icon = { Icon(Icons.Default.Person) }
+            icon = { Icon(Icons.Default.Person) },
         )
 
         NavigationRailItem(
@@ -259,7 +259,7 @@ private fun TournamentNavigationMenu(
                 }
             },
             label = { Text(LocalStrings.current.teams) },
-            icon = { Icon(Icons.Default.People) }
+            icon = { Icon(Icons.Default.People) },
         )
 
         NavigationRailItem(
@@ -270,7 +270,7 @@ private fun TournamentNavigationMenu(
                 }
             },
             label = { Text(LocalStrings.current.clubs) },
-            icon = { Icon(Icons.Default.Groups) }
+            icon = { Icon(Icons.Default.Groups) },
         )
 
         NavigationRailItem(
@@ -281,7 +281,7 @@ private fun TournamentNavigationMenu(
                 }
             },
             label = { Text(LocalStrings.current.disciplines) },
-            icon = { Icon(Icons.Default.Queue) }
+            icon = { Icon(Icons.Default.Queue) },
         )
     }
 }

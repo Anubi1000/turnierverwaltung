@@ -10,19 +10,17 @@ import org.mongodb.kbson.ObjectId
 @Stable
 class EditClub(
     val id: ObjectId = ObjectId(),
-    name: String = ""
+    name: String = "",
 ) {
     var name by mutableStateOf(name)
 
-    fun toClub(): Club {
-        return Club().also {
-            it.id = id
-            it.name = name
-        }
+    fun toClub() = Club().also {
+        it.id = id
+        it.name = name
     }
 }
 
 fun Club.toEditClub() = EditClub(
     id = id,
-    name = name
+    name = name,
 )

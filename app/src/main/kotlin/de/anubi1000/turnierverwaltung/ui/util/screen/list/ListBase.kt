@@ -21,7 +21,7 @@ fun ListBase(
     title: String,
     modifier: Modifier = Modifier,
     onCreateButtonClick: (() -> Unit)? = null,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -32,18 +32,18 @@ fun ListBase(
                         TooltipIconButton(
                             icon = Icons.Default.Add,
                             tooltip = LocalStrings.current.create,
-                            onClick = onClick
+                            onClick = onClick,
                         )
                     }
-                }
+                },
             )
         },
-        modifier = modifier
+        modifier = modifier,
     ) {
         Surface(
             modifier = Modifier.padding(it).fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
-            content = content
+            content = content,
         )
     }
 }

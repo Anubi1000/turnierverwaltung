@@ -24,7 +24,7 @@ data object DisciplineListDestination : AppDestination {
 fun NavGraphBuilder.disciplineListDestination(navController: NavController) = composable<DisciplineListDestination> {
     Box(
         modifier = Modifier.fillMaxSize().topAppBarPadding(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(LocalStrings.current.noDisciplineSelected)
     }

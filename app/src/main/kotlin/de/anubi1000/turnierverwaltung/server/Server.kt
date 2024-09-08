@@ -99,7 +99,7 @@ class Server(private val realm: Realm) {
 
     private fun CoroutineScope.handelTournamentUpdates(id: ObjectId) = launch {
         realm.query<Tournament>("_id == $0", id).first().asFlow(
-            keyPaths = listOf("name")
+            keyPaths = listOf("name"),
         ).collect { change ->
             val obj = change.obj
             if (obj != null) {
@@ -154,7 +154,7 @@ private fun Application.installStatusPages() {
         status(HttpStatusCode.NotFound) { call, _ ->
             call.respondBytes(
                 contentType = ContentType.Text.Html,
-                status = HttpStatusCode.NotFound
+                status = HttpStatusCode.NotFound,
             ) {
                 useResource("scoreboard/404.html", InputStream::readAllBytes)
             }

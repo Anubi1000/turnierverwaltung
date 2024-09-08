@@ -21,6 +21,6 @@ data object ClubListDestination : AppDestination {
 fun NavGraphBuilder.clubListDestination(navController: NavController) = composable<ClubListDestination> {
     CenteredText(
         text = LocalStrings.current.noClubSelected,
-        modifier = Modifier.topAppBarPadding()
+        modifier = Modifier.topAppBarPadding(),
     )
 }

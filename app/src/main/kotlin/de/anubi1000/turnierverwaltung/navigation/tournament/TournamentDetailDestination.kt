@@ -17,7 +17,7 @@ import org.mongodb.kbson.ObjectId
 
 @Serializable
 data class TournamentDetailDestination(
-    val id: String
+    val id: String,
 ) : AppDestination {
     constructor(tournamentId: ObjectId) : this(tournamentId.toHexString())
 
@@ -43,6 +43,6 @@ fun NavGraphBuilder.tournamentDetailDestinations(navController: NavController) =
         },
         showOnScoreboard = {
             viewModel.showTournamentOnScoreboard()
-        }
+        },
     )
 }

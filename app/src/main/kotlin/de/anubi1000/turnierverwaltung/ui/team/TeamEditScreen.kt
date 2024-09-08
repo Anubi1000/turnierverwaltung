@@ -41,7 +41,7 @@ fun TeamEditScreen(
             is TeamEditViewModel.State.Loading -> LoadingIndicator()
             is TeamEditViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(padding),
             )
         }
     }
@@ -50,34 +50,34 @@ fun TeamEditScreen(
 @Composable
 private fun LoadedContent(
     state: TeamEditViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     EditContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val strings = LocalStrings.current
         EditCard(
-            title = strings.general
+            title = strings.general,
         ) {
             TextField(
                 value = state.item.name,
                 onValueChange = { state.item.name = it },
-                label = strings.name
+                label = strings.name,
             )
 
             TextField(
                 value = state.item.startNumber.toString(),
                 onValueChange = { newValue -> newValue.toIntOrNull()?.let { state.item.startNumber = it } },
-                label = strings.startNumber
+                label = strings.startNumber,
             )
         }
 
         EditCard(
-            title = strings.members
+            title = strings.members,
         ) {
             Column {
                 val listItemColors = ListItemDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 )
                 state.item.members.forEach { memberId ->
                     ListItem(
@@ -90,10 +90,10 @@ private fun LoadedContent(
                                 tooltip = strings.delete,
                                 onClick = {
                                     state.item.members.remove(memberId)
-                                }
+                                },
                             )
                         },
-                        colors = listItemColors
+                        colors = listItemColors,
                     )
                 }
 
@@ -108,7 +108,7 @@ private fun LoadedContent(
                                 state.item.members.add(participant.id)
                                 it()
                             },
-                            contentPadding = MenuDefaults.DropdownMenuItemContentPadding
+                            contentPadding = MenuDefaults.DropdownMenuItemContentPadding,
                         )
                     }
                 }

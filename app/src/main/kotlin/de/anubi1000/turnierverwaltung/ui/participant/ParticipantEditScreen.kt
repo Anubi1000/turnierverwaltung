@@ -24,23 +24,23 @@ fun ParticipantEditScreen(
     navController: NavController,
     state: ParticipantEditViewModel.State,
     onSaveButtonClick: () -> Unit = {},
-    isEditMode: Boolean = false
+    isEditMode: Boolean = false,
 ) {
     val strings = LocalStrings.current
 
     EditScreenBase(
         navController = navController,
         title = strings.editScreenTitle(isEditMode, strings.participant),
-        onSaveButtonClick = if (state is ParticipantEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null
+        onSaveButtonClick = if (state is ParticipantEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null,
     ) { padding ->
         val modifier = Modifier.padding(padding)
         when (state) {
             is ParticipantEditViewModel.State.Loading -> LoadingIndicator(
-                modifier = modifier
+                modifier = modifier,
             )
             is ParticipantEditViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -50,31 +50,31 @@ fun ParticipantEditScreen(
 @Composable
 private fun LoadedContent(
     state: ParticipantEditViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     EditContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val strings = LocalStrings.current
 
         EditCard(
-            title = strings.general
+            title = strings.general,
         ) {
             TextField(
                 value = state.item.name,
                 onValueChange = { state.item.name = it },
-                label = strings.name
+                label = strings.name,
             )
 
             TextField(
                 value = state.item.startNumber.toString(),
                 onValueChange = { newValue -> newValue.toIntOrNull()?.let { state.item.startNumber = it } },
-                label = strings.startNumber
+                label = strings.startNumber,
             )
 
             DropdownMenu(
                 value = strings.genderName(state.item.gender),
-                label = strings.gender
+                label = strings.gender,
             ) {
                 Participant.Gender.entries.forEach { entry ->
                     DropdownMenuItem(
@@ -85,7 +85,7 @@ private fun LoadedContent(
                             state.item.gender = entry
                             it()
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     )
                 }
             }
@@ -95,7 +95,7 @@ private fun LoadedContent(
                     val club = state.clubs.find { it.id == state.item.clubId }
                     club?.name ?: ""
                 },
-                label = strings.club
+                label = strings.club,
             ) {
                 state.clubs.forEach { club ->
                     DropdownMenuItem(
@@ -104,7 +104,7 @@ private fun LoadedContent(
                             state.item.clubId = club.id
                             it()
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     )
                 }
             }

@@ -11,7 +11,7 @@ class EditDiscipline(
     val id: ObjectId = ObjectId(),
     name: String = "",
     isGenderSeparated: Boolean = false,
-    values: List<Value> = listOf()
+    values: List<Value> = listOf(),
 ) {
     var name by mutableStateOf(name)
     var isGenderSeparated by mutableStateOf(isGenderSeparated)
@@ -20,7 +20,7 @@ class EditDiscipline(
     class Value(
         val id: ObjectId = ObjectId(),
         name: String = "",
-        isAdded: Boolean = true
+        isAdded: Boolean = true,
     ) {
         var name by mutableStateOf(name)
         var isAdded by mutableStateOf(isAdded)
@@ -31,9 +31,11 @@ fun Discipline.toEditDiscipline() = EditDiscipline(
     id = id,
     name = name,
     isGenderSeparated = isGenderSeparated,
-    values = values.map { value -> EditDiscipline.Value(
-        id = value.id,
-        name = value.name,
-        isAdded = value.isAdded
-    )}
+    values = values.map { value ->
+        EditDiscipline.Value(
+            id = value.id,
+            name = value.name,
+            isAdded = value.isAdded,
+        )
+    },
 )

@@ -16,6 +16,7 @@ import org.mongodb.kbson.ObjectId
 /**
  * Represents a participant in a [Tournament].
  */
+@Suppress("ktlint:standard:class-signature")
 class Participant() : RealmObject {
     /**
      * The id of the participant.
@@ -54,7 +55,8 @@ class Participant() : RealmObject {
      * Represents the gender of a participant
      */
     enum class Gender {
-        MALE, FEMALE
+        MALE,
+        FEMALE,
     }
 
     /**
@@ -73,6 +75,7 @@ class Participant() : RealmObject {
     /**
      * Results of a participant of a specific discipline.
      */
+    @Suppress("ktlint:standard:class-signature")
     class DisciplineResult() : EmbeddedRealmObject {
         /**
          * List containing the results of the individual rounds of the participant .
@@ -83,6 +86,7 @@ class Participant() : RealmObject {
     /**
      * Results of a participant for an individual round of a discipline.
      */
+    @Suppress("ktlint:standard:class-signature")
     class RoundResult() : EmbeddedRealmObject {
         /**
          * The individual values used for calculating the result for the [Participant].

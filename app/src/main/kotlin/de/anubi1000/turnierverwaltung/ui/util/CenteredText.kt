@@ -10,11 +10,11 @@ import androidx.compose.ui.Modifier
 @Composable
 fun CenteredText(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(text)
     }

@@ -34,7 +34,7 @@ import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineListViewMod
 fun DisciplineList(
     navController: NavController,
     state: DisciplineListViewModel.State,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var showCreateDialog by remember { mutableStateOf(false) }
 
@@ -46,13 +46,13 @@ fun DisciplineList(
                 showCreateDialog = true
             }
         },
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (state) {
             is DisciplineListViewModel.State.Loading -> LoadingIndicator()
             is DisciplineListViewModel.State.Loaded -> LoadedContent(
                 navController = navController,
-                state = state
+                state = state,
             )
         }
     }
@@ -73,7 +73,7 @@ fun DisciplineList(
                 navController.navigate(TeamDisciplineEditDestination()) {
                     popUpTo<DisciplineListDestination>()
                 }
-            }
+            },
         )
     }
 }
@@ -82,7 +82,7 @@ fun DisciplineList(
 private fun LoadedContent(
     navController: NavController,
     state: DisciplineListViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val disciplines by state.disciplineFlow.collectAsStateWithLifecycle()
 
@@ -90,7 +90,7 @@ private fun LoadedContent(
         val strings = LocalStrings.current
 
         CenteredText(
-            text = strings.xDontExist(strings.disciplines)
+            text = strings.xDontExist(strings.disciplines),
         )
     } else {
         val teamDisciplines by state.teamDisciplineFlow.collectAsStateWithLifecycle()
@@ -107,13 +107,13 @@ private fun LoadedContent(
 
         val itemModifier = Modifier.padding(2.dp)
         LazyColumn(
-            modifier = modifier
+            modifier = modifier,
         ) {
             item(key = "disciplines", contentType = 0) {
                 Text(
                     text = LocalStrings.current.disciplines,
                     modifier = Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
             }
             items(disciplines, key = { it.id }, contentType = { 1 }) { item ->
@@ -127,7 +127,7 @@ private fun LoadedContent(
                             }
                         }
                     },
-                    modifier = itemModifier
+                    modifier = itemModifier,
                 )
             }
 
@@ -135,7 +135,7 @@ private fun LoadedContent(
                 Text(
                     text = LocalStrings.current.teamDisciplines,
                     modifier = Modifier.padding(start = 10.dp, top = 16.dp),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
             }
 
@@ -150,7 +150,7 @@ private fun LoadedContent(
                             }
                         }
                     },
-                    modifier = itemModifier
+                    modifier = itemModifier,
                 )
             }
         }

@@ -10,7 +10,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineEditDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.TeamDisciplineEditDestination
 import de.anubi1000.turnierverwaltung.ui.util.DeleteDialog
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
@@ -18,7 +17,6 @@ import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailScreenBase
-import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineDetailViewModel
 import de.anubi1000.turnierverwaltung.viewmodel.discipline.TeamDisciplineDetailViewModel
 
 @Composable
@@ -34,21 +32,21 @@ fun TeamDisciplineDetailScreen(
         title = LocalStrings.current.teamDiscipline,
         onEditButtonClick = {
             if (state is TeamDisciplineDetailViewModel.State.Loaded) {
-                 navController.navigate(TeamDisciplineEditDestination(state.item.id))
+                navController.navigate(TeamDisciplineEditDestination(state.item.id))
             }
         },
         onDeleteButtonClick = {
             showDeleteDialog = true
-        }
+        },
     ) { padding ->
         val modifier = Modifier.padding(padding)
         when (state) {
             is TeamDisciplineDetailViewModel.State.Loading -> LoadingIndicator(
-                modifier = modifier
+                modifier = modifier,
             )
             is TeamDisciplineDetailViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -60,7 +58,7 @@ fun TeamDisciplineDetailScreen(
             onConfirmButtonClick = {
                 showDeleteDialog = false
                 onDeleteButtonClick()
-            }
+            },
         )
     }
 }
@@ -68,29 +66,29 @@ fun TeamDisciplineDetailScreen(
 @Composable
 private fun LoadedContent(
     state: TeamDisciplineDetailViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     DetailContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val strings = LocalStrings.current
 
         DetailCard(
-            title = strings.general
+            title = strings.general,
         ) {
             DetailItem(
                 headlineText = state.item.name,
-                overlineText = strings.name
+                overlineText = strings.name,
             )
         }
 
         DetailCard(
-            title = strings.basedOn
+            title = strings.basedOn,
         ) {
             Column {
                 state.item.basedOn.forEach { vdisciplinelue ->
                     DetailItem(
-                        headlineText = vdisciplinelue.name
+                        headlineText = vdisciplinelue.name,
                     )
                 }
             }

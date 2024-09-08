@@ -7,11 +7,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.platform.Font
 
 private val inter = FontFamily(
-   listOf(FontWeight.W100, FontWeight.W200, FontWeight.W300, FontWeight.W400, FontWeight.W500, FontWeight.W600, FontWeight.W700, FontWeight.W800, FontWeight.W900).map { weight -> Font(
-       resource = "fonts/inter/${weight.weight}.ttf",
-       weight = weight,
-       style = FontStyle.Normal,
-   ) }
+    listOf(FontWeight.W100, FontWeight.W200, FontWeight.W300, FontWeight.W400, FontWeight.W500, FontWeight.W600, FontWeight.W700, FontWeight.W800, FontWeight.W900).map { weight ->
+        Font(
+            resource = "fonts/inter/${weight.weight}.ttf",
+            weight = weight,
+            style = FontStyle.Normal,
+        )
+    },
 )
 
 private val base = Typography()
@@ -31,5 +33,5 @@ val AppTypography = Typography(
     bodySmall = base.bodySmall.copy(fontFamily = inter),
     labelLarge = base.labelLarge.copy(fontFamily = inter),
     labelMedium = base.labelMedium.copy(fontFamily = inter),
-    labelSmall = base.labelSmall.copy(fontFamily = inter)
+    labelSmall = base.labelSmall.copy(fontFamily = inter),
 )

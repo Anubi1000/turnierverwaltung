@@ -17,17 +17,15 @@ class EditTournament(
     var name by mutableStateOf(name)
     var date by mutableStateOf(date)
 
-    fun toTournament(): Tournament {
-        return Tournament().also {
-            it.id = id
-            it.name = name
-            it.date = date
-        }
+    fun toTournament() = Tournament().also {
+        it.id = id
+        it.name = name
+        it.date = date
     }
 }
 
 fun Tournament.toEditTournament() = EditTournament(
     id = id,
     name = name,
-    date = date
+    date = date,
 )

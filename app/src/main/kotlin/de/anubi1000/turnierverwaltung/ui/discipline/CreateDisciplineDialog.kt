@@ -28,28 +28,28 @@ import de.anubi1000.turnierverwaltung.util.Icon
 fun CreateDisciplineDialog(
     onDismissRequest: () -> Unit,
     onCreateDiscipline: () -> Unit,
-    onCreateTeamDiscipline: () -> Unit
+    onCreateTeamDiscipline: () -> Unit,
 ) {
     BasicAlertDialog(
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
     ) {
         Surface(
             color = AlertDialogDefaults.containerColor,
-            shape = AlertDialogDefaults.shape
+            shape = AlertDialogDefaults.shape,
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.width(300.dp)
+                modifier = Modifier.width(300.dp),
             ) {
                 Text(
                     text = LocalStrings.current.newDiscipline,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(top = 24.dp, start = 24.dp, end = 24.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(top = 24.dp, start = 24.dp, end = 24.dp, bottom = 8.dp),
                 )
 
                 val listItemColors = ListItemDefaults.colors(
-                    containerColor = AlertDialogDefaults.containerColor
+                    containerColor = AlertDialogDefaults.containerColor,
                 )
 
                 ListItem(
@@ -60,7 +60,7 @@ fun CreateDisciplineDialog(
                         Icon(Icons.Default.ChevronRight)
                     },
                     colors = listItemColors,
-                    modifier = Modifier.clickable(onClick = onCreateDiscipline)
+                    modifier = Modifier.clickable(onClick = onCreateDiscipline),
                 )
 
                 ListItem(
@@ -71,12 +71,12 @@ fun CreateDisciplineDialog(
                         Icon(Icons.Default.ChevronRight)
                     },
                     colors = listItemColors,
-                    modifier = Modifier.clickable(onClick = onCreateTeamDiscipline)
+                    modifier = Modifier.clickable(onClick = onCreateTeamDiscipline),
                 )
 
                 TextButton(
                     onClick = onDismissRequest,
-                    modifier = Modifier.align(Alignment.End).padding(bottom = 16.dp, end = 16.dp)
+                    modifier = Modifier.align(Alignment.End).padding(bottom = 16.dp, end = 16.dp),
                 ) {
                     Text(LocalStrings.current.cancel)
                 }

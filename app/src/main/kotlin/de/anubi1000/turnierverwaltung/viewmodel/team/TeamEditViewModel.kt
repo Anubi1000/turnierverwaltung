@@ -23,7 +23,7 @@ import androidx.compose.runtime.State as ComposeState
 class TeamEditViewModel(
     private val teamRepository: TeamRepository,
     private val participantRepository: ParticipantRepository,
-    @InjectedParam private val tournamentId: ObjectId
+    @InjectedParam private val tournamentId: ObjectId,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
         private set
@@ -36,7 +36,7 @@ class TeamEditViewModel(
             state = State.Loaded(
                 item = team,
                 participants = participantRepository.getAllForTournament(tournamentId),
-                isValid = getValidationState(team)
+                isValid = getValidationState(team),
             )
             isEditMode = false
         }
@@ -48,7 +48,7 @@ class TeamEditViewModel(
             state = State.Loaded(
                 item = team,
                 participants = participantRepository.getAllForTournament(tournamentId),
-                isValid = getValidationState(team)
+                isValid = getValidationState(team),
             )
             isEditMode = true
         }
@@ -78,7 +78,7 @@ class TeamEditViewModel(
 
     private fun getValidationState(team: EditTeam): ComposeState<Boolean> = derivedStateOf {
         team.name.isNotBlank() &&
-                team.members.isNotEmpty()
+            team.members.isNotEmpty()
     }
 
     sealed interface State {
@@ -86,7 +86,7 @@ class TeamEditViewModel(
         data class Loaded(
             val item: EditTeam,
             val participants: List<Participant>,
-            val isValid: ComposeState<Boolean>
+            val isValid: ComposeState<Boolean>,
         ) : State
     }
 }

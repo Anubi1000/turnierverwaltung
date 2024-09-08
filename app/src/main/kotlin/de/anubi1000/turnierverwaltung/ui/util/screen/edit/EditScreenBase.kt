@@ -26,7 +26,7 @@ fun EditScreenBase(
     navController: NavController,
     title: String,
     onSaveButtonClick: (() -> Unit)? = null,
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -38,7 +38,7 @@ fun EditScreenBase(
                         tooltip = LocalStrings.current.back,
                         onClick = {
                             navController.popBackStack()
-                        }
+                        },
                     )
                 },
                 actions = {
@@ -48,21 +48,20 @@ fun EditScreenBase(
                         enabled = onSaveButtonClick != null,
                         onClick = {
                             onSaveButtonClick?.invoke()
-                        }
+                        },
                     )
-                }
+                },
             )
         },
         content = { padding ->
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                 ),
-                modifier = Modifier.padding(padding).padding(bottom = 8.dp, end = 8.dp).fillMaxSize()
+                modifier = Modifier.padding(padding).padding(bottom = 8.dp, end = 8.dp).fillMaxSize(),
             ) {
                 content(PaddingValues(8.dp))
             }
-        }
+        },
     )
 }
-

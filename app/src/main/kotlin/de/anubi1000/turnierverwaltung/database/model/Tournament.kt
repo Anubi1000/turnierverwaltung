@@ -15,6 +15,7 @@ import java.time.Instant
 /**
  * Represents a tournament.
  */
+@Suppress("ktlint:standard:class-signature")
 class Tournament() : RealmObject {
     /**
      * The id of the tournament.

@@ -37,7 +37,7 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
     override suspend fun updateResult(
         participantId: ObjectId,
         disciplineId: ObjectId,
-        result: Participant.DisciplineResult
+        result: Participant.DisciplineResult,
     ) {
         withContext(Dispatchers.IO) {
             realm.write {
@@ -47,12 +47,10 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
         }
     }
 
-    override suspend fun getAllForTournament(tournamentId: ObjectId): List<Participant> {
-        return withContext(Dispatchers.IO) {
-            realm.query<Participant>("tournament._id == $0", tournamentId)
-                .sort("name", Sort.ASCENDING)
-                .find()
-        }
+    override suspend fun getAllForTournament(tournamentId: ObjectId): List<Participant> = withContext(Dispatchers.IO) {
+        realm.query<Participant>("tournament._id == $0", tournamentId)
+            .sort("name", Sort.ASCENDING)
+            .find()
     }
 
     override suspend fun insert(participant: Participant, tournamentId: ObjectId) {
@@ -80,10 +78,8 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
         }
     }
 
-    override suspend fun getById(id: ObjectId): Participant? {
-        return withContext(Dispatchers.IO) {
-            realm.queryById(id)
-        }
+    override suspend fun getById(id: ObjectId): Participant? = withContext(Dispatchers.IO) {
+        realm.queryById(id)
     }
 
     override suspend fun delete(id: ObjectId) {

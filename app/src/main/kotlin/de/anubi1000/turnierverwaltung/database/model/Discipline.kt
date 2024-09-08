@@ -10,6 +10,7 @@ import io.realm.kotlin.types.annotations.PersistedName
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mongodb.kbson.ObjectId
 
+@Suppress("ktlint:standard:class-signature")
 class Discipline() : RealmObject {
     // id
     @PrimaryKey
@@ -26,6 +27,7 @@ class Discipline() : RealmObject {
 
     // values
     var values: RealmList<Value> = realmListOf()
+
     @PersistedName("DisciplineValue")
     class Value() : EmbeddedRealmObject {
         var id: ObjectId = ObjectId()

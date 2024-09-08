@@ -12,28 +12,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-class DetailCardScope {}
+class DetailCardScope
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DetailContentScope.DetailCard(
     title: String,
     width: Dp = 450.dp,
-    content: @Composable DetailCardScope.() -> Unit
+    content: @Composable DetailCardScope.() -> Unit,
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         ),
         modifier = with(flowRowScope) {
             Modifier.fillMaxRowHeight().width(width)
-        }
+        },
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp)
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
         )
 
         DetailCardScope().content()

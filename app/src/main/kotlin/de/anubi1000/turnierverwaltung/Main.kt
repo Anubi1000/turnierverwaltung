@@ -63,7 +63,7 @@ fun App() {
                 },
                 exitTransition = {
                     ExitTransition.None
-                }
+                },
             ) {
                 tournamentListDestination(navController)
                 tournamentDetailDestinations(navController)
@@ -116,7 +116,7 @@ private fun appMain() {
                 with(density) {
                     window.minimumSize = Dimension(
                         960.dp.roundToPx(),
-                        540.dp.roundToPx()
+                        540.dp.roundToPx(),
                     )
                 }
             }

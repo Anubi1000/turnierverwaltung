@@ -25,17 +25,19 @@ private fun createRealm(): Realm {
     val documentsPath = FileSystemView.getFileSystemView().defaultDirectory.path
     val dataDir = Path(documentsPath).resolve("Turnierverwaltung")
     val config = RealmConfiguration
-        .Builder(schema = setOf(
-            Club::class,
-            Discipline::class,
-            Discipline.Value::class,
-            Participant::class,
-            Participant.RoundResult::class,
-            Participant.DisciplineResult::class,
-            Team::class,
-            TeamDiscipline::class,
-            Tournament::class
-        ))
+        .Builder(
+            schema = setOf(
+                Club::class,
+                Discipline::class,
+                Discipline.Value::class,
+                Participant::class,
+                Participant.RoundResult::class,
+                Participant.DisciplineResult::class,
+                Team::class,
+                TeamDiscipline::class,
+                Tournament::class,
+            ),
+        )
         .schemaVersion(0)
         .deleteRealmIfMigrationNeeded()
         .directory(dataDir.pathString)

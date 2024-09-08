@@ -28,10 +28,10 @@ fun TooltipIconButton(
         content = {
             IconButton(
                 onClick = onClick,
-                enabled = enabled
+                enabled = enabled,
             ) {
                 Icon(imageVector = icon, contentDescription = tooltip)
             }
-        }
+        },
     )
 }

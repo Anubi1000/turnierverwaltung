@@ -15,6 +15,7 @@ import androidx.compose.ui.test.runComposeUiTest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
+@Suppress("ktlint:standard:class-signature")
 @OptIn(ExperimentalTestApi::class)
 class SelectableListItemTest : FunSpec({
     test("displays all properties") {
@@ -27,7 +28,7 @@ class SelectableListItemTest : FunSpec({
                     leadingContent = { Text("Leading") },
                     trailingContent = { Text("Trailing") },
                     selected = false,
-                    onClick = {}
+                    onClick = {},
                 )
             }
 
@@ -44,7 +45,7 @@ class SelectableListItemTest : FunSpec({
                 SelectableListItem(
                     headlineContent = { Text("Headline") },
                     selected = selected,
-                    onClick = {}
+                    onClick = {},
                 )
             }
 
@@ -67,7 +68,7 @@ class SelectableListItemTest : FunSpec({
                     selected = false,
                     onClick = {
                         called = true
-                    }
+                    },
                 )
             }
 

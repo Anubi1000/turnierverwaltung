@@ -17,7 +17,7 @@ fun SelectableListItem(
     overlineContent: @Composable (() -> Unit)? = null,
     supportingContent: @Composable (() -> Unit)? = null,
     leadingContent: @Composable (() -> Unit)? = null,
-    trailingContent: @Composable (() -> Unit)? = null
+    trailingContent: @Composable (() -> Unit)? = null,
 ) {
     ListItem(
         headlineContent = headlineContent,
@@ -30,6 +30,6 @@ fun SelectableListItem(
         ),
         modifier = modifier
             .clip(MaterialTheme.shapes.medium)
-            .selectable(selected = selected, onClick = onClick)
+            .selectable(selected = selected, onClick = onClick),
     )
 }

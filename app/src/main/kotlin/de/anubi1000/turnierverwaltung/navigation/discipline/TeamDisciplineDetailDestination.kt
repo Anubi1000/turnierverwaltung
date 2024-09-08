@@ -7,10 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
-import de.anubi1000.turnierverwaltung.ui.discipline.DisciplineDetailScreen
 import de.anubi1000.turnierverwaltung.ui.discipline.TeamDisciplineDetailScreen
 import de.anubi1000.turnierverwaltung.util.toObjectId
-import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineDetailViewModel
 import de.anubi1000.turnierverwaltung.viewmodel.discipline.TeamDisciplineDetailViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -19,7 +17,7 @@ import org.mongodb.kbson.ObjectId
 
 @Serializable
 data class TeamDisciplineDetailDestination(
-    val id: String
+    val id: String,
 ) : AppDestination {
     constructor(id: ObjectId) : this(id.toHexString())
 
@@ -42,6 +40,6 @@ fun NavGraphBuilder.teamDisciplineDetailDestination(navController: NavController
             viewModel.deleteItem {
                 navController.popBackStack()
             }
-        }
+        },
     )
 }

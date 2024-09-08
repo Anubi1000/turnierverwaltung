@@ -13,7 +13,7 @@ import org.mongodb.kbson.ObjectId
 
 @KoinViewModel
 class TeamDetailViewModel(
-    private val teamRepository: TeamRepository
+    private val teamRepository: TeamRepository,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
         private set

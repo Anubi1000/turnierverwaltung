@@ -29,7 +29,7 @@ import de.anubi1000.turnierverwaltung.viewmodel.team.TeamListViewModel
 fun TeamList(
     navController: NavController,
     state: TeamListViewModel.State,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     ListBase(
         title = LocalStrings.current.teams,
@@ -39,13 +39,13 @@ fun TeamList(
                 navController.navigate(TeamEditDestination())
             }
         },
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (state) {
             is TeamListViewModel.State.Loading -> LoadingIndicator()
             is TeamListViewModel.State.Loaded -> LoadedContent(
                 navController = navController,
-                state = state
+                state = state,
             )
         }
     }
@@ -55,13 +55,13 @@ fun TeamList(
 private fun LoadedContent(
     navController: NavController,
     state: TeamListViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val items by state.itemFlow.collectAsStateWithLifecycle()
 
     if (items.isEmpty()) {
         CenteredText(
-            text = LocalStrings.current.xDontExist(LocalStrings.current.teams)
+            text = LocalStrings.current.xDontExist(LocalStrings.current.teams),
         )
     } else {
         val currentDestination by navController.currentDestinationAsState()
@@ -78,7 +78,7 @@ private fun LoadedContent(
 
         val itemModifier = Modifier.padding(2.dp)
         LazyColumn(
-            modifier = modifier
+            modifier = modifier,
         ) {
             items(items, key = { it.id }) { item ->
                 SelectableListItem(
@@ -91,7 +91,7 @@ private fun LoadedContent(
                             }
                         }
                     },
-                    modifier = itemModifier
+                    modifier = itemModifier,
                 )
             }
         }

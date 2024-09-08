@@ -22,7 +22,7 @@ import de.anubi1000.turnierverwaltung.viewmodel.club.ClubDetailViewModel
 fun ClubDetailScreen(
     navController: NavController,
     state: ClubDetailViewModel.State,
-    onDeleteButtonClick: () -> Unit
+    onDeleteButtonClick: () -> Unit,
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -36,13 +36,13 @@ fun ClubDetailScreen(
         },
         onDeleteButtonClick = {
             showDeleteDialog = true
-        }
+        },
     ) { padding ->
         when (state) {
             is ClubDetailViewModel.State.Loading -> LoadingIndicator()
             is ClubDetailViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(padding),
             )
         }
     }
@@ -54,7 +54,7 @@ fun ClubDetailScreen(
             onConfirmButtonClick = {
                 showDeleteDialog = false
                 onDeleteButtonClick()
-            }
+            },
         )
     }
 }
@@ -62,19 +62,19 @@ fun ClubDetailScreen(
 @Composable
 private fun LoadedContent(
     state: ClubDetailViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     DetailContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val strings = LocalStrings.current
 
         DetailCard(
-            title = strings.general
+            title = strings.general,
         ) {
             DetailItem(
                 headlineText = state.item.name,
-                overlineText = strings.name
+                overlineText = strings.name,
             )
         }
     }

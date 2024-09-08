@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SetTournamentMessage(
     val title: String,
-    val tables: List<Table>
+    val tables: List<Table>,
 ) : Message {
     @Required
     override val type: Message.Type = Message.Type.SET_TOURNAMENT
@@ -20,7 +20,7 @@ data class SetTournamentMessage(
         val id: String,
         val name: String,
         val columns: List<Column>,
-        val rows: List<Row>
+        val rows: List<Row>,
     ) {
         @Serializable
         data class Column(
@@ -30,9 +30,14 @@ data class SetTournamentMessage(
         ) {
             @Serializable
             enum class Alignment {
-                @SerialName("left") LEFT,
-                @SerialName("center") CENTER,
-                @SerialName("right") RIGHT,
+                @SerialName("left")
+                LEFT,
+
+                @SerialName("center")
+                CENTER,
+
+                @SerialName("right")
+                RIGHT,
             }
         }
 
@@ -45,14 +50,12 @@ data class SetTournamentMessage(
     }
 }
 
-fun Tournament.toSetTournamentMessage(): SetTournamentMessage {
-    return SetTournamentMessage(
-        title = this.name,
-        tables = this.disciplines.flatMap { discipline ->
-            getDisciplineTables(discipline)
-        }
-    )
-}
+fun Tournament.toSetTournamentMessage(): SetTournamentMessage = SetTournamentMessage(
+    title = this.name,
+    tables = this.disciplines.flatMap { discipline ->
+        getDisciplineTables(discipline)
+    },
+)
 
 private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTournamentMessage.Table> {
     val columns = listOf(
@@ -70,7 +73,7 @@ private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTour
             name = "Punkte",
             width = "250px",
             alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
-        )
+        ),
     )
 
     return if (discipline.isGenderSeparated) {
@@ -83,7 +86,7 @@ private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTour
                     if (participant.gender != Participant.Gender.MALE) return@filter false
                     val disciplineResult = participant.results[discipline.id.toHexString()]
                     disciplineResult != null && disciplineResult.rounds.isNotEmpty()
-                }.map { getParticipantRow(it, discipline) }
+                }.map { getParticipantRow(it, discipline) },
             ),
             SetTournamentMessage.Table(
                 id = discipline.id.toHexString(),
@@ -93,19 +96,21 @@ private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTour
                     if (participant.gender != Participant.Gender.FEMALE) return@filter false
                     val disciplineResult = participant.results[discipline.id.toHexString()]
                     disciplineResult != null && disciplineResult.rounds.isNotEmpty()
-                }.map { getParticipantRow(it, discipline) }
-            )
+                }.map { getParticipantRow(it, discipline) },
+            ),
         )
     } else {
-        listOf(SetTournamentMessage.Table(
-            id = discipline.id.toHexString(),
-            name = discipline.name,
-            columns = columns,
-            rows = participants.filter { participant ->
-                val disciplineResult = participant.results[discipline.id.toHexString()]
-                disciplineResult != null && disciplineResult.rounds.isNotEmpty()
-            }.map { getParticipantRow(it, discipline) }
-        ))
+        listOf(
+            SetTournamentMessage.Table(
+                id = discipline.id.toHexString(),
+                name = discipline.name,
+                columns = columns,
+                rows = participants.filter { participant ->
+                    val disciplineResult = participant.results[discipline.id.toHexString()]
+                    disciplineResult != null && disciplineResult.rounds.isNotEmpty()
+                }.map { getParticipantRow(it, discipline) },
+            ),
+        )
     }
 }
 
@@ -129,10 +134,10 @@ private fun getParticipantRow(participant: Participant, discipline: Discipline):
         values = listOf(
             participant.name,
             participant.club!!.name,
-            points.toString().replace('.', ',')
+            points.toString().replace('.', ','),
         ),
         sortValues = listOf(
-            points
-        )
+            points,
+        ),
     )
 }

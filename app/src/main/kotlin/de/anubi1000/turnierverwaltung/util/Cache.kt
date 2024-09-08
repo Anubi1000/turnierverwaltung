@@ -2,9 +2,7 @@ package de.anubi1000.turnierverwaltung.util
 
 class Cache<K, V>(maxSize: Int) {
     private val cacheMap: LinkedHashMap<K, V> = object : LinkedHashMap<K, V>(maxSize, 0.75f, true) {
-        override fun removeEldestEntry(eldest: Map.Entry<K, V>): Boolean {
-            return size > maxSize
-        }
+        override fun removeEldestEntry(eldest: Map.Entry<K, V>): Boolean = size > maxSize
     }
 
     operator fun set(key: K, value: V) {

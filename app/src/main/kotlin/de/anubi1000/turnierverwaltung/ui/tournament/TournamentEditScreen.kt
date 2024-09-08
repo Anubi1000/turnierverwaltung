@@ -19,23 +19,23 @@ fun TournamentEditScreen(
     navController: NavController,
     state: TournamentEditViewModel.State,
     onSaveButtonClick: () -> Unit,
-    isEditMode: Boolean = false
+    isEditMode: Boolean = false,
 ) {
     val strings = LocalStrings.current
 
     EditScreenBase(
         navController = navController,
         title = strings.editScreenTitle(isEditMode, strings.tournament),
-        onSaveButtonClick = if (state is TournamentEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null
+        onSaveButtonClick = if (state is TournamentEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null,
     ) { padding ->
         val modifier = Modifier.padding(padding)
         when (state) {
             is TournamentEditViewModel.State.Loading -> LoadingIndicator(
-                modifier = modifier
+                modifier = modifier,
             )
             is TournamentEditViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -44,23 +44,23 @@ fun TournamentEditScreen(
 @Composable
 private fun LoadedContent(
     state: TournamentEditViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val strings = LocalStrings.current
 
     EditContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         EditCard(
             title = strings.general,
-            width = 450.dp
+            width = 450.dp,
         ) {
             TextField(
                 label = strings.name,
                 value = state.item.name,
                 onValueChange = {
                     state.item.name = it
-                }
+                },
             )
 
             DateField(
@@ -68,7 +68,7 @@ private fun LoadedContent(
                 date = state.item.date,
                 onDateChange = {
                     state.item.date = it
-                }
+                },
             )
         }
     }

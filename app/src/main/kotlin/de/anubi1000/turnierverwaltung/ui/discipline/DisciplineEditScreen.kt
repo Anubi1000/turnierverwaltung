@@ -37,23 +37,23 @@ fun DisciplineEditScreen(
     navController: NavController,
     state: DisciplineEditViewModel.State,
     onSaveButtonClick: () -> Unit,
-    isEditMode: Boolean = false
+    isEditMode: Boolean = false,
 ) {
     val strings = LocalStrings.current
 
     EditScreenBase(
         navController = navController,
         title = strings.editScreenTitle(isEditMode, strings.discipline),
-        onSaveButtonClick = if (state is DisciplineEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null
+        onSaveButtonClick = if (state is DisciplineEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null,
     ) { padding ->
         val modifier = Modifier.padding(padding)
         when (state) {
             is DisciplineEditViewModel.State.Loading -> LoadingIndicator(
-                modifier = modifier
+                modifier = modifier,
             )
             is DisciplineEditViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -62,20 +62,20 @@ fun DisciplineEditScreen(
 @Composable
 private fun LoadedContent(
     state: DisciplineEditViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val strings = LocalStrings.current
 
     EditContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         EditCard(
-            title = strings.general
+            title = strings.general,
         ) {
             TextField(
                 label = strings.name,
                 value = state.item.name,
-                onValueChange = { state.item.name = it }
+                onValueChange = { state.item.name = it },
             )
 
             ListItem(
@@ -83,23 +83,23 @@ private fun LoadedContent(
                 trailingContent = {
                     Checkbox(
                         checked = state.item.isGenderSeparated,
-                        onCheckedChange = { state.item.isGenderSeparated = it }
+                        onCheckedChange = { state.item.isGenderSeparated = it },
                     )
                 },
                 colors = ListItemDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                )
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                ),
             )
         }
 
         EditCard(
-            title = strings.values
+            title = strings.values,
         ) {
             Column {
                 state.item.values.forEach { value ->
                     ValueListItem(
                         value = value,
-                        state = state
+                        state = state,
                     )
                 }
 
@@ -120,7 +120,7 @@ private fun LoadedContent(
 @Composable
 private fun ValueListItem(
     value: EditDiscipline.Value,
-    state: DisciplineEditViewModel.State.Loaded
+    state: DisciplineEditViewModel.State.Loaded,
 ) {
     val strings = LocalStrings.current
 
@@ -133,7 +133,7 @@ private fun ValueListItem(
                 },
                 singleLine = true,
                 label = { Text(strings.name) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         },
         trailingContent = {
@@ -149,9 +149,9 @@ private fun ValueListItem(
                             checked = value.isAdded,
                             onCheckedChange = {
                                 value.isAdded = it
-                            }
+                            },
                         )
-                    }
+                    },
                 )
 
                 TooltipIconButton(
@@ -159,12 +159,12 @@ private fun ValueListItem(
                     tooltip = strings.delete,
                     onClick = {
                         state.item.values.remove(value)
-                    }
+                    },
                 )
             }
         },
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        ),
     )
 }

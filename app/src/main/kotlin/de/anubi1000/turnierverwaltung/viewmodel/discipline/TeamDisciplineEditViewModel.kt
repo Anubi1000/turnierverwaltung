@@ -6,12 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.anubi1000.turnierverwaltung.data.EditDiscipline
-import de.anubi1000.turnierverwaltung.data.EditTeam
 import de.anubi1000.turnierverwaltung.data.EditTeamDiscipline
 import de.anubi1000.turnierverwaltung.data.repository.DisciplineRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamDisciplineRepository
-import de.anubi1000.turnierverwaltung.data.toEditDiscipline
 import de.anubi1000.turnierverwaltung.data.toEditTeamDiscipline
 import de.anubi1000.turnierverwaltung.database.model.Discipline
 import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
@@ -26,7 +23,7 @@ import androidx.compose.runtime.State as ComposeState
 class TeamDisciplineEditViewModel(
     private val teamDisciplineRepository: TeamDisciplineRepository,
     private val disciplineRepository: DisciplineRepository,
-    @InjectedParam private val tournamentId: ObjectId
+    @InjectedParam private val tournamentId: ObjectId,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
         private set
@@ -39,7 +36,7 @@ class TeamDisciplineEditViewModel(
             state = State.Loaded(
                 item = teamDiscipline,
                 isValid = getValidationState(teamDiscipline),
-                disciplines = disciplineRepository.getAllForTournament(tournamentId)
+                disciplines = disciplineRepository.getAllForTournament(tournamentId),
             )
             isEditMode = false
         }
@@ -51,7 +48,7 @@ class TeamDisciplineEditViewModel(
             state = State.Loaded(
                 item = club,
                 isValid = getValidationState(club),
-                disciplines = disciplineRepository.getAllForTournament(tournamentId)
+                disciplines = disciplineRepository.getAllForTournament(tournamentId),
             )
             isEditMode = true
         }
@@ -82,7 +79,7 @@ class TeamDisciplineEditViewModel(
 
     private fun getValidationState(teamDiscipline: EditTeamDiscipline): ComposeState<Boolean> = derivedStateOf {
         teamDiscipline.name.isNotBlank() &&
-                teamDiscipline.basedOn.isNotEmpty()
+            teamDiscipline.basedOn.isNotEmpty()
     }
 
     sealed interface State {
@@ -90,7 +87,7 @@ class TeamDisciplineEditViewModel(
         data class Loaded(
             val item: EditTeamDiscipline,
             val isValid: ComposeState<Boolean>,
-            val disciplines: List<Discipline>
+            val disciplines: List<Discipline>,
         ) : State
     }
 }

@@ -48,6 +48,6 @@ fun NavGraphBuilder.teamEditDestination(navController: NavController) = composab
                 navController.popBackStack()
             }
         },
-        isEditMode = args.id != null
+        isEditMode = args.id != null,
     )
 }

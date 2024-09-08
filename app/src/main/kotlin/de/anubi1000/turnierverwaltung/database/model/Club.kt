@@ -7,6 +7,7 @@ import io.realm.kotlin.types.annotations.PersistedName
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mongodb.kbson.ObjectId
 
+@Suppress("ktlint:standard:class-signature")
 class Club() : RealmObject {
     // id
     @PrimaryKey

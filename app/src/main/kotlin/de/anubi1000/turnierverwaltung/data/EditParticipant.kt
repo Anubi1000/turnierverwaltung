@@ -26,5 +26,5 @@ fun Participant.toEditParticipant() = EditParticipant(
     name = this.name,
     startNumber = this.startNumber,
     gender = this.gender,
-    clubId = this.club!!.id
+    clubId = this.club!!.id,
 )

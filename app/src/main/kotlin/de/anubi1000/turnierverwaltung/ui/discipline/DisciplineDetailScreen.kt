@@ -32,21 +32,21 @@ fun DisciplineDetailScreen(
         title = LocalStrings.current.discipline,
         onEditButtonClick = {
             if (state is DisciplineDetailViewModel.State.Loaded) {
-                 navController.navigate(DisciplineEditDestination(state.item.id))
+                navController.navigate(DisciplineEditDestination(state.item.id))
             }
         },
         onDeleteButtonClick = {
             showDeleteDialog = true
-        }
+        },
     ) { padding ->
         val modifier = Modifier.padding(padding)
         when (state) {
             is DisciplineDetailViewModel.State.Loading -> LoadingIndicator(
-                modifier = modifier
+                modifier = modifier,
             )
             is DisciplineDetailViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -58,7 +58,7 @@ fun DisciplineDetailScreen(
             onConfirmButtonClick = {
                 showDeleteDialog = false
                 onDeleteButtonClick()
-            }
+            },
         )
     }
 }
@@ -66,34 +66,34 @@ fun DisciplineDetailScreen(
 @Composable
 private fun LoadedContent(
     state: DisciplineDetailViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     DetailContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val strings = LocalStrings.current
 
         DetailCard(
-            title = strings.general
+            title = strings.general,
         ) {
             DetailItem(
                 headlineText = state.item.name,
-                overlineText = strings.name
+                overlineText = strings.name,
             )
             DetailItem(
                 headlineText = strings.yesno(state.item.isGenderSeparated),
-                overlineText = strings.genderSeparated
+                overlineText = strings.genderSeparated,
             )
         }
 
         DetailCard(
-            title = strings.values
+            title = strings.values,
         ) {
             Column {
                 state.item.values.forEach { value ->
                     DetailItem(
                         headlineText = value.name,
-                        supportingText = strings.isAddedYesNo(value.isAdded)
+                        supportingText = strings.isAddedYesNo(value.isAdded),
                     )
                 }
             }

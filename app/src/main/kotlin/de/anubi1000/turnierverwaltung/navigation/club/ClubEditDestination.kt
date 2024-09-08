@@ -20,7 +20,7 @@ import org.mongodb.kbson.ObjectId
 
 @Serializable
 data class ClubEditDestination(
-    val id: String?
+    val id: String?,
 ) : AppDestination {
     constructor(id: ObjectId? = null) : this(id?.toHexString())
 
@@ -52,6 +52,6 @@ fun NavGraphBuilder.clubEditDestination(navController: NavController) = composab
                 }
             }
         },
-        isEditMode = args.id != null
+        isEditMode = args.id != null,
     )
 }

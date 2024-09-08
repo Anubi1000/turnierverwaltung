@@ -46,7 +46,7 @@ fun ParticipantDetailScreen(
         },
         onDeleteButtonClick = {
             showDeleteDialog = true
-        }
+        },
     ) { padding ->
         when (state) {
             is ParticipantDetailViewModel.State.Loading -> LoadingIndicator()
@@ -55,7 +55,7 @@ fun ParticipantDetailScreen(
                 onDisciplineClick = {
                     navController.navigate(ParticipantResultDestination(state.item.id, it))
                 },
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(padding),
             )
         }
     }
@@ -67,7 +67,7 @@ fun ParticipantDetailScreen(
             onConfirmButtonClick = {
                 showDeleteDialog = false
                 onDeleteButtonClick()
-            }
+            },
         )
     }
 }
@@ -76,42 +76,42 @@ fun ParticipantDetailScreen(
 private fun LoadedContent(
     state: ParticipantDetailViewModel.State.Loaded,
     onDisciplineClick: (ObjectId) -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     DetailContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val strings = LocalStrings.current
 
         DetailCard(
-            title = strings.general
+            title = strings.general,
         ) {
             DetailItem(
                 headlineText = state.item.name,
-                overlineText = strings.name
+                overlineText = strings.name,
             )
 
             DetailItem(
                 headlineText = state.item.startNumber.toString(),
-                overlineText = strings.startNumber
+                overlineText = strings.startNumber,
             )
 
             DetailItem(
                 headlineText = strings.genderName(state.item.gender),
-                overlineText = strings.gender
+                overlineText = strings.gender,
             )
 
             DetailItem(
                 headlineText = state.item.club!!.name,
-                overlineText = strings.club
+                overlineText = strings.club,
             )
         }
 
         DetailCard(
-            title = LocalStrings.current.disciplines
+            title = LocalStrings.current.disciplines,
         ) {
             val colors = ListItemDefaults.colors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             )
 
             state.item.tournament.first().disciplines.forEach { discipline ->
@@ -121,7 +121,7 @@ private fun LoadedContent(
                         Icon(Icons.Default.ChevronRight)
                     },
                     colors = colors,
-                    modifier = Modifier.clickable(onClick = { onDisciplineClick(discipline.id) })
+                    modifier = Modifier.clickable(onClick = { onDisciplineClick(discipline.id) }),
                 )
             }
         }

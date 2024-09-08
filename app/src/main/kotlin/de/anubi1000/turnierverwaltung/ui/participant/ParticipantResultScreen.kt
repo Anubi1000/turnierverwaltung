@@ -28,21 +28,21 @@ import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantResultVie
 fun ParticipantResultScreen(
     navController: NavController,
     state: ParticipantResultViewModel.State,
-    onSaveButtonClick: () -> Unit = {}
+    onSaveButtonClick: () -> Unit = {},
 ) {
     EditScreenBase(
         navController = navController,
         title = LocalStrings.current.inputPoints,
-        onSaveButtonClick = if (state is ParticipantResultViewModel.State.Loaded) onSaveButtonClick else null
+        onSaveButtonClick = if (state is ParticipantResultViewModel.State.Loaded) onSaveButtonClick else null,
     ) {
         val modifier = Modifier.padding(it)
         when (state) {
             ParticipantResultViewModel.State.Loading -> LoadingIndicator(
-                modifier = modifier
+                modifier = modifier,
             )
             is ParticipantResultViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -53,10 +53,10 @@ fun LoadedContent(state: ParticipantResultViewModel.State.Loaded, modifier: Modi
     EditContent(modifier = modifier) {
         EditCard(
             title = LocalStrings.current.points,
-            width = 700.dp
+            width = 700.dp,
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp)
+                modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp),
             ) {
                 state.result.rounds.forEach { round ->
                     Row(
@@ -74,7 +74,7 @@ fun LoadedContent(state: ParticipantResultViewModel.State.Loaded, modifier: Modi
                                     Text(value.name)
                                 },
                                 singleLine = true,
-                                modifier = Modifier.weight(1f, true).padding(horizontal = 2.dp)
+                                modifier = Modifier.weight(1f, true).padding(horizontal = 2.dp),
                             )
                         }
                         TooltipIconButton(
@@ -82,7 +82,7 @@ fun LoadedContent(state: ParticipantResultViewModel.State.Loaded, modifier: Modi
                             tooltip = LocalStrings.current.delete,
                             onClick = {
                                 state.result.rounds.remove(round)
-                            }
+                            },
                         )
                     }
                 }
@@ -92,11 +92,11 @@ fun LoadedContent(state: ParticipantResultViewModel.State.Loaded, modifier: Modi
                             EditParticipantResult.RoundResult(
                                 values = state.discipline.values.map {
                                     it.id to 0.0
-                                }.toMutableStateMap()
-                            )
+                                }.toMutableStateMap(),
+                            ),
                         )
                     },
-                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                 ) {
                     Text(text = LocalStrings.current.newRound)
                 }

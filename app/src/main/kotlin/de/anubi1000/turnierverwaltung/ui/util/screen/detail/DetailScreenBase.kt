@@ -31,7 +31,7 @@ fun DetailScreenBase(
     onDeleteButtonClick: (() -> Unit)? = null,
     additionalActions: @Composable RowScope.() -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -43,7 +43,7 @@ fun DetailScreenBase(
                         tooltip = LocalStrings.current.back,
                         onClick = {
                             navController.popBackStack()
-                        }
+                        },
                     )
                 },
                 actions = {
@@ -53,7 +53,7 @@ fun DetailScreenBase(
                         TooltipIconButton(
                             icon = Icons.Default.Delete,
                             tooltip = LocalStrings.current.delete,
-                            onClick = onClick
+                            onClick = onClick,
                         )
                     }
 
@@ -61,23 +61,22 @@ fun DetailScreenBase(
                         TooltipIconButton(
                             icon = Icons.Default.Edit,
                             tooltip = LocalStrings.current.edit,
-                            onClick = onClick
+                            onClick = onClick,
                         )
                     }
-                }
+                },
             )
         },
         floatingActionButton = floatingActionButton,
         content = { padding ->
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                 ),
-                modifier = Modifier.padding(padding).padding(bottom = 8.dp, end = 8.dp).fillMaxSize()
+                modifier = Modifier.padding(padding).padding(bottom = 8.dp, end = 8.dp).fillMaxSize(),
             ) {
                 content(PaddingValues(8.dp))
             }
-        }
+        },
     )
 }
-

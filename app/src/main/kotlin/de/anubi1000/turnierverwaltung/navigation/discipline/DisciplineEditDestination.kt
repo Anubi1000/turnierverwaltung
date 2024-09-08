@@ -19,7 +19,7 @@ import org.mongodb.kbson.ObjectId
 
 @Serializable
 data class DisciplineEditDestination(
-    val id: String?
+    val id: String?,
 ) : AppDestination {
     constructor(id: ObjectId? = null) : this(id?.toHexString())
 
@@ -50,6 +50,6 @@ fun NavGraphBuilder.disciplineEditDestination(navController: NavController) = co
                 navController.popBackStack()
             }
         },
-        isEditMode = args.id != null
+        isEditMode = args.id != null,
     )
 }

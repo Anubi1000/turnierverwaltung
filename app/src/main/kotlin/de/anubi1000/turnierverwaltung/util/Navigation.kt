@@ -56,7 +56,7 @@ private val destinations: Map<String, KClass<out AppDestination>> = listOf(
     DisciplineDetailDestination::class,
     DisciplineEditDestination::class,
     TeamDisciplineDetailDestination::class,
-    TeamDisciplineEditDestination::class
+    TeamDisciplineEditDestination::class,
 ).associateBy { it.qualifiedName!! }
 
 fun NavController.getCurrentDestination(): AppDestination? = getDestination(currentBackStackEntry)
@@ -71,9 +71,7 @@ fun NavController.currentDestinationAsState(): State<AppDestination?> {
     }
 }
 
-inline fun <reified T : AppDestination> NavController.getDestination(): T {
-    return getBackStackEntry<T>().toRoute<T>()
-}
+inline fun <reified T : AppDestination> NavController.getDestination(): T = getBackStackEntry<T>().toRoute<T>()
 
 @OptIn(InternalSerializationApi::class)
 private fun getDestination(backStackEntry: NavBackStackEntry?): AppDestination? {

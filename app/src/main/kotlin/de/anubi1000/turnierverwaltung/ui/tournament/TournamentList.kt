@@ -31,7 +31,7 @@ import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentListViewMode
 fun TournamentList(
     navController: NavController,
     state: TournamentListViewModel.State,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     ListBase(
         title = LocalStrings.current.tournaments,
@@ -41,13 +41,13 @@ fun TournamentList(
                 navController.navigate(TournamentEditDestination())
             }
         },
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (state) {
             TournamentListViewModel.State.Loading -> LoadingIndicator()
             is TournamentListViewModel.State.Loaded -> LoadedContent(
                 navController = navController,
-                state = state
+                state = state,
             )
         }
     }
@@ -57,7 +57,7 @@ fun TournamentList(
 private fun LoadedContent(
     navController: NavController,
     state: TournamentListViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val items by state.itemFlow.collectAsStateWithLifecycle()
 
@@ -65,7 +65,7 @@ private fun LoadedContent(
         val strings = LocalStrings.current
 
         CenteredText(
-            text = strings.xDontExist(strings.tournaments)
+            text = strings.xDontExist(strings.tournaments),
         )
     } else {
         val currentDestination by navController.currentDestinationAsState()
@@ -82,7 +82,7 @@ private fun LoadedContent(
 
         val itemModifier = Modifier.padding(2.dp)
         LazyColumn(
-            modifier = modifier.fillMaxSize()
+            modifier = modifier.fillMaxSize(),
         ) {
             items(items, key = { it.id }) { item ->
                 SelectableListItem(
@@ -96,7 +96,7 @@ private fun LoadedContent(
                             }
                         }
                     },
-                    modifier = itemModifier
+                    modifier = itemModifier,
                 )
             }
         }

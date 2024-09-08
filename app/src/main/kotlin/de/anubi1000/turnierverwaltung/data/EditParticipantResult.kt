@@ -11,25 +11,23 @@ import org.mongodb.kbson.ObjectId
 
 @Stable
 class EditParticipantResult(
-    rounds: List<RoundResult> = emptyList()
+    rounds: List<RoundResult> = emptyList(),
 ) {
     val rounds = rounds.toMutableStateList()
 
     @Stable
     class RoundResult(
-        values: Map<ObjectId, Double> = emptyMap()
+        values: Map<ObjectId, Double> = emptyMap(),
     ) {
         val values = SnapshotStateMap<ObjectId, Double>().apply { putAll(values) }
     }
 
-    fun toDisciplineResult(): Participant.DisciplineResult {
-        return Participant.DisciplineResult().also { disciplineResult ->
-            disciplineResult.rounds = rounds.map { round ->
-                Participant.RoundResult().also { roundResult ->
-                    roundResult.values = round.values.map { it.key.toHexString() to it.value }.toRealmDictionary()
-                }
-            }.toRealmList()
-        }
+    fun toDisciplineResult() = Participant.DisciplineResult().also { disciplineResult ->
+        disciplineResult.rounds = rounds.map { round ->
+            Participant.RoundResult().also { roundResult ->
+                roundResult.values = round.values.map { it.key.toHexString() to it.value }.toRealmDictionary()
+            }
+        }.toRealmList()
     }
 }
 
@@ -38,7 +36,7 @@ fun Participant.DisciplineResult.toEditParticipantResult() = EditParticipantResu
         EditParticipantResult.RoundResult(
             values = round.values.map {
                 it.key.toObjectId() to it.value
-            }.toMap()
+            }.toMap(),
         )
-    }
+    },
 )

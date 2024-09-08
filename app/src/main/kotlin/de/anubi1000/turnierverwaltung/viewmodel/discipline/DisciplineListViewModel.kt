@@ -20,7 +20,7 @@ import org.mongodb.kbson.ObjectId
 class DisciplineListViewModel(
     private val disciplineRepository: DisciplineRepository,
     private val teamDisciplineRepository: TeamDisciplineRepository,
-    @InjectedParam private val tournamentId: ObjectId
+    @InjectedParam private val tournamentId: ObjectId,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
 
@@ -32,7 +32,7 @@ class DisciplineListViewModel(
             val teamDisciplineFlow = teamDisciplineRepository.getAllForTournamentAsFlow(tournamentId)
             state = State.Loaded(
                 disciplineFlow = disciplineFlow.stateIn(viewModelScope),
-                teamDisciplineFlow = teamDisciplineFlow.stateIn(viewModelScope)
+                teamDisciplineFlow = teamDisciplineFlow.stateIn(viewModelScope),
             )
         }
     }

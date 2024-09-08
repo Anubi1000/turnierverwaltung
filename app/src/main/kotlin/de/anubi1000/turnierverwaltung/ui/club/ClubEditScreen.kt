@@ -17,23 +17,23 @@ fun ClubEditScreen(
     navController: NavController,
     state: ClubEditViewModel.State,
     onSaveButtonClick: () -> Unit,
-    isEditMode: Boolean = false
+    isEditMode: Boolean = false,
 ) {
     val strings = LocalStrings.current
 
     EditScreenBase(
         navController = navController,
         title = strings.editScreenTitle(isEditMode, LocalStrings.current.club),
-        onSaveButtonClick = if (state is ClubEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null
+        onSaveButtonClick = if (state is ClubEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null,
     ) { padding ->
         val modifier = Modifier.padding(padding)
         when (state) {
             is ClubEditViewModel.State.Loading -> LoadingIndicator(
-                modifier = modifier
+                modifier = modifier,
             )
             is ClubEditViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -42,22 +42,22 @@ fun ClubEditScreen(
 @Composable
 private fun LoadedContent(
     state: ClubEditViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val strings = LocalStrings.current
 
     EditContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         EditCard(
-            title = strings.general
+            title = strings.general,
         ) {
             TextField(
                 label = strings.name,
                 value = state.item.name,
                 onValueChange = {
                     state.item.name = it
-                }
+                },
             )
         }
     }

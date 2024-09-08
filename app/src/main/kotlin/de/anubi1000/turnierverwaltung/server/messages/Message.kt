@@ -8,7 +8,10 @@ sealed interface Message {
 
     @Serializable
     enum class Type {
-        @SerialName("set_tournament") SET_TOURNAMENT,
-        @SerialName("update_row") UPDATE_ROW
+        @SerialName("set_tournament")
+        SET_TOURNAMENT,
+
+        @SerialName("update_row")
+        UPDATE_ROW,
     }
 }

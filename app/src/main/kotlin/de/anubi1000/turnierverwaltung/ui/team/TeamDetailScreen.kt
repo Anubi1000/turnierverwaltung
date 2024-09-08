@@ -31,18 +31,18 @@ fun TeamDetailScreen(
         title = LocalStrings.current.team,
         onEditButtonClick = {
             if (state is TeamDetailViewModel.State.Loaded) {
-                 navController.navigate(TeamEditDestination(state.item.id))
+                navController.navigate(TeamEditDestination(state.item.id))
             }
         },
         onDeleteButtonClick = {
             showDeleteDialog = true
-        }
+        },
     ) { padding ->
         when (state) {
             is TeamDetailViewModel.State.Loading -> LoadingIndicator()
             is TeamDetailViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(padding),
             )
         }
     }
@@ -54,7 +54,7 @@ fun TeamDetailScreen(
             onConfirmButtonClick = {
                 showDeleteDialog = false
                 onDeleteButtonClick()
-            }
+            },
         )
     }
 }
@@ -62,34 +62,34 @@ fun TeamDetailScreen(
 @Composable
 private fun LoadedContent(
     state: TeamDetailViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     DetailContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val strings = LocalStrings.current
 
         DetailCard(
-            title = strings.general
+            title = strings.general,
         ) {
             DetailItem(
                 headlineText = state.item.name,
-                overlineText = strings.name
+                overlineText = strings.name,
             )
 
             DetailItem(
                 headlineText = state.item.startNumber.toString(),
-                overlineText = strings.startNumber
+                overlineText = strings.startNumber,
             )
         }
 
         DetailCard(
-            title = strings.members
+            title = strings.members,
         ) {
             state.item.members.forEach { member ->
                 DetailItem(
                     headlineText = member.name,
-                    overlineText = strings.name
+                    overlineText = strings.name,
                 )
             }
         }

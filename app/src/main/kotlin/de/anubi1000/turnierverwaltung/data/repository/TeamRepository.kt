@@ -44,10 +44,8 @@ class TeamRepositoryImpl(private val realm: Realm) : TeamRepository {
         }
     }
 
-    override suspend fun getById(id: ObjectId): Team? {
-        return withContext(Dispatchers.IO) {
-            realm.queryById<Team>(id)
-        }
+    override suspend fun getById(id: ObjectId): Team? = withContext(Dispatchers.IO) {
+        realm.queryById<Team>(id)
     }
 
     override suspend fun delete(id: ObjectId) {

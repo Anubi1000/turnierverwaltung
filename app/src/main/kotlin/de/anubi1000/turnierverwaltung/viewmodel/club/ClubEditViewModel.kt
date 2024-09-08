@@ -18,7 +18,7 @@ import androidx.compose.runtime.State as ComposeState
 @KoinViewModel
 class ClubEditViewModel(
     private val clubRepository: ClubRepository,
-    @InjectedParam private val tournamentId: ObjectId
+    @InjectedParam private val tournamentId: ObjectId,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
         private set
@@ -29,7 +29,7 @@ class ClubEditViewModel(
         val club = EditClub()
         state = State.Loaded(
             item = club,
-            isValid = getValidationState(club)
+            isValid = getValidationState(club),
         )
         isEditMode = false
     }
@@ -39,7 +39,7 @@ class ClubEditViewModel(
             val club = clubRepository.getById(id)!!.toEditClub()
             state = State.Loaded(
                 item = club,
-                isValid = getValidationState(club)
+                isValid = getValidationState(club),
             )
             isEditMode = true
         }

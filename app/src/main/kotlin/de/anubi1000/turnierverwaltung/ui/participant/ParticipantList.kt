@@ -29,7 +29,7 @@ import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantListViewM
 fun ParticipantList(
     navController: NavController,
     state: ParticipantListViewModel.State,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     ListBase(
         title = LocalStrings.current.participants,
@@ -39,13 +39,13 @@ fun ParticipantList(
                 navController.navigate(ParticipantEditDestination())
             }
         },
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (state) {
             is ParticipantListViewModel.State.Loading -> LoadingIndicator()
             is ParticipantListViewModel.State.Loaded -> LoadedContent(
                 navController = navController,
-                state = state
+                state = state,
             )
         }
     }
@@ -55,7 +55,7 @@ fun ParticipantList(
 private fun LoadedContent(
     navController: NavController,
     state: ParticipantListViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val items by state.itemFlow.collectAsStateWithLifecycle()
 
@@ -63,7 +63,7 @@ private fun LoadedContent(
         val strings = LocalStrings.current
 
         CenteredText(
-            text = strings.xDontExist(strings.participants)
+            text = strings.xDontExist(strings.participants),
         )
     } else {
         val currentDestination by navController.currentDestinationAsState()
@@ -80,7 +80,7 @@ private fun LoadedContent(
 
         val itemModifier = Modifier.padding(2.dp)
         LazyColumn(
-            modifier = modifier
+            modifier = modifier,
         ) {
             items(items, key = { it.id }) { item ->
                 SelectableListItem(
@@ -94,7 +94,7 @@ private fun LoadedContent(
                             }
                         }
                     },
-                    modifier = itemModifier
+                    modifier = itemModifier,
                 )
             }
         }

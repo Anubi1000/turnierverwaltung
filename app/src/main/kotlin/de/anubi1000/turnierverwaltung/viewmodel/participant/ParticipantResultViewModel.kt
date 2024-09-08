@@ -18,7 +18,7 @@ import org.mongodb.kbson.ObjectId
 @KoinViewModel
 class ParticipantResultViewModel(
     private val participantRepository: ParticipantRepository,
-    private val disciplineRepository: DisciplineRepository
+    private val disciplineRepository: DisciplineRepository,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
 
@@ -41,7 +41,7 @@ class ParticipantResultViewModel(
             participantRepository.updateResult(
                 participantId = currentState.participantId,
                 disciplineId = currentState.discipline.id,
-                result = disciplineResult
+                result = disciplineResult,
             )
             onSaved()
         }
@@ -52,7 +52,7 @@ class ParticipantResultViewModel(
         data class Loaded(
             val result: EditParticipantResult,
             val discipline: Discipline,
-            val participantId: ObjectId
+            val participantId: ObjectId,
         ) : State
     }
 }

@@ -17,7 +17,7 @@ import org.mongodb.kbson.ObjectId
 
 @Serializable
 data class ClubDetailDestination(
-    val id: String
+    val id: String,
 ) : AppDestination {
     constructor(id: ObjectId) : this(id.toHexString())
 
@@ -40,6 +40,6 @@ fun NavGraphBuilder.clubDetailDestination(navController: NavController) = compos
             viewModel.deleteItem {
                 navController.popBackStack()
             }
-        }
+        },
     )
 }

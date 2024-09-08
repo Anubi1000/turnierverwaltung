@@ -21,6 +21,6 @@ data object TournamentListDestination : AppDestination {
 fun NavGraphBuilder.tournamentListDestination(navController: NavController) = composable<TournamentListDestination> {
     CenteredText(
         text = LocalStrings.current.noTournamentSelected,
-        modifier = Modifier.topAppBarPadding()
+        modifier = Modifier.topAppBarPadding(),
     )
 }

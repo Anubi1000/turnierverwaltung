@@ -13,7 +13,7 @@ import org.mongodb.kbson.ObjectId
 
 @KoinViewModel
 class ClubDetailViewModel(
-    private val clubRepository: ClubRepository
+    private val clubRepository: ClubRepository,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
         private set

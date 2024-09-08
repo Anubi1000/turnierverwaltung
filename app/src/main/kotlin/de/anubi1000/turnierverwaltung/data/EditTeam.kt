@@ -25,5 +25,5 @@ fun Team.toEditTeam() = EditTeam(
     id = id,
     name = name,
     startNumber = startNumber,
-    members = members.map { it.id }
+    members = members.map { it.id },
 )

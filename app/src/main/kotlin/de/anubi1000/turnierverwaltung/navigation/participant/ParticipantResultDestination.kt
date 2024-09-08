@@ -18,7 +18,7 @@ import org.mongodb.kbson.ObjectId
 @Serializable
 data class ParticipantResultDestination(
     val participantId: String,
-    val disciplineId: String
+    val disciplineId: String,
 ) : AppDestination {
     constructor(participantId: ObjectId, disciplineId: ObjectId) : this(participantId.toHexString(), disciplineId.toHexString())
 
@@ -41,6 +41,6 @@ fun NavGraphBuilder.participantResultDestination(navController: NavController) =
             viewModel.saveChanges {
                 navController.popBackStack()
             }
-        }
+        },
     )
 }

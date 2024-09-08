@@ -18,6 +18,6 @@ data object TeamListDestination : AppDestination {
 
 fun NavGraphBuilder.teamListDestination(navController: NavController) = composable<TeamListDestination> {
     CenteredText(
-        text = LocalStrings.current.noTeamSelected
+        text = LocalStrings.current.noTeamSelected,
     )
 }

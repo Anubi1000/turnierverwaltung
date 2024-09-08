@@ -24,17 +24,13 @@ interface TeamDisciplineRepository {
 
 @Factory
 class TeamDisciplineRepositoryImpl(private val realm: Realm) : TeamDisciplineRepository {
-    override fun getAllForTournamentAsFlow(tournamentId: ObjectId): Flow<List<TeamDiscipline>> {
-        return realm.query<TeamDiscipline>("tournament._id == $0", tournamentId)
-            .sort("name", Sort.ASCENDING)
-            .asFlow()
-            .map { it.list }
-    }
+    override fun getAllForTournamentAsFlow(tournamentId: ObjectId): Flow<List<TeamDiscipline>> = realm.query<TeamDiscipline>("tournament._id == $0", tournamentId)
+        .sort("name", Sort.ASCENDING)
+        .asFlow()
+        .map { it.list }
 
-    override suspend fun getById(id: ObjectId): TeamDiscipline? {
-        return withContext(Dispatchers.IO) {
-            realm.queryById(id)
-        }
+    override suspend fun getById(id: ObjectId): TeamDiscipline? = withContext(Dispatchers.IO) {
+        realm.queryById(id)
     }
 
     override suspend fun insert(teamDiscipline: TeamDiscipline, tournamentId: ObjectId) {

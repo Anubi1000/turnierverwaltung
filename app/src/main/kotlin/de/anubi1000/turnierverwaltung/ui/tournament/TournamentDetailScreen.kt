@@ -32,7 +32,7 @@ fun TournamentDetailScreen(
     navController: NavController,
     state: TournamentDetailViewModel.State,
     onDeleteButtonClick: () -> Unit,
-    showOnScoreboard: () -> Unit
+    showOnScoreboard: () -> Unit,
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -52,7 +52,7 @@ fun TournamentDetailScreen(
                 icon = Icons.Default.Scoreboard,
                 tooltip = LocalStrings.current.showOnScoreboard,
                 onClick = showOnScoreboard,
-                enabled = state is TournamentDetailViewModel.State.Loaded
+                enabled = state is TournamentDetailViewModel.State.Loaded,
             )
         },
         floatingActionButton = {
@@ -61,15 +61,15 @@ fun TournamentDetailScreen(
                     navController.navigate(ParticipantListDestination)
                 },
                 text = { Text(LocalStrings.current.openTournament) },
-                icon = { Icon(Icons.AutoMirrored.Filled.OpenInNew) }
+                icon = { Icon(Icons.AutoMirrored.Filled.OpenInNew) },
             )
-        }
+        },
     ) { padding ->
         when (state) {
             TournamentDetailViewModel.State.Loading -> LoadingIndicator()
             is TournamentDetailViewModel.State.Loaded -> LoadedContent(
                 state = state,
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(padding),
             )
         }
     }
@@ -81,7 +81,7 @@ fun TournamentDetailScreen(
             onConfirmButtonClick = {
                 showDeleteDialog = false
                 onDeleteButtonClick()
-            }
+            },
         )
     }
 }
@@ -89,23 +89,23 @@ fun TournamentDetailScreen(
 @Composable
 private fun LoadedContent(
     state: TournamentDetailViewModel.State.Loaded,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     DetailContent(
-        modifier = modifier
+        modifier = modifier,
     ) {
         val strings = LocalStrings.current
 
         DetailCard(
-            title = strings.general
+            title = strings.general,
         ) {
             DetailItem(
                 headlineText = state.item.name,
-                overlineText = strings.name
+                overlineText = strings.name,
             )
             DetailItem(
                 headlineText = state.item.date.formatAsDate(),
-                overlineText = strings.dateOfTournament
+                overlineText = strings.dateOfTournament,
             )
         }
     }

@@ -38,6 +38,6 @@ fun NavGraphBuilder.participantDetailDestination(navController: NavController) =
             viewModel.deleteItem {
                 navController.popBackStack()
             }
-        }
+        },
     )
 }

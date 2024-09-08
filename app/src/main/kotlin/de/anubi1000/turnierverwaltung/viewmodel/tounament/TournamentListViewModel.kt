@@ -14,7 +14,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class TournamentListViewModel(
-    private val tournamentRepository: TournamentRepository
+    private val tournamentRepository: TournamentRepository,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
 

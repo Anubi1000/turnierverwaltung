@@ -9,5 +9,5 @@ enum class NavigationMenuOption {
     PARTICIPANTS,
     TEAMS,
     CLUBS,
-    DISCIPLINES
+    DISCIPLINES,
 }

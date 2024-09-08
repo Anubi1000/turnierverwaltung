@@ -12,7 +12,7 @@ fun DetailCardScope.DetailItem(
     headlineText: String,
     modifier: Modifier = Modifier,
     supportingText: String? = null,
-    overlineText: String? = null
+    overlineText: String? = null,
 ) {
     ListItem(
         headlineContent = {
@@ -29,8 +29,8 @@ fun DetailCardScope.DetailItem(
             }
         },
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         ),
-        modifier = modifier
+        modifier = modifier,
     )
 }

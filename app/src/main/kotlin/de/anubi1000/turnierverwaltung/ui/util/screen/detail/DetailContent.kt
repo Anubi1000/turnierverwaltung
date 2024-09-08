@@ -8,15 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-class DetailContentScope @OptIn(ExperimentalLayoutApi::class) constructor(
-    val flowRowScope: FlowRowScope
+class DetailContentScope
+@OptIn(ExperimentalLayoutApi::class)
+constructor(
+    val flowRowScope: FlowRowScope,
 )
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DetailContent(
     modifier: Modifier = Modifier,
-    content: @Composable DetailContentScope.() -> Unit
+    content: @Composable DetailContentScope.() -> Unit,
 ) {
     val arrangement = Arrangement.spacedBy(4.dp)
     FlowRow(
@@ -25,6 +27,6 @@ fun DetailContent(
         verticalArrangement = arrangement,
         content = {
             DetailContentScope(this).content()
-        }
+        },
     )
 }

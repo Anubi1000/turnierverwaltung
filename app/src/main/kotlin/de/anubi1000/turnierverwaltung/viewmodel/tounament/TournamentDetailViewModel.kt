@@ -16,7 +16,7 @@ import org.mongodb.kbson.ObjectId
 @KoinViewModel
 class TournamentDetailViewModel(
     private val tournamentRepository: TournamentRepository,
-    private val server: Server
+    private val server: Server,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
         private set

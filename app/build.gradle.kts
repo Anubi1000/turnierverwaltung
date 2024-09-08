@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.realm)
+    alias(libs.plugins.spotless)
 }
 
 group = "de.anubi1000"
@@ -97,5 +98,16 @@ compose.desktop {
             configurationFiles.from(projectDir.resolve("proguard-rules.pro"))
             version = "7.5.0"
         }
+    }
+}
+
+spotless {
+    kotlin {
+        targetExclude("build/**")
+
+        ktlint()
+            .editorConfigOverride(mapOf(
+                "ktlint_function_naming_ignore_when_annotated_with" to "Composable"
+            ))
     }
 }

@@ -13,7 +13,7 @@ import cafe.adriel.lyricist.LocalStrings
 fun DeleteDialog(
     itemName: String,
     onDismissRequest: () -> Unit,
-    onConfirmButtonClick: () -> Unit
+    onConfirmButtonClick: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -31,6 +31,6 @@ fun DeleteDialog(
         title = { Text(LocalStrings.current.delete) },
         text = {
             Text(LocalStrings.current.wantToDeleteX(itemName))
-        }
+        },
     )
 }

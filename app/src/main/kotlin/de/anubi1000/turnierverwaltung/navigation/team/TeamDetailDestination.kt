@@ -38,6 +38,6 @@ fun NavGraphBuilder.teamDetailDestination(navController: NavController) = compos
             viewModel.deleteItem {
                 navController.popBackStack()
             }
-        }
+        },
     )
 }

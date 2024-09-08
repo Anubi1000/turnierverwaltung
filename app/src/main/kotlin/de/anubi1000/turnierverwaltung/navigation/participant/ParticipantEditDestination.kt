@@ -50,6 +50,6 @@ fun NavGraphBuilder.participantEditDestination(navController: NavController) = c
                 }
             }
         },
-        isEditMode = args.id != null
+        isEditMode = args.id != null,
     )
 }

@@ -24,7 +24,7 @@ data object ParticipantListDestination : AppDestination {
 fun NavGraphBuilder.participantListDestination(navController: NavController) = composable<ParticipantListDestination> {
     Box(
         modifier = Modifier.fillMaxSize().topAppBarPadding(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(LocalStrings.current.noParticipantSelected)
     }

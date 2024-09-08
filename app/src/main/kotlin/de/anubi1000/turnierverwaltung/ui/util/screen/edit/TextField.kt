@@ -47,7 +47,7 @@ fun EditCardScope.TextField(
         },
         label = { Text(label) },
         singleLine = singleLine,
-        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp).fillMaxWidth()
+        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp).fillMaxWidth(),
     )
 }
 
@@ -57,7 +57,7 @@ fun EditCardScope.TextField(
 fun EditCardScope.DateField(
     date: Instant,
     onDateChange: (Instant) -> Unit,
-    label: String
+    label: String,
 ) {
     var showDateDialog by remember { mutableStateOf(false) }
 
@@ -76,7 +76,7 @@ fun EditCardScope.DateField(
         label = { Text(label) },
         interactionSource = interactionSource,
         readOnly = true,
-        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp).fillMaxWidth()
+        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp).fillMaxWidth(),
     )
 
     if (showDateDialog) {
@@ -93,18 +93,18 @@ fun EditCardScope.DateField(
                             showDateDialog = false
                             onDateChange(Instant.ofEpochMilli(date))
                         }
-                    }
+                    },
                 ) {
                     Text(text = LocalStrings.current.confirm)
                 }
             },
             dismissButton = {
                 TextButton(
-                    onClick = { showDateDialog = false }
+                    onClick = { showDateDialog = false },
                 ) {
                     Text(text = LocalStrings.current.cancel)
                 }
-            }
+            },
         ) {
             DatePicker(state = state)
         }
@@ -117,13 +117,13 @@ fun EditCardScope.DateField(
 fun EditCardScope.DropdownMenu(
     value: String,
     label: String,
-    content: @Composable ColumnScope.(close: () -> Unit) -> Unit
+    content: @Composable ColumnScope.(close: () -> Unit) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = it },
-        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp)
+        modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp),
     ) {
         OutlinedTextField(
             value = value,
@@ -133,7 +133,7 @@ fun EditCardScope.DropdownMenu(
             label = { Text(label) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth()
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
         )
         ExposedDropdownMenu(
             expanded = expanded,
@@ -142,7 +142,7 @@ fun EditCardScope.DropdownMenu(
                 content {
                     expanded = false
                 }
-            }
+            },
         )
     }
 }

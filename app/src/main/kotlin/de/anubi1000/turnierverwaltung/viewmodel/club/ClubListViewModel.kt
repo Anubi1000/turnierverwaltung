@@ -17,7 +17,7 @@ import org.mongodb.kbson.ObjectId
 @KoinViewModel
 class ClubListViewModel(
     private val clubRepository: ClubRepository,
-    @InjectedParam private val tournamentId: ObjectId
+    @InjectedParam private val tournamentId: ObjectId,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
 

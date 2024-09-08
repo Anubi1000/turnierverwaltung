@@ -34,10 +34,8 @@ class DisciplineRepositoryImpl(private val realm: Realm) : DisciplineRepository 
             .map { it.list }
     }
 
-    override suspend fun getAllForTournament(tournamentId: ObjectId): List<Discipline> {
-        return withContext(Dispatchers.IO) {
-            getAllForTournamentAsFlow(tournamentId).first()
-        }
+    override suspend fun getAllForTournament(tournamentId: ObjectId): List<Discipline> = withContext(Dispatchers.IO) {
+        getAllForTournamentAsFlow(tournamentId).first()
     }
 
     override suspend fun getById(id: ObjectId): Discipline? {

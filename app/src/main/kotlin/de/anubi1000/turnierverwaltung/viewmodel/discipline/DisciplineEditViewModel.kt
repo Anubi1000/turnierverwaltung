@@ -20,7 +20,7 @@ import androidx.compose.runtime.State as ComposeState
 @KoinViewModel
 class DisciplineEditViewModel(
     private val disciplineRepository: DisciplineRepository,
-    @InjectedParam private val tournamentId: ObjectId
+    @InjectedParam private val tournamentId: ObjectId,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
         private set
@@ -31,7 +31,7 @@ class DisciplineEditViewModel(
         val discipline = EditDiscipline()
         state = State.Loaded(
             item = discipline,
-            isValid = getValidationState(discipline)
+            isValid = getValidationState(discipline),
         )
         isEditMode = false
     }
@@ -41,7 +41,7 @@ class DisciplineEditViewModel(
             val club = disciplineRepository.getById(id)!!.toEditDiscipline()
             state = State.Loaded(
                 item = club,
-                isValid = getValidationState(club)
+                isValid = getValidationState(club),
             )
             isEditMode = true
         }
@@ -77,8 +77,8 @@ class DisciplineEditViewModel(
 
     private fun getValidationState(discipline: EditDiscipline): ComposeState<Boolean> = derivedStateOf {
         discipline.name.isNotBlank() &&
-                discipline.values.isNotEmpty() &&
-                discipline.values.all { it.name.isNotBlank() }
+            discipline.values.isNotEmpty() &&
+            discipline.values.all { it.name.isNotBlank() }
     }
 
     sealed interface State {
