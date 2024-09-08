@@ -100,6 +100,8 @@ private fun LoadedContent(
                 when (val destination = currentDestination) {
                     is DisciplineDetailDestination -> destination.id
                     is DisciplineEditDestination -> destination.id
+                    is TeamDisciplineDetailDestination -> destination.id
+                    is TeamDisciplineEditDestination -> destination.id
                     else -> null
                 }?.toObjectId()
             }

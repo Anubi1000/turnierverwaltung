@@ -9,9 +9,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Text
@@ -27,8 +24,10 @@ import de.anubi1000.turnierverwaltung.data.EditDiscipline
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditCard
+import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditCardScope
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditScreenBase
+import de.anubi1000.turnierverwaltung.ui.util.screen.edit.ListItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.TextField
 import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineEditViewModel
 
@@ -86,9 +85,6 @@ private fun LoadedContent(
                         onCheckedChange = { state.item.isGenderSeparated = it },
                     )
                 },
-                colors = ListItemDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                ),
             )
         }
 
@@ -118,7 +114,7 @@ private fun LoadedContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ValueListItem(
+private fun EditCardScope.ValueListItem(
     value: EditDiscipline.Value,
     state: DisciplineEditViewModel.State.Loaded,
 ) {
@@ -163,8 +159,5 @@ private fun ValueListItem(
                 )
             }
         },
-        colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-        ),
     )
 }
