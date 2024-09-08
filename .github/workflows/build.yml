@@ -71,7 +71,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - uses: actions/download-artifact@v4
+      - name: Download Scoreboard
+        uses: actions/download-artifact@v4
         with:
           name: Scoreboard
           path: scoreboard/dist/
@@ -93,6 +94,10 @@ jobs:
       - name: Build program
         working-directory: app
         run: ./gradlew createDistributable
+      
+      - name: Check formatting
+        working-directory: app
+        run: ./gradlew spotlessCheck
       
       - name: Run tests
         working-directory: app
