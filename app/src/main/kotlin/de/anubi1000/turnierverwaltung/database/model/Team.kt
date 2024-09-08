@@ -18,7 +18,7 @@ class Team(
     var name: String = "",
     var startNumber: Int = 0,
     var members: RealmList<Participant> = realmListOf(),
-    var participatingDisciplines: RealmDictionary<Boolean> = realmDictionaryOf(),
+    var participatingDisciplines: RealmList<TeamDiscipline> = realmListOf(),
 ) : RealmObject {
     constructor() : this(id = ObjectId())
 

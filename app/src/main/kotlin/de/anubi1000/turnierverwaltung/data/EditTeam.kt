@@ -15,10 +15,12 @@ class EditTeam(
     name: String = "",
     startNumber: Int = 0,
     members: List<ObjectId> = emptyList(),
+    participatingDisciplines: List<ObjectId> = emptyList()
 ) {
     var name by mutableStateOf(name)
     var startNumber by mutableIntStateOf(startNumber)
     val members = members.toMutableStateList()
+    val participatingDisciplines = participatingDisciplines.toMutableStateList()
 }
 
 fun Team.toEditTeam() = EditTeam(
@@ -26,4 +28,5 @@ fun Team.toEditTeam() = EditTeam(
     name = name,
     startNumber = startNumber,
     members = members.map { it.id },
+    participatingDisciplines = participatingDisciplines.map { it.id }
 )
