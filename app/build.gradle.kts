@@ -87,6 +87,8 @@ compose.desktop {
             packageName = "turnierverwaltung"
             packageVersion = "1.0.0"
 
+            modules("jdk.unsupported")
+
             windows {
                 perUserInstall = true
                 shortcut = true
