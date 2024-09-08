@@ -19,6 +19,7 @@ interface TeamDisciplineRepository {
     suspend fun getById(id: ObjectId): TeamDiscipline?
     suspend fun insert(teamDiscipline: TeamDiscipline, tournamentId: ObjectId)
     suspend fun update(teamDiscipline: TeamDiscipline)
+    suspend fun delete(id: ObjectId)
 }
 
 @Factory
@@ -55,6 +56,15 @@ class TeamDisciplineRepositoryImpl(private val realm: Realm) : TeamDisciplineRep
 
                 dbTeamDiscipline.name = teamDiscipline.name
                 dbTeamDiscipline.basedOn = teamDiscipline.basedOn.map { findLatest(it)!! }.toRealmList()
+            }
+        }
+    }
+
+    override suspend fun delete(id: ObjectId) {
+        withContext(Dispatchers.IO) {
+            realm.write {
+                val teamDiscipline = queryById<TeamDiscipline>(id)!!
+                delete(teamDiscipline)
             }
         }
     }

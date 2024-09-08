@@ -33,7 +33,7 @@ fun TournamentEditScreen(
             is TournamentEditViewModel.State.Loading -> LoadingIndicator(
                 modifier = modifier
             )
-            is TournamentEditViewModel.State.Loaded -> LoadedEditContent(
+            is TournamentEditViewModel.State.Loaded -> LoadedContent(
                 state = state,
                 modifier = modifier
             )
@@ -42,7 +42,7 @@ fun TournamentEditScreen(
 }
 
 @Composable
-private fun LoadedEditContent(
+private fun LoadedContent(
     state: TournamentEditViewModel.State.Loaded,
     modifier: Modifier = Modifier
 ) {

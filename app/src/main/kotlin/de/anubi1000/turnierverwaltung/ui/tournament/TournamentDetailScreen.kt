@@ -67,7 +67,7 @@ fun TournamentDetailScreen(
     ) { padding ->
         when (state) {
             TournamentDetailViewModel.State.Loading -> LoadingIndicator()
-            is TournamentDetailViewModel.State.Loaded -> LoadedDetailContent(
+            is TournamentDetailViewModel.State.Loaded -> LoadedContent(
                 state = state,
                 modifier = Modifier.padding(padding)
             )
@@ -87,7 +87,7 @@ fun TournamentDetailScreen(
 }
 
 @Composable
-private fun LoadedDetailContent(
+private fun LoadedContent(
     state: TournamentDetailViewModel.State.Loaded,
     modifier: Modifier = Modifier
 ) {

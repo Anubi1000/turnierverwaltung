@@ -18,6 +18,7 @@ import de.anubi1000.turnierverwaltung.navigation.club.ClubListDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineEditDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineListDestination
+import de.anubi1000.turnierverwaltung.navigation.discipline.TeamDisciplineDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.TeamDisciplineEditDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
@@ -54,6 +55,7 @@ private val destinations: Map<String, KClass<out AppDestination>> = listOf(
     DisciplineListDestination::class,
     DisciplineDetailDestination::class,
     DisciplineEditDestination::class,
+    TeamDisciplineDetailDestination::class,
     TeamDisciplineEditDestination::class
 ).associateBy { it.qualifiedName!! }
 

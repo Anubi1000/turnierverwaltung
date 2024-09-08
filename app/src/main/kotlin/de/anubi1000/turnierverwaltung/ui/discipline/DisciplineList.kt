@@ -19,6 +19,7 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineEditDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineListDestination
+import de.anubi1000.turnierverwaltung.navigation.discipline.TeamDisciplineDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.TeamDisciplineEditDestination
 import de.anubi1000.turnierverwaltung.ui.util.CenteredText
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
@@ -63,11 +64,15 @@ fun DisciplineList(
             },
             onCreateDiscipline = {
                 showCreateDialog = false
-                navController.navigate(DisciplineEditDestination())
+                navController.navigate(DisciplineEditDestination()) {
+                    popUpTo<DisciplineListDestination>()
+                }
             },
             onCreateTeamDiscipline = {
                 showCreateDialog = false
-                navController.navigate(TeamDisciplineEditDestination())
+                navController.navigate(TeamDisciplineEditDestination()) {
+                    popUpTo<DisciplineListDestination>()
+                }
             }
         )
     }
@@ -140,7 +145,7 @@ private fun LoadedContent(
                     selected = currentItemId == item.id,
                     onClick = {
                         if (currentItemId != item.id) {
-                            navController.navigate(DisciplineDetailDestination(item.id)) {
+                            navController.navigate(TeamDisciplineDetailDestination(item.id)) {
                                 popUpTo<DisciplineListDestination>()
                             }
                         }

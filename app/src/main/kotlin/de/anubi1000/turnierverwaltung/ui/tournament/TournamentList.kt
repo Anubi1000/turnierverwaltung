@@ -45,7 +45,7 @@ fun TournamentList(
     ) {
         when (state) {
             TournamentListViewModel.State.Loading -> LoadingIndicator()
-            is TournamentListViewModel.State.Loaded -> LoadedListContent(
+            is TournamentListViewModel.State.Loaded -> LoadedContent(
                 navController = navController,
                 state = state
             )
@@ -54,7 +54,7 @@ fun TournamentList(
 }
 
 @Composable
-private fun LoadedListContent(
+private fun LoadedContent(
     navController: NavController,
     state: TournamentListViewModel.State.Loaded,
     modifier: Modifier = Modifier
