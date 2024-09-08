@@ -22,13 +22,13 @@ class EditParticipantResult(
         val values = SnapshotStateMap<ObjectId, Double>().apply { putAll(values) }
     }
 
-    fun toDisciplineResult() = Participant.DisciplineResult().also { disciplineResult ->
-        disciplineResult.rounds = rounds.map { round ->
-            Participant.RoundResult().also { roundResult ->
-                roundResult.values = round.values.map { it.key.toHexString() to it.value }.toRealmDictionary()
-            }
-        }.toRealmList()
-    }
+    fun toDisciplineResult() = Participant.DisciplineResult(
+        rounds = rounds.map { round ->
+            Participant.RoundResult(
+                values = round.values.map { it.key.toHexString() to it.value }.toRealmDictionary(),
+            )
+        }.toRealmList(),
+    )
 }
 
 fun Participant.DisciplineResult.toEditParticipantResult() = EditParticipantResult(

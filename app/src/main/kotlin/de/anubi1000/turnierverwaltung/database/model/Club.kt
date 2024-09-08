@@ -7,16 +7,13 @@ import io.realm.kotlin.types.annotations.PersistedName
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mongodb.kbson.ObjectId
 
-@Suppress("ktlint:standard:class-signature")
-class Club() : RealmObject {
-    // id
+class Club(
     @PrimaryKey
     @PersistedName("_id")
-    var id: ObjectId = ObjectId()
+    var id: ObjectId = ObjectId(),
+    var name: String = "",
+) : RealmObject {
+    constructor() : this(id = ObjectId())
 
-    // name
-    var name: String = ""
-
-    // tournament
     val tournament: RealmResults<Tournament> by backlinks(Tournament::clubs)
 }

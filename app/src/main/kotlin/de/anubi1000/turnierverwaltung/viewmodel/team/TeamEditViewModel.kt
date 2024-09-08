@@ -59,13 +59,13 @@ class TeamEditViewModel(
         require(currentState is State.Loaded && currentState.isValid.value)
 
         viewModelScope.launch {
-            val team = Team().also {
-                it.id = currentState.item.id
-                it.name = currentState.item.name
-                it.startNumber = currentState.item.startNumber
+            val team = Team(
+                id = currentState.item.id,
+                name = currentState.item.name,
+                startNumber = currentState.item.startNumber,
 
-                it.members = currentState.item.members.map { id -> currentState.participants.find { participant -> participant.id == id }!! }.toRealmList()
-            }
+                members = currentState.item.members.map { id -> currentState.participants.find { it.id == id }!! }.toRealmList(),
+            )
 
             if (!isEditMode) {
                 teamRepository.insert(team, tournamentId)

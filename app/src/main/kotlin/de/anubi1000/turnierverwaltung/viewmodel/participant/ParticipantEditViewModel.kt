@@ -58,14 +58,13 @@ class ParticipantEditViewModel(
         require(currentState is State.Loaded && currentState.isValid.value)
 
         viewModelScope.launch {
-            val participant = Participant().also {
-                it.id = currentState.item.id
-                it.name = currentState.item.name
-                it.startNumber = currentState.item.startNumber
-                it.gender = currentState.item.gender
-
-                it.club = currentState.clubs.find { it.id == currentState.item.clubId }!!
-            }
+            val participant = Participant(
+                id = currentState.item.id,
+                name = currentState.item.name,
+                startNumber = currentState.item.startNumber,
+                gender = currentState.item.gender,
+                club = currentState.clubs.find { it.id == currentState.item.clubId }!!,
+            )
 
             if (!isEditMode) {
                 participantRepository.insert(participant, tournamentId)

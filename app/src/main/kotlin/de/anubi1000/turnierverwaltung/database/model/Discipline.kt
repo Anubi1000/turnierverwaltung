@@ -10,26 +10,20 @@ import io.realm.kotlin.types.annotations.PersistedName
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mongodb.kbson.ObjectId
 
-@Suppress("ktlint:standard:class-signature")
-class Discipline() : RealmObject {
-    // id
+class Discipline(
     @PrimaryKey
     @PersistedName("_id")
-    var id: ObjectId = ObjectId()
-
-    // name
-    var name: String = ""
-
-    // isGenderSeparated
-    var isGenderSeparated: Boolean = false
+    var id: ObjectId = ObjectId(),
+    var name: String = "",
+    var isGenderSeparated: Boolean = false,
+    var values: RealmList<Value> = realmListOf(),
+) : RealmObject {
+    constructor() : this(id = ObjectId())
 
     val tournament: RealmResults<Tournament> by backlinks(Tournament::disciplines)
 
-    // values
-    var values: RealmList<Value> = realmListOf()
-
     @PersistedName("DisciplineValue")
-    class Value() : EmbeddedRealmObject {
+    class Value : EmbeddedRealmObject {
         var id: ObjectId = ObjectId()
         var name: String = ""
         var isAdded: Boolean = true

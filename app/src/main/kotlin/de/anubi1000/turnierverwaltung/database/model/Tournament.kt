@@ -15,19 +15,25 @@ import java.time.Instant
 /**
  * Represents a tournament.
  */
-@Suppress("ktlint:standard:class-signature")
-class Tournament() : RealmObject {
+class Tournament(
     /**
      * The id of the tournament.
      */
     @PrimaryKey
     @PersistedName("_id")
-    var id: ObjectId = ObjectId()
+    var id: ObjectId = ObjectId(),
 
     /**
      * The name of the tournament.
      */
-    var name: String = ""
+    var name: String = "",
+
+    /**
+     * The date that the tournament is scheduled on.
+     */
+    date: Instant = Instant.now(),
+) : RealmObject {
+    constructor() : this(id = ObjectId())
 
     /**
      * The date that the tournament is scheduled on.
@@ -43,7 +49,7 @@ class Tournament() : RealmObject {
      * Backing field for [date] which is compatible with realm.
      */
     @PersistedName("date")
-    private var _date: RealmInstant = RealmInstant.now()
+    private var _date: RealmInstant = date.toRealmInstant()
 
     /**
      * The list of clubs participating in the tournament.

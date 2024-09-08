@@ -16,24 +16,35 @@ import org.mongodb.kbson.ObjectId
 /**
  * Represents a participant in a [Tournament].
  */
-@Suppress("ktlint:standard:class-signature")
-class Participant() : RealmObject {
+class Participant(
     /**
      * The id of the participant.
      */
     @PrimaryKey
     @PersistedName("_id")
-    var id: ObjectId = ObjectId()
+    var id: ObjectId = ObjectId(),
 
     /**
      * The name of the participant.
      */
-    var name: String = ""
+    var name: String = "",
 
     /**
      * The start number for the participant.
      */
-    var startNumber: Int = 0
+    var startNumber: Int = 0,
+
+    /**
+     * The [Gender] of the participant.
+     */
+    gender: Gender = Gender.MALE,
+
+    /**
+     * The [Club] of the participant.
+     */
+    var club: Club? = null,
+) : RealmObject {
+    constructor() : this(id = ObjectId())
 
     /**
      * The [Gender] of the participant.
@@ -49,22 +60,14 @@ class Participant() : RealmObject {
      * Backing field for [gender] which is compatible with realm.
      */
     @PersistedName("gender")
-    private var _gender: Boolean = false
+    private var _gender: Boolean = gender == Gender.MALE
 
-    /**
-     * Represents the gender of a participant
-     */
+    val tournament: RealmResults<Tournament> by backlinks(Tournament::participants)
+
     enum class Gender {
         MALE,
         FEMALE,
     }
-
-    /**
-     * The [Club] of the participant.
-     */
-    var club: Club? = null
-
-    val tournament: RealmResults<Tournament> by backlinks(Tournament::participants)
 
     /**
      * The results for the individual disciplines of a participant.
@@ -75,23 +78,25 @@ class Participant() : RealmObject {
     /**
      * Results of a participant of a specific discipline.
      */
-    @Suppress("ktlint:standard:class-signature")
-    class DisciplineResult() : EmbeddedRealmObject {
+    class DisciplineResult(
         /**
          * List containing the results of the individual rounds of the participant .
          */
-        var rounds: RealmList<RoundResult> = realmListOf()
+        var rounds: RealmList<RoundResult> = realmListOf(),
+    ) : EmbeddedRealmObject {
+        constructor() : this(rounds = realmListOf())
     }
 
     /**
      * Results of a participant for an individual round of a discipline.
      */
-    @Suppress("ktlint:standard:class-signature")
-    class RoundResult() : EmbeddedRealmObject {
+    class RoundResult(
         /**
          * The individual values used for calculating the result for the [Participant].
          * The id of the [Discipline.Value] is used as the key.
          */
-        var values: RealmDictionary<Double> = realmDictionaryOf()
+        var values: RealmDictionary<Double> = realmDictionaryOf(),
+    ) : EmbeddedRealmObject {
+        constructor() : this(values = realmDictionaryOf())
     }
 }

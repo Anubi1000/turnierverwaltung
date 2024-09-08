@@ -14,10 +14,10 @@ class EditClub(
 ) {
     var name by mutableStateOf(name)
 
-    fun toClub() = Club().also {
-        it.id = id
-        it.name = name
-    }
+    fun toClub() = Club(
+        id = id,
+        name = name,
+    )
 }
 
 fun Club.toEditClub() = EditClub(

@@ -52,19 +52,18 @@ class DisciplineEditViewModel(
         require(currentState is State.Loaded && currentState.isValid.value)
 
         viewModelScope.launch {
-            val discipline = Discipline().also { discipline ->
-                discipline.id = currentState.item.id
-                discipline.name = currentState.item.name
-                discipline.isGenderSeparated = currentState.item.isGenderSeparated
-
-                discipline.values = currentState.item.values.map { value ->
+            val discipline = Discipline(
+                id = currentState.item.id,
+                name = currentState.item.name,
+                isGenderSeparated = currentState.item.isGenderSeparated,
+                values = currentState.item.values.map { value ->
                     Discipline.Value().also {
                         it.id = value.id
                         it.name = value.name
                         it.isAdded = value.isAdded
                     }
-                }.toRealmList()
-            }
+                }.toRealmList(),
+            )
 
             if (!isEditMode) {
                 disciplineRepository.insert(discipline, tournamentId)
