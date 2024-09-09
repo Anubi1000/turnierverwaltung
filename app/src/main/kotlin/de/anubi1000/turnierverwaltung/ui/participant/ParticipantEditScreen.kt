@@ -3,8 +3,6 @@ package de.anubi1000.turnierverwaltung.ui.participant
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -13,6 +11,7 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.DropdownMenu
+import de.anubi1000.turnierverwaltung.ui.util.screen.edit.DropdownMenuItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditScreenBase
@@ -78,14 +77,11 @@ private fun LoadedContent(
             ) {
                 Participant.Gender.entries.forEach { entry ->
                     DropdownMenuItem(
-                        text = {
-                            Text(strings.genderName(entry))
-                        },
+                        text = strings.genderName(entry),
+                        selected = state.item.gender == entry,
                         onClick = {
                             state.item.gender = entry
-                            it()
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     )
                 }
             }
@@ -99,12 +95,11 @@ private fun LoadedContent(
             ) {
                 state.clubs.forEach { club ->
                     DropdownMenuItem(
-                        text = { Text(club.name) },
+                        text = club.name,
+                        selected = state.item.clubId == club.id,
                         onClick = {
                             state.item.clubId = club.id
-                            it()
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     )
                 }
             }

@@ -8,7 +8,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,6 +16,7 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.DropdownMenu
+import de.anubi1000.turnierverwaltung.ui.util.screen.edit.DropdownMenuItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditScreenBase
@@ -101,12 +101,10 @@ private fun LoadedContent(
                 ) {
                     state.disciplines.filter { !state.item.basedOn.contains(it.id) }.forEach { discipline ->
                         DropdownMenuItem(
-                            text = { Text(discipline.name) },
+                            text = discipline.name,
                             onClick = {
                                 state.item.basedOn.add(discipline.id)
-                                it()
                             },
-                            contentPadding = MenuDefaults.DropdownMenuItemContentPadding,
                         )
                     }
                 }
