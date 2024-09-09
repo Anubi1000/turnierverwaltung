@@ -18,8 +18,8 @@ import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDest
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.ui.util.CenteredText
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
-import de.anubi1000.turnierverwaltung.ui.util.SelectableListItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.ListBase
+import de.anubi1000.turnierverwaltung.ui.util.screen.list.SelectableListItem
 import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
 import de.anubi1000.turnierverwaltung.util.getCurrentDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId

@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.ui.util
+package de.anubi1000.turnierverwaltung.ui.util.screen.list
 
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.ListItem

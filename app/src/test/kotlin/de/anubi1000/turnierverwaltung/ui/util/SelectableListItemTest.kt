@@ -12,6 +12,7 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.runComposeUiTest
+import de.anubi1000.turnierverwaltung.ui.util.screen.list.SelectableListItem
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
