@@ -4,12 +4,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
@@ -101,7 +101,11 @@ private fun LoadedContent(
                     value = "",
                     label = "",
                 ) {
-                    state.participants.filter { !state.item.members.contains(it.id) }.forEach { participant ->
+                    val availableParticipants = remember(state.participants, state.item.members) {
+                        state.participants.filter { !state.item.members.contains(it.id) }
+                    }
+
+                    availableParticipants.forEach { participant ->
                         DropdownMenuItem(
                             text = participant.name,
                             onClick = {

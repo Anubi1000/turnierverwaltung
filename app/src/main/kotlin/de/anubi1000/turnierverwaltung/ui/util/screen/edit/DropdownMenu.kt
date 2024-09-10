@@ -80,7 +80,7 @@ fun DropdownMenuScope.DropdownMenuItem(
                 if (selected) {
                     Icon(Icons.Default.Check)
                 }
-            } 
+            }
         } else {
             null
         },
