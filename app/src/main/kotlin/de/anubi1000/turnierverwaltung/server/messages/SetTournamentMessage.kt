@@ -80,7 +80,7 @@ private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTour
         listOf(
             SetTournamentMessage.Table(
                 id = discipline.id.toHexString(),
-                name = discipline.name + " (m)",
+                name = discipline.name + " (w)",
                 columns = columns,
                 rows = participants.filter { participant ->
                     if (participant.gender != Participant.Gender.MALE) return@filter false
@@ -90,7 +90,7 @@ private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTour
             ),
             SetTournamentMessage.Table(
                 id = discipline.id.toHexString(),
-                name = discipline.name + " (w)",
+                name = discipline.name + " (m)",
                 columns = columns,
                 rows = participants.filter { participant ->
                     if (participant.gender != Participant.Gender.FEMALE) return@filter false
