@@ -38,7 +38,16 @@ function DisciplineTitleBar({
             <Typography
               variant={index == 0 ? "h5" : "h6"}
               color={index == 0 ? "white" : "lightgray"}
-              style={{ paddingRight: 32 }}
+              style={
+                index == 0
+                  ? {
+                      paddingRight: 32,
+                      textDecoration: "underline",
+                    }
+                  : {
+                      paddingRight: 32,
+                    }
+              }
               align="right"
             >
               {disciplines[0]} {/*left discipline*/}
@@ -47,7 +56,16 @@ function DisciplineTitleBar({
             <Typography
               variant={index == 1 ? "h5" : "h6"}
               color={index == 1 ? "white" : "lightgray"}
-              style={{ paddingLeft: 32 }}
+              style={
+                index == 1
+                  ? {
+                      paddingLeft: 32,
+                      textDecoration: "underline",
+                    }
+                  : {
+                      paddingLeft: 32,
+                    }
+              }
             >
               {disciplines[1]} {/*right discipline*/}
             </Typography>

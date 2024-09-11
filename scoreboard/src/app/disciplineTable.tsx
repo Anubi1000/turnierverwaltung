@@ -51,12 +51,11 @@ export function DisciplineTable({
 
   const rows = table.rows;
   const columns = table.columns;
-
+  const maxScrolls = 2;
   useEffect(() => {
     let scrollToBottom = true;
     let isScrolling = true;
     let scrollCount = 0;
-
     const interval = setInterval(async () => {
       if (!isScrolling) return;
 
@@ -89,13 +88,12 @@ export function DisciplineTable({
             scrollCount++;
           }, 5000); // wait five seconds then scroll up
         }
-        if (scrollCount >= 2) {
+        if (scrollCount >= maxScrolls) {
           scrollCount = 0;
           moveNext();
         }
       }
     }, 25);
-
     return () => {
       clearInterval(interval);
     };
@@ -103,21 +101,25 @@ export function DisciplineTable({
 
   if (columns.length == 0) {
     return (
-      <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-        <Typography variant="h4" align="center">
-          Keine Spaltendefinition vorhanden
-        </Typography>
-      </Stack>
+      <TableContainer ref={tableRef} sx={{ height: 1 }}>
+        <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+          <Typography variant="h4" align="center">
+            Keine Spaltendefinition vorhanden
+          </Typography>
+        </Stack>
+      </TableContainer>
     );
   }
 
   if (rows.length == 0) {
     return (
-      <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-        <Typography variant="h4" align="center">
-          Keine Einträge vorhanden
-        </Typography>
-      </Stack>
+      <TableContainer ref={tableRef} sx={{height: 1}}>
+        <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+          <Typography variant="h4" align="center">
+            Keine Einträge vorhanden
+          </Typography>
+        </Stack>
+      </TableContainer>
     );
   }
 
