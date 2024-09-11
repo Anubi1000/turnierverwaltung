@@ -117,7 +117,7 @@ export function DisciplineCarousel({ tables }: { tables: TournamentTable[] }) {
     setIndex((prevIndex) =>
       prevIndex >= tables.length - 1 ? 0 : prevIndex + 1,
     );
-  }, []);
+  }, [tables.length]);
 
   if (tables.length == 0) {
     return (

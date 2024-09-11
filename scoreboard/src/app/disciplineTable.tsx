@@ -47,12 +47,13 @@ export function DisciplineTable({
   moveNext: () => void;
   table: TournamentTable;
 }) {
-
   var tableRef = useRef<null | HTMLDivElement>(null);
 
   const rows = table.rows;
   const columns = table.columns;
   const maxScrolls = 2;
+  const waitAtTopAndBottom = 5000;
+
   useEffect(() => {
     let scrollToBottom = true;
     let isScrolling = true;
@@ -76,7 +77,7 @@ export function DisciplineTable({
             scrollToBottom = true;
             isScrolling = true;
             scrollCount++;
-          }, 5000); // wait five seconds then scroll down
+          }, waitAtTopAndBottom); // wait five seconds then scroll down
         } else if (
           tableContainer.scrollTop + tableContainer.clientHeight ==
             tableContainer.scrollHeight &&
@@ -87,7 +88,7 @@ export function DisciplineTable({
             scrollToBottom = false;
             isScrolling = true;
             scrollCount++;
-          }, 5000); // wait five seconds then scroll up
+          }, waitAtTopAndBottom); // wait five seconds then scroll up
         }
         if (scrollCount >= maxScrolls) {
           scrollCount = 0;
