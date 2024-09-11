@@ -47,7 +47,8 @@ export function DisciplineTable({
   moveNext: () => void;
   table: TournamentTable;
 }) {
-  const tableRef = useRef<null | HTMLDivElement>(null);
+
+  var tableRef = useRef<null | HTMLDivElement>(null);
 
   const rows = table.rows;
   const columns = table.columns;
