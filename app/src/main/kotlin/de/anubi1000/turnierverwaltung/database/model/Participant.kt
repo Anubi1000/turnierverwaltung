@@ -60,7 +60,7 @@ class Participant(
      * Backing field for [gender] which is compatible with realm.
      */
     @PersistedName("gender")
-    private var _gender: Boolean = gender == Gender.MALE
+    private var _gender: Boolean = gender == Gender.FEMALE
 
     val tournament: RealmResults<Tournament> by backlinks(Tournament::participants)
 
