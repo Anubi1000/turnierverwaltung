@@ -18,7 +18,7 @@ function compareRows(
   for (let index = 0; index < firstRow.sortValues.length; index++) {
     const firstValue = firstRow.sortValues[index];
     const secondValue = secondRow.sortValues[index];
-    const result = firstValue - secondValue;
+    const result = secondValue - firstValue;
     if (result != 0) {
       return result;
     }

@@ -113,7 +113,7 @@ export function DisciplineTable({
 
   if (rows.length == 0) {
     return (
-      <TableContainer ref={tableRef} sx={{height: 1}}>
+      <TableContainer ref={tableRef} sx={{ height: 1 }}>
         <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
           <Typography variant="h4" align="center">
             Keine Einträge vorhanden
