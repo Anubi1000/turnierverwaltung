@@ -16,6 +16,7 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
+import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantResultDestination
 import de.anubi1000.turnierverwaltung.ui.util.CenteredText
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.ListBase
@@ -73,6 +74,7 @@ private fun LoadedContent(
                 when (val destination = currentDestination) {
                     is ParticipantDetailDestination -> destination.id
                     is ParticipantEditDestination -> destination.id
+                    is ParticipantResultDestination -> destination.participantId
                     else -> null
                 }?.toObjectId()
             }
