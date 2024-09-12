@@ -40,6 +40,7 @@ class TeamRepositoryImpl(private val realm: Realm) : TeamRepository {
                 dbTeam.name = team.name
                 dbTeam.startNumber = team.startNumber
                 dbTeam.members = team.members.map { findLatest(it)!! }.toRealmList()
+                dbTeam.participatingDisciplines = team.participatingDisciplines.map { findLatest(it)!! }.toRealmList()
             }
         }
     }
@@ -62,6 +63,7 @@ class TeamRepositoryImpl(private val realm: Realm) : TeamRepository {
                 val tournament = queryById<Tournament>(tournamentId)!!
 
                 team.members = team.members.map { findLatest(it)!! }.toRealmList()
+                team.participatingDisciplines = team.participatingDisciplines.map { findLatest(it)!! }.toRealmList()
                 val dbTeam = copyToRealm(team)
                 tournament.teams.add(dbTeam)
             }

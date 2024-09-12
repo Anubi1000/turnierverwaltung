@@ -8,10 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.EditTeam
 import de.anubi1000.turnierverwaltung.data.repository.ParticipantRepository
+import de.anubi1000.turnierverwaltung.data.repository.TeamDisciplineRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamRepository
 import de.anubi1000.turnierverwaltung.data.toEditTeam
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Team
+import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
 import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -23,6 +25,7 @@ import androidx.compose.runtime.State as ComposeState
 class TeamEditViewModel(
     private val teamRepository: TeamRepository,
     private val participantRepository: ParticipantRepository,
+    private val teamDisciplineRepository: TeamDisciplineRepository,
     @InjectedParam private val tournamentId: ObjectId,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
@@ -36,6 +39,7 @@ class TeamEditViewModel(
             state = State.Loaded(
                 item = team,
                 participants = participantRepository.getAllForTournament(tournamentId),
+                teamDisciplines = teamDisciplineRepository.getAllForTournament(tournamentId),
                 isValid = getValidationState(team),
             )
             isEditMode = false
@@ -48,6 +52,7 @@ class TeamEditViewModel(
             state = State.Loaded(
                 item = team,
                 participants = participantRepository.getAllForTournament(tournamentId),
+                teamDisciplines = teamDisciplineRepository.getAllForTournament(tournamentId),
                 isValid = getValidationState(team),
             )
             isEditMode = true
@@ -65,6 +70,7 @@ class TeamEditViewModel(
                 startNumber = currentState.item.startNumber,
 
                 members = currentState.item.members.map { id -> currentState.participants.find { it.id == id }!! }.toRealmList(),
+                participatingDisciplines = currentState.item.participatingDisciplines.map { id -> currentState.teamDisciplines.find { it.id == id }!! }.toRealmList(),
             )
 
             if (!isEditMode) {
@@ -86,6 +92,7 @@ class TeamEditViewModel(
         data class Loaded(
             val item: EditTeam,
             val participants: List<Participant>,
+            val teamDisciplines: List<TeamDiscipline>,
             val isValid: ComposeState<Boolean>,
         ) : State
     }

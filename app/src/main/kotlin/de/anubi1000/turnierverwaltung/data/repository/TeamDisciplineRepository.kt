@@ -9,6 +9,7 @@ import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Factory
@@ -16,6 +17,7 @@ import org.mongodb.kbson.ObjectId
 
 interface TeamDisciplineRepository {
     fun getAllForTournamentAsFlow(tournamentId: ObjectId): Flow<List<TeamDiscipline>>
+    suspend fun getAllForTournament(tournamentId: ObjectId): List<TeamDiscipline>
     suspend fun getById(id: ObjectId): TeamDiscipline?
     suspend fun insert(teamDiscipline: TeamDiscipline, tournamentId: ObjectId)
     suspend fun update(teamDiscipline: TeamDiscipline)
@@ -28,6 +30,10 @@ class TeamDisciplineRepositoryImpl(private val realm: Realm) : TeamDisciplineRep
         .sort("name", Sort.ASCENDING)
         .asFlow()
         .map { it.list }
+
+    override suspend fun getAllForTournament(tournamentId: ObjectId): List<TeamDiscipline> = withContext(Dispatchers.IO) {
+        getAllForTournamentAsFlow(tournamentId).first()
+    }
 
     override suspend fun getById(id: ObjectId): TeamDiscipline? = withContext(Dispatchers.IO) {
         realm.queryById(id)

@@ -116,5 +116,50 @@ private fun LoadedContent(
                 }
             }
         }
+
+        EditCard(
+            title = strings.teamDisciplines,
+        ) {
+            Column {
+                val listItemColors = ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                )
+                state.item.participatingDisciplines.forEach { disciplineId ->
+                    ListItem(
+                        headlineContent = {
+                            Text(state.teamDisciplines.find { it.id == disciplineId }!!.name)
+                        },
+                        trailingContent = {
+                            TooltipIconButton(
+                                icon = Icons.Default.Delete,
+                                tooltip = strings.delete,
+                                onClick = {
+                                    state.item.participatingDisciplines.remove(disciplineId)
+                                },
+                            )
+                        },
+                        colors = listItemColors,
+                    )
+                }
+
+                DropdownMenu(
+                    value = "",
+                    label = "",
+                ) {
+                    val availableDisciplines = remember(state.teamDisciplines, state.item.participatingDisciplines) {
+                        state.teamDisciplines.filter { !state.item.participatingDisciplines.contains(it.id) }
+                    }
+
+                    availableDisciplines.forEach { discipline ->
+                        DropdownMenuItem(
+                            text = discipline.name,
+                            onClick = {
+                                state.item.participatingDisciplines.add(discipline.id)
+                            },
+                        )
+                    }
+                }
+            }
+        }
     }
 }

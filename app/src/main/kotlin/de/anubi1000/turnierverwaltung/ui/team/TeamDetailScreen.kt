@@ -93,5 +93,16 @@ private fun LoadedContent(
                 )
             }
         }
+
+        DetailCard(
+            title = strings.teamDisciplines,
+        ) {
+            state.item.participatingDisciplines.forEach { discipline ->
+                DetailItem(
+                    headlineText = discipline.name,
+                    overlineText = strings.name,
+                )
+            }
+        }
     }
 }

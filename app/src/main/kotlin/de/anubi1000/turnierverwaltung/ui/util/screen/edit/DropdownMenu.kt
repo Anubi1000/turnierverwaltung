@@ -32,10 +32,10 @@ fun EditCardScope.DropdownMenu(
     label: String,
     content: @Composable DropdownMenuScope.() -> Unit,
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    val (expanded, setExpanded) = remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = it },
+        onExpandedChange = { setExpanded(it) },
         modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp),
     ) {
         OutlinedTextField(
@@ -50,11 +50,14 @@ fun EditCardScope.DropdownMenu(
         )
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false },
+            onDismissRequest = { setExpanded(false) },
             content = {
-                DropdownMenuScope {
-                    expanded = false
-                }.content()
+                val scope = remember(setExpanded) {
+                    DropdownMenuScope {
+                        setExpanded(false)
+                    }
+                }
+                scope.content()
             },
         )
     }

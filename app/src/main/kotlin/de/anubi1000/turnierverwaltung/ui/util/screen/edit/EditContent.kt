@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -26,7 +27,8 @@ fun EditContent(
         horizontalArrangement = arrangement,
         verticalArrangement = arrangement,
         content = {
-            EditContentScope(this).content()
+            val scope = remember(this) { EditContentScope(this) }
+            scope.content()
         },
     )
 }
