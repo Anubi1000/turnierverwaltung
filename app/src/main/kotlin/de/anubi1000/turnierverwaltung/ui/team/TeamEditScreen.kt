@@ -1,25 +1,15 @@
 package de.anubi1000.turnierverwaltung.ui.team
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
-import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
-import de.anubi1000.turnierverwaltung.ui.util.screen.edit.DropdownMenu
-import de.anubi1000.turnierverwaltung.ui.util.screen.edit.DropdownMenuItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditScreenBase
+import de.anubi1000.turnierverwaltung.ui.util.screen.edit.SelectCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.TextField
 import de.anubi1000.turnierverwaltung.viewmodel.team.TeamEditViewModel
 
@@ -72,94 +62,18 @@ private fun LoadedContent(
             )
         }
 
-        EditCard(
+        SelectCard(
             title = strings.members,
-        ) {
-            Column {
-                val listItemColors = ListItemDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                )
-                state.item.members.forEach { memberId ->
-                    ListItem(
-                        headlineContent = {
-                            Text(state.participants.find { it.id == memberId }!!.name)
-                        },
-                        trailingContent = {
-                            TooltipIconButton(
-                                icon = Icons.Default.Delete,
-                                tooltip = strings.delete,
-                                onClick = {
-                                    state.item.members.remove(memberId)
-                                },
-                            )
-                        },
-                        colors = listItemColors,
-                    )
-                }
+            selectedItems = state.item.members,
+            allItems = state.participants,
+            itemName = { it.name },
+        )
 
-                DropdownMenu(
-                    value = "",
-                    label = "",
-                ) {
-                    val availableParticipants = remember(state.participants, state.item.members) {
-                        state.participants.filter { !state.item.members.contains(it.id) }
-                    }
-
-                    availableParticipants.forEach { participant ->
-                        DropdownMenuItem(
-                            text = participant.name,
-                            onClick = {
-                                state.item.members.add(participant.id)
-                            },
-                        )
-                    }
-                }
-            }
-        }
-
-        EditCard(
+        SelectCard(
             title = strings.teamDisciplines,
-        ) {
-            Column {
-                val listItemColors = ListItemDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                )
-                state.item.participatingDisciplines.forEach { disciplineId ->
-                    ListItem(
-                        headlineContent = {
-                            Text(state.teamDisciplines.find { it.id == disciplineId }!!.name)
-                        },
-                        trailingContent = {
-                            TooltipIconButton(
-                                icon = Icons.Default.Delete,
-                                tooltip = strings.delete,
-                                onClick = {
-                                    state.item.participatingDisciplines.remove(disciplineId)
-                                },
-                            )
-                        },
-                        colors = listItemColors,
-                    )
-                }
-
-                DropdownMenu(
-                    value = "",
-                    label = "",
-                ) {
-                    val availableDisciplines = remember(state.teamDisciplines, state.item.participatingDisciplines) {
-                        state.teamDisciplines.filter { !state.item.participatingDisciplines.contains(it.id) }
-                    }
-
-                    availableDisciplines.forEach { discipline ->
-                        DropdownMenuItem(
-                            text = discipline.name,
-                            onClick = {
-                                state.item.participatingDisciplines.add(discipline.id)
-                            },
-                        )
-                    }
-                }
-            }
-        }
+            selectedItems = state.item.participatingDisciplines,
+            allItems = state.teamDisciplines,
+            itemName = { it.name },
+        )
     }
 }

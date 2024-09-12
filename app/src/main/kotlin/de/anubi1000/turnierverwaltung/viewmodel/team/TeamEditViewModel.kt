@@ -69,8 +69,8 @@ class TeamEditViewModel(
                 name = currentState.item.name,
                 startNumber = currentState.item.startNumber,
 
-                members = currentState.item.members.map { id -> currentState.participants.find { it.id == id }!! }.toRealmList(),
-                participatingDisciplines = currentState.item.participatingDisciplines.map { id -> currentState.teamDisciplines.find { it.id == id }!! }.toRealmList(),
+                members = currentState.item.members.toRealmList(),
+                participatingDisciplines = currentState.item.participatingDisciplines.toRealmList(),
             )
 
             if (!isEditMode) {

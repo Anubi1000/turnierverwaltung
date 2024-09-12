@@ -62,9 +62,7 @@ class TeamDisciplineEditViewModel(
             val teamDiscipline = TeamDiscipline(
                 id = currentState.item.id,
                 name = currentState.item.name,
-                basedOn = currentState.item.basedOn.map { id ->
-                    currentState.disciplines.find { it.id == id }!!
-                }.toRealmList(),
+                basedOn = currentState.item.basedOn.toRealmList(),
             )
 
             if (!isEditMode) {

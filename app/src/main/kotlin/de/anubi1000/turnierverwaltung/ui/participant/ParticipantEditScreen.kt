@@ -1,7 +1,6 @@
 package de.anubi1000.turnierverwaltung.ui.participant
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -44,7 +43,6 @@ fun ParticipantEditScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoadedContent(
     state: ParticipantEditViewModel.State.Loaded,
