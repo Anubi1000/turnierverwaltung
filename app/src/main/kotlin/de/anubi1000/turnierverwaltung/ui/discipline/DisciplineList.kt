@@ -1,5 +1,7 @@
 package de.anubi1000.turnierverwaltung.ui.discipline
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,7 +24,6 @@ import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineEditDestin
 import de.anubi1000.turnierverwaltung.navigation.discipline.DisciplineListDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.TeamDisciplineDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.discipline.TeamDisciplineEditDestination
-import de.anubi1000.turnierverwaltung.ui.util.CenteredText
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.ListBase
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.SelectableListItem
@@ -89,9 +91,12 @@ private fun LoadedContent(
     if (disciplines.isEmpty()) {
         val strings = LocalStrings.current
 
-        CenteredText(
-            text = strings.xDontExist(strings.disciplines),
-        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(text = strings.xDontExist(strings.disciplines))
+        }
     } else {
         val teamDisciplines by state.teamDisciplineFlow.collectAsStateWithLifecycle()
         val currentDestination by navController.currentDestinationAsState()
