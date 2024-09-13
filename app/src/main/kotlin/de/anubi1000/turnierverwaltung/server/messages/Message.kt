@@ -13,5 +13,19 @@ sealed interface Message {
 
         @SerialName("update_row")
         UPDATE_ROW,
+
+        @SerialName("resend_tournament")
+        RESEND_TOURNAMENT,
+
+        ;
+
+        companion object {
+            fun fromString(str: String) = when (str) {
+                "set_tournament" -> SET_TOURNAMENT
+                "update_row" -> UPDATE_ROW
+                "resend_tournament" -> RESEND_TOURNAMENT
+                else -> null
+            }
+        }
     }
 }
