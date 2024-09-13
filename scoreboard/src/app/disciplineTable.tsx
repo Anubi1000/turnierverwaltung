@@ -47,7 +47,7 @@ export function DisciplineTable({
   moveNext: () => void;
   table: TournamentTable;
 }) {
-  var tableRef = useRef<null | HTMLDivElement>(null);
+  const tableRef = useRef<null | HTMLDivElement>(null);
 
   const rows = table.rows;
   const columns = table.columns;
@@ -132,7 +132,7 @@ export function DisciplineTable({
           <TableRow>
             {columns.map((column, index) => (
               <StyledTableCell
-                key={column.name}
+                key={index}
                 style={{ width: column.width }}
                 align={column.alignment}
                 data-testid={`col-${index}`}
