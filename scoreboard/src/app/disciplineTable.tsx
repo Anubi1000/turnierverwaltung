@@ -126,7 +126,7 @@ export function DisciplineTable({
   }
 
   return (
-    <TableContainer ref={tableRef} style={{ overflowY: "scroll" }}>
+    <TableContainer ref={tableRef} style={{ overflowY: "hidden" }}>
       <Table stickyHeader>
         <TableHead>
           <TableRow>
