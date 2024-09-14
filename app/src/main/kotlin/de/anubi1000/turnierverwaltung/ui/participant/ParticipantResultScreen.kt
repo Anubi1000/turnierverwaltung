@@ -33,7 +33,7 @@ fun ParticipantResultScreen(
     EditScreenBase(
         navController = navController,
         title = LocalStrings.current.inputPoints,
-        onSaveButtonClick = if (state is ParticipantResultViewModel.State.Loaded) onSaveButtonClick else null,
+        onSaveButtonClick = if (state is ParticipantResultViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null,
     ) {
         val modifier = Modifier.padding(it)
         when (state) {
@@ -65,11 +65,7 @@ fun LoadedContent(state: ParticipantResultViewModel.State.Loaded, modifier: Modi
                         state.discipline.values.forEach { value ->
                             OutlinedTextField(
                                 value = round.values[value.id].toString(),
-                                onValueChange = { input ->
-                                    input.toDoubleOrNull()?.let {
-                                        round.values[value.id] = it
-                                    }
-                                },
+                                onValueChange = { round.values[value.id] = it },
                                 label = {
                                     Text(value.name)
                                 },
@@ -91,7 +87,7 @@ fun LoadedContent(state: ParticipantResultViewModel.State.Loaded, modifier: Modi
                         state.result.rounds.add(
                             EditParticipantResult.RoundResult(
                                 values = state.discipline.values.map {
-                                    it.id to 0.0
+                                    it.id to ""
                                 }.toMutableStateMap(),
                             ),
                         )

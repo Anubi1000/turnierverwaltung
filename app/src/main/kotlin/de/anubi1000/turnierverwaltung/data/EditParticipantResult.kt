@@ -3,6 +3,7 @@ package de.anubi1000.turnierverwaltung.data
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.runtime.toMutableStateList
+import de.anubi1000.turnierverwaltung.data.validation.validateDouble
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import io.realm.kotlin.ext.toRealmDictionary
@@ -17,15 +18,15 @@ class EditParticipantResult(
 
     @Stable
     class RoundResult(
-        values: Map<ObjectId, Double> = emptyMap(),
+        values: Map<ObjectId, String> = emptyMap(),
     ) {
-        val values = SnapshotStateMap<ObjectId, Double>().apply { putAll(values) }
+        val values = SnapshotStateMap<ObjectId, String>().apply { putAll(values) }
     }
 
     fun toDisciplineResult() = Participant.DisciplineResult(
         rounds = rounds.map { round ->
             Participant.RoundResult(
-                values = round.values.map { it.key.toHexString() to it.value }.toRealmDictionary(),
+                values = round.values.map { it.key.toHexString() to validateDouble(it.value)!! }.toRealmDictionary(),
             )
         }.toRealmList(),
     )
@@ -35,7 +36,7 @@ fun Participant.DisciplineResult.toEditParticipantResult() = EditParticipantResu
     rounds = rounds.map { round ->
         EditParticipantResult.RoundResult(
             values = round.values.map {
-                it.key.toObjectId() to it.value
+                it.key.toObjectId() to it.value.toString().replace('.', ',')
             }.toMap(),
         )
     },

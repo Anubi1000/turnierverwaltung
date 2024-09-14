@@ -10,6 +10,7 @@ import de.anubi1000.turnierverwaltung.data.EditParticipant
 import de.anubi1000.turnierverwaltung.data.repository.ClubRepository
 import de.anubi1000.turnierverwaltung.data.repository.ParticipantRepository
 import de.anubi1000.turnierverwaltung.data.toEditParticipant
+import de.anubi1000.turnierverwaltung.data.validation.validateInt
 import de.anubi1000.turnierverwaltung.database.model.Club
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import kotlinx.coroutines.launch
@@ -61,7 +62,7 @@ class ParticipantEditViewModel(
             val participant = Participant(
                 id = currentState.item.id,
                 name = currentState.item.name,
-                startNumber = currentState.item.startNumber,
+                startNumber = validateInt(currentState.item.startNumber)!!,
                 gender = currentState.item.gender,
                 club = currentState.clubs.find { it.id == currentState.item.clubId }!!,
             )
@@ -77,7 +78,8 @@ class ParticipantEditViewModel(
 
     private fun getValidationState(participant: EditParticipant): ComposeState<Boolean> = derivedStateOf {
         participant.name.isNotBlank() &&
-            participant.clubId != null
+            participant.clubId != null &&
+            validateInt(participant.startNumber) != null
     }
 
     sealed interface State {

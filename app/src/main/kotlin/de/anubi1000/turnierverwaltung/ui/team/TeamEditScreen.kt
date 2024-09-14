@@ -56,8 +56,8 @@ private fun LoadedContent(
             )
 
             TextField(
-                value = state.item.startNumber.toString(),
-                onValueChange = { newValue -> newValue.toIntOrNull()?.let { state.item.startNumber = it } },
+                value = state.item.startNumber,
+                onValueChange = { state.item.startNumber = it },
                 label = strings.startNumber,
             )
         }

@@ -11,6 +11,7 @@ import de.anubi1000.turnierverwaltung.data.repository.ParticipantRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamDisciplineRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamRepository
 import de.anubi1000.turnierverwaltung.data.toEditTeam
+import de.anubi1000.turnierverwaltung.data.validation.validateInt
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Team
 import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
@@ -67,7 +68,7 @@ class TeamEditViewModel(
             val team = Team(
                 id = currentState.item.id,
                 name = currentState.item.name,
-                startNumber = currentState.item.startNumber,
+                startNumber = validateInt(currentState.item.startNumber)!!,
 
                 members = currentState.item.members.toRealmList(),
                 participatingDisciplines = currentState.item.participatingDisciplines.toRealmList(),
@@ -84,7 +85,8 @@ class TeamEditViewModel(
 
     private fun getValidationState(team: EditTeam): ComposeState<Boolean> = derivedStateOf {
         team.name.isNotBlank() &&
-            team.members.isNotEmpty()
+            team.members.isNotEmpty() &&
+            validateInt(team.startNumber) != null
     }
 
     sealed interface State {
