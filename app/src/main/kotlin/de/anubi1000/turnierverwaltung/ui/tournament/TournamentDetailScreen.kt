@@ -107,6 +107,10 @@ private fun LoadedContent(
                 headlineText = state.item.date.formatAsDate(),
                 overlineText = strings.dateOfTournament,
             )
+            DetailItem(
+                headlineText = state.item.teamSize.toString(),
+                overlineText = strings.teamSize,
+            )
         }
     }
 }

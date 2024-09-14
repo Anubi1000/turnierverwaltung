@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.EditTournament
 import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
 import de.anubi1000.turnierverwaltung.data.toEditTournament
+import de.anubi1000.turnierverwaltung.data.validation.validateInt
+import de.anubi1000.turnierverwaltung.util.Constants
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.mongodb.kbson.ObjectId
@@ -59,7 +61,8 @@ class TournamentEditViewModel(
     }
 
     private fun getValidationState(tournament: EditTournament): ComposeState<Boolean> = derivedStateOf {
-        tournament.name.isNotBlank()
+        tournament.name.isNotBlank() &&
+            validateInt(tournament.teamSize, min = Constants.MIN_TEAM_SIZE) != null
     }
 
     sealed interface State {

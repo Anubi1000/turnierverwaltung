@@ -58,17 +58,19 @@ private fun LoadedContent(
             TextField(
                 label = strings.name,
                 value = state.item.name,
-                onValueChange = {
-                    state.item.name = it
-                },
+                onValueChange = { state.item.name = it },
             )
 
             DateField(
                 label = strings.dateOfTournament,
                 date = state.item.date,
-                onDateChange = {
-                    state.item.date = it
-                },
+                onDateChange = { state.item.date = it },
+            )
+
+            TextField(
+                label = strings.teamSize,
+                value = state.item.teamSize,
+                onValueChange = { state.item.teamSize = it },
             )
         }
     }

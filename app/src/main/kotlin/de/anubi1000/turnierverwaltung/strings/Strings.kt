@@ -25,6 +25,7 @@ data class Strings(
     val members: String = "Mitglieder",
     val name: String = "Name",
     val startNumber: String = "Startnummer",
+    val teamSize: String = "Teamgröße",
 
     val yesno: (Boolean) -> String = { arg1 ->
         if (arg1) "Ja" else "Nein"

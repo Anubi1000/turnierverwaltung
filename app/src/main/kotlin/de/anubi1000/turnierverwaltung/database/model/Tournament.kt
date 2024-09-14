@@ -32,6 +32,8 @@ class Tournament(
      * The date that the tournament is scheduled on.
      */
     date: Instant = Instant.now(),
+
+    var teamSize: Int = 3,
 ) : RealmObject {
     constructor() : this(id = ObjectId())
 
