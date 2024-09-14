@@ -4,6 +4,7 @@
     "config:recommended"
   ],
   "labels": ["dependency"],
+  "rebaseWhen": "behind-base-branch",
   "packageRules": [
     {
       "matchDepNames": ["com.google.devtools.ksp", "org.jetbrains.kotlin.**"],
