@@ -99,7 +99,7 @@ export function DisciplineTable({
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [tableRef]);
 
   if (columns.length == 0) {
     return (
@@ -126,13 +126,20 @@ export function DisciplineTable({
   }
 
   return (
-    <TableContainer ref={tableRef} style={{ overflowY: "scroll" }}>
+    <TableContainer ref={tableRef} style={{ overflowY: "hidden" }}>
       <Table stickyHeader>
         <TableHead>
           <TableRow>
+            <StyledTableCell
+              key={-1}
+              style={{ width: "60px" }}
+              align={"center"}
+            >
+              Platz
+            </StyledTableCell>
             {columns.map((column, index) => (
               <StyledTableCell
-                key={index}
+                key={`col-${index}`}
                 style={{ width: column.width }}
                 align={column.alignment}
                 data-testid={`col-${index}`}
@@ -143,11 +150,14 @@ export function DisciplineTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows.map((row, rowIndex) => (
             <StyledTableRow key={row.id} data-testid={`row-${row.id}`}>
+              <StyledTableCell key={`place-${rowIndex + 1}`} align={"center"}>
+                <b>{rowIndex + 1}</b>
+              </StyledTableCell>
               {row.values.map((entry, index) => (
                 <StyledTableCell
-                  key={index}
+                  key={`cell-${row.id}-${index}`}
                   align={columns[index].alignment}
                   data-testid={`cell-${row.id}-${index}`}
                 >
