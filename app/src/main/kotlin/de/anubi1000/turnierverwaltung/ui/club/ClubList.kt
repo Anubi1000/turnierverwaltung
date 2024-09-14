@@ -20,10 +20,10 @@ import de.anubi1000.turnierverwaltung.navigation.club.ClubDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubEditDestination
 import de.anubi1000.turnierverwaltung.navigation.club.ClubListDestination
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
+import de.anubi1000.turnierverwaltung.ui.util.currentDestinationAsState
+import de.anubi1000.turnierverwaltung.ui.util.getCurrentDestination
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.ListBase
 import de.anubi1000.turnierverwaltung.ui.util.screen.list.SelectableListItem
-import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
-import de.anubi1000.turnierverwaltung.util.getCurrentDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.club.ClubListViewModel
 

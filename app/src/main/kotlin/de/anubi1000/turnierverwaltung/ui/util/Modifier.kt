@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.util
+package de.anubi1000.turnierverwaltung.ui.util
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api

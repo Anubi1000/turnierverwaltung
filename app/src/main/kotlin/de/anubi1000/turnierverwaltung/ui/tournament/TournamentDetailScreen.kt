@@ -17,13 +17,13 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.ui.util.DeleteDialog
+import de.anubi1000.turnierverwaltung.ui.util.Icon
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailScreenBase
-import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.util.formatAsDate
 import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentDetailViewModel
 

@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.util
+package de.anubi1000.turnierverwaltung.ui.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
