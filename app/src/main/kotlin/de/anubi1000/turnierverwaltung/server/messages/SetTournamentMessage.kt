@@ -87,11 +87,13 @@ private fun Tournament.getTeamDisciplineTables(teamDiscipline: TeamDiscipline): 
                 alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
             ),
         )
-        columns.add(SetTournamentMessage.Table.Column(
-            name = "Punkte",
-            width = "250px",
-            alignment = SetTournamentMessage.Table.Column.Alignment.LEFT,
-        ))
+        columns.add(
+            SetTournamentMessage.Table.Column(
+                name = "Punkte",
+                width = "250px",
+                alignment = SetTournamentMessage.Table.Column.Alignment.LEFT,
+            ),
+        )
     }
 
     columns.add(
