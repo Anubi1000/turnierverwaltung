@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.util.Icon
+import de.anubi1000.turnierverwaltung.ui.util.Icon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

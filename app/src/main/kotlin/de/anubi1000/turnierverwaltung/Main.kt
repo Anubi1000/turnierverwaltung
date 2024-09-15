@@ -36,7 +36,6 @@ import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentDetailDest
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentListDestination
 import de.anubi1000.turnierverwaltung.server.Server
-import de.anubi1000.turnierverwaltung.server.ServerModule
 import de.anubi1000.turnierverwaltung.ui.shared.NavigationMenuLayout
 import de.anubi1000.turnierverwaltung.ui.theme.AppTheme
 import de.anubi1000.turnierverwaltung.viewmodel.ViewModelModule
@@ -44,6 +43,7 @@ import io.realm.kotlin.Realm
 import org.apache.logging.log4j.kotlin.logger
 import org.koin.compose.KoinContext
 import org.koin.core.context.startKoin
+import org.koin.ksp.generated.defaultModule
 import org.koin.ksp.generated.module
 import java.awt.Dimension
 import kotlin.system.exitProcess
@@ -95,7 +95,7 @@ fun App() {
 private fun appMain() {
     log.info("Hi from main")
     val koinApplication = startKoin {
-        modules(databaseModule, RepositoryModule().module, ServerModule().module, ViewModelModule().module)
+        modules(defaultModule, databaseModule, RepositoryModule().module, ViewModelModule().module)
 
         createEagerInstances()
     }

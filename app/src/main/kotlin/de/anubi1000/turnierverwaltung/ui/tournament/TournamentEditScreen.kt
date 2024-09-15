@@ -19,7 +19,7 @@ fun TournamentEditScreen(
     navController: NavController,
     state: TournamentEditViewModel.State,
     onSaveButtonClick: () -> Unit,
-    isEditMode: Boolean = false,
+    isEditMode: Boolean,
 ) {
     val strings = LocalStrings.current
 
@@ -35,6 +35,7 @@ fun TournamentEditScreen(
             )
             is TournamentEditViewModel.State.Loaded -> LoadedContent(
                 state = state,
+                isEditMode = isEditMode,
                 modifier = modifier,
             )
         }
@@ -44,6 +45,7 @@ fun TournamentEditScreen(
 @Composable
 private fun LoadedContent(
     state: TournamentEditViewModel.State.Loaded,
+    isEditMode: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val strings = LocalStrings.current
@@ -58,17 +60,20 @@ private fun LoadedContent(
             TextField(
                 label = strings.name,
                 value = state.item.name,
-                onValueChange = {
-                    state.item.name = it
-                },
+                onValueChange = { state.item.name = it },
             )
 
             DateField(
                 label = strings.dateOfTournament,
                 date = state.item.date,
-                onDateChange = {
-                    state.item.date = it
-                },
+                onDateChange = { state.item.date = it },
+            )
+
+            TextField(
+                label = strings.teamSize,
+                value = state.item.teamSize,
+                onValueChange = { state.item.teamSize = it },
+                readOnly = isEditMode,
             )
         }
     }

@@ -5,6 +5,7 @@ import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Team
 import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
 import de.anubi1000.turnierverwaltung.database.model.Tournament
+import de.anubi1000.turnierverwaltung.util.ScoreCalculationUtils
 import kotlinx.serialization.Required
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -62,7 +63,10 @@ fun Tournament.toSetTournamentMessage(): SetTournamentMessage = SetTournamentMes
 )
 
 private fun Tournament.getTeamDisciplineTables(teamDiscipline: TeamDiscipline): SetTournamentMessage.Table {
-    val columns = listOf(
+    val columnAmount = teamSize + 1
+    val columnSpace = 100 / columnAmount
+
+    val columns = mutableListOf(
         SetTournamentMessage.Table.Column(
             name = "Startnummer",
             width = "250px",
@@ -70,39 +74,29 @@ private fun Tournament.getTeamDisciplineTables(teamDiscipline: TeamDiscipline): 
         ),
         SetTournamentMessage.Table.Column(
             name = "Name",
-            width = "25%",
+            width = "$columnSpace%",
             alignment = SetTournamentMessage.Table.Column.Alignment.LEFT,
         ),
-        SetTournamentMessage.Table.Column(
-            name = "Person 1",
-            width = "25%",
-            alignment = SetTournamentMessage.Table.Column.Alignment.LEFT,
-        ),
-        SetTournamentMessage.Table.Column(
-            name = "Punkte",
-            width = "250px",
-            alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
-        ),
-        SetTournamentMessage.Table.Column(
-            name = "Person 2",
-            width = "25%",
-            alignment = SetTournamentMessage.Table.Column.Alignment.LEFT,
-        ),
-        SetTournamentMessage.Table.Column(
-            name = "Punkte",
-            width = "250px",
-            alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
-        ),
-        SetTournamentMessage.Table.Column(
-            name = "Person 3",
-            width = "25%",
-            alignment = SetTournamentMessage.Table.Column.Alignment.LEFT,
-        ),
-        SetTournamentMessage.Table.Column(
-            name = "Punkte",
-            width = "250px",
-            alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
-        ),
+    )
+
+    for (i in 1..teamSize) {
+        columns.add(
+            SetTournamentMessage.Table.Column(
+                name = "Person $i",
+                width = "$columnSpace%",
+                alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
+            ),
+        )
+        columns.add(
+            SetTournamentMessage.Table.Column(
+                name = "Punkte",
+                width = "250px",
+                alignment = SetTournamentMessage.Table.Column.Alignment.LEFT,
+            ),
+        )
+    }
+
+    columns.add(
         SetTournamentMessage.Table.Column(
             name = "Gesamt",
             width = "250px",
@@ -121,8 +115,6 @@ private fun Tournament.getTeamDisciplineTables(teamDiscipline: TeamDiscipline): 
 }
 
 private fun getTeamRow(team: Team, teamDiscipline: TeamDiscipline): SetTournamentMessage.Table.Row {
-    require(team.members.size == 3)
-
     var total = 0.0
     val values = mutableListOf(
         team.startNumber.toString(),
@@ -132,7 +124,7 @@ private fun getTeamRow(team: Team, teamDiscipline: TeamDiscipline): SetTournamen
     team.members.forEach { member ->
         var points = 0.0
         teamDiscipline.basedOn.forEach { discipline ->
-            val disciplinePoints = member.getPoints(discipline)
+            val disciplinePoints = ScoreCalculationUtils.getScoreForParticipant(member, discipline)
             if (disciplinePoints != null) {
                 if (points < disciplinePoints) {
                     points = disciplinePoints
@@ -219,7 +211,7 @@ private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTour
 }
 
 private fun getParticipantRow(participant: Participant, discipline: Discipline): SetTournamentMessage.Table.Row {
-    val points = participant.getPoints(discipline)!!
+    val points = ScoreCalculationUtils.getScoreForParticipant(participant, discipline)!!
 
     return SetTournamentMessage.Table.Row(
         id = participant.id.toHexString(),
@@ -233,22 +225,4 @@ private fun getParticipantRow(participant: Participant, discipline: Discipline):
             points,
         ),
     )
-}
-
-private fun Participant.getPoints(discipline: Discipline): Double? {
-    val disciplineResult = results[discipline.id.toHexString()] ?: return null
-    val points = disciplineResult.rounds.maxOf { round ->
-        var points = 0.0
-        discipline.values.forEach { disciplineValue ->
-            val value = round.values[disciplineValue.id.toHexString()]!!
-            if (disciplineValue.isAdded) {
-                points += value
-            } else {
-                points -= value
-            }
-        }
-        points
-    }
-
-    return points
 }

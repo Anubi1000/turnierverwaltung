@@ -19,12 +19,12 @@ import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantEditDestination
 import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantResultDestination
 import de.anubi1000.turnierverwaltung.ui.util.DeleteDialog
+import de.anubi1000.turnierverwaltung.ui.util.Icon
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailCard
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailContent
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailItem
 import de.anubi1000.turnierverwaltung.ui.util.screen.detail.DetailScreenBase
-import de.anubi1000.turnierverwaltung.util.Icon
 import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantDetailViewModel
 import org.mongodb.kbson.ObjectId
 

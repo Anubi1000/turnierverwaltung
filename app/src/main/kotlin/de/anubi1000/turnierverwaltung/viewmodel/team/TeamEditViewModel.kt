@@ -10,11 +10,13 @@ import de.anubi1000.turnierverwaltung.data.EditTeam
 import de.anubi1000.turnierverwaltung.data.repository.ParticipantRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamDisciplineRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamRepository
+import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
 import de.anubi1000.turnierverwaltung.data.toEditTeam
 import de.anubi1000.turnierverwaltung.data.validation.validateInt
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Team
 import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
+import de.anubi1000.turnierverwaltung.util.Constants
 import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -27,6 +29,7 @@ class TeamEditViewModel(
     private val teamRepository: TeamRepository,
     private val participantRepository: ParticipantRepository,
     private val teamDisciplineRepository: TeamDisciplineRepository,
+    private val tournamentRepository: TournamentRepository,
     @InjectedParam private val tournamentId: ObjectId,
 ) : ViewModel() {
     var state: State by mutableStateOf(State.Loading)
@@ -37,11 +40,13 @@ class TeamEditViewModel(
     fun loadCreate() {
         viewModelScope.launch {
             val team = EditTeam()
+            val tournament = tournamentRepository.getById(tournamentId)!!
+
             state = State.Loaded(
                 item = team,
                 participants = participantRepository.getAllForTournament(tournamentId),
                 teamDisciplines = teamDisciplineRepository.getAllForTournament(tournamentId),
-                isValid = getValidationState(team),
+                isValid = getValidationState(team, tournament.teamSize),
             )
             isEditMode = false
         }
@@ -50,11 +55,13 @@ class TeamEditViewModel(
     fun loadEdit(id: ObjectId) {
         viewModelScope.launch {
             val team = teamRepository.getById(id)!!.toEditTeam()
+            val tournament = tournamentRepository.getById(tournamentId)!!
+
             state = State.Loaded(
                 item = team,
                 participants = participantRepository.getAllForTournament(tournamentId),
                 teamDisciplines = teamDisciplineRepository.getAllForTournament(tournamentId),
-                isValid = getValidationState(team),
+                isValid = getValidationState(team, tournament.teamSize),
             )
             isEditMode = true
         }
@@ -68,7 +75,7 @@ class TeamEditViewModel(
             val team = Team(
                 id = currentState.item.id,
                 name = currentState.item.name,
-                startNumber = validateInt(currentState.item.startNumber)!!,
+                startNumber = validateInt(currentState.item.startNumber, min = Constants.MIN_START_NUMBER)!!,
 
                 members = currentState.item.members.toRealmList(),
                 participatingDisciplines = currentState.item.participatingDisciplines.toRealmList(),
@@ -83,10 +90,10 @@ class TeamEditViewModel(
         }
     }
 
-    private fun getValidationState(team: EditTeam): ComposeState<Boolean> = derivedStateOf {
+    private fun getValidationState(team: EditTeam, teamSize: Int): ComposeState<Boolean> = derivedStateOf {
         team.name.isNotBlank() &&
-            team.members.isNotEmpty() &&
-            validateInt(team.startNumber) != null
+            team.members.size == teamSize &&
+            validateInt(team.startNumber, min = Constants.MIN_START_NUMBER) != null
     }
 
     sealed interface State {

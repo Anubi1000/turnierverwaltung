@@ -1,5 +1,6 @@
 package de.anubi1000.turnierverwaltung.database.model
 
+import de.anubi1000.turnierverwaltung.database.model.Participant.Gender
 import io.realm.kotlin.ext.backlinks
 import io.realm.kotlin.ext.realmDictionaryOf
 import io.realm.kotlin.ext.realmListOf

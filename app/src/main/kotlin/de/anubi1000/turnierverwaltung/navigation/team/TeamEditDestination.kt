@@ -9,7 +9,7 @@ import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.ui.team.TeamEditScreen
-import de.anubi1000.turnierverwaltung.util.getDestination
+import de.anubi1000.turnierverwaltung.ui.util.getDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.team.TeamEditViewModel
 import kotlinx.serialization.Serializable

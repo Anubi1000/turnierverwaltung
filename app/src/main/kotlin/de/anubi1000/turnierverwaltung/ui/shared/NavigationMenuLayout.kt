@@ -39,12 +39,12 @@ import de.anubi1000.turnierverwaltung.ui.discipline.DisciplineList
 import de.anubi1000.turnierverwaltung.ui.participant.ParticipantList
 import de.anubi1000.turnierverwaltung.ui.team.TeamList
 import de.anubi1000.turnierverwaltung.ui.tournament.TournamentList
+import de.anubi1000.turnierverwaltung.ui.util.Icon
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
-import de.anubi1000.turnierverwaltung.util.Icon
-import de.anubi1000.turnierverwaltung.util.currentDestinationAsState
-import de.anubi1000.turnierverwaltung.util.getDestination
+import de.anubi1000.turnierverwaltung.ui.util.currentDestinationAsState
+import de.anubi1000.turnierverwaltung.ui.util.getDestination
+import de.anubi1000.turnierverwaltung.ui.util.topAppBarPadding
 import de.anubi1000.turnierverwaltung.util.toObjectId
-import de.anubi1000.turnierverwaltung.util.topAppBarPadding
 import de.anubi1000.turnierverwaltung.viewmodel.club.ClubListViewModel
 import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineListViewModel
 import de.anubi1000.turnierverwaltung.viewmodel.participant.ParticipantListViewModel

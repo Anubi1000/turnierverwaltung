@@ -15,7 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import de.anubi1000.turnierverwaltung.util.Icon
+import de.anubi1000.turnierverwaltung.ui.util.Icon
 import androidx.compose.material3.DropdownMenuItem as Material3DropdownMenuItem
 
 class DropdownMenuScope(
