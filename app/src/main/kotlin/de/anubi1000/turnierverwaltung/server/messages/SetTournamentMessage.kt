@@ -149,7 +149,7 @@ private fun getTeamRow(team: Team, teamDiscipline: TeamDiscipline): SetTournamen
 }
 
 private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTournamentMessage.Table> {
-    val columns = listOf(
+    val columns = mutableListOf(
         SetTournamentMessage.Table.Column(
             name = "Startnummer",
             width = "250px",
@@ -165,12 +165,17 @@ private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTour
             width = "50%",
             alignment = SetTournamentMessage.Table.Column.Alignment.LEFT,
         ),
-        SetTournamentMessage.Table.Column(
-            name = "Punkte",
-            width = "250px",
-            alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
-        ),
     )
+
+    for (i in 1..discipline.amountOfBestRoundsToShow) {
+        columns.add(
+            SetTournamentMessage.Table.Column(
+                name = "Runde $i",
+                width = "250px",
+                alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
+            ),
+        )
+    }
 
     return if (discipline.isGenderSeparated) {
         listOf(
@@ -211,18 +216,30 @@ private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTour
 }
 
 private fun getParticipantRow(participant: Participant, discipline: Discipline): SetTournamentMessage.Table.Row {
-    val points = ScoreCalculationUtils.getScoreForParticipant(participant, discipline)!!
+    val allPoints = ScoreCalculationUtils.getScoreForParticipantAllRounds(participant, discipline)!!
+    allPoints.sortDescending()
+
+    val values = mutableListOf(
+        participant.startNumber.toString(),
+        participant.name,
+        participant.club!!.name,
+    )
+    val sortValues = mutableListOf<Double>()
+
+    for (i in 0 until discipline.amountOfBestRoundsToShow) {
+        val points = allPoints.getOrNull(i)
+        if (points != null) {
+            values.add(points.toString().replace('.', ','))
+            sortValues.add(points)
+        } else {
+            values.add("")
+            sortValues.add(0.0)
+        }
+    }
 
     return SetTournamentMessage.Table.Row(
         id = participant.id.toHexString(),
-        values = listOf(
-            participant.startNumber.toString(),
-            participant.name,
-            participant.club!!.name,
-            points.toString().replace('.', ','),
-        ),
-        sortValues = listOf(
-            points,
-        ),
+        values = values,
+        sortValues = sortValues,
     )
 }

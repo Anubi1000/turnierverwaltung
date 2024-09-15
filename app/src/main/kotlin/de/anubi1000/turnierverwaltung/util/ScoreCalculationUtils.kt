@@ -4,9 +4,9 @@ import de.anubi1000.turnierverwaltung.database.model.Discipline
 import de.anubi1000.turnierverwaltung.database.model.Participant
 
 object ScoreCalculationUtils {
-    fun getScoreForParticipant(participant: Participant, discipline: Discipline): Double? {
+    fun getScoreForParticipantAllRounds(participant: Participant, discipline: Discipline): DoubleArray? {
         val disciplineResult = participant.results[discipline.id.toHexString()] ?: return null
-        val score = disciplineResult.rounds.maxOf { round ->
+        return disciplineResult.rounds.map { round ->
             var points = 0.0
             discipline.values.forEach { disciplineValue ->
                 val value = round.values[disciplineValue.id.toHexString()]!!
@@ -17,8 +17,8 @@ object ScoreCalculationUtils {
                 }
             }
             points
-        }
-
-        return score
+        }.toDoubleArray()
     }
+
+    fun getScoreForParticipant(participant: Participant, discipline: Discipline): Double? = getScoreForParticipantAllRounds(participant, discipline)?.maxOrNull()
 }

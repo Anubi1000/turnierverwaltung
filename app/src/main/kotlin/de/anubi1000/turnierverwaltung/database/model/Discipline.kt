@@ -17,6 +17,7 @@ class Discipline(
     var name: String = "",
     var isGenderSeparated: Boolean = false,
     var values: RealmList<Value> = realmListOf(),
+    var amountOfBestRoundsToShow: Int = 1,
 ) : RealmObject {
     constructor() : this(id = ObjectId())
 

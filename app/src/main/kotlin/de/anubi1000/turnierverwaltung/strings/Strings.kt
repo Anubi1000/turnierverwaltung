@@ -18,6 +18,7 @@ data class Strings(
     val edit: String = "Bearbeiten",
     val save: String = "Speichern",
 
+    val amountOfResultsOnDisplay: String = "\"Anzahl Ergebnisse auf Anzeige\"",
     val basedOn: String = "Basiert auf",
     val dateOfTournament: String = "Datum des Turniers",
     val gender: String = "Geschlecht",
