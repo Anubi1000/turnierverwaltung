@@ -84,6 +84,10 @@ private fun LoadedContent(
                 headlineText = strings.yesno(state.item.isGenderSeparated),
                 overlineText = strings.genderSeparated,
             )
+            DetailItem(
+                headlineText = state.item.amountOfBestRoundsToShow.toString(),
+                overlineText = strings.amountOfResultsOnDisplay,
+            )
         }
 
         DetailCard(

@@ -9,8 +9,7 @@ import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.EditDiscipline
 import de.anubi1000.turnierverwaltung.data.repository.DisciplineRepository
 import de.anubi1000.turnierverwaltung.data.toEditDiscipline
-import de.anubi1000.turnierverwaltung.database.model.Discipline
-import io.realm.kotlin.ext.toRealmList
+import de.anubi1000.turnierverwaltung.data.validation.validateAmountOfBestRoundsToShow
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
@@ -52,19 +51,7 @@ class DisciplineEditViewModel(
         require(currentState is State.Loaded && currentState.isValid.value)
 
         viewModelScope.launch {
-            val discipline = Discipline(
-                id = currentState.item.id,
-                name = currentState.item.name,
-                isGenderSeparated = currentState.item.isGenderSeparated,
-                values = currentState.item.values.map { value ->
-                    Discipline.Value().also {
-                        it.id = value.id
-                        it.name = value.name
-                        it.isAdded = value.isAdded
-                    }
-                }.toRealmList(),
-            )
-
+            val discipline = currentState.item.toDiscipline()
             if (!isEditMode) {
                 disciplineRepository.insert(discipline, tournamentId)
             } else {
@@ -77,7 +64,8 @@ class DisciplineEditViewModel(
     private fun getValidationState(discipline: EditDiscipline): ComposeState<Boolean> = derivedStateOf {
         discipline.name.isNotBlank() &&
             discipline.values.isNotEmpty() &&
-            discipline.values.all { it.name.isNotBlank() }
+            discipline.values.all { it.name.isNotBlank() } &&
+            validateAmountOfBestRoundsToShow(discipline.amountOfBestRoundsToShow) != null
     }
 
     sealed interface State {

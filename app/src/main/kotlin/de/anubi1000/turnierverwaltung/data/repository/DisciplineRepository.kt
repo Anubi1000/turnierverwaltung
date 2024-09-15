@@ -73,6 +73,7 @@ class DisciplineRepositoryImpl(private val realm: Realm) : DisciplineRepository 
                 dbDiscipline.name = discipline.name
                 dbDiscipline.isGenderSeparated = discipline.isGenderSeparated
                 dbDiscipline.values = discipline.values
+                dbDiscipline.amountOfBestRoundsToShow = discipline.amountOfBestRoundsToShow
             }
         }
     }

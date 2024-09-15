@@ -86,6 +86,12 @@ private fun LoadedContent(
                     )
                 },
             )
+
+            TextField(
+                label = strings.amountOfResultsOnDisplay,
+                value = state.item.amountOfBestRoundsToShow,
+                onValueChange = { state.item.amountOfBestRoundsToShow = it },
+            )
         }
 
         EditCard(
