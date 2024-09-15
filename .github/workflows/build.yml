@@ -42,6 +42,14 @@ jobs:
         working-directory: scoreboard
         run: pnpm run build
       
+      - name: Run eslint
+        working-directory: scoreboard
+        run: pnpm run lint
+
+      - name: Run prettier
+        working-directory: scoreboard
+        run: pnpm run format:check
+      
       - name: Run tests
         working-directory: scoreboard
         run: pnpm run test

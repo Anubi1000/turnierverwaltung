@@ -10,10 +10,10 @@ import {
 } from "@/app/interfaces";
 import useWebSocket from "react-use-websocket";
 import { Scoreboard } from "@/app/scoreboard";
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 function compareRows(
   firstRow: TournamentTableRow,
@@ -59,7 +59,6 @@ export default function Page() {
     undefined,
   );
 
-
   const [open, setOpen] = React.useState(false);
 
   const openDialog = () => {
@@ -73,9 +72,9 @@ export default function Page() {
   const webSocket = useWebSocket(getWebsocketUrl, {
     onOpen: closeDialog,
     // Will attempt to reconnect on all close events, such as server shutting down
-    shouldReconnect: (closeEvent) => true,
+    shouldReconnect: () => true,
     onMessage: (messageEvent) => handleMessage(messageEvent),
-    onClose: (closeEvent) => openDialog(),
+    onClose: openDialog,
   });
 
   function handleSetTournament(data: SetTournamentMessage) {
@@ -139,13 +138,8 @@ export default function Page() {
 
   return (
     <>
-      <Dialog
-        open={open}
-        onClose={closeDialog}
-      >
-        <DialogTitle>
-          Keine Verbindung
-        </DialogTitle>
+      <Dialog open={open} onClose={closeDialog}>
+        <DialogTitle>Keine Verbindung</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Keine Verbindung zur Turnierverwaltung
@@ -154,6 +148,5 @@ export default function Page() {
       </Dialog>
       <Scoreboard tournament={tournament} />
     </>
-    
   );
 }

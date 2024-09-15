@@ -13,7 +13,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress from "@mui/material/LinearProgress";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -26,7 +26,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(odd)": {
     backgroundColor: "#bbe0bb",
   },
@@ -57,34 +57,34 @@ export function DisciplineTable({
   const maxScrolls = 2;
   const waitAtTopAndBottom = 5000;
   const scrollTimer = 25;
-  var pixelsScrolled = 0;
 
   useEffect(() => {
     let scrollToBottom = true;
     let isScrolling = true;
     let scrollCount = 0;
-    
-    
+    let pixelsScrolled = 0;
+
     const interval = setInterval(async () => {
       if (!isScrolling) return;
 
       const tableContainer = tableRef.current as unknown as HTMLDivElement;
 
-      if (tableContainer) { 
-
-        const totalScrollDist = (tableContainer.scrollHeight-tableContainer.offsetHeight)*maxScrolls;
+      if (tableContainer) {
+        const totalScrollDist =
+          (tableContainer.scrollHeight - tableContainer.offsetHeight) *
+          maxScrolls;
 
         // ensure ref object exists
         if (scrollToBottom) {
           tableContainer.scrollTop += 1; // one pixel down
           pixelsScrolled++;
-          setProgress((100/totalScrollDist)*pixelsScrolled);
+          setProgress((100 / totalScrollDist) * pixelsScrolled);
         } else {
           tableContainer.scrollTop -= 1; // one pixel up
           pixelsScrolled++;
-          setProgress((100/totalScrollDist)*pixelsScrolled);
+          setProgress((100 / totalScrollDist) * pixelsScrolled);
         }
-       
+
         if (tableContainer.scrollTop == 0 && !scrollToBottom) {
           // at top of table
           isScrolling = false;
@@ -92,7 +92,7 @@ export function DisciplineTable({
             scrollToBottom = true;
             isScrolling = true;
             scrollCount++;
-            setProgress((100/totalScrollDist)*pixelsScrolled);
+            setProgress((100 / totalScrollDist) * pixelsScrolled);
           }, waitAtTopAndBottom); // wait five seconds then scroll down
         } else if (
           tableContainer.scrollTop + tableContainer.clientHeight ==
@@ -104,12 +104,12 @@ export function DisciplineTable({
             scrollToBottom = false;
             isScrolling = true;
             scrollCount++;
-            setProgress((100/totalScrollDist)*pixelsScrolled);
+            setProgress((100 / totalScrollDist) * pixelsScrolled);
           }, waitAtTopAndBottom); // wait five seconds then scroll up
         }
         if (scrollCount >= maxScrolls) {
           scrollCount = 0;
-          setProgress(0)
+          setProgress(0);
           pixelsScrolled = 0;
           moveNext();
         }
@@ -118,19 +118,19 @@ export function DisciplineTable({
     return () => {
       clearInterval(interval);
     };
-  }, [tableRef]);
+  }, [tableRef, moveNext]);
 
   if (columns.length == 0) {
     return (
       <>
-      <LinearProgress variant="determinate" value={progress} />
-      <TableContainer ref={tableRef} sx={{ height: 1 }}>
-        <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-          <Typography variant="h4" align="center">
-            Keine Spaltendefinition vorhanden
-          </Typography>
-        </Stack>
-      </TableContainer>
+        <LinearProgress variant="determinate" value={progress} />
+        <TableContainer ref={tableRef} sx={{ height: 1 }}>
+          <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+            <Typography variant="h4" align="center">
+              Keine Spaltendefinition vorhanden
+            </Typography>
+          </Stack>
+        </TableContainer>
       </>
     );
   }
@@ -138,65 +138,64 @@ export function DisciplineTable({
   if (rows.length == 0) {
     return (
       <>
-      <LinearProgress variant="determinate" value={progress} />
-      <TableContainer ref={tableRef} sx={{ height: 1 }}>    
-        <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-          <Typography variant="h4" align="center">
-            Keine Einträge vorhanden
-          </Typography>
-        </Stack>
-      </TableContainer>
-      </>   
+        <LinearProgress variant="determinate" value={progress} />
+        <TableContainer ref={tableRef} sx={{ height: 1 }}>
+          <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+            <Typography variant="h4" align="center">
+              Keine Einträge vorhanden
+            </Typography>
+          </Stack>
+        </TableContainer>
+      </>
     );
   }
 
   return (
     <>
-    <LinearProgress variant="determinate" value={progress} />
-    <TableContainer ref={tableRef} style={{ overflowY: "hidden" }}> 
-      <Table stickyHeader>
-        <TableHead>
-          <TableRow>
-            <StyledTableCell
-              key={-1}
-              style={{ width: "60px" }}
-              align={"center"}
-            >
-              Platz
-            </StyledTableCell>
-            {columns.map((column, index) => (
+      <LinearProgress variant="determinate" value={progress} />
+      <TableContainer ref={tableRef} style={{ overflowY: "scroll" }}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
               <StyledTableCell
-                key={`col-${index}`}
-                style={{ width: column.width }}
-                align={column.alignment}
-                data-testid={`col-${index}`}
+                key={-1}
+                style={{ width: "60px" }}
+                align={"center"}
               >
-                {column.name}
+                Platz
               </StyledTableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, rowIndex) => (
-            <StyledTableRow key={row.id} data-testid={`row-${row.id}`}>
-              <StyledTableCell key={`place-${rowIndex + 1}`} align={"center"}>
-                <b>{rowIndex + 1}</b>
-              </StyledTableCell>
-              {row.values.map((entry, index) => (
+              {columns.map((column, index) => (
                 <StyledTableCell
-                  key={`cell-${row.id}-${index}`}
-                  align={columns[index].alignment}
-                  data-testid={`cell-${row.id}-${index}`}
+                  key={`col-${index}`}
+                  style={{ width: column.width }}
+                  align={column.alignment}
+                  data-testid={`col-${index}`}
                 >
-                  {entry}
+                  {column.name}
                 </StyledTableCell>
               ))}
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row, rowIndex) => (
+              <StyledTableRow key={row.id} data-testid={`row-${row.id}`}>
+                <StyledTableCell key={`place-${rowIndex + 1}`} align={"center"}>
+                  <b>{rowIndex + 1}</b>
+                </StyledTableCell>
+                {row.values.map((entry, index) => (
+                  <StyledTableCell
+                    key={`cell-${row.id}-${index}`}
+                    align={columns[index].alignment}
+                    data-testid={`cell-${row.id}-${index}`}
+                  >
+                    {entry}
+                  </StyledTableCell>
+                ))}
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
-    
   );
 }
