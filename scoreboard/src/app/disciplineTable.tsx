@@ -45,9 +45,9 @@ const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   // Disable the transition animation from 100 to 0 inside the progress bar
   '&[aria-valuenow="0"]': {
     "& > $progressBarInner": {
-      transition: "none"
-    }
-  }
+      transition: "none",
+    },
+  },
 }));
 export function DisciplineTable({
   moveNext,
@@ -87,8 +87,9 @@ export function DisciplineTable({
         const totalScrollDist =
           (tableContainer.scrollHeight - tableContainer.offsetHeight) *
           maxScrolls;
-        
-        const needsToScroll = tableContainer.offsetHeight < tableContainer.scrollHeight
+
+        const needsToScroll =
+          tableContainer.offsetHeight < tableContainer.scrollHeight;
         if (needsToScroll) {
           setUseProgress(true);
         } else {
