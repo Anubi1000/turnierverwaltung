@@ -41,7 +41,7 @@ const StyledTableRow = styled(TableRow)(() => ({
   },
 }));
 
-const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
+const StyledLinearProgress = styled(LinearProgress)(() => ({
   // Disable the transition animation from 100 to 0 inside the progress bar
   '&[aria-valuenow="0"]': {
     "& > $progressBarInner": {
@@ -150,7 +150,7 @@ export function DisciplineTable({
     return () => {
       clearInterval(interval);
     };
-  }, [tableRef, table, useProgress]);
+  }, [tableRef, table, useProgress, moveNext]);
 
   if (columns.length == 0) {
     return (
