@@ -67,22 +67,16 @@ export function DisciplineTable({
   const maxScrolls = 2;
   const waitAtTopAndBottom = 5000;
   const scrollTimer = 25;
-<<<<<<< HEAD
-=======
   const pixelsBeforeUpdate = 10;
 
   var pixelsScrolledSinceLastUpdate = 0;
   var pixelsScrolled = 0;
->>>>>>> 48ece57 (improved scrolling and progress)
 
   useEffect(() => {
     let scrollToBottom = true;
     let isScrolling = true;
     let scrollCount = 0;
-<<<<<<< HEAD
     let pixelsScrolled = 0;
-=======
->>>>>>> 48ece57 (improved scrolling and progress)
 
     const interval = setInterval(async () => {
       if (!isScrolling) return;
@@ -90,13 +84,6 @@ export function DisciplineTable({
       const tableContainer = tableRef.current as unknown as HTMLDivElement;
 
       if (tableContainer) {
-<<<<<<< HEAD
-        const totalScrollDist =
-          (tableContainer.scrollHeight - tableContainer.offsetHeight) *
-          maxScrolls;
-
-=======
->>>>>>> 48ece57 (improved scrolling and progress)
         // ensure ref object exists
 
         const totalScrollDist =
@@ -112,16 +99,6 @@ export function DisciplineTable({
         }
         if (scrollToBottom) {
           tableContainer.scrollTop += 1; // one pixel down
-<<<<<<< HEAD
-          pixelsScrolled++;
-          setProgress((100 / totalScrollDist) * pixelsScrolled);
-        } else {
-          tableContainer.scrollTop -= 1; // one pixel up
-          pixelsScrolled++;
-          setProgress((100 / totalScrollDist) * pixelsScrolled);
-        }
-
-=======
         } else {
           tableContainer.scrollTop -= 1; // one pixel up
         }
@@ -135,7 +112,6 @@ export function DisciplineTable({
           }
         }
 
->>>>>>> 48ece57 (improved scrolling and progress)
         if (tableContainer.scrollTop == 0 && !scrollToBottom) {
           // at top of table
           isScrolling = false;
