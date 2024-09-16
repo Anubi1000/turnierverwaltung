@@ -51,18 +51,30 @@ export function DisciplineTable({
   const tableRef = useRef<null | HTMLDivElement>(null);
 
   const [progress, setProgress] = useState(0);
+  const [useProgress, setUseProgress] = useState(true);
 
   const rows = table.rows;
   const columns = table.columns;
-  const maxScrolls = 2;
-  const waitAtTopAndBottom = 5000;
+
+  const maxScrolls = 4;
+  const waitAtTopAndBottom = 1000;
   const scrollTimer = 25;
+<<<<<<< HEAD
+=======
+  const pixelsBeforeUpdate = 10;
+
+  var pixelsScrolledSinceLastUpdate = 0;
+  var pixelsScrolled = 0;
+>>>>>>> 48ece57 (improved scrolling and progress)
 
   useEffect(() => {
     let scrollToBottom = true;
     let isScrolling = true;
     let scrollCount = 0;
+<<<<<<< HEAD
     let pixelsScrolled = 0;
+=======
+>>>>>>> 48ece57 (improved scrolling and progress)
 
     const interval = setInterval(async () => {
       if (!isScrolling) return;
@@ -70,13 +82,28 @@ export function DisciplineTable({
       const tableContainer = tableRef.current as unknown as HTMLDivElement;
 
       if (tableContainer) {
+<<<<<<< HEAD
         const totalScrollDist =
           (tableContainer.scrollHeight - tableContainer.offsetHeight) *
           maxScrolls;
 
+=======
+>>>>>>> 48ece57 (improved scrolling and progress)
         // ensure ref object exists
+
+        const totalScrollDist =
+          (tableContainer.scrollHeight - tableContainer.offsetHeight) *
+          maxScrolls;
+
+        if (tableContainer.offsetHeight < tableContainer.scrollHeight) {
+          setUseProgress(true);
+        } else {
+          setUseProgress(false);
+          setProgress(100);
+        }
         if (scrollToBottom) {
           tableContainer.scrollTop += 1; // one pixel down
+<<<<<<< HEAD
           pixelsScrolled++;
           setProgress((100 / totalScrollDist) * pixelsScrolled);
         } else {
@@ -85,6 +112,21 @@ export function DisciplineTable({
           setProgress((100 / totalScrollDist) * pixelsScrolled);
         }
 
+=======
+        } else {
+          tableContainer.scrollTop -= 1; // one pixel up
+        }
+
+        if (useProgress) {
+          pixelsScrolled++;
+          pixelsScrolledSinceLastUpdate++;
+          if (pixelsScrolledSinceLastUpdate >= pixelsBeforeUpdate) {
+            pixelsScrolledSinceLastUpdate = 0;
+            setProgress((100 / totalScrollDist) * pixelsScrolled);
+          }
+        }
+
+>>>>>>> 48ece57 (improved scrolling and progress)
         if (tableContainer.scrollTop == 0 && !scrollToBottom) {
           // at top of table
           isScrolling = false;
@@ -92,7 +134,9 @@ export function DisciplineTable({
             scrollToBottom = true;
             isScrolling = true;
             scrollCount++;
-            setProgress((100 / totalScrollDist) * pixelsScrolled);
+            if (useProgress) {
+              setProgress((100 / totalScrollDist) * pixelsScrolled);
+            }
           }, waitAtTopAndBottom); // wait five seconds then scroll down
         } else if (
           tableContainer.scrollTop + tableContainer.clientHeight ==
@@ -104,13 +148,17 @@ export function DisciplineTable({
             scrollToBottom = false;
             isScrolling = true;
             scrollCount++;
-            setProgress((100 / totalScrollDist) * pixelsScrolled);
+            if (useProgress) {
+              setProgress((100 / totalScrollDist) * pixelsScrolled);
+            }
           }, waitAtTopAndBottom); // wait five seconds then scroll up
         }
         if (scrollCount >= maxScrolls) {
           scrollCount = 0;
-          setProgress(0);
-          pixelsScrolled = 0;
+          if (useProgress) {
+            setProgress(0);
+            pixelsScrolled = 0;
+          }
           moveNext();
         }
       }
@@ -118,42 +166,40 @@ export function DisciplineTable({
     return () => {
       clearInterval(interval);
     };
-  }, [tableRef, moveNext]);
+  }, [tableRef, table, useProgress]);
 
   if (columns.length == 0) {
     return (
-      <>
-        <LinearProgress variant="determinate" value={progress} />
-        <TableContainer ref={tableRef} sx={{ height: 1 }}>
-          <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-            <Typography variant="h4" align="center">
-              Keine Spaltendefinition vorhanden
-            </Typography>
-          </Stack>
-        </TableContainer>
-      </>
+      <TableContainer ref={tableRef} sx={{ height: 1 }}>
+        <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+          <Typography variant="h4" align="center">
+            Keine Spaltendefinition vorhanden
+          </Typography>
+        </Stack>
+      </TableContainer>
     );
   }
 
   if (rows.length == 0) {
     return (
-      <>
-        <LinearProgress variant="determinate" value={progress} />
-        <TableContainer ref={tableRef} sx={{ height: 1 }}>
-          <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-            <Typography variant="h4" align="center">
-              Keine Einträge vorhanden
-            </Typography>
-          </Stack>
-        </TableContainer>
-      </>
+      <TableContainer ref={tableRef} sx={{ height: 1 }}>
+        <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
+          <Typography variant="h4" align="center">
+            Keine Einträge vorhanden
+          </Typography>
+        </Stack>
+      </TableContainer>
     );
   }
 
   return (
     <>
-      <LinearProgress variant="determinate" value={progress} />
-      <TableContainer ref={tableRef} style={{ overflowY: "scroll" }}>
+      <LinearProgress
+        variant="determinate"
+        value={progress}
+        style={{ zIndex: 1 }}
+      />
+      <TableContainer ref={tableRef} style={{ overflowY: "hidden" }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
