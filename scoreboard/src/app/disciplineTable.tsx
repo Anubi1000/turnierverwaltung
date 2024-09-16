@@ -41,6 +41,14 @@ const StyledTableRow = styled(TableRow)(() => ({
   },
 }));
 
+const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  // Disable the transition animation from 100 to 0 inside the progress bar
+  '&[aria-valuenow="0"]': {
+    "& > $progressBarInner": {
+      transition: "none"
+    }
+  }
+}));
 export function DisciplineTable({
   moveNext,
   table,
@@ -56,8 +64,8 @@ export function DisciplineTable({
   const rows = table.rows;
   const columns = table.columns;
 
-  const maxScrolls = 4;
-  const waitAtTopAndBottom = 1000;
+  const maxScrolls = 2;
+  const waitAtTopAndBottom = 5000;
   const scrollTimer = 25;
 <<<<<<< HEAD
 =======
@@ -94,8 +102,9 @@ export function DisciplineTable({
         const totalScrollDist =
           (tableContainer.scrollHeight - tableContainer.offsetHeight) *
           maxScrolls;
-
-        if (tableContainer.offsetHeight < tableContainer.scrollHeight) {
+        
+        const needsToScroll = tableContainer.offsetHeight < tableContainer.scrollHeight
+        if (needsToScroll) {
           setUseProgress(true);
         } else {
           setUseProgress(false);
@@ -122,7 +131,7 @@ export function DisciplineTable({
           pixelsScrolledSinceLastUpdate++;
           if (pixelsScrolledSinceLastUpdate >= pixelsBeforeUpdate) {
             pixelsScrolledSinceLastUpdate = 0;
-            setProgress((100 / totalScrollDist) * pixelsScrolled);
+            setProgress(Math.ceil((100 / totalScrollDist) * pixelsScrolled));
           }
         }
 
@@ -135,7 +144,7 @@ export function DisciplineTable({
             isScrolling = true;
             scrollCount++;
             if (useProgress) {
-              setProgress((100 / totalScrollDist) * pixelsScrolled);
+              setProgress(Math.ceil((100 / totalScrollDist) * pixelsScrolled));
             }
           }, waitAtTopAndBottom); // wait five seconds then scroll down
         } else if (
@@ -149,7 +158,7 @@ export function DisciplineTable({
             isScrolling = true;
             scrollCount++;
             if (useProgress) {
-              setProgress((100 / totalScrollDist) * pixelsScrolled);
+              setProgress(Math.ceil((100 / totalScrollDist) * pixelsScrolled));
             }
           }, waitAtTopAndBottom); // wait five seconds then scroll up
         }
@@ -194,7 +203,7 @@ export function DisciplineTable({
 
   return (
     <>
-      <LinearProgress
+      <StyledLinearProgress
         variant="determinate"
         value={progress}
         style={{ zIndex: 1 }}
