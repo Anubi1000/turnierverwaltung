@@ -69,14 +69,12 @@ export function DisciplineTable({
   const scrollTimer = 25;
   const pixelsBeforeUpdate = 10;
 
-  var pixelsScrolledSinceLastUpdate = 0;
-  var pixelsScrolled = 0;
-
   useEffect(() => {
     let scrollToBottom = true;
     let isScrolling = true;
     let scrollCount = 0;
     let pixelsScrolled = 0;
+    let pixelsScrolledSinceLastUpdate = 0;
 
     const interval = setInterval(async () => {
       if (!isScrolling) return;
