@@ -1,6 +1,7 @@
 package de.anubi1000.turnierverwaltung.data.repository
 
 import de.anubi1000.turnierverwaltung.database.model.Club
+import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.database.queryById
 import io.realm.kotlin.Realm
@@ -48,7 +49,7 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
             realm.write {
                 val tournament = queryById<Tournament>(tournamentId)
                 require(tournament != null) {
-                    "Tournament with id ${tournamentId.toHexString()} doesn't exist"
+                    "Tournament with id(${tournamentId.toHexString()}) doesn't exist"
                 }
 
                 val insertedClub = copyToRealm(club)
@@ -66,7 +67,7 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
             realm.write {
                 val dbClub = queryById<Club>(club.id)
                 require(dbClub != null) {
-                    "Club with id ${club.id.toHexString()} doesn't exist"
+                    "Club with id(${club.id.toHexString()}) doesn't exist"
                 }
 
                 dbClub.name = club.name
@@ -83,7 +84,7 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
                 val club = queryById<Club>(id)
 
                 if (club != null) {
-                    require(query<Tournament>("club._id == $0", club.id).count().find() == 0L) {
+                    require(query<Participant>("club._id == $0", club.id).count().find() == 0L) {
                         "Club with id ${club.id.toHexString()} is used by tournaments"
                     }
 

@@ -53,7 +53,7 @@ class TournamentRepositoryImplTest : FunSpec({
     }
 
     context("update") {
-        test("updates correct properties of tournament") {
+        test("updates correct properties") {
             val realm = realm()
             val tournament = Tournament(
                 name = "Test 1",
@@ -71,7 +71,6 @@ class TournamentRepositoryImplTest : FunSpec({
                 date = tournament.date + Duration.ofSeconds(10),
                 teamSize = 1,
             )
-
             repository.update(changedTournament)
 
             val dbTournament = realm.queryById<Tournament>(tournament.id)

@@ -59,7 +59,7 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
             realm.write {
                 val databaseTournament = queryById<Tournament>(tournament.id)
                 require(databaseTournament != null) {
-                    "Tournament with specified id ${tournament.id.toHexString()} not found"
+                    "Tournament with specified id(${tournament.id.toHexString()}) not found"
                 }
 
                 databaseTournament.name = tournament.name
