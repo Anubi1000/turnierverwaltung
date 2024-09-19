@@ -1,5 +1,10 @@
 package de.anubi1000.turnierverwaltung.data.repository
 
+import de.anubi1000.turnierverwaltung.database.model.Club
+import de.anubi1000.turnierverwaltung.database.model.Discipline
+import de.anubi1000.turnierverwaltung.database.model.Participant
+import de.anubi1000.turnierverwaltung.database.model.Team
+import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.database.queryById
 import de.anubi1000.turnierverwaltung.util.tempRealm
@@ -25,16 +30,10 @@ class TournamentRepositoryImplTest : FunSpec({
     context("getAllAsFlow") {
         test("sorts correctly") {
             val realm = realm()
-            val tournaments = mutableListOf<Tournament>()
 
-            for (x in 1..3) {
-                for (y in 1..3) {
-                    tournaments.add(
-                        Tournament(
-                            name = x.toString(),
-                            date = Instant.EPOCH + Duration.ofSeconds(y.toLong()),
-                        ),
-                    )
+            val tournaments = (1..3).flatMap { x ->
+                (1..3).map { y ->
+                    Tournament(name = x.toString(), date = Instant.EPOCH + Duration.ofSeconds(y.toLong()))
                 }
             }
 
@@ -45,20 +44,16 @@ class TournamentRepositoryImplTest : FunSpec({
             val dbTournaments = repository.getAllAsFlow().first()
             dbTournaments shouldHaveSize tournaments.size
 
-            tournaments.sortWith { t1, t2 ->
-                val comp = t1.date.compareTo(t2.date)
-                if (comp != 0) return@sortWith -comp
-                t1.name.compareTo(t2.name)
-            }
+            val sortedTournaments = tournaments.sortedWith(compareByDescending<Tournament> { it.date }.thenBy { it.name })
 
-            tournaments.forEachIndexed { index, tournament ->
+            sortedTournaments.forEachIndexed { index, tournament ->
                 dbTournaments[index].id shouldBe tournament.id
             }
         }
     }
 
     context("update") {
-        test("updates a tournament") {
+        test("updates correct properties of tournament") {
             val realm = realm()
             val tournament = Tournament(
                 name = "Test 1",
@@ -83,7 +78,7 @@ class TournamentRepositoryImplTest : FunSpec({
             dbTournament shouldNotBeNull {
                 name shouldBe changedTournament.name
                 date shouldBe changedTournament.date
-                teamSize shouldBe tournament.teamSize
+                teamSize shouldBe tournament.teamSize // Original team size should remain
             }
         }
 
@@ -93,6 +88,43 @@ class TournamentRepositoryImplTest : FunSpec({
             }
 
             exception.message shouldStartWith "Tournament with specified id"
+        }
+    }
+
+    context("delete") {
+        test("deletes everything of tournament") {
+            val realm = realm()
+
+            val tournament = Tournament()
+            realm.write {
+                copyToRealm(tournament).apply {
+                    clubs.add(copyToRealm(Club()))
+                    participants.add(copyToRealm(Participant()))
+                    teams.add(copyToRealm(Team()))
+                    disciplines.add(copyToRealm(Discipline()))
+                    teamDisciplines.add(copyToRealm(TeamDiscipline()))
+                }
+            }
+
+            suspend fun checkEntityCounts(expectedCount: Long) {
+                val entities = listOf(
+                    Tournament::class,
+                    Club::class,
+                    Participant::class,
+                    Team::class,
+                    Discipline::class,
+                    TeamDiscipline::class,
+                )
+                for (entity in entities) {
+                    realm.query(entity).count().asFlow().first() shouldBe expectedCount
+                }
+            }
+
+            checkEntityCounts(1)
+
+            repository.delete(tournament.id)
+
+            checkEntityCounts(0)
         }
     }
 })
