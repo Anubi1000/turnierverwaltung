@@ -13,6 +13,7 @@ import de.anubi1000.turnierverwaltung.data.toEditParticipant
 import de.anubi1000.turnierverwaltung.data.validation.validateStartNumber
 import de.anubi1000.turnierverwaltung.database.model.Club
 import de.anubi1000.turnierverwaltung.database.model.Participant
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
@@ -35,7 +36,7 @@ class ParticipantEditViewModel(
             val participant = EditParticipant()
             state = State.Loaded(
                 item = participant,
-                clubs = clubRepository.getAllForTournament(tournamentId),
+                clubs = clubRepository.getAllForTournamentAsFlow(tournamentId).first(),
                 isValid = getValidationState(participant),
             )
             isEditMode = false
@@ -47,7 +48,7 @@ class ParticipantEditViewModel(
             val participant = participantRepository.getById(id)!!.toEditParticipant()
             state = State.Loaded(
                 item = participant,
-                clubs = clubRepository.getAllForTournament(tournamentId),
+                clubs = clubRepository.getAllForTournamentAsFlow(tournamentId).first(),
                 isValid = getValidationState(participant),
             )
             isEditMode = true
