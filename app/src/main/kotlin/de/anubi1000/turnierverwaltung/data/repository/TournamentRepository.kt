@@ -51,7 +51,10 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
         log.debug { "Updating existing tournament with id(${tournament.id.toHexString()})" }
         withContext(Dispatchers.IO) {
             realm.write {
-                val databaseTournament = queryById<Tournament>(tournament.id)!!
+                val databaseTournament = queryById<Tournament>(tournament.id)
+                require(databaseTournament != null) {
+                    "Tournament with specified id ${tournament.id.toHexString()} not found"
+                }
 
                 databaseTournament.name = tournament.name
                 databaseTournament.date = tournament.date
