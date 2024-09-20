@@ -37,7 +37,7 @@ fun ClubDetailScreen(
         onDeleteButtonClick = if (state is ClubDetailViewModel.State.Loaded && state.participantsWithClub == 0) {
             {
                 showDeleteDialog = true
-            } 
+            }
         } else {
             null
         },

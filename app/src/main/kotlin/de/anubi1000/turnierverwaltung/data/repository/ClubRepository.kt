@@ -94,7 +94,7 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
                     delete(club)
                     log.trace { "Club with id ${club.id.toHexString()} deleted" }
                 } else {
-                    log.trace { "Club with id ${id.toHexString()} doesn't exist" }
+                    log.warn { "Club with id ${id.toHexString()} doesn't exist" }
                 }
             }
         }

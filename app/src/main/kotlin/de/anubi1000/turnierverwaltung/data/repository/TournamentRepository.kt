@@ -88,7 +88,7 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
 
                     log.trace { "Tournament with id(${id.toHexString()}) deleted" }
                 } else {
-                    log.trace { "Tournament with id(${id.toHexString()}) doesn't exist" }
+                    log.warn { "Tournament with id(${id.toHexString()}) doesn't exist" }
                 }
             }
         }
