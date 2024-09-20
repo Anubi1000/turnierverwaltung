@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TournamentTable } from "@/app/interfaces";
 import {
   Stack,
@@ -13,6 +13,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import LinearProgress from "@mui/material/LinearProgress";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -25,7 +26,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(odd)": {
     backgroundColor: "#bbe0bb",
   },
@@ -40,6 +41,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const StyledLinearProgress = styled(LinearProgress)(() => ({
+  // Disable the transition animation from 100 to 0 inside the progress bar
+  '&[aria-valuenow="0"]': {
+    "& > $progressBarInner": {
+      transition: "none",
+    },
+  },
+}));
 export function DisciplineTable({
   moveNext,
   table,
@@ -49,15 +58,24 @@ export function DisciplineTable({
 }) {
   const tableRef = useRef<null | HTMLDivElement>(null);
 
+  const [progress, setProgress] = useState(0);
+  const [useProgress, setUseProgress] = useState(true);
+
   const rows = table.rows;
   const columns = table.columns;
+
   const maxScrolls = 2;
   const waitAtTopAndBottom = 5000;
+  const scrollTimer = 25;
+  const pixelsBeforeUpdate = 10;
 
   useEffect(() => {
     let scrollToBottom = true;
     let isScrolling = true;
     let scrollCount = 0;
+    let pixelsScrolled = 0;
+    let pixelsScrolledSinceLastUpdate = 0;
+
     const interval = setInterval(async () => {
       if (!isScrolling) return;
 
@@ -65,11 +83,34 @@ export function DisciplineTable({
 
       if (tableContainer) {
         // ensure ref object exists
+
+        const totalScrollDist =
+          (tableContainer.scrollHeight - tableContainer.offsetHeight) *
+          maxScrolls;
+
+        const needsToScroll =
+          tableContainer.offsetHeight < tableContainer.scrollHeight;
+        if (needsToScroll) {
+          setUseProgress(true);
+        } else {
+          setUseProgress(false);
+          setProgress(100);
+        }
         if (scrollToBottom) {
           tableContainer.scrollTop += 1; // one pixel down
         } else {
           tableContainer.scrollTop -= 1; // one pixel up
         }
+
+        if (useProgress) {
+          pixelsScrolled++;
+          pixelsScrolledSinceLastUpdate++;
+          if (pixelsScrolledSinceLastUpdate >= pixelsBeforeUpdate) {
+            pixelsScrolledSinceLastUpdate = 0;
+            setProgress(Math.ceil((100 / totalScrollDist) * pixelsScrolled));
+          }
+        }
+
         if (tableContainer.scrollTop == 0 && !scrollToBottom) {
           // at top of table
           isScrolling = false;
@@ -77,6 +118,9 @@ export function DisciplineTable({
             scrollToBottom = true;
             isScrolling = true;
             scrollCount++;
+            if (useProgress) {
+              setProgress(Math.ceil((100 / totalScrollDist) * pixelsScrolled));
+            }
           }, waitAtTopAndBottom); // wait five seconds then scroll down
         } else if (
           tableContainer.scrollTop + tableContainer.clientHeight ==
@@ -88,18 +132,25 @@ export function DisciplineTable({
             scrollToBottom = false;
             isScrolling = true;
             scrollCount++;
+            if (useProgress) {
+              setProgress(Math.ceil((100 / totalScrollDist) * pixelsScrolled));
+            }
           }, waitAtTopAndBottom); // wait five seconds then scroll up
         }
         if (scrollCount >= maxScrolls) {
           scrollCount = 0;
+          if (useProgress) {
+            setProgress(0);
+            pixelsScrolled = 0;
+          }
           moveNext();
         }
       }
-    }, 25);
+    }, scrollTimer);
     return () => {
       clearInterval(interval);
     };
-  }, [tableRef]);
+  }, [tableRef, table, useProgress, moveNext]);
 
   if (columns.length == 0) {
     return (
@@ -126,48 +177,55 @@ export function DisciplineTable({
   }
 
   return (
-    <TableContainer ref={tableRef} style={{ overflowY: "hidden" }}>
-      <Table stickyHeader>
-        <TableHead>
-          <TableRow>
-            <StyledTableCell
-              key={-1}
-              style={{ width: "60px" }}
-              align={"center"}
-            >
-              Platz
-            </StyledTableCell>
-            {columns.map((column, index) => (
+    <>
+      <StyledLinearProgress
+        variant="determinate"
+        value={progress}
+        style={{ zIndex: 1 }}
+      />
+      <TableContainer ref={tableRef} style={{ overflowY: "hidden" }}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
               <StyledTableCell
-                key={`col-${index}`}
-                style={{ width: column.width }}
-                align={column.alignment}
-                data-testid={`col-${index}`}
+                key={-1}
+                style={{ width: "60px" }}
+                align={"center"}
               >
-                {column.name}
+                Platz
               </StyledTableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, rowIndex) => (
-            <StyledTableRow key={row.id} data-testid={`row-${row.id}`}>
-              <StyledTableCell key={`place-${rowIndex + 1}`} align={"center"}>
-                <b>{rowIndex + 1}</b>
-              </StyledTableCell>
-              {row.values.map((entry, index) => (
+              {columns.map((column, index) => (
                 <StyledTableCell
-                  key={`cell-${row.id}-${index}`}
-                  align={columns[index].alignment}
-                  data-testid={`cell-${row.id}-${index}`}
+                  key={`col-${index}`}
+                  style={{ width: column.width }}
+                  align={column.alignment}
+                  data-testid={`col-${index}`}
                 >
-                  {entry}
+                  {column.name}
                 </StyledTableCell>
               ))}
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row, rowIndex) => (
+              <StyledTableRow key={row.id} data-testid={`row-${row.id}`}>
+                <StyledTableCell key={`place-${rowIndex + 1}`} align={"center"}>
+                  <b>{rowIndex + 1}</b>
+                </StyledTableCell>
+                {row.values.map((entry, index) => (
+                  <StyledTableCell
+                    key={`cell-${row.id}-${index}`}
+                    align={columns[index].alignment}
+                    data-testid={`cell-${row.id}-${index}`}
+                  >
+                    {entry}
+                  </StyledTableCell>
+                ))}
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }
