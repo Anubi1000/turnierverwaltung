@@ -25,6 +25,7 @@ data class Strings(
     val general: String = "Allgemein",
     val members: String = "Mitglieder",
     val name: String = "Name",
+    val participantsWithClub: String = "Teilnehmer mit diesem Verein",
     val startNumber: String = "Startnummer",
     val teamSize: String = "Teamgröße",
 

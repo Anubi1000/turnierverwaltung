@@ -21,7 +21,10 @@ class ClubDetailViewModel(
     fun loadItem(id: ObjectId) {
         viewModelScope.launch {
             val club = clubRepository.getById(id)!!
-            state = State.Loaded(club)
+            state = State.Loaded(
+                item = club,
+                participantsWithClub = clubRepository.getParticipantsWithClub(id),
+            )
         }
     }
 
@@ -37,6 +40,6 @@ class ClubDetailViewModel(
 
     sealed interface State {
         data object Loading : State
-        data class Loaded(val item: Club) : State
+        data class Loaded(val item: Club, val participantsWithClub: Int) : State
     }
 }

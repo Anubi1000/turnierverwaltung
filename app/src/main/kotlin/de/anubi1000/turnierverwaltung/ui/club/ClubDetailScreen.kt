@@ -34,8 +34,12 @@ fun ClubDetailScreen(
                 navController.navigate(ClubEditDestination(state.item.id))
             }
         },
-        onDeleteButtonClick = {
-            showDeleteDialog = true
+        onDeleteButtonClick = if (state is ClubDetailViewModel.State.Loaded && state.participantsWithClub == 0) {
+            {
+                showDeleteDialog = true
+            } 
+        } else {
+            null
         },
     ) { padding ->
         when (state) {
@@ -75,6 +79,10 @@ private fun LoadedContent(
             DetailItem(
                 headlineText = state.item.name,
                 overlineText = strings.name,
+            )
+            DetailItem(
+                headlineText = state.participantsWithClub.toString(),
+                overlineText = strings.participantsWithClub,
             )
         }
     }

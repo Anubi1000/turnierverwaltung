@@ -9,6 +9,7 @@ import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.apache.logging.log4j.kotlin.logger
@@ -21,6 +22,8 @@ interface ClubRepository {
     suspend fun insert(club: Club, tournamentId: ObjectId)
     suspend fun update(club: Club)
     suspend fun delete(id: ObjectId)
+
+    suspend fun getParticipantsWithClub(id: ObjectId): Int
 }
 
 @Factory
@@ -95,6 +98,14 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
                 }
             }
         }
+    }
+
+    override suspend fun getParticipantsWithClub(id: ObjectId): Int = withContext(Dispatchers.IO) {
+        realm.query<Participant>("club._id == $0", id)
+            .count()
+            .asFlow()
+            .first()
+            .toInt()
     }
 
     companion object {
