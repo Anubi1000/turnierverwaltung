@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import de.anubi1000.turnierverwaltung.data.validation.validateName
 import de.anubi1000.turnierverwaltung.data.validation.validateTeamSize
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import org.mongodb.kbson.ObjectId
@@ -22,7 +23,7 @@ class EditTournament(
 
     fun toTournament() = Tournament(
         id = id,
-        name = name,
+        name = validateName(name)!!,
         date = date,
         teamSize = validateTeamSize(teamSize)!!,
     )
