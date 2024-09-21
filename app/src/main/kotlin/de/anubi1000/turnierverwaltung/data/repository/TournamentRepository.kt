@@ -24,7 +24,8 @@ interface TournamentRepository {
 @Factory
 class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository {
     override fun getAllAsFlow(): Flow<List<Tournament>> {
-        log.debug("Retrieving all tournaments as flow")
+        log.debug("Retrieving all tournaments")
+
         return realm.query<Tournament>()
             .sort("date" to Sort.DESCENDING, "name" to Sort.ASCENDING)
             .asFlow()
@@ -32,7 +33,8 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
     }
 
     override suspend fun getById(id: ObjectId): Tournament? {
-        log.debug { "Querying tournament by id(${id.toHexString()})" }
+        log.debug { "Retrieving tournament by id(${id.toHexString()})" }
+
         return withContext(Dispatchers.IO) {
             realm.queryById(id)
         }
@@ -40,37 +42,51 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
 
     override suspend fun insert(tournament: Tournament) {
         log.debug { "Inserting new tournament with id(${tournament.id.toHexString()})" }
+
         withContext(Dispatchers.IO) {
             realm.write {
                 copyToRealm(tournament)
             }
         }
+
+        log.trace { "Inserted tournament with id(${tournament.id.toHexString()})" }
     }
 
     override suspend fun update(tournament: Tournament) {
         log.debug { "Updating existing tournament with id(${tournament.id.toHexString()})" }
+
         withContext(Dispatchers.IO) {
             realm.write {
-                val databaseTournament = queryById<Tournament>(tournament.id)!!
+                val databaseTournament = queryById<Tournament>(tournament.id) ?: throw IllegalArgumentException("Tournament with specified id not found")
 
                 databaseTournament.name = tournament.name
                 databaseTournament.date = tournament.date
             }
         }
+
+        log.trace { "Updated tournament with id(${tournament.id.toHexString()})" }
     }
 
     override suspend fun delete(id: ObjectId) {
         log.debug { "Deleting tournament by id(${id.toHexString()})" }
+
         withContext(Dispatchers.IO) {
             realm.write {
-                val dbTournament = queryById<Tournament>(id)!!
+                val tournament = queryById<Tournament>(id)
 
-                delete(dbTournament.clubs)
-                delete(dbTournament.participants)
-                delete(dbTournament.teams)
-                delete(dbTournament.disciplines)
+                if (tournament != null) {
+                    delete(tournament.clubs)
+                    delete(tournament.participants)
+                    delete(tournament.teams)
+                    delete(tournament.disciplines)
+                    delete(tournament.teamDisciplines)
 
-                delete(dbTournament)
+                    delete(tournament)
+
+                    log.trace { "Tournament with id(${id.toHexString()}) deleted" }
+                } else {
+                    log.warn { "Tournament with id(${id.toHexString()}) doesn't exist" }
+                }
             }
         }
     }

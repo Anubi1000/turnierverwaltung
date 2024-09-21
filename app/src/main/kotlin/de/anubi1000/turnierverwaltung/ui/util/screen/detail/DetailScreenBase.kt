@@ -49,13 +49,12 @@ fun DetailScreenBase(
                 actions = {
                     additionalActions()
 
-                    onDeleteButtonClick?.let { onClick ->
-                        TooltipIconButton(
-                            icon = Icons.Default.Delete,
-                            tooltip = LocalStrings.current.delete,
-                            onClick = onClick,
-                        )
-                    }
+                    TooltipIconButton(
+                        icon = Icons.Default.Delete,
+                        tooltip = LocalStrings.current.delete,
+                        enabled = onDeleteButtonClick != null,
+                        onClick = { onDeleteButtonClick?.invoke() },
+                    )
 
                     onEditButtonClick?.let { onClick ->
                         TooltipIconButton(

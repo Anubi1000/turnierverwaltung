@@ -97,11 +97,19 @@ private fun LoadedContent(
         DetailCard(
             title = strings.teamDisciplines,
         ) {
-            state.item.participatingDisciplines.forEach { discipline ->
+            val teamDisciplines = state.item.participatingDisciplines
+
+            if (teamDisciplines.isEmpty()) {
                 DetailItem(
-                    headlineText = discipline.name,
-                    overlineText = strings.name,
+                    headlineText = LocalStrings.current.noTeamDisciplineAvailable,
                 )
+            } else {
+                teamDisciplines.forEach { discipline ->
+                    DetailItem(
+                        headlineText = discipline.name,
+                        overlineText = strings.name,
+                    )
+                }
             }
         }
     }

@@ -8,6 +8,7 @@ import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
+import org.jetbrains.annotations.VisibleForTesting
 import org.koin.core.module.dsl.createdAtStart
 import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.module
@@ -21,23 +22,25 @@ val databaseModule = module {
     }
 }
 
+@VisibleForTesting
+fun createBaseRealmConfig() = RealmConfiguration.Builder(
+    schema = setOf(
+        Club::class,
+        Discipline::class,
+        Discipline.Value::class,
+        Participant::class,
+        Participant.RoundResult::class,
+        Participant.DisciplineResult::class,
+        Team::class,
+        TeamDiscipline::class,
+        Tournament::class,
+    ),
+)
+
 private fun createRealm(): Realm {
     val documentsPath = FileSystemView.getFileSystemView().defaultDirectory.path
     val dataDir = Path(documentsPath).resolve("Turnierverwaltung")
-    val config = RealmConfiguration
-        .Builder(
-            schema = setOf(
-                Club::class,
-                Discipline::class,
-                Discipline.Value::class,
-                Participant::class,
-                Participant.RoundResult::class,
-                Participant.DisciplineResult::class,
-                Team::class,
-                TeamDiscipline::class,
-                Tournament::class,
-            ),
-        )
+    val config = createBaseRealmConfig()
         .schemaVersion(0)
         .deleteRealmIfMigrationNeeded()
         .directory(dataDir.pathString)

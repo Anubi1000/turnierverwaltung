@@ -17,6 +17,7 @@ import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Team
 import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
 import io.realm.kotlin.ext.toRealmList
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
@@ -43,8 +44,8 @@ class TeamEditViewModel(
 
             state = State.Loaded(
                 item = team,
-                participants = participantRepository.getAllForTournament(tournamentId),
-                teamDisciplines = teamDisciplineRepository.getAllForTournament(tournamentId),
+                participants = participantRepository.getAllForTournamentAsFlow(tournamentId).first(),
+                teamDisciplines = teamDisciplineRepository.getAllForTournamentAsFlow(tournamentId).first(),
                 isValid = getValidationState(team, tournament.teamSize),
             )
             isEditMode = false
@@ -58,8 +59,8 @@ class TeamEditViewModel(
 
             state = State.Loaded(
                 item = team,
-                participants = participantRepository.getAllForTournament(tournamentId),
-                teamDisciplines = teamDisciplineRepository.getAllForTournament(tournamentId),
+                participants = participantRepository.getAllForTournamentAsFlow(tournamentId).first(),
+                teamDisciplines = teamDisciplineRepository.getAllForTournamentAsFlow(tournamentId).first(),
                 isValid = getValidationState(team, tournament.teamSize),
             )
             isEditMode = true

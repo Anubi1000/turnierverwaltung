@@ -82,7 +82,7 @@ private fun Tournament.getTeamDisciplineTables(teamDiscipline: TeamDiscipline): 
     for (i in 1..teamSize) {
         columns.add(
             SetTournamentMessage.Table.Column(
-                name = "Person $i",
+                name = "Schütze $i",
                 width = "$columnSpace%",
                 alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
             ),
@@ -171,7 +171,7 @@ private fun Tournament.getDisciplineTables(discipline: Discipline): List<SetTour
         columns.add(
             SetTournamentMessage.Table.Column(
                 name = "Runde $i",
-                width = "250px",
+                width = "300px",
                 alignment = SetTournamentMessage.Table.Column.Alignment.RIGHT,
             ),
         )
