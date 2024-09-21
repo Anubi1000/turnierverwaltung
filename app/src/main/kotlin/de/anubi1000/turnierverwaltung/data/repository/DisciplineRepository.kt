@@ -72,7 +72,7 @@ class DisciplineRepositoryImpl(private val realm: Realm) : DisciplineRepository 
                     "Amount of values for discipline can't differ"
                 }
 
-                require(dbDiscipline.values.distinct().size == dbDiscipline.values.distinct().size) {
+                require(dbDiscipline.values.all { value -> discipline.values.find { it.id == value.id } != null }) {
                     "New values must be the same as old values"
                 }
 
