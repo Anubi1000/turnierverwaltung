@@ -116,7 +116,7 @@ private fun LoadedContent(
 
             if (disciplines.isEmpty()) {
                 DetailItem(
-                    headlineText = LocalStrings.current.noDisciplineAvailable
+                    headlineText = LocalStrings.current.noDisciplineAvailable,
                 )
             } else {
                 val colors = ListItemDefaults.colors(

@@ -101,7 +101,7 @@ private fun LoadedContent(
 
             if (teamDisciplines.isEmpty()) {
                 DetailItem(
-                    headlineText = LocalStrings.current.noTeamDisciplineAvailable
+                    headlineText = LocalStrings.current.noTeamDisciplineAvailable,
                 )
             } else {
                 teamDisciplines.forEach { discipline ->
