@@ -18,7 +18,7 @@ data class Strings(
     val edit: String = "Bearbeiten",
     val save: String = "Speichern",
 
-    val amountOfResultsOnDisplay: String = "\"Anzahl Ergebnisse auf Anzeige\"",
+    val amountOfResultsOnDisplay: String = "Anzahl Ergebnisse auf Anzeige",
     val basedOn: String = "Basiert auf",
     val dateOfTournament: String = "Datum des Turniers",
     val gender: String = "Geschlecht",
@@ -131,6 +131,8 @@ data class Strings(
     val teamDisciplines: String = "Team-Disziplinen",
     val newDiscipline: String = "Neue Disziplin",
     val noDisciplineSelected: String = "Keine Disziplin ausgewählt",
+    val noDisciplineAvailable: String = "Keine Disziplinen vorhanden",
+    val noTeamDisciplineAvailable: String = "Keine Team-Disziplinen vorhanden",
 
     val scoreboard: String = "Scoreboard",
     val showOnScoreboard: String = "Auf Scoreboard anzeigen",

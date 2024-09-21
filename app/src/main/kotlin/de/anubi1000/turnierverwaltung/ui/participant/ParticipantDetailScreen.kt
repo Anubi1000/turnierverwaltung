@@ -110,19 +110,29 @@ private fun LoadedContent(
         DetailCard(
             title = LocalStrings.current.disciplines,
         ) {
-            val colors = ListItemDefaults.colors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            )
+            val disciplines = remember(state.item) {
+                state.item.tournament.first().disciplines
+            }
 
-            state.item.tournament.first().disciplines.forEach { discipline ->
-                ListItem(
-                    headlineContent = { Text(discipline.name) },
-                    trailingContent = {
-                        Icon(Icons.Default.ChevronRight)
-                    },
-                    colors = colors,
-                    modifier = Modifier.clickable(onClick = { onDisciplineClick(discipline.id) }),
+            if (disciplines.isEmpty()) {
+                DetailItem(
+                    headlineText = LocalStrings.current.noDisciplineAvailable
                 )
+            } else {
+                val colors = ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                )
+
+                disciplines.forEach { discipline ->
+                    ListItem(
+                        headlineContent = { Text(discipline.name) },
+                        trailingContent = {
+                            Icon(Icons.Default.ChevronRight)
+                        },
+                        colors = colors,
+                        modifier = Modifier.clickable(onClick = { onDisciplineClick(discipline.id) }),
+                    )
+                }
             }
         }
     }

@@ -1,12 +1,15 @@
 package de.anubi1000.turnierverwaltung.data.repository
 
+import de.anubi1000.turnierverwaltung.database.model.Discipline
 import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.database.queryById
+import io.realm.kotlin.MutableRealm
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.query.Sort
+import io.realm.kotlin.types.RealmList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -49,13 +52,7 @@ class TeamDisciplineRepositoryImpl(private val realm: Realm) : TeamDisciplineRep
             realm.write {
                 val tournament = queryById<Tournament>(tournamentId) ?: throw IllegalArgumentException("Tournament with specified id not found")
 
-                val basedOn = teamDiscipline.basedOn.map {
-                    val discipline = findLatest(it)
-                    requireNotNull(discipline) {
-                        "Discipline with id ${it.id} not found"
-                    }
-                    discipline
-                }.toRealmList()
+                val basedOn = mapDisciplines(teamDiscipline)
 
                 teamDiscipline.basedOn = basedOn
                 val dbTeamDiscipline = copyToRealm(teamDiscipline)
@@ -73,13 +70,7 @@ class TeamDisciplineRepositoryImpl(private val realm: Realm) : TeamDisciplineRep
             realm.write {
                 val dbTeamDiscipline = queryById<TeamDiscipline>(teamDiscipline.id) ?: throw IllegalArgumentException("Team discipline with specified id not found")
 
-                val basedOn = teamDiscipline.basedOn.map {
-                    val discipline = findLatest(it)
-                    requireNotNull(discipline) {
-                        "Discipline with id ${it.id} not found"
-                    }
-                    discipline
-                }.toRealmList()
+                val basedOn = mapDisciplines(teamDiscipline)
 
                 dbTeamDiscipline.name = teamDiscipline.name
                 dbTeamDiscipline.basedOn = basedOn
@@ -110,6 +101,17 @@ class TeamDisciplineRepositoryImpl(private val realm: Realm) : TeamDisciplineRep
                 }
             }
         }
+    }
+
+    private fun MutableRealm.mapDisciplines(teamDiscipline: TeamDiscipline): RealmList<Discipline> {
+        val basedOn = teamDiscipline.basedOn.map {
+            val discipline = findLatest(it)
+            requireNotNull(discipline) {
+                "Discipline with id ${it.id.toHexString()} not found"
+            }
+            discipline
+        }.toRealmList()
+        return basedOn
     }
 
     companion object {
