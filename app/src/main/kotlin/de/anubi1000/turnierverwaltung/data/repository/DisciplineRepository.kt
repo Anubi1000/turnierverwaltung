@@ -26,7 +26,7 @@ interface DisciplineRepository {
 @Factory
 class DisciplineRepositoryImpl(private val realm: Realm) : DisciplineRepository {
     override fun getAllForTournamentAsFlow(tournamentId: ObjectId): Flow<List<Discipline>> {
-        log.debug { "Retrieving all disciplines for tournament(${tournamentId.toHexString()}) as flow" }
+        log.debug { "Retrieving all disciplines for tournament(${tournamentId.toHexString()})" }
 
         return realm.query<Discipline>("tournament._id == $0", tournamentId)
             .sort("name", Sort.ASCENDING)
@@ -35,7 +35,7 @@ class DisciplineRepositoryImpl(private val realm: Realm) : DisciplineRepository 
     }
 
     override suspend fun getById(id: ObjectId): Discipline? {
-        log.debug { "Retrieving discipline with id(${id.toHexString()})" }
+        log.debug { "Retrieving discipline by id(${id.toHexString()})" }
 
         return withContext(Dispatchers.IO) {
             realm.queryById<Discipline>(id)
@@ -43,14 +43,11 @@ class DisciplineRepositoryImpl(private val realm: Realm) : DisciplineRepository 
     }
 
     override suspend fun insert(discipline: Discipline, tournamentId: ObjectId) {
-        log.debug { "Inserting new discipline with id(${tournamentId.toHexString()}) for tournament(${tournamentId.toHexString()})" }
+        log.debug { "Inserting new discipline with id(${discipline.id.toHexString()}) for tournament(${tournamentId.toHexString()})" }
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val tournament = queryById<Tournament>(tournamentId)
-                require(tournament != null) {
-                    "Tournament with id(${tournamentId.toHexString()}) doesn't exist"
-                }
+                val tournament = queryById<Tournament>(tournamentId) ?: throw IllegalArgumentException("Tournament with with specified id not found")
 
                 val dbDiscipline = copyToRealm(discipline)
                 tournament.disciplines.add(dbDiscipline)
@@ -65,10 +62,7 @@ class DisciplineRepositoryImpl(private val realm: Realm) : DisciplineRepository 
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val dbDiscipline = queryById<Discipline>(discipline.id)
-                require(dbDiscipline != null) {
-                    "Discipline with id(${discipline.id}) doesn't exist"
-                }
+                val dbDiscipline = queryById<Discipline>(discipline.id) ?: throw IllegalArgumentException("Discipline with with specified id not found")
 
                 dbDiscipline.name = discipline.name
                 dbDiscipline.isGenderSeparated = discipline.isGenderSeparated

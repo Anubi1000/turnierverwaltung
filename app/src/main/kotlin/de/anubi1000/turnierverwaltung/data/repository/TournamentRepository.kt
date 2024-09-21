@@ -24,7 +24,7 @@ interface TournamentRepository {
 @Factory
 class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository {
     override fun getAllAsFlow(): Flow<List<Tournament>> {
-        log.debug("Querying all tournaments as flow")
+        log.debug("Retrieving all tournaments")
 
         return realm.query<Tournament>()
             .sort("date" to Sort.DESCENDING, "name" to Sort.ASCENDING)
@@ -33,7 +33,7 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
     }
 
     override suspend fun getById(id: ObjectId): Tournament? {
-        log.debug { "Querying tournament by id(${id.toHexString()})" }
+        log.debug { "Retrieving tournament by id(${id.toHexString()})" }
 
         return withContext(Dispatchers.IO) {
             realm.queryById(id)
@@ -57,10 +57,7 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val databaseTournament = queryById<Tournament>(tournament.id)
-                require(databaseTournament != null) {
-                    "Tournament with specified id(${tournament.id.toHexString()}) not found"
-                }
+                val databaseTournament = queryById<Tournament>(tournament.id) ?: throw IllegalArgumentException("Tournament with specified id not found")
 
                 databaseTournament.name = tournament.name
                 databaseTournament.date = tournament.date

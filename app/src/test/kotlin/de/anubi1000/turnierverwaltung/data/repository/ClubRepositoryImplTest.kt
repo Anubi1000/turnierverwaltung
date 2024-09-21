@@ -10,8 +10,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldEndWith
-import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.flow.first
 import org.mongodb.kbson.ObjectId
 
@@ -60,7 +58,7 @@ class ClubRepositoryImplTest : FunSpec({
                 repository.insert(club, ObjectId())
             }
 
-            exception.message shouldStartWith "Tournament with id"
+            exception.message shouldBe "Tournament with with specified id not found"
         }
     }
 
@@ -92,7 +90,7 @@ class ClubRepositoryImplTest : FunSpec({
                 repository.update(Club())
             }
 
-            exception.message shouldStartWith "Club with id"
+            exception.message shouldBe "Club with with specified id not found"
         }
     }
 
@@ -115,7 +113,7 @@ class ClubRepositoryImplTest : FunSpec({
                 repository.delete(club.id)
             }
 
-            exception.message shouldEndWith "is used by tournaments"
+            exception.message shouldBe "Club with specified id is used by participants"
         }
     }
 })

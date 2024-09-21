@@ -29,7 +29,7 @@ interface ClubRepository {
 @Factory
 class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
     override fun getAllForTournamentAsFlow(tournamentId: ObjectId): Flow<List<Club>> {
-        log.debug { "Querying all clubs for tournament(${tournamentId.toHexString()}) as flow" }
+        log.debug { "Retrieving all clubs for tournament(${tournamentId.toHexString()})" }
 
         return realm.query<Club>("tournament._id == $0", tournamentId)
             .sort("name", Sort.ASCENDING)
@@ -38,7 +38,7 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
     }
 
     override suspend fun getById(id: ObjectId): Club? {
-        log.debug { "Querying club with id(${id.toHexString()})" }
+        log.debug { "Retrieving club by id(${id.toHexString()})" }
 
         return withContext(Dispatchers.IO) {
             realm.queryById(id)
@@ -50,10 +50,7 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val tournament = queryById<Tournament>(tournamentId)
-                require(tournament != null) {
-                    "Tournament with id(${tournamentId.toHexString()}) doesn't exist"
-                }
+                val tournament = queryById<Tournament>(tournamentId) ?: throw IllegalArgumentException("Tournament with with specified id not found")
 
                 val insertedClub = copyToRealm(club)
                 tournament.clubs.add(insertedClub)
@@ -68,10 +65,7 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val dbClub = queryById<Club>(club.id)
-                require(dbClub != null) {
-                    "Club with id(${club.id.toHexString()}) doesn't exist"
-                }
+                val dbClub = queryById<Club>(club.id) ?: throw IllegalArgumentException("Club with with specified id not found")
 
                 dbClub.name = club.name
             }
@@ -82,13 +76,14 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
 
     override suspend fun delete(id: ObjectId) {
         log.debug { "Deleting club with id(${id.toHexString()})" }
+
         withContext(Dispatchers.IO) {
             realm.write {
                 val club = queryById<Club>(id)
 
                 if (club != null) {
                     require(query<Participant>("club._id == $0", club.id).count().find() == 0L) {
-                        "Club with id ${club.id.toHexString()} is used by tournaments"
+                        "Club with specified id is used by participants"
                     }
 
                     delete(club)

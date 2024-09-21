@@ -13,7 +13,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldStartWith
 import kotlinx.coroutines.flow.first
 import java.time.Duration
 import java.time.Instant
@@ -86,7 +85,7 @@ class TournamentRepositoryImplTest : FunSpec({
                 repository.update(Tournament())
             }
 
-            exception.message shouldStartWith "Tournament with specified id"
+            exception.message shouldBe "Tournament with specified id not found"
         }
     }
 
