@@ -45,7 +45,7 @@ class TeamEditViewModel(
             state = State.Loaded(
                 item = team,
                 participants = participantRepository.getAllForTournamentAsFlow(tournamentId).first(),
-                teamDisciplines = teamDisciplineRepository.getAllForTournament(tournamentId),
+                teamDisciplines = teamDisciplineRepository.getAllForTournamentAsFlow(tournamentId).first(),
                 isValid = getValidationState(team, tournament.teamSize),
             )
             isEditMode = false
@@ -60,7 +60,7 @@ class TeamEditViewModel(
             state = State.Loaded(
                 item = team,
                 participants = participantRepository.getAllForTournamentAsFlow(tournamentId).first(),
-                teamDisciplines = teamDisciplineRepository.getAllForTournament(tournamentId),
+                teamDisciplines = teamDisciplineRepository.getAllForTournamentAsFlow(tournamentId).first(),
                 isValid = getValidationState(team, tournament.teamSize),
             )
             isEditMode = true
