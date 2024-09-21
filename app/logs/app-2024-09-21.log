@@ -1,0 +1,14 @@
+[2024-09-21 19:36:34,999] [INFO] [de.anubi1000.turnierverwaltung.MainKt] Hi from main
+[2024-09-21 19:36:35,493] [INFO] [de.anubi1000.turnierverwaltung.MainKt] Starting webserver
+[2024-09-21 19:36:35,539] [INFO] [ktor.application] Autoreload is disabled because the development mode is off.
+[2024-09-21 19:36:35,568] [INFO] [ktor.application] Application started in 0.043 seconds.
+[2024-09-21 19:36:35,821] [INFO] [ktor.application] Responding at http://127.0.0.1:8080
+[2024-09-21 19:36:35,823] [INFO] [de.anubi1000.turnierverwaltung.MainKt] Starting application
+[2024-09-21 19:36:36,793] [DEBUG] [de.anubi1000.turnierverwaltung.data.repository.TournamentRepositoryImpl] Retrieving all tournaments
+[2024-09-21 19:37:04,483] [DEBUG] [de.anubi1000.turnierverwaltung.data.repository.TournamentRepositoryImpl] Inserting new tournament with id(66ef043e6c4686479236fec1)
+[2024-09-21 19:37:04,517] [TRACE] [de.anubi1000.turnierverwaltung.data.repository.TournamentRepositoryImpl] Inserted tournament with id(66ef043e6c4686479236fec1)
+[2024-09-21 19:37:04,611] [DEBUG] [de.anubi1000.turnierverwaltung.data.repository.TournamentRepositoryImpl] Retrieving tournament by id(66ef043e6c4686479236fec1)
+[2024-09-21 19:37:16,630] [INFO] [de.anubi1000.turnierverwaltung.MainKt] Stopping webserver
+[2024-09-21 19:37:16,631] [TRACE] [io.ktor.server.websocket.WebSockets] Shutdown WebSockets due to application stop
+[2024-09-21 19:37:17,728] [INFO] [de.anubi1000.turnierverwaltung.MainKt] Saving realm database
+[2024-09-21 19:37:17,730] [INFO] [de.anubi1000.turnierverwaltung.MainKt] Bye bye

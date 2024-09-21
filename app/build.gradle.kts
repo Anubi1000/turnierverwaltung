@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "de.anubi1000"
-version = "1.0-SNAPSHOT"
+version = "0.1.0"
 
 dependencies {
     implementation(compose.desktop.currentOs)
@@ -85,7 +85,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Msi)
             packageName = "turnierverwaltung"
-            packageVersion = "1.0.0"
+            packageVersion = "0.1.0"
 
             modules("jdk.unsupported")
 

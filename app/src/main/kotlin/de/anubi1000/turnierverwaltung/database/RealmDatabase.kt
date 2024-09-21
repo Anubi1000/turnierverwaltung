@@ -42,9 +42,8 @@ private fun createRealm(): Realm {
     val dataDir = Path(documentsPath).resolve("Turnierverwaltung")
     val config = createBaseRealmConfig()
         .schemaVersion(0)
-        .deleteRealmIfMigrationNeeded()
         .directory(dataDir.pathString)
-        .name("Data.realm")
+        .name("data.realm")
         .build()
     return Realm.open(config)
 }
