@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.data.repository.RepositoryModule
 import de.anubi1000.turnierverwaltung.database.databaseModule
@@ -53,7 +52,9 @@ private val log = logger("de.anubi1000.turnierverwaltung.MainKt")
 @Composable
 fun App() {
     AppTheme(darkTheme = false) {
-        val navController = rememberNavController()
+        val appState = rememberAppState()
+        val navController = appState.navController
+
         NavigationMenuLayout(navController) {
             NavHost(
                 navController = navController,
