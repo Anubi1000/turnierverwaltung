@@ -98,7 +98,7 @@ class DisciplineRepositoryImpl(private val realm: Realm) : DisciplineRepository 
                     }
 
                     delete(discipline)
-                    log.trace { "Discipline with id(${discipline.id.toHexString()}) deleted" }
+                    log.trace { "Discipline with id(${id.toHexString()}) deleted" }
                 } else {
                     log.warn { "Discipline with id(${id.toHexString()}) doesn't exist" }
                 }
