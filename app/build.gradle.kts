@@ -89,6 +89,8 @@ compose.desktop {
 
             modules("jdk.unsupported")
 
+            includeAllModules = true
+
             windows {
                 perUserInstall = true
                 shortcut = true
