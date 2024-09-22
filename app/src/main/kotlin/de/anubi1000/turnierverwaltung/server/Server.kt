@@ -59,7 +59,7 @@ class Server(private val realm: Realm) {
     private val messageFlow = MutableSharedFlow<Message>(extraBufferCapacity = 3)
     private var currentTournamentId: MutableStateFlow<ObjectId?> = MutableStateFlow(null)
 
-    private val server = embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+    private val server = embeddedServer(Netty, port = 8080) {
         installStatusPages()
         installWebSockets()
 

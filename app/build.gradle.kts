@@ -80,16 +80,14 @@ ksp {
 compose.desktop {
     application {
         mainClass = "de.anubi1000.turnierverwaltung.MainKt"
-        jvmArgs("-Dlog4j.skipJansi=\"false\"")
+        jvmArgs("-Dlog4j.skipJansi=false", "-DlogLevel=info")
 
         nativeDistributions {
             targetFormats(TargetFormat.Msi)
             packageName = "turnierverwaltung"
             packageVersion = "0.1.0"
 
-            modules("jdk.unsupported")
-
-            includeAllModules = true
+            modules("jdk.unsupported", "java.management", "java.naming")
 
             windows {
                 perUserInstall = true

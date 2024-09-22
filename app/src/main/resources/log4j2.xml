@@ -4,11 +4,11 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%highlight{[%d{yyyy-MM-dd HH:mm:ss,SSS}] [%level{lowercase=false}] [%c{20}] %m%n%ex}{FATAL=bg_bright_red fg_black, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue, TRACE=bright_black}"/>
         </Console>
-        <RollingFile name="File" filePattern="logs/app-%d{yyyy-MM-dd}.log.gz">
+        <RollingFile name="File" filePattern="logs/app-%d{yyyy-MM-dd HH-mm-ss}.log.gz">
             <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss,SSS}] [%level{lowercase=false}] [%c{20}] %m%n%ex"/>
             <DirectWriteRolloverStrategy>
                 <Delete basePath="logs">
-                    <IfFileName regex="app\.\d{4}-\d{2}-\d{2}\.log\.gz"/>
+                    <IfFileName regex="app\.\d{4}-\d{2}-\d{2} \d{2}-\d{2}-\d{2}\.log\.gz"/>
                     <IfLastModified age="P14D"/>
                 </Delete>
             </DirectWriteRolloverStrategy>
@@ -17,11 +17,7 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="io.netty" level="info" additivity="false">
-            <AppenderRef ref="Console"/>
-        </Logger>
-
-        <Root level="trace">
+        <Root level="${sys:logLevel}">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>
         </Root>
