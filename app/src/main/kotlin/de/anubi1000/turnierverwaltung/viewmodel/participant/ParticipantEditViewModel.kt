@@ -6,10 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.anubi1000.turnierverwaltung.data.EditParticipant
+import de.anubi1000.turnierverwaltung.data.edit.EditParticipant
+import de.anubi1000.turnierverwaltung.data.edit.toEditParticipant
 import de.anubi1000.turnierverwaltung.data.repository.ClubRepository
 import de.anubi1000.turnierverwaltung.data.repository.ParticipantRepository
-import de.anubi1000.turnierverwaltung.data.toEditParticipant
 import de.anubi1000.turnierverwaltung.data.validation.validateStartNumber
 import de.anubi1000.turnierverwaltung.database.model.Club
 import de.anubi1000.turnierverwaltung.database.model.Participant

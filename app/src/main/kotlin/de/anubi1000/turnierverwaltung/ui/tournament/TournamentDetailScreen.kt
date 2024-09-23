@@ -14,8 +14,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
+import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentScoreboardDestination
 import de.anubi1000.turnierverwaltung.ui.util.DeleteDialog
 import de.anubi1000.turnierverwaltung.ui.util.Icon
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
@@ -58,7 +58,9 @@ fun TournamentDetailScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
-                    navController.navigate(ParticipantListDestination)
+                    if (state is TournamentDetailViewModel.State.Loaded) {
+                        navController.navigate(TournamentScoreboardDestination(state.item.id))
+                    }
                 },
                 text = { Text(LocalStrings.current.openTournament) },
                 icon = { Icon(Icons.AutoMirrored.Filled.OpenInNew) },

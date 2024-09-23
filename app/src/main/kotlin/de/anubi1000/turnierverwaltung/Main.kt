@@ -34,6 +34,7 @@ import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestin
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentDetailDestinations
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentListDestination
+import de.anubi1000.turnierverwaltung.navigation.tournament.tournamentScoreboardDestination
 import de.anubi1000.turnierverwaltung.server.Server
 import de.anubi1000.turnierverwaltung.ui.shared.NavigationMenuLayout
 import de.anubi1000.turnierverwaltung.ui.theme.AppTheme
@@ -69,6 +70,7 @@ fun App() {
                 tournamentListDestination(navController)
                 tournamentDetailDestinations(navController)
                 tournamentEditDestination(navController)
+                tournamentScoreboardDestination(navController)
 
                 participantListDestination(navController)
                 participantDetailDestination(navController)

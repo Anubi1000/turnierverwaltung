@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
-import de.anubi1000.turnierverwaltung.data.EditParticipantResult
+import de.anubi1000.turnierverwaltung.data.edit.EditParticipantResult
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
 import de.anubi1000.turnierverwaltung.ui.util.TooltipIconButton
 import de.anubi1000.turnierverwaltung.ui.util.screen.edit.EditCard

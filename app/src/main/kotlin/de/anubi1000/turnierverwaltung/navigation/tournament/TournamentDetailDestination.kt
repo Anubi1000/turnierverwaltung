@@ -19,7 +19,7 @@ import org.mongodb.kbson.ObjectId
 data class TournamentDetailDestination(
     val id: String,
 ) : AppDestination {
-    constructor(tournamentId: ObjectId) : this(tournamentId.toHexString())
+    constructor(id: ObjectId) : this(id.toHexString())
 
     @Transient
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.TOURNAMENTS

@@ -30,6 +30,7 @@ import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentEditDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
+import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentScoreboardDestination
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
 import kotlin.reflect.KClass
@@ -38,6 +39,7 @@ private val destinations: Map<String, KClass<out AppDestination>> = listOf(
     TournamentListDestination::class,
     TournamentDetailDestination::class,
     TournamentEditDestination::class,
+    TournamentScoreboardDestination::class,
 
     ParticipantListDestination::class,
     ParticipantDetailDestination::class,

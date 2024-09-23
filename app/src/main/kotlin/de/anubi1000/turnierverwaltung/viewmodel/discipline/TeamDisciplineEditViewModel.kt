@@ -6,10 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.anubi1000.turnierverwaltung.data.EditTeamDiscipline
+import de.anubi1000.turnierverwaltung.data.edit.EditTeamDiscipline
+import de.anubi1000.turnierverwaltung.data.edit.toEditTeamDiscipline
 import de.anubi1000.turnierverwaltung.data.repository.DisciplineRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamDisciplineRepository
-import de.anubi1000.turnierverwaltung.data.toEditTeamDiscipline
 import de.anubi1000.turnierverwaltung.database.model.Discipline
 import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
 import io.realm.kotlin.ext.toRealmList

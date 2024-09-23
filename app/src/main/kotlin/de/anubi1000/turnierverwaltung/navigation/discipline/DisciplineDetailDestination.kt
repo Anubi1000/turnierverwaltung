@@ -16,9 +16,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.mongodb.kbson.ObjectId
 
 @Serializable
-data class DisciplineDetailDestination(
-    val id: String,
-) : AppDestination {
+data class DisciplineDetailDestination(val id: String) : AppDestination {
     constructor(id: ObjectId) : this(id.toHexString())
 
     @Transient

@@ -8,7 +8,6 @@ import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.apache.logging.log4j.kotlin.logger

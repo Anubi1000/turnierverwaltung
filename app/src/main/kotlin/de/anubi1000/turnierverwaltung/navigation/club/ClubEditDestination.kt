@@ -19,9 +19,7 @@ import org.koin.core.parameter.parametersOf
 import org.mongodb.kbson.ObjectId
 
 @Serializable
-data class ClubEditDestination(
-    val id: String?,
-) : AppDestination {
+data class ClubEditDestination(val id: String?) : AppDestination {
     constructor(id: ObjectId? = null) : this(id?.toHexString())
 
     @Transient

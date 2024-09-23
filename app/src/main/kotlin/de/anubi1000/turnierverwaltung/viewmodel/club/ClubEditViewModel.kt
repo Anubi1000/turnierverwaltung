@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.anubi1000.turnierverwaltung.data.EditClub
+import de.anubi1000.turnierverwaltung.data.edit.EditClub
+import de.anubi1000.turnierverwaltung.data.edit.toEditClub
 import de.anubi1000.turnierverwaltung.data.repository.ClubRepository
-import de.anubi1000.turnierverwaltung.data.toEditClub
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam

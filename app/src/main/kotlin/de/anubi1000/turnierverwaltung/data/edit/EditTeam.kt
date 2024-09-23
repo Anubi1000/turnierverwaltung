@@ -1,4 +1,4 @@
-package de.anubi1000.turnierverwaltung.data
+package de.anubi1000.turnierverwaltung.data.edit
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue

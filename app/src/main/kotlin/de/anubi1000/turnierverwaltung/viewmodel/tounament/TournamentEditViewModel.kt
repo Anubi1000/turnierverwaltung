@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.anubi1000.turnierverwaltung.data.EditTournament
+import de.anubi1000.turnierverwaltung.data.edit.EditTournament
+import de.anubi1000.turnierverwaltung.data.edit.toEditTournament
 import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
-import de.anubi1000.turnierverwaltung.data.toEditTournament
 import de.anubi1000.turnierverwaltung.data.validation.validateName
 import de.anubi1000.turnierverwaltung.data.validation.validateTeamSize
 import kotlinx.coroutines.launch
