@@ -1,6 +1,11 @@
 package de.anubi1000.turnierverwaltung.data
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import de.anubi1000.turnierverwaltung.database.model.Discipline
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Team
@@ -9,29 +14,52 @@ import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.util.ScoreCalculationUtils
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ScoreboardData(
     val name: String,
-    val tables: ImmutableList<Table>,
+    val tables: List<Table>,
 ) {
+    @Serializable
     data class Table(
         val name: String,
-        val columns: ImmutableList<Column>,
-        val rows: ImmutableList<Row>,
+        val columns: List<Column>,
+        val rows: List<Row>,
     ) {
+        @Serializable
         data class Column(
             val name: String,
             val width: Width,
             val alignment: Alignment,
         ) {
+            @Serializable
             sealed interface Width {
-                data class Fixed(val width: Int) : Width
+                @Serializable
+                data class Fixed(val width: Int) : Width {
+                    @Composable
+                    fun toDp(): Dp {
+                        val density = LocalDensity.current
+                        return remember(density) {
+                            with(density) {
+                                width.toDp()
+                            }
+                        }
+                    }
+                }
+
+                @Serializable
                 data class Variable(val weight: Float) : Width
             }
 
+            @Serializable
             enum class Alignment {
+                @SerialName("left")
                 LEFT,
+                @SerialName("center")
                 CENTER,
+                @SerialName("right")
                 RIGHT,
                 ;
 
@@ -43,8 +71,9 @@ data class ScoreboardData(
             }
         }
 
+        @Serializable
         data class Row(
-            val values: ImmutableList<String>,
+            val values: List<String>,
         )
     }
 }
@@ -57,7 +86,7 @@ fun Tournament.toScoreboardData(): ScoreboardData = ScoreboardData(
         } + this.teamDisciplines.map { teamDiscipline ->
             getTeamDisciplineTables(teamDiscipline)
         }
-        ).toImmutableList(),
+        ),
 )
 
 private fun Tournament.getTeamDisciplineTables(teamDiscipline: TeamDiscipline): ScoreboardData.Table {
@@ -101,10 +130,10 @@ private fun Tournament.getTeamDisciplineTables(teamDiscipline: TeamDiscipline): 
 
     return ScoreboardData.Table(
         name = teamDiscipline.name,
-        columns = columns.toImmutableList(),
+        columns = columns,
         rows = teams.filter { team -> team.participatingDisciplines.any { it.id == teamDiscipline.id } }.map { team ->
             getTeamRow(team, teamDiscipline)
-        }.toImmutableList(),
+        },
     )
 }
 
@@ -134,7 +163,7 @@ private fun getTeamRow(team: Team, teamDiscipline: TeamDiscipline): ScoreboardDa
     values.add(total.toString())
 
     return ScoreboardData.Table.Row(
-        values = values.toImmutableList(),
+        values = values,
     )
 }
 
@@ -161,40 +190,38 @@ private fun Tournament.getDisciplineTables(discipline: Discipline): List<Scorebo
         columns.add(
             ScoreboardData.Table.Column(
                 name = "Runde $i",
-                width = ScoreboardData.Table.Column.Width.Fixed(300),
+                width = ScoreboardData.Table.Column.Width.Fixed(150),
                 alignment = ScoreboardData.Table.Column.Alignment.RIGHT,
             ),
         )
     }
 
-    val immutableColumns = columns.toImmutableList()
-
     return if (discipline.isGenderSeparated) {
         listOf(
             ScoreboardData.Table(
                 name = discipline.name + " (m)",
-                columns = immutableColumns,
+                columns = columns,
                 rows = participants.filter { participant ->
                     if (participant.gender != Participant.Gender.MALE) return@filter false
                     val disciplineResult = participant.results[discipline.id.toHexString()]
                     disciplineResult != null && disciplineResult.rounds.isNotEmpty()
-                }.map { getParticipantRow(it, discipline) }.toImmutableList(),
+                }.map { getParticipantRow(it, discipline) },
             ),
             ScoreboardData.Table(
                 name = discipline.name + " (w)",
-                columns = immutableColumns,
+                columns = columns,
                 rows = participants.filter { participant ->
                     if (participant.gender != Participant.Gender.FEMALE) return@filter false
                     val disciplineResult = participant.results[discipline.id.toHexString()]
                     disciplineResult != null && disciplineResult.rounds.isNotEmpty()
-                }.map { getParticipantRow(it, discipline) }.toImmutableList(),
+                }.map { getParticipantRow(it, discipline) },
             ),
         )
     } else {
         listOf(
             ScoreboardData.Table(
                 name = discipline.name,
-                columns = immutableColumns,
+                columns = columns,
                 rows = participants.filter { participant ->
                     val disciplineResult = participant.results[discipline.id.toHexString()]
                     disciplineResult != null && disciplineResult.rounds.isNotEmpty()
@@ -227,6 +254,6 @@ private fun getParticipantRow(participant: Participant, discipline: Discipline):
     }
 
     return ScoreboardData.Table.Row(
-        values = values.toImmutableList(),
+        values = values,
     )
 }

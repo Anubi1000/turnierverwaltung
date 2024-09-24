@@ -5,34 +5,31 @@ import { act } from "react";
 import "@testing-library/jest-dom/jest-globals";
 import "@testing-library/jest-dom";
 import WS from "jest-websocket-mock";
-import {
-  SetTournamentMessage,
-  TournamentTable,
-  UpdateRowMessage,
-} from "@/app/interfaces";
+import { ScoreboardData, SetTournamentMessage } from "@/interfaces";
 
-function createDummyTable() {
-  const table: TournamentTable = {
-    id: "Table",
-    name: "Discipline",
-    columns: [],
-    rows: [],
-  };
+function createDummyData() {
+  const data: ScoreboardData = {
+    name: "Scoreboard",
+    tables: [{
+      name: "Discipline",
+      columns: [],
+      rows: []
+    }]
+  }
+
   for (let i = 0; i < 5; i++) {
-    table.columns.push({
+    data.tables[0].columns.push({
       name: `Col ${i}`,
       alignment: "center",
-      width: "20%",
+      width: { weight: 20 },
     });
   }
   for (let i = 0; i < 10; i++) {
-    table.rows.push({
+    data.tables[0].rows.push({
       values: ["2", "4", "6", "8", "10"],
-      id: i.toString(),
-      sortValues: [i],
     });
   }
-  return table;
+  return data;
 }
 
 describe("WebSocket", () => {
@@ -50,19 +47,18 @@ describe("WebSocket", () => {
     render(<Page />);
     await server.connected;
 
-    const table = createDummyTable();
-
+    const data = createDummyData();
     const message: SetTournamentMessage = {
-      tables: [table],
-      title: "TestTournament",
+      data: data,
       type: "set_tournament",
     };
+    const table = data.tables[0]
 
     act(() => {
       server.send(message);
     });
 
-    const title = screen.getByText(message.title);
+    const title = screen.getByText(message.data.name);
     expect(title).toBeInTheDocument();
 
     // ensure column headers are set
@@ -72,121 +68,14 @@ describe("WebSocket", () => {
       expect(element.textContent).toBe(col.name);
     });
 
-    table.rows.forEach((row, index) => {
-      const element = screen.getByTestId(`row-${row.id}`);
+    table.rows.forEach((row, rowIndex) => {
+      const element = screen.getByTestId(`row-${rowIndex}`);
       expect(element).toBeInTheDocument();
       row.values.forEach((value, index) => {
-        const cell = screen.getByTestId(`cell-${row.id}-${index}`);
+        const cell = screen.getByTestId(`cell-${rowIndex}-${index}`);
         expect(cell).toBeInTheDocument();
         expect(cell.textContent).toBe(value);
       });
-    });
-  });
-
-  it("check if updates are done correctly", async () => {
-    // how to pass inital tournament to scoreboard?
-    const table = createDummyTable();
-    const initMessage: SetTournamentMessage = {
-      tables: [table],
-      title: "TestTournament",
-      type: "set_tournament",
-    };
-
-    render(<Page />);
-
-    await server.connected;
-
-    act(() => {
-      server.send(initMessage);
-    });
-
-    // apply update
-    const updateMessage: UpdateRowMessage = {
-      tableId: "Table",
-      rowId: "1",
-      values: ["1", "3", "5", "7", "11"],
-      sortValues: [1, 2, 3, 4, 5],
-      type: "update_row",
-    };
-
-    act(() => {
-      server.send(updateMessage);
-    });
-
-    // ensure column headers are set
-    table.columns.forEach((col, index) => {
-      const element = screen.getByTestId(`col-${index}`);
-      expect(element).toBeInTheDocument();
-      expect(element.textContent).toBe(col.name);
-    });
-
-    // ensure first row is updated to match new values
-    const row = table.rows[0];
-    const rowElement = screen.getByTestId(`row-${row.id}`);
-    expect(rowElement).toBeInTheDocument();
-    row.values.forEach((value, index) => {
-      const cell = screen.getByTestId(`cell-${row.id}-${index}`);
-      expect(cell).toBeInTheDocument();
-      expect(cell.textContent).toBe(value);
-    });
-  });
-
-  it("check if new rows are inserted correctly", async () => {
-    // how to pass inital tournament to scoreboard?
-    const table = createDummyTable();
-    const initMessage: SetTournamentMessage = {
-      tables: [table],
-      title: "TestTournament",
-      type: "set_tournament",
-    };
-
-    render(<Page />);
-
-    await server.connected;
-
-    act(() => {
-      server.send(initMessage);
-    });
-
-    // apply update
-    const newRowId = "42";
-    const updateMessage: UpdateRowMessage = {
-      tableId: "Table",
-      rowId: newRowId,
-      values: ["1", "3", "5", "7", "11"],
-      sortValues: [1, 2, 3, 4, 5],
-      type: "update_row",
-    };
-
-    act(() => {
-      server.send(updateMessage);
-    });
-
-    // ensure column headers are set
-    table.columns.forEach((col, index) => {
-      const element = screen.getByTestId(`col-${index}`);
-      expect(element).toBeInTheDocument();
-      expect(element.textContent).toBe(col.name);
-    });
-
-    // ensure old rows are still present
-    table.rows.forEach((row, index) => {
-      const element = screen.getByTestId(`row-${row.id}`);
-      expect(element).toBeInTheDocument();
-      row.values.forEach((value, index) => {
-        const cell = screen.getByTestId(`cell-${row.id}-${index}`);
-        expect(cell).toBeInTheDocument();
-        expect(cell.textContent).toBe(value);
-      });
-    });
-
-    // ensure new row is present as well
-    const rowElement = screen.getByTestId(`row-${newRowId}`);
-    expect(rowElement).toBeInTheDocument();
-    updateMessage.values.forEach((value, index) => {
-      const cell = screen.getByTestId(`cell-${newRowId}-${index}`);
-      expect(cell).toBeInTheDocument();
-      expect(cell.textContent).toBe(value);
     });
   });
 });

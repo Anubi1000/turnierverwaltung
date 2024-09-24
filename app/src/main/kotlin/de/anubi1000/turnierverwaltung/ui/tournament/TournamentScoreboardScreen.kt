@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
@@ -67,7 +69,7 @@ private fun LoadedContent(
     ) {
         var selectedIndex by remember(state.data) { mutableStateOf(0) }
 
-        PrimaryTabRow(
+        PrimaryScrollableTabRow(
             selectedTabIndex = selectedIndex,
             tabs = {
                 state.data.tables.forEachIndexed { index, table ->
@@ -90,17 +92,17 @@ private fun LoadedContent(
 
         if (table != null) {
             LazyColumn(
-                modifier = Modifier.padding(horizontal = 12.dp).fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
             ) {
                 stickyHeader {
                     Column {
                         Row(
-                            modifier = Modifier.fillMaxWidth().height(40.dp),
+                            modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth().height(40.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             table.columns.forEach { column ->
                                 val textModifier = when (column.width) {
-                                    is ScoreboardData.Table.Column.Width.Fixed -> Modifier.width(column.width.width.dp)
+                                    is ScoreboardData.Table.Column.Width.Fixed -> Modifier.width(column.width.toDp())
                                     is ScoreboardData.Table.Column.Width.Variable -> Modifier.weight(column.width.weight, fill = true)
                                 }
 
@@ -122,12 +124,12 @@ private fun LoadedContent(
                         color = if (rowIndex % 2 == 1) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.background,
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().height(40.dp),
+                            modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth().height(40.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             table.columns.forEachIndexed { cellIndex, column ->
                                 val textModifier = when (column.width) {
-                                    is ScoreboardData.Table.Column.Width.Fixed -> Modifier.width(column.width.width.dp)
+                                    is ScoreboardData.Table.Column.Width.Fixed -> Modifier.width(column.width.toDp())
                                     is ScoreboardData.Table.Column.Width.Variable -> Modifier.weight(
                                         column.width.weight,
                                         fill = true,
