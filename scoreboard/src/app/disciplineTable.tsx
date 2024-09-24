@@ -54,7 +54,7 @@ export function DisciplineTable({
 
   const { progress } = useAutoscroll({
     containerRef: containerRef,
-    msPerPixel: 50,
+    msPerPixel: 40,
     waitTime: 5000,
     numOfScrolls: 4,
     onFinish: moveNext,
@@ -86,7 +86,7 @@ export function DisciplineTable({
   return (
     <>
       <StyledLinearProgress value={progress * 100} variant="determinate" />
-      <TableContainer ref={containerRef} style={{ overflowY: "scroll" }}>
+      <TableContainer ref={containerRef} style={{ overflowY: "hidden" }}>
         <Table stickyHeader>
           <Header columns={columns} />
           <Body rows={rows} columns={columns} />

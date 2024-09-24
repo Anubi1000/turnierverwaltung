@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Typography, useTheme } from "@mui/material";
+import { AppBar, Toolbar, Typography, useTheme } from "@mui/material";
 import { ScoreboardData_Table } from "@/interfaces";
 import { CenteredText } from "@/app/centeredText";
 import { DisciplineTable } from "@/app/disciplineTable";
@@ -27,61 +27,58 @@ function DisciplineTitleBar({
     return <></>;
   }
 
+  let content;
   if (disciplines.length == 2) {
-    return (
-      <div
-        style={{
-          width: "100%",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          background: theme.palette.primary.main,
-          height: 48,
-        }}
-      >
-        <Typography
-          variant={index == 0 ? "h5" : "h6"}
-          color={index == 0 ? "white" : "lightgray"}
-          style={
-            index == 0
-              ? {
-                  paddingRight: 32,
-                  textDecoration: "underline",
-                }
-              : {
-                  paddingRight: 32,
-                }
-          }
-          align="right"
-        >
-          {disciplines[0]} {/*left discipline*/}
-        </Typography>
-
-        <Typography
-          variant={index == 1 ? "h5" : "h6"}
-          color={index == 1 ? "white" : "lightgray"}
-          style={
-            index == 1
-              ? {
-                  paddingLeft: 32,
-                  textDecoration: "underline",
-                }
-              : {
-                  paddingLeft: 32,
-                }
-          }
-        >
-          {disciplines[1]} {/*right discipline*/}
-        </Typography>
-      </div>
-    );
-  }
-
-  return (
-    <div
+    content = <div
       style={{
         width: "100%",
         display: "grid",
-        gridTemplateColumns: "1fr auto 1fr",
+        gridTemplateColumns: "1fr 1fr",
+        backgroundColor: theme.palette.primary.main,
+        height: 48
+      }}
+    >
+      <Typography
+        variant={index == 0 ? "h5" : "h6"}
+        color={index == 0 ? "white" : "lightgray"}
+        style={
+          index == 0
+            ? {
+              paddingRight: 32,
+              textDecoration: "underline"
+            }
+            : {
+              paddingRight: 32
+            }
+        }
+        align="right"
+      >
+        {disciplines[0]} {/*left discipline*/}
+      </Typography>
+
+      <Typography
+        variant={index == 1 ? "h5" : "h6"}
+        color={index == 1 ? "white" : "lightgray"}
+        style={
+          index == 1
+            ? {
+              paddingLeft: 32,
+              textDecoration: "underline"
+            }
+            : {
+              paddingLeft: 32
+            }
+        }
+      >
+        {disciplines[1]} {/*right discipline*/}
+      </Typography>
+    </div>;
+  } else {
+    content = <div
+      style={{
+        width: "100%",
+        display: "grid",
+        gridTemplateColumns: "1fr auto 1fr"
       }}
     >
       <Typography variant="h6" color="lightGray" align="right">
@@ -93,7 +90,7 @@ function DisciplineTitleBar({
         style={{
           paddingLeft: 64,
           paddingRight: 64,
-          textDecoration: "underline",
+          textDecoration: "underline"
         }}
         align="center"
       >
@@ -103,12 +100,20 @@ function DisciplineTitleBar({
       <Typography variant="h6" color="lightGray">
         {disciplines[nextLabelIndex]} {/*next discipline*/}
       </Typography>
-    </div>
+    </div>;
+  }
+
+  return (
+    <AppBar position="static" elevation={0}>
+      <Toolbar>
+        {content}
+      </Toolbar>
+    </AppBar>
   );
 }
 
 export function DisciplineCarousel({
-  tables,
+  tables
 }: {
   tables: ScoreboardData_Table[];
 }) {
@@ -116,7 +121,7 @@ export function DisciplineCarousel({
 
   const nextDiscipline = useCallback(() => {
     setIndex((prevIndex) =>
-      prevIndex >= tables.length - 1 ? 0 : prevIndex + 1,
+      prevIndex >= tables.length - 1 ? 0 : prevIndex + 1
     );
   }, [tables.length]);
 
