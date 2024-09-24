@@ -30,7 +30,7 @@ export function useAutoscroll({
 
       setProgress(1);
 
-      // @ts-ignore
+      // @ts-expect-error
       currentTimeout.current = setTimeout(() => {
         onFinish();
         currentTimeout.current = -1;
