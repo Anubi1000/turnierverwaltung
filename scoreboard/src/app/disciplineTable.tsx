@@ -22,7 +22,7 @@ import { useAutoscroll } from "@/app/useAutoscroll";
 
 const StyledLinearProgress = styled(LinearProgress)({
   [`& > .${linearProgressClasses.bar}`]: {
-    transition: "transform .05s linear",
+    transition: "none",
   },
 });
 

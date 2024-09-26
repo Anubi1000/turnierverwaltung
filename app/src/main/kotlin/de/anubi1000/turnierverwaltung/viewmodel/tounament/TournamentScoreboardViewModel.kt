@@ -7,8 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.ScoreboardData
 import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
-import de.anubi1000.turnierverwaltung.data.toScoreboardDataNew
-import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentDetailViewModel.State
+import de.anubi1000.turnierverwaltung.data.toScoreboardData
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.mongodb.kbson.ObjectId
@@ -22,7 +21,7 @@ class TournamentScoreboardViewModel(
     fun loadItem(id: ObjectId) {
         viewModelScope.launch {
             val tournament = tournamentRepository.getById(id)!!
-            state = State.Loaded(tournament.toScoreboardDataNew())
+            state = State.Loaded(tournament.toScoreboardData())
         }
     }
 

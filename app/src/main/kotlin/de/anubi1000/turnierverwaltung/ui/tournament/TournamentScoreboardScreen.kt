@@ -93,27 +93,29 @@ private fun LoadedContent(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 stickyHeader {
-                    Column {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth().height(40.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            table.columns.forEach { column ->
-                                val textModifier = when (column.width) {
-                                    is ScoreboardData.Table.Column.Width.Fixed -> Modifier.width(column.width.toDp())
-                                    is ScoreboardData.Table.Column.Width.Variable -> Modifier.weight(column.width.weight, fill = true)
-                                }
+                    Surface {
+                        Column {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth().height(40.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                table.columns.forEach { column ->
+                                    val textModifier = when (column.width) {
+                                        is ScoreboardData.Table.Column.Width.Fixed -> Modifier.width(column.width.toDp())
+                                        is ScoreboardData.Table.Column.Width.Variable -> Modifier.weight(column.width.weight, fill = true)
+                                    }.padding(4.dp)
 
-                                Text(
-                                    text = column.name,
-                                    modifier = textModifier,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    textAlign = column.alignment.toComposeTextAlignment(),
-                                )
+                                    Text(
+                                        text = column.name,
+                                        modifier = textModifier,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        textAlign = column.alignment.toComposeTextAlignment(),
+                                    )
+                                }
                             }
+                            HorizontalDivider()
                         }
-                        HorizontalDivider()
                     }
                 }
 
@@ -132,7 +134,7 @@ private fun LoadedContent(
                                         column.width.weight,
                                         fill = true,
                                     )
-                                }
+                                }.padding(4.dp)
 
                                 Text(
                                     text = row.values[cellIndex],

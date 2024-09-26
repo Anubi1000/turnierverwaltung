@@ -12,7 +12,6 @@ import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
 import de.anubi1000.turnierverwaltung.database.model.Tournament
 import de.anubi1000.turnierverwaltung.util.ScoreCalculationUtils
 import io.realm.kotlin.types.annotations.Ignore
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.mongodb.kbson.ObjectId
@@ -81,106 +80,47 @@ data class ScoreboardData(
     }
 }
 
-fun Tournament.toScoreboardDataNew(): ScoreboardData {
+fun Tournament.toScoreboardData(): ScoreboardData {
     val tables = mutableListOf<ScoreboardData.Table>()
 
     disciplines.forEach { discipline ->
-        val columns = mutableListOf(
-            ScoreboardData.Table.Column(
-                name = "Startnummer",
-                width = ScoreboardData.Table.Column.Width.Fixed(250),
-                alignment = ScoreboardData.Table.Column.Alignment.LEFT,
-            ),
-            ScoreboardData.Table.Column(
-                name = "Name",
-                width = ScoreboardData.Table.Column.Width.Variable(1f),
-                alignment = ScoreboardData.Table.Column.Alignment.LEFT,
-            ),
-            ScoreboardData.Table.Column(
-                name = "Verein",
-                width = ScoreboardData.Table.Column.Width.Variable(1f),
-                alignment = ScoreboardData.Table.Column.Alignment.LEFT,
-            ),
-        )
-
-        val resultColumnName = if (discipline.values.size == 1) {
-            discipline.values.first().name
-        } else {
-            "Runde"
-        }
-
-        repeat(discipline.amountOfBestRoundsToShow) { i ->
-            columns.add(
-                ScoreboardData.Table.Column(
-                    name = "$resultColumnName ${i + 1}",
-                    width = ScoreboardData.Table.Column.Width.Fixed(150),
-                    alignment = ScoreboardData.Table.Column.Alignment.RIGHT,
-                ),
-            )
-        }
-
-        for (i in 1..discipline.amountOfBestRoundsToShow) {
-            columns.add(
-                ScoreboardData.Table.Column(
-                    name = "$resultColumnName $i",
-                    width = ScoreboardData.Table.Column.Width.Fixed(150),
-                    alignment = ScoreboardData.Table.Column.Alignment.RIGHT,
-                ),
-            )
-        }
+        val columns = createDisciplineColumns(discipline)
 
         val results = participants.associateWith { participant ->
             ScoreCalculationUtils.getScoreForParticipantAllRounds(participant, discipline)
                 ?.sortedDescending()
-                ?: listOf()
+                ?: emptyList()
         }
 
+        val rows = createParticipantRows(results, discipline)
+        val maxResults = results.maxOfOrNull { it.value.size } ?: 0
+
         if (discipline.isGenderSeparated) {
-        } else {
-            val rows = results.mapNotNull { (participant, scores) ->
-                if (scores.isEmpty()) return@mapNotNull null
-
-                val values = mutableListOf(
-                    participant.startNumber.toString(),
-                    participant.name,
-                    participant.club?.name ?: "",
-                ).also { valuesList ->
-                    repeat(discipline.amountOfBestRoundsToShow) { i ->
-                        valuesList.add(scores.getOrNull(i)?.toString()?.replace('.', ',') ?: "")
-                    }
-                }
-
-                ScoreboardData.Table.Row(
-                    id = participant.id,
-                    values = values,
-                )
-            }.toMutableList()
-
-            val maxResults = results.maxOfOrNull { it.value.size } ?: 0
-            rows.sortWith { first, second ->
-                val firstResults = results.getValue(participants.first { it.id == first.id })
-                val secondResults = results.getValue(participants.first { it.id == second.id })
-
-                for (i in 0 until maxResults) {
-                    val firstScore = firstResults.getOrNull(i) ?: 0.0
-                    val secondScore = secondResults.getOrNull(i) ?: 0.0
-                    val compareResult = firstScore.compareTo(secondScore)
-                    if (compareResult != 0) return@sortWith -compareResult
-                }
-                return@sortWith 0
+            createGenderSeparatedTables(discipline, rows, results, maxResults).forEach { table ->
+                tables.add(table)
             }
-
-            tables.add(
-                ScoreboardData.Table(
-                    name = discipline.name,
-                    columns = columns,
-                    rows = rows,
-                ),
-            )
+        } else {
+            val sortedRows = rows.sortedWith(compareByResults(results, maxResults))
+            tables.add(createTable(discipline.name, columns, sortedRows))
         }
     }
 
-    tables.sortBy { it.name }
+    teamDisciplines.forEach { teamDiscipline ->
+        val columns = createTeamDisciplineColumns(teamSize)
+        val results = calculateTeamResults(teamDiscipline)
+
+        val rows = results.entries.sortedByDescending { it.value.first }.mapIndexed { index, result ->
+            createTeamRow(index + 1, result)
+        }
+
+        tables.add(
+            ScoreboardData.Table(
+                name = teamDiscipline.name,
+                columns = columns,
+                rows = rows,
+            ),
+        )
+    }
 
     return ScoreboardData(
         name = this.name,
@@ -188,182 +128,107 @@ fun Tournament.toScoreboardDataNew(): ScoreboardData {
     )
 }
 
-fun Tournament.toScoreboardData(): ScoreboardData = ScoreboardData(
-    name = this.name,
-    tables = (
-        this.disciplines.flatMap { discipline ->
-            getDisciplineTables(discipline)
-        } + this.teamDisciplines.map { teamDiscipline ->
-            getTeamDisciplineTables(teamDiscipline)
+private fun createDisciplineColumns(discipline: Discipline): List<ScoreboardData.Table.Column> {
+    val columns = mutableListOf(
+        ScoreboardData.Table.Column("Platz", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.CENTER),
+        ScoreboardData.Table.Column("Startnummer", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.CENTER),
+        ScoreboardData.Table.Column("Name", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.LEFT),
+        ScoreboardData.Table.Column("Verein", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.LEFT),
+    )
+
+    val resultColumnName = if (discipline.values.size == 1) discipline.values.first().name else "Runde"
+    repeat(discipline.amountOfBestRoundsToShow) { i ->
+        columns.add(ScoreboardData.Table.Column("$resultColumnName ${i + 1}", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.RIGHT))
+    }
+
+    return columns
+}
+
+private fun createParticipantRows(results: Map<Participant, List<Double>>, discipline: Discipline): MutableList<ScoreboardData.Table.Row> {
+    return results.mapNotNull { (participant, scores) ->
+        if (scores.isEmpty()) return@mapNotNull null
+
+        val values = mutableListOf(participant.startNumber.toString(), participant.name, participant.club?.name ?: "")
+        repeat(discipline.amountOfBestRoundsToShow) { i ->
+            values.add(scores.getOrNull(i)?.toString()?.replace('.', ',') ?: "")
         }
-        ),
+
+        ScoreboardData.Table.Row(id = participant.id, values = values)
+    }.toMutableList()
+}
+
+private fun Tournament.compareByResults(results: Map<Participant, List<Double>>, maxResults: Int): Comparator<ScoreboardData.Table.Row> {
+    return Comparator { first, second ->
+        val firstResults = results.getValue(participants.first { it.id == first.id })
+        val secondResults = results.getValue(participants.first { it.id == second.id })
+
+        for (i in 0 until maxResults) {
+            val firstScore = firstResults.getOrNull(i) ?: 0.0
+            val secondScore = secondResults.getOrNull(i) ?: 0.0
+            val compareResult = firstScore.compareTo(secondScore)
+            if (compareResult != 0) return@Comparator -compareResult
+        }
+        0
+    }
+}
+
+private fun Tournament.createGenderSeparatedTables(discipline: Discipline, rows: MutableList<ScoreboardData.Table.Row>, results: Map<Participant, List<Double>>, maxResults: Int): List<ScoreboardData.Table> = Participant.Gender.entries.mapNotNull { gender ->
+    val filteredRows = rows.filter { row -> participants.first { it.id == row.id }.gender == gender }.toMutableList()
+    if (filteredRows.isNotEmpty()) {
+        filteredRows.sortWith(compareByResults(results, maxResults))
+        val genderSuffix = when (gender) {
+            Participant.Gender.MALE -> " (m)"
+            Participant.Gender.FEMALE -> " (w)"
+        }
+        createTable(discipline.name + genderSuffix, createDisciplineColumns(discipline), filteredRows)
+    } else {
+        null
+    }
+}
+
+private fun createTable(name: String, columns: List<ScoreboardData.Table.Column>, rows: List<ScoreboardData.Table.Row>): ScoreboardData.Table = ScoreboardData.Table(
+    name = name,
+    columns = columns,
+    rows = rows.mapIndexed { index, row ->
+        ScoreboardData.Table.Row(id = row.id, values = listOf((index + 1).toString()) + row.values)
+    },
 )
 
-private fun Tournament.getTeamDisciplineTables(teamDiscipline: TeamDiscipline): ScoreboardData.Table {
+private fun createTeamDisciplineColumns(teamSize: Int): MutableList<ScoreboardData.Table.Column> {
     val columns = mutableListOf(
-        ScoreboardData.Table.Column(
-            name = "Startnummer",
-            width = ScoreboardData.Table.Column.Width.Fixed(250),
-            alignment = ScoreboardData.Table.Column.Alignment.LEFT,
-        ),
-        ScoreboardData.Table.Column(
-            name = "Name",
-            width = ScoreboardData.Table.Column.Width.Variable(1.0f),
-            alignment = ScoreboardData.Table.Column.Alignment.LEFT,
-        ),
+        ScoreboardData.Table.Column("Platz", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.CENTER),
+        ScoreboardData.Table.Column("Startnummer", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.CENTER),
+        ScoreboardData.Table.Column("Name", ScoreboardData.Table.Column.Width.Variable(1.0f), ScoreboardData.Table.Column.Alignment.LEFT),
     )
 
-    for (i in 1..teamSize) {
-        columns.add(
-            ScoreboardData.Table.Column(
-                name = "Schütze $i",
-                width = ScoreboardData.Table.Column.Width.Variable(1f),
-                alignment = ScoreboardData.Table.Column.Alignment.RIGHT,
-            ),
-        )
-        columns.add(
-            ScoreboardData.Table.Column(
-                name = "Punkte",
-                width = ScoreboardData.Table.Column.Width.Fixed(250),
-                alignment = ScoreboardData.Table.Column.Alignment.LEFT,
-            ),
-        )
+    repeat(teamSize) { i ->
+        columns.add(ScoreboardData.Table.Column("Schütze ${i + 1}", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.RIGHT))
+        columns.add(ScoreboardData.Table.Column("Punkte", ScoreboardData.Table.Column.Width.Fixed(250), ScoreboardData.Table.Column.Alignment.LEFT))
     }
 
-    columns.add(
-        ScoreboardData.Table.Column(
-            name = "Gesamt",
-            width = ScoreboardData.Table.Column.Width.Fixed(250),
-            alignment = ScoreboardData.Table.Column.Alignment.RIGHT,
-        ),
-    )
-
-    return ScoreboardData.Table(
-        name = teamDiscipline.name,
-        columns = columns,
-        rows = teams.filter { team -> team.participatingDisciplines.any { it.id == teamDiscipline.id } }.map { team ->
-            getTeamRow(team, teamDiscipline)
-        },
-    )
+    columns.add(ScoreboardData.Table.Column("Gesamt", ScoreboardData.Table.Column.Width.Fixed(250), ScoreboardData.Table.Column.Alignment.RIGHT))
+    return columns
 }
 
-private fun getTeamRow(team: Team, teamDiscipline: TeamDiscipline): ScoreboardData.Table.Row {
-    var total = 0.0
-    val values = mutableListOf(
-        team.startNumber.toString(),
-        team.name,
-    )
+private fun Tournament.calculateTeamResults(teamDiscipline: TeamDiscipline): Map<Team, Pair<Double, Map<Participant, Double>>> = teams.filter { it.participatingDisciplines.contains(teamDiscipline) }.associateWith { team ->
+    val memberScores = team.members.associateWith { member ->
+        teamDiscipline.basedOn
+            .mapNotNull { discipline -> ScoreCalculationUtils.getScoreForParticipant(member, discipline) }
+            .maxOrNull() ?: 0.0
+    }
+    memberScores.values.sum() to memberScores
+}
 
-    team.members.forEach { member ->
-        var points = 0.0
-        teamDiscipline.basedOn.forEach { discipline ->
-            val disciplinePoints = ScoreCalculationUtils.getScoreForParticipant(member, discipline)
-            if (disciplinePoints != null) {
-                if (points < disciplinePoints) {
-                    points = disciplinePoints
-                }
-            }
-        }
+private fun createTeamRow(rank: Int, result: Map.Entry<Team, Pair<Double, Map<Participant, Double>>>): ScoreboardData.Table.Row {
+    val (team, scoreData) = result
+    val (totalScore, memberScores) = scoreData
 
+    val values = mutableListOf(rank.toString(), team.startNumber.toString(), team.name)
+    memberScores.forEach { (member, score) ->
         values.add(member.name)
-        values.add(points.toString())
-        total += points
+        values.add(score.toString().replace(".", ","))
     }
+    values.add(totalScore.toString().replace(".", ","))
 
-    values.add(total.toString())
-
-    return ScoreboardData.Table.Row(
-        values = values,
-    )
-}
-
-private fun Tournament.getDisciplineTables(discipline: Discipline): List<ScoreboardData.Table> {
-    val columns = mutableListOf(
-        ScoreboardData.Table.Column(
-            name = "Startnummer",
-            width = ScoreboardData.Table.Column.Width.Fixed(250),
-            alignment = ScoreboardData.Table.Column.Alignment.LEFT,
-        ),
-        ScoreboardData.Table.Column(
-            name = "Name",
-            width = ScoreboardData.Table.Column.Width.Variable(1f),
-            alignment = ScoreboardData.Table.Column.Alignment.LEFT,
-        ),
-        ScoreboardData.Table.Column(
-            name = "Verein",
-            width = ScoreboardData.Table.Column.Width.Variable(1f),
-            alignment = ScoreboardData.Table.Column.Alignment.LEFT,
-        ),
-    )
-
-    for (i in 1..discipline.amountOfBestRoundsToShow) {
-        columns.add(
-            ScoreboardData.Table.Column(
-                name = "Runde $i",
-                width = ScoreboardData.Table.Column.Width.Fixed(150),
-                alignment = ScoreboardData.Table.Column.Alignment.RIGHT,
-            ),
-        )
-    }
-
-    return if (discipline.isGenderSeparated) {
-        listOf(
-            ScoreboardData.Table(
-                name = discipline.name + " (m)",
-                columns = columns,
-                rows = participants.filter { participant ->
-                    if (participant.gender != Participant.Gender.MALE) return@filter false
-                    val disciplineResult = participant.results[discipline.id.toHexString()]
-                    disciplineResult != null && disciplineResult.rounds.isNotEmpty()
-                }.map { getParticipantRow(it, discipline) },
-            ),
-            ScoreboardData.Table(
-                name = discipline.name + " (w)",
-                columns = columns,
-                rows = participants.filter { participant ->
-                    if (participant.gender != Participant.Gender.FEMALE) return@filter false
-                    val disciplineResult = participant.results[discipline.id.toHexString()]
-                    disciplineResult != null && disciplineResult.rounds.isNotEmpty()
-                }.map { getParticipantRow(it, discipline) },
-            ),
-        )
-    } else {
-        listOf(
-            ScoreboardData.Table(
-                name = discipline.name,
-                columns = columns,
-                rows = participants.filter { participant ->
-                    val disciplineResult = participant.results[discipline.id.toHexString()]
-                    disciplineResult != null && disciplineResult.rounds.isNotEmpty()
-                }.map { getParticipantRow(it, discipline) }.toImmutableList(),
-            ),
-        )
-    }
-}
-
-private fun getParticipantRow(participant: Participant, discipline: Discipline): ScoreboardData.Table.Row {
-    val allPoints = ScoreCalculationUtils.getScoreForParticipantAllRounds(participant, discipline)!!
-    allPoints.sortDescending()
-
-    val values = mutableListOf(
-        participant.startNumber.toString(),
-        participant.name,
-        participant.club!!.name,
-    )
-    val sortValues = mutableListOf<Double>()
-
-    for (i in 0 until discipline.amountOfBestRoundsToShow) {
-        val points = allPoints.getOrNull(i)
-        if (points != null) {
-            values.add(points.toString().replace('.', ','))
-            sortValues.add(points)
-        } else {
-            values.add("")
-            sortValues.add(0.0)
-        }
-    }
-
-    return ScoreboardData.Table.Row(
-        values = values,
-    )
+    return ScoreboardData.Table.Row(id = team.id, values = values)
 }
