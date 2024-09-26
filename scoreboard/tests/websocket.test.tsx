@@ -10,12 +10,14 @@ import { ScoreboardData, SetTournamentMessage } from "@/interfaces";
 function createDummyData() {
   const data: ScoreboardData = {
     name: "Scoreboard",
-    tables: [{
-      name: "Discipline",
-      columns: [],
-      rows: []
-    }]
-  }
+    tables: [
+      {
+        name: "Discipline",
+        columns: [],
+        rows: [],
+      },
+    ],
+  };
 
   for (let i = 0; i < 5; i++) {
     data.tables[0].columns.push({
@@ -52,7 +54,7 @@ describe("WebSocket", () => {
       data: data,
       type: "set_tournament",
     };
-    const table = data.tables[0]
+    const table = data.tables[0];
 
     act(() => {
       server.send(message);

@@ -24,7 +24,7 @@ describe("DisciplineTable", () => {
       columns: [
         {
           name: "",
-          width: {width: 250},
+          width: { width: 250 },
           alignment: "center",
         },
       ],

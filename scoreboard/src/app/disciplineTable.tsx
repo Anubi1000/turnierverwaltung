@@ -144,7 +144,11 @@ function Body({
       </StyledTableCell>
     ));
 
-    return <StyledTableRow key={`row-${rowIndex}`} data-testid={`row-${rowIndex}`}>{elements}</StyledTableRow>;
+    return (
+      <StyledTableRow key={`row-${rowIndex}`} data-testid={`row-${rowIndex}`}>
+        {elements}
+      </StyledTableRow>
+    );
   });
 
   return <TableBody>{rowElements}</TableBody>;
