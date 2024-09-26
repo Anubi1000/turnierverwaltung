@@ -203,10 +203,10 @@ private fun createTeamDisciplineColumns(teamSize: Int): MutableList<ScoreboardDa
 
     repeat(teamSize) { i ->
         columns.add(ScoreboardData.Table.Column("Schütze ${i + 1}", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.RIGHT))
-        columns.add(ScoreboardData.Table.Column("Punkte", ScoreboardData.Table.Column.Width.Fixed(250), ScoreboardData.Table.Column.Alignment.LEFT))
+        columns.add(ScoreboardData.Table.Column("Punkte", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.LEFT))
     }
 
-    columns.add(ScoreboardData.Table.Column("Gesamt", ScoreboardData.Table.Column.Width.Fixed(250), ScoreboardData.Table.Column.Alignment.RIGHT))
+    columns.add(ScoreboardData.Table.Column("Gesamt", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.RIGHT))
     return columns
 }
 
