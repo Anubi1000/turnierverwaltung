@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +32,9 @@ import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.data.ScoreboardData
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
+import de.anubi1000.turnierverwaltung.util.toWordDocument
 import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentScoreboardViewModel
+import java.io.FileOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,6 +92,18 @@ private fun LoadedContent(
         val table = state.data.tables.getOrNull(selectedIndex)
 
         if (table != null) {
+            Button(
+                onClick = {
+                    val doc = state.data.toWordDocument(selectedIndex)
+                    FileOutputStream("./table.docx").use { out ->
+                        doc.write(out)
+                    }
+                    doc.close()
+                },
+            ) {
+                Text("Save")
+            }
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
             ) {

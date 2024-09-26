@@ -14,6 +14,7 @@ import de.anubi1000.turnierverwaltung.util.ScoreCalculationUtils
 import io.realm.kotlin.types.annotations.Ignore
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment
 import org.mongodb.kbson.ObjectId
 
 @Serializable
@@ -68,6 +69,12 @@ data class ScoreboardData(
                     LEFT -> TextAlign.Left
                     CENTER -> TextAlign.Center
                     RIGHT -> TextAlign.Right
+                }
+
+                fun toParagraphAlignment() = when (this) {
+                    LEFT -> ParagraphAlignment.LEFT
+                    CENTER -> ParagraphAlignment.CENTER
+                    RIGHT -> ParagraphAlignment.RIGHT
                 }
             }
         }
