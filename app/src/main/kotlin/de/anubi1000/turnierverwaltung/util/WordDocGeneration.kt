@@ -1,6 +1,7 @@
 package de.anubi1000.turnierverwaltung.util
 
 import de.anubi1000.turnierverwaltung.data.ScoreboardData
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment
 import org.apache.poi.xwpf.usermodel.TableWidthType
 import org.apache.poi.xwpf.usermodel.XWPFDocument
 import org.apache.poi.xwpf.usermodel.XWPFStyle
@@ -21,6 +22,8 @@ private const val SCALING_FACTOR = 7.0f
 private const val TABLE_HEADING_STYLE = "tournamentTableHeading"
 private const val TABLE_CONTENT_STYLE = "tournamentTableContent"
 
+private const val MAIN_COLOR = "1b5e20"
+
 fun ScoreboardData.toWordDocument(tableIndex: Int): XWPFDocument {
     val table = tables[tableIndex]
 
@@ -31,16 +34,67 @@ fun ScoreboardData.toWordDocument(tableIndex: Int): XWPFDocument {
         addTableHeadingStyle()
         addTableContentStyle()
 
-        val columnWidths = getColumnWidths(table.columns)
+        addHeadings(
+            tournamentName = name,
+            table = table,
+        )
 
         table {
             removeRow(0)
             width = TABLE_WIDTH
             widthType = TableWidthType.DXA
 
+            val columnWidths = getColumnWidths(table.columns)
             createHeaderRow(columnWidths, table.columns)
-
             createContentRows(table, columnWidths)
+        }
+    }
+}
+
+private fun XWPFDocument.addHeadings(
+    tournamentName: String,
+    table: ScoreboardData.Table,
+) {
+    createParagraph().apply {
+        alignment = ParagraphAlignment.CENTER
+
+        createRun().apply {
+            setText(tournamentName)
+            fontSize = 26
+            color = MAIN_COLOR
+
+            ctr.rPr.apply {
+                addNewRFonts().ascii = "Aptos"
+                addNewB()
+            }
+
+            addBreak()
+        }
+
+        createRun().apply {
+            setText("VfS Maulbronn - Diefenbach e.V.")
+            fontSize = 20
+            color = MAIN_COLOR
+
+            ctr.rPr.apply {
+                addNewRFonts().ascii = "Aptos"
+                addNewB()
+            }
+        }
+    }
+
+    xwpfDocument.createParagraph().apply {
+        alignment = ParagraphAlignment.CENTER
+
+        createRun().apply {
+            setText(table.name)
+            fontSize = 16
+            color = MAIN_COLOR
+
+            ctr.rPr.apply {
+                addNewRFonts().ascii = "Aptos"
+                addNewB()
+            }
         }
     }
 }
@@ -133,7 +187,7 @@ private fun XWPFTable.createHeaderRow(columnWidths: List<Int>, columns: List<Sco
         val cell = headerRow.createCell().apply {
             setWidth(columnWidths[index].toString())
             verticalAlignment = XWPFTableCell.XWPFVertAlign.CENTER
-            color = "1b5e20"
+            color = MAIN_COLOR
 
             setCellMargins(
                 80,
