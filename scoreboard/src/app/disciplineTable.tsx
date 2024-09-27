@@ -38,8 +38,17 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
-  "&:nth-of-type(even)": {
+  "&:nth-of-type(odd)": {
     backgroundColor: "var(--mui-palette-LinearProgress-primaryBg)",
+  },
+  "&:nth-child(1)": {
+    backgroundColor: "#FFD700",
+  },
+  "&:nth-child(2)": {
+    backgroundColor: "#c0c0c0",
+  },
+  "&:nth-child(3)": {
+    backgroundColor: "#bf8970",
   },
 }));
 

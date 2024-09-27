@@ -1,6 +1,7 @@
 package de.anubi1000.turnierverwaltung.ui.tournament
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -92,6 +93,14 @@ private fun LoadedContent(
             val table = state.data.tables[selectedIndex]
 
             ScoreboardContent(table)
+        }
+    } else {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            val strings = LocalStrings.current
+            Text(text = strings.xDontExist(strings.disciplines))
         }
     }
 }

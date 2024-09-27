@@ -196,13 +196,7 @@ private fun XWPFTable.createHeaderRow(columnWidths: List<Int>, columns: List<Sco
                 60,
             )
 
-            val borders = ctTc.tcPr.addNewTcBorders()
-
-            borders.addNewBottom().`val` = STBorder.NIL
-            borders.addNewTop().`val` = STBorder.SINGLE
-
-            borders.addNewLeft().`val` = if (index == 0) STBorder.SINGLE else STBorder.NIL
-            borders.addNewRight().`val` = if (index == columnWidths.size - 1) STBorder.SINGLE else STBorder.NIL
+            setBorders(index, columnWidths.size - 1)
         }
 
         val paragraph = cell.paragraphs[0].apply {
@@ -227,7 +221,13 @@ private fun XWPFTable.createContentRows(
             val cell = wordRow.getCell(index).apply {
                 setWidth(columnWidths[index].toString())
                 verticalAlignment = XWPFTableCell.XWPFVertAlign.CENTER
-                if (rowIndex % 2 == 1) color = "b9dabb"
+                color = when {
+                    rowIndex == 0 -> "FFD700"
+                    rowIndex == 1 -> "c0c0c0"
+                    rowIndex == 2 -> "bf8970"
+                    rowIndex % 2 == 0 -> "b9dabb"
+                    else -> "ffffff"
+                }
 
                 setCellMargins(
                     60,
@@ -236,13 +236,7 @@ private fun XWPFTable.createContentRows(
                     60,
                 )
 
-                val borders = ctTc.tcPr.addNewTcBorders()
-
-                borders.addNewTop().`val` = STBorder.NIL
-
-                borders.addNewBottom().`val` = if (rowIndex == table.rows.size - 1) STBorder.SINGLE else STBorder.NIL
-                borders.addNewLeft().`val` = if (index == 0) STBorder.SINGLE else STBorder.NIL
-                borders.addNewRight().`val` = if (index == columnWidths.size - 1) STBorder.SINGLE else STBorder.NIL
+                setBorders(index, columnWidths.size - 1)
             }
 
             val paragraph = cell.paragraphs[0].apply {
@@ -253,6 +247,39 @@ private fun XWPFTable.createContentRows(
             paragraph.createRun().apply {
                 setText(value)
             }
+        }
+    }
+}
+
+private fun XWPFTableCell.setBorders(
+    index: Int,
+    lastIndex: Int,
+) {
+    val borders = ctTc.tcPr.addNewTcBorders()
+
+    borders.addNewTop().apply {
+        `val` = STBorder.SINGLE
+        sz = BigInteger.valueOf(12)
+    }
+    borders.addNewBottom().apply {
+        `val` = STBorder.SINGLE
+        sz = BigInteger.valueOf(12)
+    }
+
+    borders.addNewLeft().apply {
+        if (index == 0) {
+            `val` = STBorder.SINGLE
+            sz = BigInteger.valueOf(12)
+        } else {
+            `val` = STBorder.NIL
+        }
+    }
+    borders.addNewRight().apply {
+        if (index == lastIndex) {
+            `val` = STBorder.SINGLE
+            sz = BigInteger.valueOf(12)
+        } else {
+            `val` = STBorder.NIL
         }
     }
 }
