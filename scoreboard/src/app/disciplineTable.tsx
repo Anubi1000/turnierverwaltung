@@ -22,7 +22,7 @@ import { useAutoscroll } from "@/app/useAutoscroll";
 
 const StyledLinearProgress = styled(LinearProgress)({
   [`& > .${linearProgressClasses.bar}`]: {
-    transition: "none",
+    transition: "transform 0.05s linear",
   },
 });
 
@@ -66,7 +66,7 @@ export function DisciplineTable({
   if (columns.length == 0) {
     return (
       <>
-        <StyledLinearProgress value={progress * 100} variant="determinate" />
+        <StyledLinearProgress value={100} variant="determinate" />
         <div ref={containerRef} />
         <CenteredText text="Keine Spaltendefinition vorhanden" />
       </>
@@ -76,7 +76,7 @@ export function DisciplineTable({
   if (rows.length == 0) {
     return (
       <>
-        <StyledLinearProgress value={progress * 100} variant="determinate" />
+        <StyledLinearProgress value={100} variant="determinate" />
         <div ref={containerRef} />
         <CenteredText text="Keine Einträge vorhanden" />
       </>

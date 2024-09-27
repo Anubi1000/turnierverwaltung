@@ -13,7 +13,7 @@ export function useAutoscroll({
   onFinish: () => void;
   waitTime: number;
 }) {
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(1);
   const scrollCount = useRef(0);
   const currentTimeout = useRef(-1);
 
@@ -65,6 +65,7 @@ export function useAutoscroll({
       }
     }
 
+    setProgress(0);
     setTimeout(() => {
       shouldScroll = true;
     }, waitTime);
