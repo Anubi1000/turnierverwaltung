@@ -45,7 +45,7 @@ dependencies {
 
     implementation(libs.log4j.core)
     implementation(libs.log4j.kotlin)
-    implementation(libs.log4j.slf4j)
+    implementation(libs.log4j.slf4j2)
 
     implementation(libs.poi.ooxml)
     implementation(libs.filekit)
@@ -83,7 +83,7 @@ ksp {
 compose.desktop {
     application {
         mainClass = "de.anubi1000.turnierverwaltung.MainKt"
-        jvmArgs("-Dlog4j.skipJansi=false", "-DlogLevel=info")
+        jvmArgs("-Dlog4j.skipJansi=false", "-DlogLevel=trace")
 
         nativeDistributions {
             targetFormats(TargetFormat.Msi)
