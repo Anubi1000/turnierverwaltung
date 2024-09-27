@@ -1,13 +1,12 @@
 import { describe, expect, it } from "@jest/globals";
 import { render, screen } from "@testing-library/react";
 import { DisciplineTable } from "@/app/disciplineTable";
-import { TournamentTable } from "@/app/interfaces";
+import { ScoreboardData_Table } from "@/interfaces";
 
 describe("DisciplineTable", () => {
   it("check if no column definition text is displayed", () => {
-    const table: TournamentTable = {
+    const table: ScoreboardData_Table = {
       columns: [],
-      id: "",
       name: "",
       rows: [],
     };
@@ -21,15 +20,14 @@ describe("DisciplineTable", () => {
   });
 
   it("check if no rows text is displayed", () => {
-    const table: TournamentTable = {
+    const table: ScoreboardData_Table = {
       columns: [
         {
           name: "",
-          width: "",
+          width: { width: 250 },
           alignment: "center",
         },
       ],
-      id: "",
       name: "",
       rows: [],
     };

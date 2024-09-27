@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.anubi1000.turnierverwaltung.data.EditDiscipline
+import de.anubi1000.turnierverwaltung.data.edit.EditDiscipline
+import de.anubi1000.turnierverwaltung.data.edit.toEditDiscipline
 import de.anubi1000.turnierverwaltung.data.repository.DisciplineRepository
-import de.anubi1000.turnierverwaltung.data.toEditDiscipline
 import de.anubi1000.turnierverwaltung.data.validation.validateAmountOfBestRoundsToShow
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel

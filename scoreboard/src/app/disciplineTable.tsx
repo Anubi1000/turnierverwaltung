@@ -1,8 +1,14 @@
-import * as React from "react";
-import { useEffect, useRef, useState } from "react";
-import { TournamentTable } from "@/app/interfaces";
+import { CSSProperties, useRef } from "react";
+import { CenteredText } from "@/app/centeredText";
 import {
-  Stack,
+  checkIfColIsFixed,
+  ScoreboardData_Table,
+  ScoreboardData_Table_Column,
+  ScoreboardData_Table_Row,
+} from "@/interfaces";
+import {
+  LinearProgress,
+  linearProgressClasses,
   styled,
   Table,
   TableBody,
@@ -11,13 +17,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
-import LinearProgress from "@mui/material/LinearProgress";
+import { useAutoscroll } from "@/app/useAutoscroll";
+
+const StyledLinearProgress = styled(LinearProgress)({
+  [`& > .${linearProgressClasses.bar}`]: {
+    transition: "transform 0.05s linear",
+  },
+});
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.primary.main, // header in green
+    backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.root}`]: {
@@ -28,204 +39,126 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#bbe0bb",
+    backgroundColor: "var(--mui-palette-LinearProgress-primaryBg)",
   },
-  "&:nth-of-type(1)": {
-    backgroundColor: "#ffd700", // gold
+  "&:nth-child(1)": {
+    backgroundColor: "#FFD700",
   },
-  "&:nth-of-type(2)": {
-    backgroundColor: "#d0d0d0", // silver
+  "&:nth-child(2)": {
+    backgroundColor: "#c0c0c0",
   },
-  "&:nth-of-type(3)": {
-    backgroundColor: "#bf8970", // bronze
+  "&:nth-child(3)": {
+    backgroundColor: "#bf8970",
   },
 }));
 
-const StyledLinearProgress = styled(LinearProgress)(() => ({
-  // Disable the transition animation from 100 to 0 inside the progress bar
-  '&[aria-valuenow="0"]': {
-    "& > $progressBarInner": {
-      transition: "none",
-    },
-  },
-}));
 export function DisciplineTable({
-  moveNext,
   table,
+  moveNext,
 }: {
+  table: ScoreboardData_Table;
   moveNext: () => void;
-  table: TournamentTable;
 }) {
-  const tableRef = useRef<null | HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const [progress, setProgress] = useState(0);
-  const [useProgress, setUseProgress] = useState(true);
+  const { progress } = useAutoscroll({
+    containerRef: containerRef,
+    msPerPixel: 40,
+    waitTime: 5000,
+    numOfScrolls: 4,
+    onFinish: moveNext,
+  });
 
   const rows = table.rows;
   const columns = table.columns;
 
-  const maxScrolls = 2;
-  const waitAtTopAndBottom = 5000;
-  const scrollTimer = 25;
-  const pixelsBeforeUpdate = 10;
-
-  useEffect(() => {
-    let scrollToBottom = true;
-    let isScrolling = true;
-    let scrollCount = 0;
-    let pixelsScrolled = 0;
-    let pixelsScrolledSinceLastUpdate = 0;
-
-    const interval = setInterval(async () => {
-      if (!isScrolling) return;
-
-      const tableContainer = tableRef.current as unknown as HTMLDivElement;
-
-      if (tableContainer) {
-        // ensure ref object exists
-
-        const totalScrollDist =
-          (tableContainer.scrollHeight - tableContainer.offsetHeight) *
-          maxScrolls;
-
-        const needsToScroll =
-          tableContainer.offsetHeight < tableContainer.scrollHeight;
-        if (needsToScroll) {
-          setUseProgress(true);
-        } else {
-          setUseProgress(false);
-          setProgress(100);
-        }
-        if (scrollToBottom) {
-          tableContainer.scrollTop += 1; // one pixel down
-        } else {
-          tableContainer.scrollTop -= 1; // one pixel up
-        }
-
-        if (useProgress) {
-          pixelsScrolled++;
-          pixelsScrolledSinceLastUpdate++;
-          if (pixelsScrolledSinceLastUpdate >= pixelsBeforeUpdate) {
-            pixelsScrolledSinceLastUpdate = 0;
-            setProgress(Math.ceil((100 / totalScrollDist) * pixelsScrolled));
-          }
-        }
-
-        if (tableContainer.scrollTop == 0 && !scrollToBottom) {
-          // at top of table
-          isScrolling = false;
-          setTimeout(() => {
-            scrollToBottom = true;
-            isScrolling = true;
-            scrollCount++;
-            if (useProgress) {
-              setProgress(Math.ceil((100 / totalScrollDist) * pixelsScrolled));
-            }
-          }, waitAtTopAndBottom); // wait five seconds then scroll down
-        } else if (
-          tableContainer.scrollTop + tableContainer.clientHeight ==
-            tableContainer.scrollHeight &&
-          scrollToBottom // reached bottom
-        ) {
-          isScrolling = false;
-          setTimeout(() => {
-            scrollToBottom = false;
-            isScrolling = true;
-            scrollCount++;
-            if (useProgress) {
-              setProgress(Math.ceil((100 / totalScrollDist) * pixelsScrolled));
-            }
-          }, waitAtTopAndBottom); // wait five seconds then scroll up
-        }
-        if (scrollCount >= maxScrolls) {
-          scrollCount = 0;
-          if (useProgress) {
-            setProgress(0);
-            pixelsScrolled = 0;
-          }
-          moveNext();
-        }
-      }
-    }, scrollTimer);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [tableRef, table, useProgress, moveNext]);
-
   if (columns.length == 0) {
     return (
-      <TableContainer ref={tableRef} sx={{ height: 1 }}>
-        <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-          <Typography variant="h4" align="center">
-            Keine Spaltendefinition vorhanden
-          </Typography>
-        </Stack>
-      </TableContainer>
+      <>
+        <StyledLinearProgress value={100} variant="determinate" />
+        <div ref={containerRef} />
+        <CenteredText text="Keine Spaltendefinition vorhanden" />
+      </>
     );
   }
 
   if (rows.length == 0) {
     return (
-      <TableContainer ref={tableRef} sx={{ height: 1 }}>
-        <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-          <Typography variant="h4" align="center">
-            Keine Einträge vorhanden
-          </Typography>
-        </Stack>
-      </TableContainer>
+      <>
+        <StyledLinearProgress value={100} variant="determinate" />
+        <div ref={containerRef} />
+        <CenteredText text="Keine Einträge vorhanden" />
+      </>
     );
   }
 
   return (
     <>
-      <StyledLinearProgress
-        variant="determinate"
-        value={progress}
-        style={{ zIndex: 1 }}
-      />
-      <TableContainer ref={tableRef} style={{ overflowY: "hidden" }}>
+      <StyledLinearProgress value={progress * 100} variant="determinate" />
+      <TableContainer ref={containerRef} style={{ overflowY: "hidden" }}>
         <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell
-                key={-1}
-                style={{ width: "60px" }}
-                align={"center"}
-              >
-                Platz
-              </StyledTableCell>
-              {columns.map((column, index) => (
-                <StyledTableCell
-                  key={`col-${index}`}
-                  style={{ width: column.width }}
-                  align={column.alignment}
-                  data-testid={`col-${index}`}
-                >
-                  {column.name}
-                </StyledTableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, rowIndex) => (
-              <StyledTableRow key={row.id} data-testid={`row-${row.id}`}>
-                <StyledTableCell key={`place-${rowIndex + 1}`} align={"center"}>
-                  <b>{rowIndex + 1}</b>
-                </StyledTableCell>
-                {row.values.map((entry, index) => (
-                  <StyledTableCell
-                    key={`cell-${row.id}-${index}`}
-                    align={columns[index].alignment}
-                    data-testid={`cell-${row.id}-${index}`}
-                  >
-                    {entry}
-                  </StyledTableCell>
-                ))}
-              </StyledTableRow>
-            ))}
-          </TableBody>
+          <Header columns={columns} />
+          <Body rows={rows} columns={columns} />
         </Table>
       </TableContainer>
     </>
   );
+}
+
+function getColumnStyle(
+  width: { width: number } | { weight: number },
+): CSSProperties {
+  if (checkIfColIsFixed(width)) {
+    return { width: width.width };
+  } else {
+    return { flexGrow: width.weight };
+  }
+}
+
+function Header({ columns }: { columns: ScoreboardData_Table_Column[] }) {
+  const elements = columns.map((col, index) => (
+    <StyledTableCell
+      key={`col-${index}`}
+      align={col.alignment}
+      style={getColumnStyle(col.width)}
+      data-testid={`col-${index}`}
+    >
+      {col.name}
+    </StyledTableCell>
+  ));
+
+  return (
+    <TableHead>
+      <TableRow>{elements}</TableRow>
+    </TableHead>
+  );
+}
+
+function Body({
+  rows,
+  columns,
+}: {
+  rows: ScoreboardData_Table_Row[];
+  columns: ScoreboardData_Table_Column[];
+}) {
+  const rowElements = rows.map((row, rowIndex) => {
+    const elements = row.values.map((value, index) => (
+      <StyledTableCell
+        key={`cell-${rowIndex}-${index}`}
+        align={columns[index].alignment}
+        style={getColumnStyle(columns[index].width)}
+        data-testid={`cell-${rowIndex}-${index}`}
+      >
+        {value}
+      </StyledTableCell>
+    ));
+
+    return (
+      <StyledTableRow key={`row-${rowIndex}`} data-testid={`row-${rowIndex}`}>
+        {elements}
+      </StyledTableRow>
+    );
+  });
+
+  return <TableBody>{rowElements}</TableBody>;
 }

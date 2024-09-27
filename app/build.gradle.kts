@@ -47,6 +47,9 @@ dependencies {
     implementation(libs.log4j.kotlin)
     implementation(libs.log4j.slf4j)
 
+    implementation(libs.poi.ooxml)
+    implementation(libs.filekit)
+
     implementation(libs.lyricist)
     ksp(libs.lyricist.processor)
 

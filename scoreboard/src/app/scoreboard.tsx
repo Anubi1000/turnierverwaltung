@@ -1,26 +1,21 @@
-import { Tournament } from "@/app/interfaces";
+import { ScoreboardData } from "@/interfaces";
 import { AppBar, Stack, Toolbar, Typography } from "@mui/material";
 import { Clock } from "@/app/clock";
 import { DisciplineCarousel } from "@/app/disciplineCarousel";
-import React from "react";
 import Image from "next/image";
+import { CenteredText } from "@/app/centeredText";
 
 const imageSize = 80;
 
-export function Scoreboard({ tournament }: { tournament?: Tournament }) {
+export function Scoreboard({ tournament }: { tournament?: ScoreboardData }) {
   let content;
 
   if (!tournament) {
-    content = (
-      <Stack direction="column" justifyContent="center" sx={{ height: 1 }}>
-        <Typography variant="h4" align="center">
-          Kein Turnier ausgewählt
-        </Typography>
-      </Stack>
-    );
+    content = <CenteredText text="Kein Turnier ausgewählt" />;
   } else {
     content = <DisciplineCarousel tables={tournament.tables} />;
   }
+
   return (
     <Stack direction="column" height="100vh">
       <AppBar position="static" elevation={0}>
@@ -33,7 +28,7 @@ export function Scoreboard({ tournament }: { tournament?: Tournament }) {
               height={imageSize}
             />
             <Typography id="TournamentTitle" variant="h5" marginLeft={4}>
-              {tournament ? tournament.title : ""}
+              {tournament ? tournament.name : ""}
             </Typography>
 
             <Typography id="Clock" variant="h5" marginLeft="auto">
@@ -42,6 +37,7 @@ export function Scoreboard({ tournament }: { tournament?: Tournament }) {
           </Stack>
         </Toolbar>
       </AppBar>
+
       {content}
     </Stack>
   );

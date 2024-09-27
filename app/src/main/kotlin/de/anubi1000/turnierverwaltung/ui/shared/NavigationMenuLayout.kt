@@ -34,6 +34,7 @@ import de.anubi1000.turnierverwaltung.navigation.participant.ParticipantListDest
 import de.anubi1000.turnierverwaltung.navigation.team.TeamListDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentListDestination
+import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentScoreboardDestination
 import de.anubi1000.turnierverwaltung.ui.club.ClubList
 import de.anubi1000.turnierverwaltung.ui.discipline.DisciplineList
 import de.anubi1000.turnierverwaltung.ui.participant.ParticipantList
@@ -71,7 +72,7 @@ fun NavigationMenuLayout(
                         navController = navController,
                         currentDestination = destination,
                     )
-                    NavigationMenuOption.PARTICIPANTS, NavigationMenuOption.TEAMS, NavigationMenuOption.CLUBS, NavigationMenuOption.DISCIPLINES -> TournamentNavigationMenu(
+                    NavigationMenuOption.TOURNAMENT_OVERVIEW, NavigationMenuOption.PARTICIPANTS, NavigationMenuOption.TEAMS, NavigationMenuOption.CLUBS, NavigationMenuOption.DISCIPLINES -> TournamentNavigationMenu(
                         navController = navController,
                         currentDestination = destination,
                     )
@@ -115,9 +116,9 @@ private fun TournamentListLayout(
 private fun ParticipantListLayout(
     navController: NavController,
     viewModel: ParticipantListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<TournamentDetailDestination>(),
+        viewModelStoreOwner = navController.getBackStackEntry<TournamentScoreboardDestination>(),
     ) {
-        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
+        parametersOf(navController.getDestination<TournamentScoreboardDestination>().id.toObjectId())
     },
 ) {
     LaunchedEffect(viewModel) {
@@ -135,9 +136,9 @@ private fun ParticipantListLayout(
 private fun TeamListLayout(
     navController: NavController,
     viewModel: TeamListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>(),
+        viewModelStoreOwner = navController.getBackStackEntry<TournamentScoreboardDestination>(),
     ) {
-        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
+        parametersOf(navController.getDestination<TournamentScoreboardDestination>().id.toObjectId())
     },
 ) {
     LaunchedEffect(viewModel) {
@@ -155,9 +156,9 @@ private fun TeamListLayout(
 private fun ClubListLayout(
     navController: NavController,
     viewModel: ClubListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>(),
+        viewModelStoreOwner = navController.getBackStackEntry<TournamentScoreboardDestination>(),
     ) {
-        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
+        parametersOf(navController.getDestination<TournamentScoreboardDestination>().id.toObjectId())
     },
 ) {
     LaunchedEffect(viewModel) {
@@ -175,9 +176,9 @@ private fun ClubListLayout(
 private fun DisciplineListLayout(
     navController: NavController,
     viewModel: DisciplineListViewModel = koinViewModel(
-        viewModelStoreOwner = navController.getBackStackEntry<ParticipantListDestination>(),
+        viewModelStoreOwner = navController.getBackStackEntry<TournamentScoreboardDestination>(),
     ) {
-        parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())
+        parametersOf(navController.getDestination<TournamentScoreboardDestination>().id.toObjectId())
     },
 ) {
     LaunchedEffect(viewModel) {
@@ -241,10 +242,21 @@ private fun TournamentNavigationMenu(
         }
 
         NavigationRailItem(
+            selected = currentMenuOption == NavigationMenuOption.TOURNAMENT_OVERVIEW,
+            onClick = {
+                if (currentMenuOption != NavigationMenuOption.TOURNAMENT_OVERVIEW) {
+                    navController.popBackStack<TournamentScoreboardDestination>(false)
+                }
+            },
+            label = { Text(LocalStrings.current.overview) },
+            icon = { Icon(Icons.Default.Dashboard) },
+        )
+
+        NavigationRailItem(
             selected = currentMenuOption == NavigationMenuOption.PARTICIPANTS,
             onClick = {
                 if (currentMenuOption != NavigationMenuOption.PARTICIPANTS) {
-                    navController.popBackStack<ParticipantListDestination>(false)
+                    navController.navigate(ParticipantListDestination)
                 }
             },
             label = { Text(LocalStrings.current.participants) },
