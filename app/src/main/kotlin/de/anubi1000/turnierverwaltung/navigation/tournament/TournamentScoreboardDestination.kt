@@ -34,5 +34,8 @@ fun NavGraphBuilder.tournamentScoreboardDestination(navController: NavController
     TournamentScoreboardScreen(
         navController = navController,
         state = viewModel.state,
+        onSaveButtonClick = {
+            viewModel.saveTable(it)
+        },
     )
 }

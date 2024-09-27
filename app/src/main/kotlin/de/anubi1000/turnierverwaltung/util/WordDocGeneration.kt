@@ -144,8 +144,11 @@ private fun XWPFTable.createHeaderRow(columnWidths: List<Int>, columns: List<Sco
 
             val borders = ctTc.tcPr.addNewTcBorders()
 
-            if (index != 0) borders.addNewLeft().`val` = STBorder.NIL
-            if (index != columnWidths.size - 1) borders.addNewRight().`val` = STBorder.NIL
+            borders.addNewBottom().`val` = STBorder.NIL
+            borders.addNewTop().`val` = STBorder.SINGLE
+
+            borders.addNewLeft().`val` = if (index == 0) STBorder.SINGLE else STBorder.NIL
+            borders.addNewRight().`val` = if (index == columnWidths.size - 1) STBorder.SINGLE else STBorder.NIL
         }
 
         val paragraph = cell.paragraphs[0].apply {
@@ -178,6 +181,14 @@ private fun XWPFTable.createContentRows(
                     40,
                     60,
                 )
+
+                val borders = ctTc.tcPr.addNewTcBorders()
+
+                borders.addNewTop().`val` = STBorder.NIL
+
+                borders.addNewBottom().`val` = if (rowIndex == table.rows.size - 1) STBorder.SINGLE else STBorder.NIL
+                borders.addNewLeft().`val` = if (index == 0) STBorder.SINGLE else STBorder.NIL
+                borders.addNewRight().`val` = if (index == columnWidths.size - 1) STBorder.SINGLE else STBorder.NIL
             }
 
             val paragraph = cell.paragraphs[0].apply {

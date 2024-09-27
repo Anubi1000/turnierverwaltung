@@ -137,8 +137,8 @@ fun Tournament.toScoreboardData(): ScoreboardData {
 
 private fun createDisciplineColumns(discipline: Discipline): List<ScoreboardData.Table.Column> {
     val columns = mutableListOf(
-        ScoreboardData.Table.Column("Platz", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.CENTER),
-        ScoreboardData.Table.Column("Startnummer", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.CENTER),
+        ScoreboardData.Table.Column("Platz", ScoreboardData.Table.Column.Width.Fixed(125), ScoreboardData.Table.Column.Alignment.CENTER),
+        ScoreboardData.Table.Column("Startnummer", ScoreboardData.Table.Column.Width.Fixed(225), ScoreboardData.Table.Column.Alignment.CENTER),
         ScoreboardData.Table.Column("Name", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.LEFT),
         ScoreboardData.Table.Column("Verein", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.LEFT),
     )
