@@ -16,5 +16,6 @@
                 "fwcd.kotlin"
             ]
         }
-    }
+    },
+    "updateContentCommand": "cd app && chmod +x ./gradlew && ./gradlew dependencies --no-daemon"
 }
