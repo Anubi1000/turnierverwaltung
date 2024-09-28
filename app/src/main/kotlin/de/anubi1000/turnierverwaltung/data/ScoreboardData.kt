@@ -143,9 +143,8 @@ private fun createDisciplineColumns(discipline: Discipline): List<ScoreboardData
         ScoreboardData.Table.Column("Verein", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.LEFT),
     )
 
-    val resultColumnName = if (discipline.values.size == 1) discipline.values.first().name else "Runde"
     repeat(discipline.amountOfBestRoundsToShow) { i ->
-        columns.add(ScoreboardData.Table.Column("$resultColumnName ${i + 1}", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.RIGHT))
+        columns.add(ScoreboardData.Table.Column("Runde ${i + 1}", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.RIGHT))
     }
 
     return columns
