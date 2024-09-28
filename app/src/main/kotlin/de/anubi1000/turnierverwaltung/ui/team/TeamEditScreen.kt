@@ -66,7 +66,7 @@ private fun LoadedContent(
             title = strings.members,
             selectedItems = state.item.members,
             allItems = state.participants,
-            itemName = { it.name },
+            itemName = { "${it.startNumber} ${it.name}" },
         )
 
         SelectCard(

@@ -129,6 +129,8 @@ fun Tournament.toScoreboardData(): ScoreboardData {
         )
     }
 
+    tables.sortBy { it.name }
+
     return ScoreboardData(
         name = this.name,
         tables = tables,

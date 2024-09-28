@@ -111,7 +111,7 @@ private fun LoadedContent(
             title = LocalStrings.current.disciplines,
         ) {
             val disciplines = remember(state.item) {
-                state.item.tournament.first().disciplines
+                state.item.tournament.first().disciplines.sortedBy { it.name }
             }
 
             if (disciplines.isEmpty()) {
