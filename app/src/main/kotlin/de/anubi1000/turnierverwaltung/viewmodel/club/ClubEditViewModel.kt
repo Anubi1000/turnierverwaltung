@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import de.anubi1000.turnierverwaltung.data.edit.EditClub
 import de.anubi1000.turnierverwaltung.data.edit.toEditClub
 import de.anubi1000.turnierverwaltung.data.repository.ClubRepository
+import de.anubi1000.turnierverwaltung.data.validation.validateName
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
@@ -61,7 +62,7 @@ class ClubEditViewModel(
     }
 
     private fun getValidationState(club: EditClub): ComposeState<Boolean> = derivedStateOf {
-        club.name.isNotBlank()
+        validateName(club.name) != null
     }
 
     sealed interface State {

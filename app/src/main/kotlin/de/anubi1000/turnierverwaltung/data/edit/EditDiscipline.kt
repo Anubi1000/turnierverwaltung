@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import de.anubi1000.turnierverwaltung.data.validation.validateAmountOfBestRoundsToShow
+import de.anubi1000.turnierverwaltung.data.validation.validateName
 import de.anubi1000.turnierverwaltung.database.model.Discipline
 import io.realm.kotlin.ext.toRealmList
 import org.mongodb.kbson.ObjectId
@@ -32,12 +33,12 @@ class EditDiscipline(
 
     fun toDiscipline() = Discipline(
         id = id,
-        name = name,
+        name = validateName(name)!!,
         isGenderSeparated = isGenderSeparated,
         values = values.map { value ->
             Discipline.Value().also {
                 it.id = value.id
-                it.name = value.name
+                it.name = validateName(value.name)!!
                 it.isAdded = value.isAdded
             }
         }.toRealmList(),

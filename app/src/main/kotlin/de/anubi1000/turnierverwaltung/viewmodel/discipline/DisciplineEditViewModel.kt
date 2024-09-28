@@ -10,6 +10,7 @@ import de.anubi1000.turnierverwaltung.data.edit.EditDiscipline
 import de.anubi1000.turnierverwaltung.data.edit.toEditDiscipline
 import de.anubi1000.turnierverwaltung.data.repository.DisciplineRepository
 import de.anubi1000.turnierverwaltung.data.validation.validateAmountOfBestRoundsToShow
+import de.anubi1000.turnierverwaltung.data.validation.validateName
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
@@ -62,9 +63,9 @@ class DisciplineEditViewModel(
     }
 
     private fun getValidationState(discipline: EditDiscipline): ComposeState<Boolean> = derivedStateOf {
-        discipline.name.isNotBlank() &&
+        validateName(discipline.name) != null &&
             discipline.values.isNotEmpty() &&
-            discipline.values.all { it.name.isNotBlank() } &&
+            discipline.values.all { validateName(it.name) != null } &&
             validateAmountOfBestRoundsToShow(discipline.amountOfBestRoundsToShow) != null
     }
 

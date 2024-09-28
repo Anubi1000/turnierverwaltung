@@ -2,7 +2,6 @@ package de.anubi1000.turnierverwaltung.ui.participant
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
@@ -84,18 +83,15 @@ private fun LoadedContent(
             }
 
             DropdownMenu(
-                value = remember(state.item.clubId) {
-                    val club = state.clubs.find { it.id == state.item.clubId }
-                    club?.name ?: ""
-                },
+                value = state.item.club?.name ?: "",
                 label = strings.club,
             ) {
                 state.clubs.forEach { club ->
                     DropdownMenuItem(
                         text = club.name,
-                        selected = state.item.clubId == club.id,
+                        selected = state.item.club == club,
                         onClick = {
-                            state.item.clubId = club.id
+                            state.item.club = club
                         },
                     )
                 }

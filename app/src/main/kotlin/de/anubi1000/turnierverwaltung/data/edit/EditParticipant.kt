@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import de.anubi1000.turnierverwaltung.database.model.Club
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import org.mongodb.kbson.ObjectId
 
@@ -13,12 +14,12 @@ class EditParticipant(
     name: String = "",
     startNumber: String = "0",
     gender: Participant.Gender = Participant.Gender.MALE,
-    clubId: ObjectId? = null,
+    club: Club? = null,
 ) {
     var name by mutableStateOf(name)
     var startNumber by mutableStateOf(startNumber)
     var gender by mutableStateOf(gender)
-    var clubId by mutableStateOf(clubId)
+    var club by mutableStateOf(club)
 }
 
 fun Participant.toEditParticipant() = EditParticipant(
@@ -26,5 +27,5 @@ fun Participant.toEditParticipant() = EditParticipant(
     name = this.name,
     startNumber = this.startNumber.toString(),
     gender = this.gender,
-    clubId = this.club!!.id,
+    club = this.club!!,
 )

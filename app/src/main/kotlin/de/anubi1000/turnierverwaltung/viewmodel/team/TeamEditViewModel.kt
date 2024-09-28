@@ -12,6 +12,7 @@ import de.anubi1000.turnierverwaltung.data.repository.ParticipantRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamDisciplineRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamRepository
 import de.anubi1000.turnierverwaltung.data.repository.TournamentRepository
+import de.anubi1000.turnierverwaltung.data.validation.validateName
 import de.anubi1000.turnierverwaltung.data.validation.validateStartNumber
 import de.anubi1000.turnierverwaltung.database.model.Participant
 import de.anubi1000.turnierverwaltung.database.model.Team
@@ -74,7 +75,7 @@ class TeamEditViewModel(
         viewModelScope.launch {
             val team = Team(
                 id = currentState.item.id,
-                name = currentState.item.name,
+                name = validateName(currentState.item.name)!!,
                 startNumber = validateStartNumber(currentState.item.startNumber)!!,
 
                 members = currentState.item.members.toRealmList(),
@@ -91,7 +92,7 @@ class TeamEditViewModel(
     }
 
     private fun getValidationState(team: EditTeam, teamSize: Int): ComposeState<Boolean> = derivedStateOf {
-        team.name.isNotBlank() &&
+        validateName(team.name) != null &&
             team.members.size == teamSize &&
             validateStartNumber(team.startNumber) != null
     }

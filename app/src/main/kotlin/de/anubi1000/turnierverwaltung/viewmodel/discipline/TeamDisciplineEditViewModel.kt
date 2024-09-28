@@ -10,6 +10,7 @@ import de.anubi1000.turnierverwaltung.data.edit.EditTeamDiscipline
 import de.anubi1000.turnierverwaltung.data.edit.toEditTeamDiscipline
 import de.anubi1000.turnierverwaltung.data.repository.DisciplineRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamDisciplineRepository
+import de.anubi1000.turnierverwaltung.data.validation.validateName
 import de.anubi1000.turnierverwaltung.database.model.Discipline
 import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
 import io.realm.kotlin.ext.toRealmList
@@ -62,7 +63,7 @@ class TeamDisciplineEditViewModel(
         viewModelScope.launch {
             val teamDiscipline = TeamDiscipline(
                 id = currentState.item.id,
-                name = currentState.item.name,
+                name = validateName(currentState.item.name)!!,
                 basedOn = currentState.item.basedOn.toRealmList(),
             )
 
@@ -76,7 +77,7 @@ class TeamDisciplineEditViewModel(
     }
 
     private fun getValidationState(teamDiscipline: EditTeamDiscipline): ComposeState<Boolean> = derivedStateOf {
-        teamDiscipline.name.isNotBlank() &&
+        validateName(teamDiscipline.name) != null &&
             teamDiscipline.basedOn.isNotEmpty()
     }
 

@@ -10,6 +10,7 @@ import de.anubi1000.turnierverwaltung.data.edit.EditParticipant
 import de.anubi1000.turnierverwaltung.data.edit.toEditParticipant
 import de.anubi1000.turnierverwaltung.data.repository.ClubRepository
 import de.anubi1000.turnierverwaltung.data.repository.ParticipantRepository
+import de.anubi1000.turnierverwaltung.data.validation.validateName
 import de.anubi1000.turnierverwaltung.data.validation.validateStartNumber
 import de.anubi1000.turnierverwaltung.database.model.Club
 import de.anubi1000.turnierverwaltung.database.model.Participant
@@ -62,10 +63,10 @@ class ParticipantEditViewModel(
         viewModelScope.launch {
             val participant = Participant(
                 id = currentState.item.id,
-                name = currentState.item.name,
+                name = validateName(currentState.item.name)!!,
                 startNumber = validateStartNumber(currentState.item.startNumber)!!,
                 gender = currentState.item.gender,
-                club = currentState.clubs.find { it.id == currentState.item.clubId }!!,
+                club = currentState.item.club!!,
             )
 
             if (!isEditMode) {
@@ -78,8 +79,8 @@ class ParticipantEditViewModel(
     }
 
     private fun getValidationState(participant: EditParticipant): ComposeState<Boolean> = derivedStateOf {
-        participant.name.isNotBlank() &&
-            participant.clubId != null &&
+        validateName(participant.name) != null &&
+            participant.club != null &&
             validateStartNumber(participant.startNumber) != null
     }
 
