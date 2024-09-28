@@ -43,12 +43,16 @@ fun ClubList(
         },
         searchValueFlow = if (state is ClubListViewModel.State.Loaded) state.searchValueFlow else null,
         modifier = modifier,
-    ) {
+    ) { padding ->
+        val contentModifier = Modifier.padding(padding)
         when (state) {
-            is ClubListViewModel.State.Loading -> LoadingIndicator()
+            is ClubListViewModel.State.Loading -> LoadingIndicator(
+                modifier = contentModifier,
+            )
             is ClubListViewModel.State.Loaded -> LoadedContent(
                 navController = navController,
                 state = state,
+                modifier = contentModifier,
             )
         }
     }

@@ -44,12 +44,16 @@ fun ParticipantList(
         },
         searchValueFlow = if (state is ParticipantListViewModel.State.Loaded) state.searchValueFlow else null,
         modifier = modifier,
-    ) {
+    ) { padding ->
+        val contentModifier = Modifier.padding(padding)
         when (state) {
-            is ParticipantListViewModel.State.Loading -> LoadingIndicator()
+            is ParticipantListViewModel.State.Loading -> LoadingIndicator(
+                modifier = contentModifier,
+            )
             is ParticipantListViewModel.State.Loaded -> LoadedContent(
                 navController = navController,
                 state = state,
+                modifier = contentModifier,
             )
         }
     }

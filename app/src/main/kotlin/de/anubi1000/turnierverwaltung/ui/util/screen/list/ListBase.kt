@@ -1,6 +1,6 @@
 package de.anubi1000.turnierverwaltung.ui.util.screen.list
 
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,7 +34,7 @@ fun ListBase(
     modifier: Modifier = Modifier,
     onCreateButtonClick: (() -> Unit)? = null,
     searchValueFlow: MutableStateFlow<String>? = null,
-    content: @Composable () -> Unit,
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -93,11 +93,6 @@ fun ListBase(
             }
         },
         modifier = modifier,
-    ) {
-        Surface(
-            modifier = Modifier.padding(it).fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
-            content = content,
-        )
-    }
+        content = content,
+    )
 }
