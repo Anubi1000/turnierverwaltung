@@ -41,6 +41,7 @@ fun ClubList(
                 navController.navigate(ClubEditDestination())
             }
         },
+        searchValueFlow = if (state is ClubListViewModel.State.Loaded) state.searchValueFlow else null,
         modifier = modifier,
     ) {
         when (state) {

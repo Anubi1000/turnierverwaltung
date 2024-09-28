@@ -41,6 +41,7 @@ fun TeamList(
                 navController.navigate(TeamEditDestination())
             }
         },
+        searchValueFlow = if (state is TeamListViewModel.State.Loaded) state.searchValueFlow else null,
         modifier = modifier,
     ) {
         when (state) {
@@ -88,6 +89,7 @@ private fun LoadedContent(
             items(items, key = { it.id }) { item ->
                 SelectableListItem(
                     headlineContent = { Text(item.name) },
+                    leadingContent = { Text(item.startNumber.toString()) },
                     selected = currentItemId == item.id,
                     onClick = {
                         if (currentItemId != item.id) {
