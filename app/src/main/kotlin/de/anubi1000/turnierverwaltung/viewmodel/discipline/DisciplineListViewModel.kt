@@ -9,7 +9,10 @@ import de.anubi1000.turnierverwaltung.data.repository.DisciplineRepository
 import de.anubi1000.turnierverwaltung.data.repository.TeamDisciplineRepository
 import de.anubi1000.turnierverwaltung.database.model.Discipline
 import de.anubi1000.turnierverwaltung.database.model.TeamDiscipline
+import de.anubi1000.turnierverwaltung.util.performSearch
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -28,17 +31,32 @@ class DisciplineListViewModel(
         if (state is State.Loaded) return
 
         viewModelScope.launch {
-            val disciplineFlow = disciplineRepository.getAllForTournamentAsFlow(tournamentId)
-            val teamDisciplineFlow = teamDisciplineRepository.getAllForTournamentAsFlow(tournamentId)
+            val searchValueFlow = MutableStateFlow("")
+
+            val disciplineFlow = combine(
+                disciplineRepository.getAllForTournamentAsFlow(tournamentId),
+                searchValueFlow,
+            ) { disciplines, searchValue ->
+                disciplines.performSearch(searchValue) { it.name }
+            }.stateIn(viewModelScope)
+
+            val teamDisciplineFlow = combine(
+                teamDisciplineRepository.getAllForTournamentAsFlow(tournamentId),
+                searchValueFlow,
+            ) { teamDisciplines, searchValue ->
+                teamDisciplines.performSearch(searchValue) { it.name }
+            }.stateIn(viewModelScope)
+
             state = State.Loaded(
-                disciplineFlow = disciplineFlow.stateIn(viewModelScope),
-                teamDisciplineFlow = teamDisciplineFlow.stateIn(viewModelScope),
+                disciplineFlow = disciplineFlow,
+                teamDisciplineFlow = teamDisciplineFlow,
+                searchValueFlow = searchValueFlow,
             )
         }
     }
 
     sealed interface State {
         data object Loading : State
-        data class Loaded(val disciplineFlow: StateFlow<List<Discipline>>, val teamDisciplineFlow: StateFlow<List<TeamDiscipline>>) : State
+        data class Loaded(val disciplineFlow: StateFlow<List<Discipline>>, val teamDisciplineFlow: StateFlow<List<TeamDiscipline>>, val searchValueFlow: MutableStateFlow<String>) : State
     }
 }

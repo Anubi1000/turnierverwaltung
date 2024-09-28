@@ -27,6 +27,8 @@ data class Strings(
     val name: String = "Name",
     val overview: String = "Übersicht",
     val participantsWithClub: String = "Teilnehmer mit diesem Verein",
+    val search: String = "Suche",
+    val searchTerm: String = "Suchbegriff",
     val startNumber: String = "Startnummer",
     val teamSize: String = "Teamgröße",
 

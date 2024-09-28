@@ -42,6 +42,7 @@ fun ParticipantList(
                 navController.navigate(ParticipantEditDestination())
             }
         },
+        searchValueFlow = if (state is ParticipantListViewModel.State.Loaded) state.searchValueFlow else null,
         modifier = modifier,
     ) {
         when (state) {

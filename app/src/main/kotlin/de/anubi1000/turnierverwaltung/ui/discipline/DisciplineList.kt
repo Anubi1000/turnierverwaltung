@@ -48,6 +48,7 @@ fun DisciplineList(
                 showCreateDialog = true
             }
         },
+        searchValueFlow = if (state is DisciplineListViewModel.State.Loaded) state.searchValueFlow else null,
         modifier = modifier,
     ) {
         when (state) {

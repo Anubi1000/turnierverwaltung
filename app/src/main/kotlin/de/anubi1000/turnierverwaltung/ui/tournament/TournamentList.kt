@@ -42,6 +42,7 @@ fun TournamentList(
                 navController.navigate(TournamentEditDestination())
             }
         },
+        searchValueFlow = if (state is TournamentListViewModel.State.Loaded) state.searchValueFlow else null,
         modifier = modifier,
     ) {
         when (state) {
