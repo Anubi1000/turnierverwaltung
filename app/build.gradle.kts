@@ -15,7 +15,9 @@ group = "de.anubi1000"
 version = "0.2.0"
 
 dependencies {
-    implementation(compose.desktop.currentOs)
+    implementation(compose.desktop.currentOs) {
+        exclude("org.jetbrains.compose.material")
+    }
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
 

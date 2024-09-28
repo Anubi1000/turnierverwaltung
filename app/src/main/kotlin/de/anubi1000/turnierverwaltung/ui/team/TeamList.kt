@@ -43,12 +43,16 @@ fun TeamList(
         },
         searchValueFlow = if (state is TeamListViewModel.State.Loaded) state.searchValueFlow else null,
         modifier = modifier,
-    ) {
+    ) { padding ->
+        val contentModifier = Modifier.padding(padding)
         when (state) {
-            is TeamListViewModel.State.Loading -> LoadingIndicator()
+            is TeamListViewModel.State.Loading -> LoadingIndicator(
+                modifier = contentModifier,
+            )
             is TeamListViewModel.State.Loaded -> LoadedContent(
                 navController = navController,
                 state = state,
+                modifier = contentModifier,
             )
         }
     }

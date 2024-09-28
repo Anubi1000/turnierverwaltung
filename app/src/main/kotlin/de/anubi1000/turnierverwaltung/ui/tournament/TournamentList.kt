@@ -44,12 +44,16 @@ fun TournamentList(
         },
         searchValueFlow = if (state is TournamentListViewModel.State.Loaded) state.searchValueFlow else null,
         modifier = modifier,
-    ) {
+    ) { padding ->
+        val contentModifier = Modifier.padding(padding)
         when (state) {
-            TournamentListViewModel.State.Loading -> LoadingIndicator()
+            TournamentListViewModel.State.Loading -> LoadingIndicator(
+                modifier = contentModifier,
+            )
             is TournamentListViewModel.State.Loaded -> LoadedContent(
                 navController = navController,
                 state = state,
+                modifier = contentModifier,
             )
         }
     }

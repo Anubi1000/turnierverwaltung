@@ -50,12 +50,16 @@ fun DisciplineList(
         },
         searchValueFlow = if (state is DisciplineListViewModel.State.Loaded) state.searchValueFlow else null,
         modifier = modifier,
-    ) {
+    ) { padding ->
+        val contentModifier = Modifier.padding(padding)
         when (state) {
-            is DisciplineListViewModel.State.Loading -> LoadingIndicator()
+            is DisciplineListViewModel.State.Loading -> LoadingIndicator(
+                modifier = contentModifier,
+            )
             is DisciplineListViewModel.State.Loaded -> LoadedContent(
                 navController = navController,
                 state = state,
+                modifier = contentModifier,
             )
         }
     }
