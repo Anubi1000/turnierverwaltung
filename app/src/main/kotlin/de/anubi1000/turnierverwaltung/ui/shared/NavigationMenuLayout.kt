@@ -21,8 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
@@ -72,7 +74,12 @@ fun NavigationMenuLayout(
                         navController = navController,
                         currentDestination = destination,
                     )
-                    NavigationMenuOption.TOURNAMENT_OVERVIEW, NavigationMenuOption.PARTICIPANTS, NavigationMenuOption.TEAMS, NavigationMenuOption.CLUBS, NavigationMenuOption.DISCIPLINES -> TournamentNavigationMenu(
+                    NavigationMenuOption.TOURNAMENT_OVERVIEW,
+                    NavigationMenuOption.PARTICIPANTS,
+                    NavigationMenuOption.TEAMS,
+                    NavigationMenuOption.CLUBS,
+                    NavigationMenuOption.DISCIPLINES,
+                    -> TournamentNavigationMenu(
                         navController = navController,
                         currentDestination = destination,
                     )
@@ -241,59 +248,52 @@ private fun TournamentNavigationMenu(
             )
         }
 
-        NavigationRailItem(
-            selected = currentMenuOption == NavigationMenuOption.TOURNAMENT_OVERVIEW,
-            onClick = {
-                if (currentMenuOption != NavigationMenuOption.TOURNAMENT_OVERVIEW) {
+        val menuItems = remember(navController) {
+            listOf(
+                NavigationMenuItem(
+                    NavigationMenuOption.TOURNAMENT_OVERVIEW, LocalStrings.current.overview, Icons.Default.Dashboard
+                ) {
                     navController.popBackStack<TournamentScoreboardDestination>(false)
-                }
-            },
-            label = { Text(LocalStrings.current.overview) },
-            icon = { Icon(Icons.Default.Dashboard) },
-        )
-
-        NavigationRailItem(
-            selected = currentMenuOption == NavigationMenuOption.PARTICIPANTS,
-            onClick = {
-                if (currentMenuOption != NavigationMenuOption.PARTICIPANTS) {
+                },
+                NavigationMenuItem(
+                    NavigationMenuOption.PARTICIPANTS, LocalStrings.current.participants, Icons.Default.Person
+                ) {
                     navController.navigate(ParticipantListDestination)
-                }
-            },
-            label = { Text(LocalStrings.current.participants) },
-            icon = { Icon(Icons.Default.Person) },
-        )
-
-        NavigationRailItem(
-            selected = currentMenuOption == NavigationMenuOption.TEAMS,
-            onClick = {
-                if (currentMenuOption != NavigationMenuOption.TEAMS) {
+                },
+                NavigationMenuItem(
+                    NavigationMenuOption.TEAMS, LocalStrings.current.teams, Icons.Default.People
+                ) {
                     navController.navigate(TeamListDestination)
-                }
-            },
-            label = { Text(LocalStrings.current.teams) },
-            icon = { Icon(Icons.Default.People) },
-        )
-
-        NavigationRailItem(
-            selected = currentMenuOption == NavigationMenuOption.CLUBS,
-            onClick = {
-                if (currentMenuOption != NavigationMenuOption.CLUBS) {
+                },
+                NavigationMenuItem(
+                    NavigationMenuOption.CLUBS, LocalStrings.current.clubs, Icons.Default.Groups
+                ) {
                     navController.navigate(ClubListDestination)
-                }
-            },
-            label = { Text(LocalStrings.current.clubs) },
-            icon = { Icon(Icons.Default.Groups) },
-        )
-
-        NavigationRailItem(
-            selected = currentMenuOption == NavigationMenuOption.DISCIPLINES,
-            onClick = {
-                if (currentMenuOption != NavigationMenuOption.DISCIPLINES) {
+                },
+                NavigationMenuItem(
+                    NavigationMenuOption.DISCIPLINES, LocalStrings.current.disciplines, Icons.Default.Queue
+                ) {
                     navController.navigate(DisciplineListDestination)
                 }
-            },
-            label = { Text(LocalStrings.current.disciplines) },
-            icon = { Icon(Icons.Default.Queue) },
-        )
+            )
+        }
+
+        menuItems.forEach { item ->
+            NavigationRailItem(
+                selected = currentMenuOption == item.option,
+                onClick = {
+                    if (currentMenuOption != item.option) item.onClick()
+                },
+                label = { Text(item.label) },
+                icon = { Icon(item.icon) }
+            )
+        }
     }
 }
+
+data class NavigationMenuItem(
+    val option: NavigationMenuOption,
+    val label: String,
+    val icon: ImageVector,
+    val onClick: () -> Unit
+)

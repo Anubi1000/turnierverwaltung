@@ -139,20 +139,45 @@ fun Tournament.toScoreboardData(): ScoreboardData {
 
 private fun createDisciplineColumns(discipline: Discipline): List<ScoreboardData.Table.Column> {
     val columns = mutableListOf(
-        ScoreboardData.Table.Column("Platz", ScoreboardData.Table.Column.Width.Fixed(125), ScoreboardData.Table.Column.Alignment.CENTER),
-        ScoreboardData.Table.Column("Startnummer", ScoreboardData.Table.Column.Width.Fixed(225), ScoreboardData.Table.Column.Alignment.CENTER),
-        ScoreboardData.Table.Column("Name", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.LEFT),
-        ScoreboardData.Table.Column("Verein", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.LEFT),
+        ScoreboardData.Table.Column(
+            name = "Platz",
+            width = ScoreboardData.Table.Column.Width.Fixed(125),
+            alignment = ScoreboardData.Table.Column.Alignment.CENTER,
+        ),
+        ScoreboardData.Table.Column(
+            name = "Startnummer",
+            width = ScoreboardData.Table.Column.Width.Fixed(225),
+            alignment = ScoreboardData.Table.Column.Alignment.CENTER,
+        ),
+        ScoreboardData.Table.Column(
+            name = "Name",
+            width = ScoreboardData.Table.Column.Width.Variable(1f),
+            alignment = ScoreboardData.Table.Column.Alignment.LEFT,
+        ),
+        ScoreboardData.Table.Column(
+            name = "Verein",
+            width = ScoreboardData.Table.Column.Width.Variable(1f),
+            alignment = ScoreboardData.Table.Column.Alignment.LEFT,
+        ),
     )
 
     repeat(discipline.amountOfBestRoundsToShow) { i ->
-        columns.add(ScoreboardData.Table.Column("Runde ${i + 1}", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.RIGHT))
+        columns.add(
+            ScoreboardData.Table.Column(
+                name = "Runde ${i + 1}",
+                width = ScoreboardData.Table.Column.Width.Fixed(150),
+                alignment = ScoreboardData.Table.Column.Alignment.RIGHT,
+            ),
+        )
     }
 
     return columns
 }
 
-private fun createParticipantRows(results: Map<Participant, List<Double>>, discipline: Discipline): MutableList<ScoreboardData.Table.Row> {
+private fun createParticipantRows(
+    results: Map<Participant, List<Double>>,
+    discipline: Discipline,
+): MutableList<ScoreboardData.Table.Row> {
     return results.mapNotNull { (participant, scores) ->
         if (scores.isEmpty()) return@mapNotNull null
 
@@ -165,7 +190,10 @@ private fun createParticipantRows(results: Map<Participant, List<Double>>, disci
     }.toMutableList()
 }
 
-private fun Tournament.compareByResults(results: Map<Participant, List<Double>>, maxResults: Int): Comparator<ScoreboardData.Table.Row> {
+private fun Tournament.compareByResults(
+    results: Map<Participant, List<Double>>,
+    maxResults: Int,
+): Comparator<ScoreboardData.Table.Row> {
     return Comparator { first, second ->
         val firstResults = results.getValue(participants.first { it.id == first.id })
         val secondResults = results.getValue(participants.first { it.id == second.id })
@@ -180,7 +208,12 @@ private fun Tournament.compareByResults(results: Map<Participant, List<Double>>,
     }
 }
 
-private fun Tournament.createGenderSeparatedTables(discipline: Discipline, rows: MutableList<ScoreboardData.Table.Row>, results: Map<Participant, List<Double>>, maxResults: Int): List<ScoreboardData.Table> = Participant.Gender.entries.mapNotNull { gender ->
+private fun Tournament.createGenderSeparatedTables(
+    discipline: Discipline,
+    rows: MutableList<ScoreboardData.Table.Row>,
+    results: Map<Participant, List<Double>>,
+    maxResults: Int,
+): List<ScoreboardData.Table> = Participant.Gender.entries.mapNotNull { gender ->
     val filteredRows = rows.filter { row -> participants.first { it.id == row.id }.gender == gender }.toMutableList()
     if (filteredRows.isNotEmpty()) {
         filteredRows.sortWith(compareByResults(results, maxResults))
@@ -194,7 +227,11 @@ private fun Tournament.createGenderSeparatedTables(discipline: Discipline, rows:
     }
 }
 
-private fun createTable(name: String, columns: List<ScoreboardData.Table.Column>, rows: List<ScoreboardData.Table.Row>): ScoreboardData.Table = ScoreboardData.Table(
+private fun createTable(
+    name: String,
+    columns: List<ScoreboardData.Table.Column>,
+    rows: List<ScoreboardData.Table.Row>,
+) = ScoreboardData.Table(
     name = name,
     columns = columns,
     rows = rows.mapIndexed { index, row ->
@@ -204,30 +241,66 @@ private fun createTable(name: String, columns: List<ScoreboardData.Table.Column>
 
 private fun createTeamDisciplineColumns(teamSize: Int): MutableList<ScoreboardData.Table.Column> {
     val columns = mutableListOf(
-        ScoreboardData.Table.Column("Platz", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.CENTER),
-        ScoreboardData.Table.Column("Startnummer", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.CENTER),
-        ScoreboardData.Table.Column("Name", ScoreboardData.Table.Column.Width.Variable(1.0f), ScoreboardData.Table.Column.Alignment.LEFT),
+        ScoreboardData.Table.Column(
+            name = "Platz",
+            width = ScoreboardData.Table.Column.Width.Fixed(150),
+            alignment = ScoreboardData.Table.Column.Alignment.CENTER,
+        ),
+        ScoreboardData.Table.Column(
+            name = "Startnummer",
+            width = ScoreboardData.Table.Column.Width.Fixed(200),
+            alignment = ScoreboardData.Table.Column.Alignment.CENTER,
+        ),
+        ScoreboardData.Table.Column(
+            name = "Name",
+            width = ScoreboardData.Table.Column.Width.Variable(1.0f),
+            alignment = ScoreboardData.Table.Column.Alignment.LEFT,
+        ),
     )
 
     repeat(teamSize) { i ->
-        columns.add(ScoreboardData.Table.Column("Schütze ${i + 1}", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.RIGHT))
-        columns.add(ScoreboardData.Table.Column("Punkte", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.LEFT))
+        columns.add(
+            ScoreboardData.Table.Column(
+                name = "Schütze ${i + 1}",
+                width = ScoreboardData.Table.Column.Width.Variable(1f),
+                alignment = ScoreboardData.Table.Column.Alignment.RIGHT,
+            ),
+        )
+        columns.add(
+            ScoreboardData.Table.Column(
+                name = "Punkte",
+                width = ScoreboardData.Table.Column.Width.Fixed(200),
+                alignment = ScoreboardData.Table.Column.Alignment.LEFT,
+            ),
+        )
     }
 
-    columns.add(ScoreboardData.Table.Column("Gesamt", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.RIGHT))
+    columns.add(
+        ScoreboardData.Table.Column(
+            name = "Gesamt",
+            width = ScoreboardData.Table.Column.Width.Fixed(200),
+            alignment = ScoreboardData.Table.Column.Alignment.RIGHT,
+        ),
+    )
     return columns
 }
 
-private fun Tournament.calculateTeamResults(teamDiscipline: TeamDiscipline): Map<Team, Pair<Double, Map<Participant, Double>>> = teams.filter { it.participatingDisciplines.contains(teamDiscipline) }.associateWith { team ->
-    val memberScores = team.members.associateWith { member ->
-        teamDiscipline.basedOn
-            .mapNotNull { discipline -> ScoreCalculationUtils.getScoreForParticipant(member, discipline) }
-            .maxOrNull() ?: 0.0
+private fun Tournament.calculateTeamResults(
+    teamDiscipline: TeamDiscipline,
+): Map<Team, Pair<Double, Map<Participant, Double>>> = teams
+    .filter { it.participatingDisciplines.contains(teamDiscipline) }.associateWith { team ->
+        val memberScores = team.members.associateWith { member ->
+            teamDiscipline.basedOn
+                .mapNotNull { discipline -> ScoreCalculationUtils.getScoreForParticipant(member, discipline) }
+                .maxOrNull() ?: 0.0
+        }
+        memberScores.values.sum() to memberScores
     }
-    memberScores.values.sum() to memberScores
-}
 
-private fun createTeamRow(rank: Int, result: Map.Entry<Team, Pair<Double, Map<Participant, Double>>>): ScoreboardData.Table.Row {
+private fun createTeamRow(
+    rank: Int,
+    result: Map.Entry<Team, Pair<Double, Map<Participant, Double>>>,
+): ScoreboardData.Table.Row {
     val (team, scoreData) = result
     val (totalScore, memberScores) = scoreData
 

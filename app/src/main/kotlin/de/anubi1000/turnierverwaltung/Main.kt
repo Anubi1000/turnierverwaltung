@@ -67,25 +67,25 @@ fun App() {
                     ExitTransition.None
                 },
             ) {
-                tournamentListDestination(navController)
+                tournamentListDestination()
                 tournamentDetailDestinations(navController)
                 tournamentEditDestination(navController)
-                tournamentScoreboardDestination(navController)
+                tournamentScoreboardDestination()
 
-                participantListDestination(navController)
+                participantListDestination()
                 participantDetailDestination(navController)
                 participantEditDestination(navController)
                 participantResultDestination(navController)
 
-                teamListDestination(navController)
+                teamListDestination()
                 teamDetailDestination(navController)
                 teamEditDestination(navController)
 
-                clubListDestination(navController)
+                clubListDestination()
                 clubDetailDestination(navController)
                 clubEditDestination(navController)
 
-                disciplineListDestination(navController)
+                disciplineListDestination()
                 disciplineDetailDestination(navController)
                 disciplineEditDestination(navController)
                 teamDisciplineDetailDestination(navController)
@@ -139,6 +139,7 @@ private fun appMain() {
     log.info("Bye bye")
 }
 
+@Suppress("TooGenericExceptionCaught")
 fun main() {
     try {
         appMain()

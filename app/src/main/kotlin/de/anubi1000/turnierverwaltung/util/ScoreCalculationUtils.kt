@@ -20,5 +20,6 @@ object ScoreCalculationUtils {
         }.toDoubleArray()
     }
 
-    fun getScoreForParticipant(participant: Participant, discipline: Discipline): Double? = getScoreForParticipantAllRounds(participant, discipline)?.maxOrNull()
+    fun getScoreForParticipant(participant: Participant, discipline: Discipline): Double? =
+        getScoreForParticipantAllRounds(participant, discipline)?.maxOrNull()
 }

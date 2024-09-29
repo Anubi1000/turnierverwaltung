@@ -23,7 +23,9 @@ data class DisciplineDetailDestination(val id: String) : AppDestination {
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.DISCIPLINES
 }
 
-fun NavGraphBuilder.disciplineDetailDestination(navController: NavController) = composable<DisciplineDetailDestination> { backStackEntry ->
+fun NavGraphBuilder.disciplineDetailDestination(
+    navController: NavController,
+) = composable<DisciplineDetailDestination> { backStackEntry ->
     val args = backStackEntry.toRoute<DisciplineDetailDestination>()
     val viewModel: DisciplineDetailViewModel = koinViewModel()
 

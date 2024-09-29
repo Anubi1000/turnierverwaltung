@@ -46,11 +46,15 @@ class TeamDisciplineRepositoryImpl(private val realm: Realm) : TeamDisciplineRep
     }
 
     override suspend fun insert(teamDiscipline: TeamDiscipline, tournamentId: ObjectId) {
-        log.debug { "Inserting new team discipline with id(${teamDiscipline.id.toHexString()}) for tournament(${tournamentId.toHexString()})" }
+        log.debug {
+            "Inserting new team discipline with id(${teamDiscipline.id.toHexString()}) " +
+                "for tournament(${tournamentId.toHexString()})"
+        }
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val tournament = queryById<Tournament>(tournamentId) ?: throw IllegalArgumentException("Tournament with specified id not found")
+                val tournament = queryById<Tournament>(tournamentId)
+                    ?: throw IllegalArgumentException("Tournament with specified id not found")
 
                 val basedOn = mapDisciplines(teamDiscipline)
 
@@ -68,7 +72,8 @@ class TeamDisciplineRepositoryImpl(private val realm: Realm) : TeamDisciplineRep
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val dbTeamDiscipline = queryById<TeamDiscipline>(teamDiscipline.id) ?: throw IllegalArgumentException("Team discipline with specified id not found")
+                val dbTeamDiscipline = queryById<TeamDiscipline>(teamDiscipline.id)
+                    ?: throw IllegalArgumentException("Team discipline with specified id not found")
 
                 val basedOn = mapDisciplines(teamDiscipline)
 

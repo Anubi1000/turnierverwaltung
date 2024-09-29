@@ -33,7 +33,11 @@ fun ParticipantResultScreen(
     EditScreenBase(
         navController = navController,
         title = LocalStrings.current.inputPoints,
-        onSaveButtonClick = if (state is ParticipantResultViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null,
+        onSaveButtonClick = if (state is ParticipantResultViewModel.State.Loaded && state.isValid.value) {
+            onSaveButtonClick
+        } else {
+            null
+        },
     ) {
         val modifier = Modifier.padding(it)
         when (state) {

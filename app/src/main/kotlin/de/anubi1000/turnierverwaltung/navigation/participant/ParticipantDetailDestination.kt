@@ -23,7 +23,9 @@ data class ParticipantDetailDestination(val id: String) : AppDestination {
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.PARTICIPANTS
 }
 
-fun NavGraphBuilder.participantDetailDestination(navController: NavController) = composable<ParticipantDetailDestination> { backStackEntry ->
+fun NavGraphBuilder.participantDetailDestination(
+    navController: NavController,
+) = composable<ParticipantDetailDestination> { backStackEntry ->
     val args: ParticipantDetailDestination = backStackEntry.toRoute()
     val viewModel: ParticipantDetailViewModel = koinViewModel()
 

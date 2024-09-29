@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -92,8 +94,9 @@ private fun LoadedContent(
     modifier: Modifier = Modifier,
 ) {
     val disciplines by state.disciplineFlow.collectAsStateWithLifecycle()
+    val teamDisciplines by state.teamDisciplineFlow.collectAsStateWithLifecycle()
 
-    if (disciplines.isEmpty()) {
+    if (disciplines.isEmpty() && teamDisciplines.isEmpty()) {
         val strings = LocalStrings.current
 
         Box(
@@ -103,7 +106,6 @@ private fun LoadedContent(
             Text(text = strings.xDontExist(strings.disciplines))
         }
     } else {
-        val teamDisciplines by state.teamDisciplineFlow.collectAsStateWithLifecycle()
         val currentDestination by navController.currentDestinationAsState()
         val currentItemId by remember(navController) {
             derivedStateOf {
@@ -121,13 +123,7 @@ private fun LoadedContent(
         LazyColumn(
             modifier = modifier,
         ) {
-            item(key = "disciplines", contentType = 0) {
-                Text(
-                    text = LocalStrings.current.disciplines,
-                    modifier = Modifier.padding(start = 10.dp),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
+            sectionHeader(LocalStrings.current.disciplines)
             items(disciplines, key = { it.id }, contentType = { 1 }) { item ->
                 SelectableListItem(
                     headlineContent = { Text(item.name) },
@@ -143,14 +139,7 @@ private fun LoadedContent(
                 )
             }
 
-            item(key = "team_disciplines", contentType = 2) {
-                Text(
-                    text = LocalStrings.current.teamDisciplines,
-                    modifier = Modifier.padding(start = 10.dp, top = 16.dp),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
-
+            sectionHeader(LocalStrings.current.teamDisciplines, topPadding = 16.dp)
             items(teamDisciplines, key = { it.id }, contentType = { 3 }) { item ->
                 SelectableListItem(
                     headlineContent = { Text(item.name) },
@@ -166,5 +155,16 @@ private fun LoadedContent(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun LazyListScope.sectionHeader(title: String, topPadding: Dp = 0.dp) {
+    item(key = title, contentType = "header") {
+        Text(
+            text = title,
+            modifier = Modifier.padding(start = 10.dp, top = topPadding),
+            style = MaterialTheme.typography.titleMedium
+        )
     }
 }

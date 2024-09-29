@@ -59,7 +59,7 @@ class Server(private val realm: Realm) {
     private val messageFlow = MutableSharedFlow<Message>(extraBufferCapacity = 3)
     private var currentTournamentId: MutableStateFlow<ObjectId?> = MutableStateFlow(null)
 
-    private val server = embeddedServer(Netty, port = 8080) {
+    private val ktorServer = embeddedServer(Netty, port = 8080) {
         installStatusPages()
         installWebSockets()
 
@@ -73,7 +73,7 @@ class Server(private val realm: Realm) {
     }
 
     fun start() {
-        server.start()
+        ktorServer.start()
 
         var job: Job? = null
         currentTournamentId.onEach { id ->
@@ -93,7 +93,7 @@ class Server(private val realm: Realm) {
 
     fun stop() {
         coroutineScope.cancel()
-        server.stop()
+        ktorServer.stop()
     }
 
     fun setCurrentTournament(tournamentId: ObjectId) {

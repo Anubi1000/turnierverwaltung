@@ -44,13 +44,18 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
     }
 
     override suspend fun insert(participant: Participant, tournamentId: ObjectId) {
-        log.debug { "Inserting new participant with id(${participant.id.toHexString()}) for tournament(${tournamentId.toHexString()})" }
+        log.debug {
+            "Inserting new participant with id(${participant.id.toHexString()}) " +
+                "for tournament(${tournamentId.toHexString()})"
+        }
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val tournament = queryById<Tournament>(tournamentId) ?: throw IllegalArgumentException("Tournament with with specified id not found")
+                val tournament = queryById<Tournament>(tournamentId)
+                    ?: throw IllegalArgumentException("Tournament with with specified id not found")
 
-                val club = participant.club?.let(::findLatest) ?: throw IllegalArgumentException("Participant needs to have a valid club")
+                val club = participant.club?.let(::findLatest)
+                    ?: throw IllegalArgumentException("Participant needs to have a valid club")
 
                 participant.club = club
                 val dbParticipant = copyToRealm(participant)
@@ -66,8 +71,10 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val dbParticipant = queryById<Participant>(participant.id) ?: throw IllegalArgumentException("Participant with specified id not found")
-                val club = participant.club?.let(::findLatest) ?: throw IllegalArgumentException("Participant needs to have a valid club")
+                val dbParticipant = queryById<Participant>(participant.id)
+                    ?: throw IllegalArgumentException("Participant with specified id not found")
+                val club = participant.club?.let(::findLatest)
+                    ?: throw IllegalArgumentException("Participant needs to have a valid club")
 
                 dbParticipant.name = participant.name
                 dbParticipant.startNumber = participant.startNumber
@@ -88,7 +95,8 @@ class ParticipantRepositoryImpl(private val realm: Realm) : ParticipantRepositor
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val dbParticipant = queryById<Participant>(participantId) ?: throw IllegalArgumentException("Participant with specified id not found")
+                val dbParticipant = queryById<Participant>(participantId)
+                    ?: throw IllegalArgumentException("Participant with specified id not found")
                 dbParticipant.results[disciplineId.toHexString()] = result
             }
         }

@@ -40,6 +40,9 @@ class ParticipantListViewModel(
 
     sealed interface State {
         data object Loading : State
-        data class Loaded(val itemFlow: StateFlow<List<Participant>>, val searchValueFlow: MutableStateFlow<String>) : State
+        data class Loaded(
+            val itemFlow: StateFlow<List<Participant>>,
+            val searchValueFlow: MutableStateFlow<String>,
+        ) : State
     }
 }

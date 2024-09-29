@@ -9,6 +9,7 @@ import de.anubi1000.turnierverwaltung.navigation.AppDestination
 import de.anubi1000.turnierverwaltung.navigation.NavigationMenuOption
 import de.anubi1000.turnierverwaltung.navigation.tournament.TournamentDetailDestination
 import de.anubi1000.turnierverwaltung.ui.discipline.DisciplineEditScreen
+import de.anubi1000.turnierverwaltung.ui.util.getDestination
 import de.anubi1000.turnierverwaltung.util.toObjectId
 import de.anubi1000.turnierverwaltung.viewmodel.discipline.DisciplineEditViewModel
 import kotlinx.serialization.Serializable
@@ -25,10 +26,12 @@ data class DisciplineEditDestination(val id: String?) : AppDestination {
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.DISCIPLINES
 }
 
-fun NavGraphBuilder.disciplineEditDestination(navController: NavController) = composable<DisciplineEditDestination> { backStackEntry ->
+fun NavGraphBuilder.disciplineEditDestination(
+    navController: NavController,
+) = composable<DisciplineEditDestination> { backStackEntry ->
     val args: DisciplineEditDestination = backStackEntry.toRoute()
     val viewModel: DisciplineEditViewModel = koinViewModel {
-        val destination: TournamentDetailDestination = navController.getBackStackEntry<TournamentDetailDestination>().toRoute()
+        val destination = navController.getDestination<TournamentDetailDestination>()
         parametersOf(destination.id.toObjectId())
     }
 

@@ -23,7 +23,9 @@ data class TeamDetailDestination(val id: String) : AppDestination {
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.TEAMS
 }
 
-fun NavGraphBuilder.teamDetailDestination(navController: NavController) = composable<TeamDetailDestination> { backStackEntry ->
+fun NavGraphBuilder.teamDetailDestination(
+    navController: NavController,
+) = composable<TeamDetailDestination> { backStackEntry ->
     val args: TeamDetailDestination = backStackEntry.toRoute()
     val viewModel: TeamDetailViewModel = koinViewModel()
 

@@ -43,7 +43,9 @@ class TournamentRepositoryImplTest : FunSpec({
             val dbTournaments = repository.getAllAsFlow().first()
             dbTournaments shouldHaveSize tournaments.size
 
-            val sortedTournaments = tournaments.sortedWith(compareByDescending<Tournament> { it.date }.thenBy { it.name })
+            val sortedTournaments = tournaments.sortedWith(
+                compareByDescending<Tournament> { it.date }.thenBy { it.name },
+            )
 
             sortedTournaments.forEachIndexed { index, tournament ->
                 dbTournaments[index].id shouldBe tournament.id

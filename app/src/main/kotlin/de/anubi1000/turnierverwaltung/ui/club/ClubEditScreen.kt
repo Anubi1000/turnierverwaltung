@@ -24,7 +24,11 @@ fun ClubEditScreen(
     EditScreenBase(
         navController = navController,
         title = strings.editScreenTitle(isEditMode, LocalStrings.current.club),
-        onSaveButtonClick = if (state is ClubEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null,
+        onSaveButtonClick = if (state is ClubEditViewModel.State.Loaded && state.isValid.value) {
+            onSaveButtonClick
+        } else {
+            null
+        },
     ) { padding ->
         val modifier = Modifier.padding(padding)
         when (state) {

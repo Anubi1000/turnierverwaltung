@@ -47,11 +47,14 @@ class TeamRepositoryImpl(private val realm: Realm) : TeamRepository {
     }
 
     override suspend fun insert(team: Team, tournamentId: ObjectId) {
-        log.debug { "Inserting new team with id(${team.id.toHexString()}) for tournament(${tournamentId.toHexString()})" }
+        log.debug {
+            "Inserting new team with id(${team.id.toHexString()}) for tournament(${tournamentId.toHexString()})"
+        }
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val tournament = queryById<Tournament>(tournamentId) ?: throw IllegalArgumentException("Tournament with specified id not found")
+                val tournament = queryById<Tournament>(tournamentId)
+                    ?: throw IllegalArgumentException("Tournament with specified id not found")
 
                 require(team.members.size == tournament.teamSize) {
                     "Team needs to have the required sze"
@@ -75,7 +78,8 @@ class TeamRepositoryImpl(private val realm: Realm) : TeamRepository {
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val dbTeam = queryById<Team>(team.id) ?: throw IllegalArgumentException("Team with specified id not found")
+                val dbTeam = queryById<Team>(team.id)
+                    ?: throw IllegalArgumentException("Team with specified id not found")
 
                 val members = mapParticipants(team)
                 val participatingDisciplines = mapTeamDisciplines(team)
@@ -115,7 +119,9 @@ class TeamRepositoryImpl(private val realm: Realm) : TeamRepository {
         participant
     }.toRealmList()
 
-    private fun MutableRealm.mapTeamDisciplines(team: Team): RealmList<TeamDiscipline> = team.participatingDisciplines.map {
+    private fun MutableRealm.mapTeamDisciplines(
+        team: Team,
+    ): RealmList<TeamDiscipline> = team.participatingDisciplines.map {
         val teamDiscipline = findLatest(it)
         requireNotNull(teamDiscipline) {
             "Team discipline with id ${it.id.toHexString()} not found"

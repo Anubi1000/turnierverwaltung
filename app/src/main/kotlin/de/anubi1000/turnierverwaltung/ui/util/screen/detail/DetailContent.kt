@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package de.anubi1000.turnierverwaltung.ui.util.screen.detail
 
 import androidx.compose.foundation.layout.Arrangement
@@ -10,11 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-class DetailContentScope
 @OptIn(ExperimentalLayoutApi::class)
-constructor(
-    val flowRowScope: FlowRowScope,
-)
+class DetailContentScope(val flowRowScope: FlowRowScope)
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

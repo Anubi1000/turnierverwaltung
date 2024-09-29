@@ -23,7 +23,9 @@ data class ClubDetailDestination(val id: String) : AppDestination {
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.CLUBS
 }
 
-fun NavGraphBuilder.clubDetailDestination(navController: NavController) = composable<ClubDetailDestination> { backStackEntry ->
+fun NavGraphBuilder.clubDetailDestination(
+    navController: NavController,
+) = composable<ClubDetailDestination> { backStackEntry ->
     val args = backStackEntry.toRoute<ClubDetailDestination>()
     val viewModel: ClubDetailViewModel = koinViewModel()
 
