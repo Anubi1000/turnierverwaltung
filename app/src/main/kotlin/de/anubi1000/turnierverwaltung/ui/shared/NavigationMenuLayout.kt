@@ -248,30 +248,31 @@ private fun TournamentNavigationMenu(
             )
         }
 
-        val menuItems = remember(navController) {
+        val strings = LocalStrings.current
+        val menuItems = remember(navController, strings) {
             listOf(
                 NavigationMenuItem(
-                    NavigationMenuOption.TOURNAMENT_OVERVIEW, LocalStrings.current.overview, Icons.Default.Dashboard
+                    NavigationMenuOption.TOURNAMENT_OVERVIEW, strings.overview, Icons.Default.Dashboard
                 ) {
                     navController.popBackStack<TournamentScoreboardDestination>(false)
                 },
                 NavigationMenuItem(
-                    NavigationMenuOption.PARTICIPANTS, LocalStrings.current.participants, Icons.Default.Person
+                    NavigationMenuOption.PARTICIPANTS, strings.participants, Icons.Default.Person
                 ) {
                     navController.navigate(ParticipantListDestination)
                 },
                 NavigationMenuItem(
-                    NavigationMenuOption.TEAMS, LocalStrings.current.teams, Icons.Default.People
+                    NavigationMenuOption.TEAMS, strings.teams, Icons.Default.People
                 ) {
                     navController.navigate(TeamListDestination)
                 },
                 NavigationMenuItem(
-                    NavigationMenuOption.CLUBS, LocalStrings.current.clubs, Icons.Default.Groups
+                    NavigationMenuOption.CLUBS, strings.clubs, Icons.Default.Groups
                 ) {
                     navController.navigate(ClubListDestination)
                 },
                 NavigationMenuItem(
-                    NavigationMenuOption.DISCIPLINES, LocalStrings.current.disciplines, Icons.Default.Queue
+                    NavigationMenuOption.DISCIPLINES, strings.disciplines, Icons.Default.Queue
                 ) {
                     navController.navigate(DisciplineListDestination)
                 }
