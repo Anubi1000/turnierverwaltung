@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -123,7 +121,14 @@ private fun LoadedContent(
         LazyColumn(
             modifier = modifier,
         ) {
-            sectionHeader(LocalStrings.current.disciplines)
+            item(key = "disciplines") {
+                Text(
+                    text = LocalStrings.current.disciplines,
+                    modifier = Modifier.padding(start = 10.dp, top = 0.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
             items(disciplines, key = { it.id }, contentType = { 1 }) { item ->
                 SelectableListItem(
                     headlineContent = { Text(item.name) },
@@ -139,7 +144,14 @@ private fun LoadedContent(
                 )
             }
 
-            sectionHeader(LocalStrings.current.teamDisciplines, topPadding = 16.dp)
+            item(key = "teamDisciplines") {
+                Text(
+                    text = LocalStrings.current.teamDisciplines,
+                    modifier = Modifier.padding(start = 10.dp, top = 16.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
             items(teamDisciplines, key = { it.id }, contentType = { 3 }) { item ->
                 SelectableListItem(
                     headlineContent = { Text(item.name) },
@@ -155,16 +167,5 @@ private fun LoadedContent(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun LazyListScope.sectionHeader(title: String, topPadding: Dp = 0.dp) {
-    item(key = title, contentType = "header") {
-        Text(
-            text = title,
-            modifier = Modifier.padding(start = 10.dp, top = topPadding),
-            style = MaterialTheme.typography.titleMedium
-        )
     }
 }
