@@ -43,7 +43,11 @@ fun DisciplineEditScreen(
     EditScreenBase(
         navController = navController,
         title = strings.editScreenTitle(isEditMode, strings.discipline),
-        onSaveButtonClick = if (state is DisciplineEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null,
+        onSaveButtonClick = if (state is DisciplineEditViewModel.State.Loaded && state.isValid.value) {
+            onSaveButtonClick
+        } else {
+            null
+        },
     ) { padding ->
         val modifier = Modifier.padding(padding)
         when (state) {

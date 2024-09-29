@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package de.anubi1000.turnierverwaltung.ui.util.screen.edit
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi

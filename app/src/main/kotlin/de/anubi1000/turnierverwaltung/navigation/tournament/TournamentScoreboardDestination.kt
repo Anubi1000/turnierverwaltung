@@ -1,7 +1,6 @@
 package de.anubi1000.turnierverwaltung.navigation.tournament
 
 import androidx.compose.runtime.LaunchedEffect
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
@@ -23,7 +22,7 @@ data class TournamentScoreboardDestination(val id: String) : AppDestination {
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.TOURNAMENT_OVERVIEW
 }
 
-fun NavGraphBuilder.tournamentScoreboardDestination(navController: NavController) = composable<TournamentScoreboardDestination> { backStackEntry ->
+fun NavGraphBuilder.tournamentScoreboardDestination() = composable<TournamentScoreboardDestination> { backStackEntry ->
     val args = backStackEntry.toRoute<TournamentScoreboardDestination>()
     val viewModel: TournamentScoreboardViewModel = koinViewModel()
 
@@ -32,7 +31,6 @@ fun NavGraphBuilder.tournamentScoreboardDestination(navController: NavController
     }
 
     TournamentScoreboardScreen(
-        navController = navController,
         state = viewModel.state,
         onSaveButtonClick = {
             viewModel.saveTable(it)

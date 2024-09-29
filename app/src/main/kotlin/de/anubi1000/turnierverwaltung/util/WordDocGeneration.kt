@@ -176,7 +176,8 @@ private fun getColumnWidths(columns: List<ScoreboardData.Table.Column>): List<In
     return columns.map { column ->
         when (val width = column.width) {
             is ScoreboardData.Table.Column.Width.Fixed -> (width.width * SCALING_FACTOR).roundToInt()
-            is ScoreboardData.Table.Column.Width.Variable -> ((width.weight / totalWeight) * remainingWidth).roundToInt()
+            is ScoreboardData.Table.Column.Width.Variable ->
+                ((width.weight / totalWeight) * remainingWidth).roundToInt()
         }
     }
 }

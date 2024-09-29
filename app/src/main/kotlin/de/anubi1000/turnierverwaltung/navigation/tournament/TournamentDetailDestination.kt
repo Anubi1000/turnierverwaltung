@@ -25,7 +25,9 @@ data class TournamentDetailDestination(
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.TOURNAMENTS
 }
 
-fun NavGraphBuilder.tournamentDetailDestinations(navController: NavController) = composable<TournamentDetailDestination> { backStackEntry ->
+fun NavGraphBuilder.tournamentDetailDestinations(
+    navController: NavController,
+) = composable<TournamentDetailDestination> { backStackEntry ->
     val args = backStackEntry.toRoute<TournamentDetailDestination>()
     val viewModel: TournamentDetailViewModel = koinViewModel()
 

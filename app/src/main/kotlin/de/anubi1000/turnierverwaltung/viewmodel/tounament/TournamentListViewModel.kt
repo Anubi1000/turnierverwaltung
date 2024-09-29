@@ -37,6 +37,9 @@ class TournamentListViewModel(
 
     sealed interface State {
         data object Loading : State
-        data class Loaded(val itemFlow: StateFlow<List<Tournament>>, val searchValueFlow: MutableStateFlow<String>) : State
+        data class Loaded(
+            val itemFlow: StateFlow<List<Tournament>>,
+            val searchValueFlow: MutableStateFlow<String>,
+        ) : State
     }
 }

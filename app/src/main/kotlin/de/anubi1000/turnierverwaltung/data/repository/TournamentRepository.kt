@@ -57,7 +57,8 @@ class TournamentRepositoryImpl(private val realm: Realm) : TournamentRepository 
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val databaseTournament = queryById<Tournament>(tournament.id) ?: throw IllegalArgumentException("Tournament with specified id not found")
+                val databaseTournament = queryById<Tournament>(tournament.id)
+                    ?: throw IllegalArgumentException("Tournament with specified id not found")
 
                 databaseTournament.name = tournament.name
                 databaseTournament.date = tournament.date

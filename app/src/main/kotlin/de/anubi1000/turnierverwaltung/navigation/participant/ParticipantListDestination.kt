@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import cafe.adriel.lyricist.LocalStrings
@@ -21,7 +20,7 @@ data object ParticipantListDestination : AppDestination {
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.PARTICIPANTS
 }
 
-fun NavGraphBuilder.participantListDestination(navController: NavController) = composable<ParticipantListDestination> {
+fun NavGraphBuilder.participantListDestination() = composable<ParticipantListDestination> {
     Box(
         modifier = Modifier.topAppBarPadding().fillMaxSize(),
         contentAlignment = Alignment.Center,

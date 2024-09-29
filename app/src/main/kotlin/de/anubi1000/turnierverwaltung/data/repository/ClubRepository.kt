@@ -46,11 +46,15 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
     }
 
     override suspend fun insert(club: Club, tournamentId: ObjectId) {
-        log.debug { "Inserting new club with id(${club.id.toHexString()}) for tournament(${tournamentId.toHexString()})" }
+        log.debug {
+            "Inserting new club with id(${club.id.toHexString()}) " +
+                "for tournament(${tournamentId.toHexString()})"
+        }
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val tournament = queryById<Tournament>(tournamentId) ?: throw IllegalArgumentException("Tournament with with specified id not found")
+                val tournament = queryById<Tournament>(tournamentId)
+                    ?: throw IllegalArgumentException("Tournament with with specified id not found")
 
                 val insertedClub = copyToRealm(club)
                 tournament.clubs.add(insertedClub)
@@ -65,7 +69,8 @@ class ClubRepositoryImpl(private val realm: Realm) : ClubRepository {
 
         withContext(Dispatchers.IO) {
             realm.write {
-                val dbClub = queryById<Club>(club.id) ?: throw IllegalArgumentException("Club with with specified id not found")
+                val dbClub = queryById<Club>(club.id)
+                    ?: throw IllegalArgumentException("Club with with specified id not found")
 
                 dbClub.name = club.name
             }

@@ -3,6 +3,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.compose)
+    alias(libs.plugins.detekt)
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
@@ -78,6 +79,10 @@ composeCompiler {
     stabilityConfigurationFile = projectDir.resolve("compose_stability.conf")
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 ksp {
     arg("KOIN_USE_COMPOSE_VIEWMODEL","true")
 }
@@ -107,7 +112,6 @@ compose.desktop {
 
         buildTypes.release.proguard {
             configurationFiles.from(projectDir.resolve("proguard-rules.pro"))
-            version = "7.5.0"
         }
     }
 }
@@ -121,4 +125,8 @@ spotless {
                 "ktlint_function_naming_ignore_when_annotated_with" to "Composable"
             ))
     }
+}
+
+detekt {
+    config.setFrom(rootProject.file("config/detekt/detekt.yml"))
 }

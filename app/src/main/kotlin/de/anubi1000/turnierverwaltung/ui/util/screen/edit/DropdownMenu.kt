@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package de.anubi1000.turnierverwaltung.ui.util.screen.edit
 
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,9 +20,7 @@ import androidx.compose.ui.unit.dp
 import de.anubi1000.turnierverwaltung.ui.util.Icon
 import androidx.compose.material3.DropdownMenuItem as Material3DropdownMenuItem
 
-class DropdownMenuScope(
-    val close: () -> Unit,
-)
+class DropdownMenuScope(val close: () -> Unit)
 
 @Suppress("UnusedReceiverParameter")
 @OptIn(ExperimentalMaterial3Api::class)

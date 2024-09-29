@@ -1,5 +1,6 @@
 [versions]
 compose = "1.7.0"
+detekt = "1.23.7"
 filekit = "0.8.7"
 koin = "4.0.0"
 koin-annotations = "2.0.0-Beta1"
@@ -50,6 +51,7 @@ realm = { module = "io.realm.kotlin:library-base", version.ref = "realm" }
 
 [plugins]
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

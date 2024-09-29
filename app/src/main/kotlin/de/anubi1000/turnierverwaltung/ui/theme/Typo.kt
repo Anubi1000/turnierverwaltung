@@ -7,7 +7,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.platform.Font
 
 private val inter = FontFamily(
-    listOf(FontWeight.W100, FontWeight.W200, FontWeight.W300, FontWeight.W400, FontWeight.W500, FontWeight.W600, FontWeight.W700, FontWeight.W800, FontWeight.W900).map { weight ->
+    listOf(
+        FontWeight.W100,
+        FontWeight.W200,
+        FontWeight.W300,
+        FontWeight.W400,
+        FontWeight.W500,
+        FontWeight.W600,
+        FontWeight.W700,
+        FontWeight.W800,
+        FontWeight.W900,
+    ).map { weight ->
         Font(
             resource = "fonts/inter/${weight.weight}.ttf",
             weight = weight,

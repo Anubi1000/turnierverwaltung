@@ -25,7 +25,11 @@ fun TeamEditScreen(
     EditScreenBase(
         navController = navController,
         title = strings.editScreenTitle(isEditMode, strings.team),
-        onSaveButtonClick = if (state is TeamEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null,
+        onSaveButtonClick = if (state is TeamEditViewModel.State.Loaded && state.isValid.value) {
+            onSaveButtonClick
+        } else {
+            null
+        },
     ) { padding ->
         when (state) {
             is TeamEditViewModel.State.Loading -> LoadingIndicator()

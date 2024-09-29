@@ -26,7 +26,11 @@ fun TournamentEditScreen(
     EditScreenBase(
         navController = navController,
         title = strings.editScreenTitle(isEditMode, strings.tournament),
-        onSaveButtonClick = if (state is TournamentEditViewModel.State.Loaded && state.isValid.value) onSaveButtonClick else null,
+        onSaveButtonClick = if (state is TournamentEditViewModel.State.Loaded && state.isValid.value) {
+            onSaveButtonClick
+        } else {
+            null
+        },
     ) { padding ->
         val modifier = Modifier.padding(padding)
         when (state) {

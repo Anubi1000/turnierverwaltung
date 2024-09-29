@@ -26,7 +26,9 @@ data class ParticipantEditDestination(val id: String?) : AppDestination {
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.PARTICIPANTS
 }
 
-fun NavGraphBuilder.participantEditDestination(navController: NavController) = composable<ParticipantEditDestination> { backStackEntry ->
+fun NavGraphBuilder.participantEditDestination(
+    navController: NavController,
+) = composable<ParticipantEditDestination> { backStackEntry ->
     val args: ParticipantEditDestination = backStackEntry.toRoute()
     val viewModel: ParticipantEditViewModel = koinViewModel {
         parametersOf(navController.getDestination<TournamentDetailDestination>().id.toObjectId())

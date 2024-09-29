@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import cafe.adriel.lyricist.LocalStrings
 import de.anubi1000.turnierverwaltung.data.ScoreboardData
 import de.anubi1000.turnierverwaltung.ui.util.LoadingIndicator
@@ -40,7 +40,6 @@ import de.anubi1000.turnierverwaltung.viewmodel.tounament.TournamentScoreboardVi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TournamentScoreboardScreen(
-    navController: NavController,
     state: TournamentScoreboardViewModel.State,
     onSaveButtonClick: (Int) -> Unit,
 ) {
@@ -148,13 +147,7 @@ private fun ScoreboardContent(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         table.columns.forEach { column ->
-                            val textModifier = when (val width = column.width) {
-                                is ScoreboardData.Table.Column.Width.Fixed -> Modifier.width(width.toDp())
-                                is ScoreboardData.Table.Column.Width.Variable -> Modifier.weight(
-                                    width.weight,
-                                    fill = true,
-                                )
-                            }.padding(4.dp)
+                            val textModifier = widthToModifier(column.width).padding(4.dp)
 
                             Text(
                                 text = column.name,
@@ -172,20 +165,18 @@ private fun ScoreboardContent(
 
         itemsIndexed(table.rows) { rowIndex, row ->
             Surface(
-                color = if (rowIndex % 2 == 1) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.background,
+                color = if (rowIndex % 2 == 1) {
+                    MaterialTheme.colorScheme.surfaceContainerLow
+                } else {
+                    MaterialTheme.colorScheme.background
+                },
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 8.dp).fillMaxWidth().height(40.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     table.columns.forEachIndexed { cellIndex, column ->
-                        val textModifier = when (val width = column.width) {
-                            is ScoreboardData.Table.Column.Width.Fixed -> Modifier.width(width.toDp())
-                            is ScoreboardData.Table.Column.Width.Variable -> Modifier.weight(
-                                width.weight,
-                                fill = true,
-                            )
-                        }.padding(4.dp)
+                        val textModifier = widthToModifier(column.width).padding(4.dp)
 
                         Text(
                             text = row.values[cellIndex],
@@ -198,4 +189,13 @@ private fun ScoreboardContent(
             }
         }
     }
+}
+
+@Composable
+private fun RowScope.widthToModifier(width: ScoreboardData.Table.Column.Width): Modifier = when (width) {
+    is ScoreboardData.Table.Column.Width.Fixed -> Modifier.width(width.toDp())
+    is ScoreboardData.Table.Column.Width.Variable -> Modifier.weight(
+        width.weight,
+        fill = true,
+    )
 }

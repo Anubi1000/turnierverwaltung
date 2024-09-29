@@ -77,9 +77,7 @@ inline fun <reified T : AppDestination> NavController.getDestination(): T = getB
 
 @OptIn(InternalSerializationApi::class)
 private fun getDestination(backStackEntry: NavBackStackEntry?): AppDestination? {
-    if (backStackEntry == null) return null
-
-    val route = backStackEntry.destination.route ?: return null
+    val route = backStackEntry?.destination?.route ?: return null
     val matchedRoute = destinations.keys.find { route.startsWith(it) }
     val destinationClass = destinations[matchedRoute] ?: return null
 

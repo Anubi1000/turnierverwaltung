@@ -57,6 +57,10 @@ class DisciplineListViewModel(
 
     sealed interface State {
         data object Loading : State
-        data class Loaded(val disciplineFlow: StateFlow<List<Discipline>>, val teamDisciplineFlow: StateFlow<List<TeamDiscipline>>, val searchValueFlow: MutableStateFlow<String>) : State
+        data class Loaded(
+            val disciplineFlow: StateFlow<List<Discipline>>,
+            val teamDisciplineFlow: StateFlow<List<TeamDiscipline>>,
+            val searchValueFlow: MutableStateFlow<String>,
+        ) : State
     }
 }

@@ -20,13 +20,18 @@ data class ParticipantResultDestination(
     val participantId: String,
     val disciplineId: String,
 ) : AppDestination {
-    constructor(participantId: ObjectId, disciplineId: ObjectId) : this(participantId.toHexString(), disciplineId.toHexString())
+    constructor(
+        participantId: ObjectId,
+        disciplineId: ObjectId,
+    ) : this(participantId.toHexString(), disciplineId.toHexString())
 
     @Transient
     override val navigationMenuOption: NavigationMenuOption = NavigationMenuOption.PARTICIPANTS
 }
 
-fun NavGraphBuilder.participantResultDestination(navController: NavController) = composable<ParticipantResultDestination> { backStackEntry ->
+fun NavGraphBuilder.participantResultDestination(
+    navController: NavController,
+) = composable<ParticipantResultDestination> { backStackEntry ->
     val args: ParticipantResultDestination = backStackEntry.toRoute()
     val viewModel: ParticipantResultViewModel = koinViewModel()
 
