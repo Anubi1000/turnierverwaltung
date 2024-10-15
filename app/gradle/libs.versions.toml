@@ -1,5 +1,5 @@
 [versions]
-compose = "1.7.0-rc01"
+compose = "1.7.0"
 filekit = "0.8.7"
 koin = "4.0.0"
 koin-annotations = "1.4.0-RC4"
