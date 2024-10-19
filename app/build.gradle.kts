@@ -80,6 +80,10 @@ ksp {
     arg("KOIN_USE_COMPOSE_VIEWMODEL","true")
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 compose.desktop {
     application {
         mainClass = "de.anubi1000.turnierverwaltung.MainKt"
