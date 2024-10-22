@@ -7,7 +7,7 @@ export function useAutoscroll({
   onFinish,
   containerRef,
 }: {
-  containerRef: RefObject<HTMLDivElement>;
+  containerRef: RefObject<HTMLDivElement | null>;
   msPerPixel: number;
   numOfScrolls: number;
   onFinish: () => void;
