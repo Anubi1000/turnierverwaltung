@@ -20,9 +20,9 @@
   },
   "packageManager": "pnpm@9.14.2",
   "dependencies": {
-    "@emotion/cache": "11.13.1",
-    "@emotion/react": "11.13.3",
-    "@emotion/styled": "11.13.0",
+    "@emotion/cache": "11.13.5",
+    "@emotion/react": "11.13.5",
+    "@emotion/styled": "11.13.5",
     "@jest/globals": "^29.7.0",
     "@mui/material": "6.1.7",
     "@mui/material-nextjs": "6.1.7",
