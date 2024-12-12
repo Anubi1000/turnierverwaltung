@@ -31,7 +31,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-use-websocket": "4.11.1",
-    "use-immer": "0.10.0"
+    "use-immer": "0.11.0"
   },
   "devDependencies": {
     "@jest/types": "29.6.3",
