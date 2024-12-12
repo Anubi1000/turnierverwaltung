@@ -1,6 +1,6 @@
 [versions]
 compose = "1.7.0"
-filekit = "0.8.7"
+filekit = "0.8.8"
 koin = "4.0.0"
 koin-annotations = "2.0.0-Beta2"
 kotest = "5.9.1"
