@@ -2,6 +2,8 @@ package de.anubi1000.turnierverwaltung.util
 
 import de.anubi1000.turnierverwaltung.database.model.Discipline
 import de.anubi1000.turnierverwaltung.database.model.Participant
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 object ScoreCalculationUtils {
     fun getScoreForParticipantAllRounds(participant: Participant, discipline: Discipline): DoubleArray? {
@@ -16,7 +18,7 @@ object ScoreCalculationUtils {
                     points -= value
                 }
             }
-            points
+            BigDecimal(points).setScale(5, RoundingMode.HALF_EVEN).toDouble()
         }.toDoubleArray()
     }
 
