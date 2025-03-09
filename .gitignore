@@ -1,0 +1,7 @@
+.idea/
+*.sln.DotSettings.user
+.vs/
+
+**/bin/
+**/obj/
+**/*.csproj.user

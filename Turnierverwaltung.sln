@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35514.174 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turnierverwaltung.Server", "Server\Turnierverwaltung.Server.csproj", "{43FFC2E6-ECEA-40C1-B0CF-2FEB52F2B24A}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Turnierverwaltung.Client", "Client\Turnierverwaltung.Client.esproj", "{5662D0CD-7BB3-4CF9-B8EC-CDBC3FD5530F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Turnierverwaltung.Server.Tests", "Server.Tests\Turnierverwaltung.Server.Tests.csproj", "{B1AE840E-42F8-4427-B2BF-03A024A225A4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{43FFC2E6-ECEA-40C1-B0CF-2FEB52F2B24A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43FFC2E6-ECEA-40C1-B0CF-2FEB52F2B24A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43FFC2E6-ECEA-40C1-B0CF-2FEB52F2B24A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43FFC2E6-ECEA-40C1-B0CF-2FEB52F2B24A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5662D0CD-7BB3-4CF9-B8EC-CDBC3FD5530F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5662D0CD-7BB3-4CF9-B8EC-CDBC3FD5530F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5662D0CD-7BB3-4CF9-B8EC-CDBC3FD5530F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5662D0CD-7BB3-4CF9-B8EC-CDBC3FD5530F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5662D0CD-7BB3-4CF9-B8EC-CDBC3FD5530F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5662D0CD-7BB3-4CF9-B8EC-CDBC3FD5530F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{B1AE840E-42F8-4427-B2BF-03A024A225A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1AE840E-42F8-4427-B2BF-03A024A225A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1AE840E-42F8-4427-B2BF-03A024A225A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1AE840E-42F8-4427-B2BF-03A024A225A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,60 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "dev:host": "nuxt dev --host",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "format": "prettier ./app --write",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "lint": "eslint ./app",
+    "lint:fix": "eslint ./app --fix",
+    "genApiTypes": "openapi-typescript http://localhost:5097/openapi/v1.json -o ./app/utils/api-types.ts -t --root-types --root-types-no-schema-prefix"
+  },
+  "dependencies": {
+    "@nuxt/eslint": "1.1.0",
+    "@nuxt/fonts": "0.10.3",
+    "@nuxt/icon": "1.10.3",
+    "@pinia/nuxt": "0.9.0",
+    "@primevue/themes": "4.2.5",
+    "@tailwindcss/vite": "4.0.11",
+    "@tanstack/vue-query": "5.66.9",
+    "@vee-validate/nuxt": "4.15.0",
+    "@vee-validate/zod": "4.15.0",
+    "eslint": "^9.0.0",
+    "lodash-es": "4.17.21",
+    "nuxt": "3.15.4",
+    "pinia": "2.3.1",
+    "primevue": "4.2.5",
+    "tailwindcss": "4.0.11",
+    "tailwindcss-primeui": "0.5.1",
+    "vee-validate": "4.15.0",
+    "vue": "3.5.13",
+    "vue-router": "4.5.0",
+    "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@iconify-json/material-symbols": "1.2.14",
+    "@iconify-json/mdi": "1.2.3",
+    "@nuxt/test-utils": "3.17.0",
+    "@primevue/nuxt-module": "4.2.5",
+    "@types/lodash-es": "4.17.12",
+    "@vue/test-utils": "2.4.6",
+    "happy-dom": "17.1.8",
+    "openapi-typescript": "7.6.0",
+    "prettier": "3.4.2",
+    "prettier-plugin-tailwindcss": "0.6.11",
+    "typescript": "^5.8.2",
+    "vite-plugin-vue-devtools": "7.7.2",
+    "vitest": "3.0.7"
+  },
+  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
+  "engines": {
+    "node": "22.x"
+  }
+}

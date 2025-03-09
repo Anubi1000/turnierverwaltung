@@ -1,7 +1,5 @@
-*.kt text eol=lf
-*.kts text eol=lf
+*.cs text eol=lf
 *.ts text eol=lf
-*.tsx text eol=lf
-*.mjs text eol=lf
-*.json text eol=lf
+*.vue text eol=lf
 *.yaml text eol=lf
+*.json text eol=lf
