@@ -18,15 +18,15 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          package_json_file: "scoreboard/package.json"
+          package_json_file: "Client/package.json"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: "scoreboard/package.json"
+          node-version-file: "Client/package.json"
           check-latest: true
           cache: "pnpm"
-          cache-dependency-path: "scoreboard/pnpm-lock.yaml"
+          cache-dependency-path: "Client/pnpm-lock.yaml"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
