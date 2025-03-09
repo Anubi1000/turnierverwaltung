@@ -40,16 +40,31 @@ jobs:
       - name: Install Node.js Dependencies
         working-directory: ./Client
         run: pnpm install --frozen-lockfile
-      
+
       - name: Restore .NET Packages
         run: dotnet restore --locked-mode
-      
+
       - name: Build Server
         working-directory: ./Server
         run: dotnet publish --no-restore /p:PublishProfile=Properties/PublishProfiles/Win_x64.xml
-      
+
       - name: Upload Server
         uses: actions/upload-artifact@v4
         with:
           name: Server
+          retention-days: 7
           path: ./Server/bin/Release/net9.0/win-x64/publish/
+
+      - name: Run Server Tests
+        working-directory: ./Server.Tests
+        shell: pwsh
+        run: ./runTests.ps1
+
+      - name: Upload Server Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: Server (Coverage)
+          retention-days: 7
+          path: |
+            ./Server.Tests/coverage.xml
+            ./Server.Tests/html-coverage-report
