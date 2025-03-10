@@ -18,7 +18,7 @@
     "node": "22.x",
     "pnpm": "9.x"
   },
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@9.15.9",
   "dependencies": {
     "@emotion/cache": "11.14.0",
     "@emotion/react": "11.14.0",
