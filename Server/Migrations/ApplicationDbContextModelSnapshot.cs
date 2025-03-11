@@ -72,10 +72,6 @@ namespace Turnierverwaltung.Server.Migrations
                     b.Property<int>("TournamentId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Values")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("TournamentId");
@@ -92,16 +88,12 @@ namespace Turnierverwaltung.Server.Migrations
                     b.Property<int>("ClubId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Gender")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Results")
-                        .IsRequired()
+                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("StartNumber")
@@ -122,6 +114,21 @@ namespace Turnierverwaltung.Server.Migrations
                     b.HasIndex("TournamentId");
 
                     b.ToTable("Participants");
+                });
+
+            modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.ParticipantResult", b =>
+                {
+                    b.Property<int>("ParticipantId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DisciplineId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ParticipantId", "DisciplineId");
+
+                    b.HasIndex("DisciplineId");
+
+                    b.ToTable("ParticipantResults");
                 });
 
             modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Team", b =>
@@ -213,26 +220,59 @@ namespace Turnierverwaltung.Server.Migrations
 
             modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Club", b =>
                 {
-                    b.HasOne("Turnierverwaltung.Server.Database.Model.Tournament", null)
+                    b.HasOne("Turnierverwaltung.Server.Database.Model.Tournament", "Tournament")
                         .WithMany("Clubs")
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Tournament");
                 });
 
             modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Discipline", b =>
                 {
-                    b.HasOne("Turnierverwaltung.Server.Database.Model.Tournament", null)
+                    b.HasOne("Turnierverwaltung.Server.Database.Model.Tournament", "Tournament")
                         .WithMany("Disciplines")
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.OwnsMany("Turnierverwaltung.Server.Database.Model.Discipline+Value", "Values", b1 =>
+                        {
+                            b1.Property<int>("DisciplineId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAddOrUpdate()
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<bool>("IsAdded")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(150)
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("DisciplineId", "__synthesizedOrdinal");
+
+                            b1.ToTable("Disciplines");
+
+                            b1.ToJson("Values");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DisciplineId");
+                        });
+
+                    b.Navigation("Tournament");
+
+                    b.Navigation("Values");
                 });
 
             modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Participant", b =>
                 {
                     b.HasOne("Turnierverwaltung.Server.Database.Model.Club", "Club")
-                        .WithMany()
+                        .WithMany("Members")
                         .HasForeignKey("ClubId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -241,13 +281,62 @@ namespace Turnierverwaltung.Server.Migrations
                         .WithMany("Members")
                         .HasForeignKey("TeamId");
 
-                    b.HasOne("Turnierverwaltung.Server.Database.Model.Tournament", null)
+                    b.HasOne("Turnierverwaltung.Server.Database.Model.Tournament", "Tournament")
                         .WithMany("Participants")
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Club");
+
+                    b.Navigation("Tournament");
+                });
+
+            modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.ParticipantResult", b =>
+                {
+                    b.HasOne("Turnierverwaltung.Server.Database.Model.Discipline", "Discipline")
+                        .WithMany("Results")
+                        .HasForeignKey("DisciplineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Turnierverwaltung.Server.Database.Model.Participant", "Participant")
+                        .WithMany("Results")
+                        .HasForeignKey("ParticipantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsMany("Turnierverwaltung.Server.Database.Model.ParticipantResult+Round", "Rounds", b1 =>
+                        {
+                            b1.Property<int>("ParticipantResultParticipantId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<int>("ParticipantResultDisciplineId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAddOrUpdate()
+                                .HasColumnType("INTEGER");
+
+                            b1.PrimitiveCollection<string>("Values")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+
+                            b1.HasKey("ParticipantResultParticipantId", "ParticipantResultDisciplineId", "__synthesizedOrdinal");
+
+                            b1.ToTable("ParticipantResults");
+
+                            b1.ToJson("Rounds");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ParticipantResultParticipantId", "ParticipantResultDisciplineId");
+                        });
+
+                    b.Navigation("Discipline");
+
+                    b.Navigation("Participant");
+
+                    b.Navigation("Rounds");
                 });
 
             modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Team", b =>
@@ -270,6 +359,21 @@ namespace Turnierverwaltung.Server.Migrations
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Club", b =>
+                {
+                    b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Discipline", b =>
+                {
+                    b.Navigation("Results");
+                });
+
+            modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Participant", b =>
+                {
+                    b.Navigation("Results");
                 });
 
             modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Team", b =>

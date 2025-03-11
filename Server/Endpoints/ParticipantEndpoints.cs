@@ -60,7 +60,7 @@ public static class ParticipantEndpoints
 
     public static async Task<IResult> GetParticipants(ApplicationDbContext dbContext, int tournamentId)
     {
-        if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
+        if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
             return Results.NotFound();
 
         var participants = await dbContext
@@ -82,7 +82,7 @@ public static class ParticipantEndpoints
         ParticipantEditDto dto
     )
     {
-        if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
+        if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
             return Results.NotFound();
 
         var context = new ValidationContext<ParticipantEditDto>(dto)
@@ -182,8 +182,7 @@ public static class ParticipantEndpoints
         int disciplineId
     )
     {
-        var participant = await dbContext.Participants.AsNoTracking().FirstOrDefaultAsync(p => p.Id == participantId);
-        if (participant == null)
+        if (!await dbContext.Participants.AsNoTracking().AnyAsync(p => p.Id == participantId))
             return Results.NotFound();
 
         var discipline = await dbContext.Disciplines.AsNoTracking().FirstOrDefaultAsync(d => d.Id == disciplineId);
@@ -194,19 +193,30 @@ public static class ParticipantEndpoints
             .Values.Select(v => new ParticipantResultDetailDto.DisciplineValue(v.Name, v.IsAdded))
             .ToList();
 
-        if (!participant.Results.TryGetValue(disciplineId, out var disciplineResult))
-        {
-            return Results.Ok(new ParticipantResultDetailDto(disciplineValues, []));
-        }
+        var participantResult = await dbContext
+            .ParticipantResults.AsNoTracking()
+            .FirstOrDefaultAsync(pr => pr.ParticipantId == participantId && pr.DisciplineId == disciplineId);
 
-        var roundResults = disciplineResult
-            .Rounds.Select(r => new ParticipantResultDetailDto.RoundResult(r.Values))
+        if (participantResult is null)
+            return Results.Ok(new ParticipantResultDetailDto(disciplineValues, []));
+
+        var roundResults = participantResult
+            .Rounds.Select(round => new ParticipantResultDetailDto.RoundResult(round.Values))
             .ToList();
 
         var resultDto = new ParticipantResultDetailDto(disciplineValues, roundResults);
         return Results.Ok(resultDto);
     }
 
+    /// <summary>
+    /// Updates the results of a participant for a given discipline.
+    /// </summary>
+    /// <param name="dbContext">The database context used to access participant and discipline data.</param>
+    /// <param name="validator">The validator for validating the participant result data.</param>
+    /// <param name="participantId">The ID of the participant whose results are being updated.</param>
+    /// <param name="disciplineId">The ID of the discipline associated with the participant's results.</param>
+    /// <param name="dto">The data transfer object containing the updated participant results.</param>
+    /// <returns>A result indicating the outcome of the update operation.</returns>
     private static async Task<IResult> UpdateParticipantResults(
         ApplicationDbContext dbContext,
         IValidator<ParticipantResultEditDto> validator,
@@ -215,34 +225,64 @@ public static class ParticipantEndpoints
         ParticipantResultEditDto dto
     )
     {
-        var participant = await dbContext.Participants.FindAsync(participantId);
-        if (participant == null)
+        // Check if the participant exists
+        if (!await dbContext.Participants.AsNoTracking().AnyAsync(p => p.Id == participantId))
             return Results.NotFound();
 
-        var discipline = await dbContext.Disciplines.AsNoTracking().FirstOrDefaultAsync(d => d.Id == disciplineId);
-        if (discipline == null)
+        // Get the count of discipline values
+        var disciplineValueCount = await dbContext
+            .Disciplines.AsNoTracking()
+            .Where(d => d.Id == disciplineId)
+            .Select(d => d.Values.Count)
+            .FirstOrDefaultAsync();
+
+        // Return NotFound if no discipline was found
+        if (disciplineValueCount is 0)
             return Results.NotFound();
 
+        // Set up validation context with discipline value count and validate dto
         var context = new ValidationContext<ParticipantResultEditDto>(dto)
         {
-            RootContextData = { [ParticipantResultEditDtoValidator.DisciplineValueCountKey] = discipline.Values.Count },
+            RootContextData = { [ParticipantResultEditDtoValidator.DisciplineValueCountKey] = disciplineValueCount },
         };
 
         var validationResult = await validator.ValidateAsync(context);
         if (!validationResult.IsValid)
             return TypedResults.ValidationProblem(validationResult.ToValidationProblemErrors());
 
+        // Retrieve existing participant result
+        var participantResult = await dbContext.ParticipantResults.FirstOrDefaultAsync(pr =>
+            pr.ParticipantId == participantId && pr.DisciplineId == disciplineId
+        );
+
+        // If no rounds are provided, remove existing result if present
         if (dto.Rounds.Count == 0)
         {
-            participant.Results.Remove(disciplineId);
+            if (participantResult is not null)
+                dbContext.Remove(participantResult);
         }
         else
         {
-            var rounds = dto.Rounds.Select(x => new Participant.RoundResult { Values = x.Values }).ToList();
+            var rounds = dto.Rounds.Select(x => new ParticipantResult.Round { Values = x.Values }).ToList();
 
-            participant.Results[disciplineId] = new Participant.DisciplineResult { Rounds = rounds };
+            // Add new result if none exists, otherwise update existing result
+            if (participantResult == null)
+            {
+                participantResult = new ParticipantResult
+                {
+                    ParticipantId = participantId,
+                    DisciplineId = disciplineId,
+                    Rounds = rounds,
+                };
+                dbContext.Add(participantResult);
+            }
+            else
+            {
+                participantResult.Rounds = rounds;
+            }
         }
 
+        // Save changes to database
         await dbContext.SaveChangesAsync();
         return Results.Ok();
     }

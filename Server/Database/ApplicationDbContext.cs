@@ -13,11 +13,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Team> Teams { get; set; }
     public DbSet<TeamDiscipline> TeamDisciplines { get; set; }
     public DbSet<Tournament> Tournaments { get; set; }
+    public DbSet<ParticipantResult> ParticipantResults { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        var serializerOptions = new JsonSerializerOptions();
-
         modelBuilder
             .Entity<Tournament>()
             .Property(t => t.Date)
@@ -26,29 +25,20 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 v => DateTimeOffset.FromUnixTimeSeconds(v).UtcDateTime
             );
 
-        modelBuilder.Entity<Participant>().Property(p => p.Gender).HasConversion<string>();
-
-        var participantResultComparer = new ValueComparer<Dictionary<int, Participant.DisciplineResult>>(
-            (d1, d2) => d1 != null && d2 != null && d1.SequenceEqual(d2),
-            d => d.Aggregate(0, (hash, kvp) => HashCode.Combine(hash, kvp.Key, kvp.Value.GetHashCode())),
-            d => d.ToDictionary(entry => entry.Key, entry => entry.Value)
-        );
+        modelBuilder.Entity<Discipline>().OwnsMany(d => d.Values).ToJson();
 
         modelBuilder
             .Entity<Participant>()
-            .Property(p => p.Results)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, serializerOptions),
-                v => JsonSerializer.Deserialize<Dictionary<int, Participant.DisciplineResult>>(v, serializerOptions)!,
-                participantResultComparer
-            );
+            .HasMany(p => p.Results)
+            .WithOne(pr => pr.Participant)
+            .HasForeignKey(pr => pr.ParticipantId);
 
         modelBuilder
             .Entity<Discipline>()
-            .Property(d => d.Values)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, serializerOptions),
-                v => JsonSerializer.Deserialize<List<Discipline.Value>>(v, serializerOptions)!
-            );
+            .HasMany(d => d.Results)
+            .WithOne(pr => pr.Discipline)
+            .HasForeignKey(pr => pr.DisciplineId);
+
+        modelBuilder.Entity<ParticipantResult>().OwnsMany(pr => pr.Rounds).ToJson();
     }
 }

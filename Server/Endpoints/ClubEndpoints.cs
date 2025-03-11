@@ -88,12 +88,7 @@ public static class ClubEndpoints
         var club = await dbContext
             .Clubs.AsNoTracking()
             .Where(c => c.Id == clubId)
-            .Select(c => new ClubDetailDto(
-                c.Id,
-                c.TournamentId,
-                c.Name,
-                dbContext.Participants.Count(p => p.ClubId == clubId)
-            ))
+            .Select(c => new ClubDetailDto(c.Id, c.TournamentId, c.Name, c.Members.Count))
             .SingleOrDefaultAsync();
 
         return club is not null ? Results.Ok(club) : Results.NotFound();

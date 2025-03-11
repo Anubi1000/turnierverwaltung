@@ -82,7 +82,12 @@ public static class TeamDisciplineEndpoints
 
         var basedOn = await dbContext.Disciplines.Where(d => dto.BasedOn.Contains(d.Id)).ToListAsync();
 
-        var teamDiscipline = new TeamDiscipline { Name = dto.Name, BasedOn = basedOn, TournamentId = tournamentId};
+        var teamDiscipline = new TeamDiscipline
+        {
+            Name = dto.Name,
+            BasedOn = basedOn,
+            TournamentId = tournamentId,
+        };
 
         dbContext.Add(teamDiscipline);
         await dbContext.SaveChangesAsync();
@@ -111,7 +116,9 @@ public static class TeamDisciplineEndpoints
         TeamDisciplineEditDto dto
     )
     {
-        var teamDiscipline = await dbContext.TeamDisciplines.Include(t => t.BasedOn).FirstOrDefaultAsync(t => t.Id == teamDisciplineId);
+        var teamDiscipline = await dbContext
+            .TeamDisciplines.Include(t => t.BasedOn)
+            .FirstOrDefaultAsync(t => t.Id == teamDisciplineId);
         if (teamDiscipline is null)
             return Results.NotFound();
 

@@ -18,7 +18,8 @@ public class TeamDisciplineEditDtoValidator : AbstractValidator<TeamDisciplineEd
                 (
                     (_, disciplineId, context, cancellationToken) =>
                         db.Disciplines.AnyAsync(
-                            t => t.TournamentId == (int)context.RootContextData[TournamentIdKey] && t.Id == disciplineId,
+                            t =>
+                                t.TournamentId == (int)context.RootContextData[TournamentIdKey] && t.Id == disciplineId,
                             cancellationToken
                         )
                 )

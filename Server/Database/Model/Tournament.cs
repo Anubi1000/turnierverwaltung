@@ -11,7 +11,6 @@ public class Tournament
     [MaxLength(150)]
     public string Name { get; set; } = "";
 
-    [JsonConverter(typeof(DateTimeToTimestampConverter))]
     public DateTime Date { get; set; } = DateTime.UtcNow;
 
     public int TeamSize { get; init; } = 3;

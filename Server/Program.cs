@@ -51,6 +51,7 @@ public static class Program
         app.MapGroup("/").WithTags("Util").MapUtilEndpoints();
 
         app.MapTournamentEndpoints();
+        app.MapOverviewEndpoints();
         app.MapClubEndpoints();
         app.MapDisciplineEndpoints();
         app.MapParticipantEndpoints();
