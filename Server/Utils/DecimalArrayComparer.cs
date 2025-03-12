@@ -1,8 +1,8 @@
 ﻿namespace Turnierverwaltung.Server.Utils;
 
-public class DoubleArrayComparer : IComparer<double[]>
+public class DecimalArrayComparer : IComparer<decimal[]>
 {
-    public int Compare(double[]? array1, double[]? array2)
+    public int Compare(decimal[]? array1, decimal[]? array2)
     {
         // Ensure that neither array is null
         if (array1 == null && array2 == null)

@@ -10,14 +10,16 @@ namespace Turnierverwaltung.Server.Model.Results;
 
 public class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamentId)
 {
+    private const int ScoreRoundingPrecision = 10;
+
     private static readonly CultureInfo GermanCultureInfo = CultureInfo.GetCultureInfo("de-DE");
-    private static readonly DoubleArrayComparer DoubleArrayComparer = new DoubleArrayComparer();
+    private static readonly DecimalArrayComparer DecimalArrayComparer = new();
     private readonly List<ScoreboardData.Table> _tables = [];
 
     private Tournament _tournament = null!;
-    private FrozenDictionary<ParticipantResult, double[]> _calculatedResults = FrozenDictionary<
+    private FrozenDictionary<ParticipantResult, decimal[]> _calculatedResults = FrozenDictionary<
         ParticipantResult,
-        double[]
+        decimal[]
     >.Empty;
 
     public static Task<ScoreboardData?> GetScoreboardDataAsync(ApplicationDbContext dbContext, int tournamentId)
@@ -32,12 +34,23 @@ public class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamen
         await using (await dbContext.Database.BeginTransactionAsync())
         {
             tournament = await dbContext
-                .Tournaments.Include(t => t.Disciplines)
+                .Tournaments
+                // Disciplines
+                .Include(t => t.Disciplines)
+                // TeamDisciplines > Disciplines
+                .Include(t => t.TeamDisciplines)
+                .ThenInclude(d => d.BasedOn)
+                // Participants > Results > Discipline
                 .Include(t => t.Participants)
                 .ThenInclude(p => p.Results)
                 .ThenInclude(pr => pr.Discipline)
+                // Participant > Club
                 .Include(t => t.Participants)
                 .ThenInclude(p => p.Club)
+                // Teams > Members
+                .Include(t => t.Teams)
+                .ThenInclude(t => t.Members)
+                // End
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(t => t.Id == tournamentId);
             await dbContext.Database.CommitTransactionAsync();
@@ -52,15 +65,20 @@ public class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamen
             .ToFrozenDictionary(result => result, GetScoresFromResult);
 
         AddDisciplineTables();
+        AddTeamDisciplineTables();
 
         return new ScoreboardData(_tournament.Name, _tables.ToImmutableList());
     }
 
+    #region Disciplines
+
     private void AddDisciplineTables()
     {
+        var columnCache = new Dictionary<int, ImmutableList<ScoreboardData.Table.Column>>();
+
         foreach (var discipline in _tournament.Disciplines)
         {
-            var columns = CreateColumnsForDiscipline(discipline);
+            var columns = columnCache.GetOrCompute(discipline.AmountOfBestRoundsToShow, CreateColumnsForDiscipline);
 
             var participantScores = _tournament
                 .Participants.Select(participant =>
@@ -70,7 +88,7 @@ public class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamen
                     return (participant, scores);
                 })
                 .Where(result => result.scores.Length != 0)
-                .OrderByDescending(result => result.scores, DoubleArrayComparer);
+                .OrderByDescending(result => result.scores, DecimalArrayComparer);
 
             if (discipline.AreGendersSeparated)
             {
@@ -94,7 +112,7 @@ public class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamen
     private void CreateDisciplineTable(
         string name,
         int roundsToShow,
-        IEnumerable<(Participant participant, double[] scores)> participantScores,
+        IEnumerable<(Participant participant, decimal[] scores)> participantScores,
         ImmutableList<ScoreboardData.Table.Column> columns
     )
     {
@@ -108,12 +126,12 @@ public class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamen
 
     private static ScoreboardData.Table.Row CreateDisciplineRow(
         Participant participant,
-        double[] scores,
+        decimal[] scores,
         int index,
         int roundsToShow
     )
     {
-        var values = new List<string>
+        var values = new List<string>(4 + roundsToShow)
         {
             (index + 1).ToString(),
             participant.StartNumber.ToString(),
@@ -122,14 +140,22 @@ public class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamen
         };
 
         for (var i = 0; i < roundsToShow; i++)
-            values.Add(i < scores.Length ? scores[i].ToString(GermanCultureInfo) : "");
+        {
+            var score = "";
+            if (i < scores.Length)
+            {
+                score = Math.Round(scores[i], ScoreRoundingPrecision).ToString(GermanCultureInfo);
+            }
+
+            values.Add(score);
+        }
 
         return new ScoreboardData.Table.Row(participant.Id, values.ToImmutableList());
     }
 
-    private static ImmutableList<ScoreboardData.Table.Column> CreateColumnsForDiscipline(Discipline discipline)
+    private static ImmutableList<ScoreboardData.Table.Column> CreateColumnsForDiscipline(int amountOfRoundsToShow)
     {
-        var columns = new List<ScoreboardData.Table.Column>
+        var columns = new List<ScoreboardData.Table.Column>(4 + amountOfRoundsToShow)
         {
             new(
                 "Platz",
@@ -152,27 +178,138 @@ public class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamen
         var pointsColumnWidth = new ScoreboardData.Table.Column.Width.Fixed(150);
         const ScoreboardData.Table.Column.Alignment pointsColumnAlignment = ScoreboardData.Table.Column.Alignment.Right;
 
-        if (discipline.AmountOfBestRoundsToShow == 1)
+        if (amountOfRoundsToShow is 1)
         {
             columns.Add(new ScoreboardData.Table.Column("Punkte", pointsColumnWidth, pointsColumnAlignment));
         }
         else
         {
-            for (var i = 1; i <= discipline.AmountOfBestRoundsToShow; i++)
+            for (var i = 1; i <= amountOfRoundsToShow; i++)
                 columns.Add(new ScoreboardData.Table.Column($"Runde {i}", pointsColumnWidth, pointsColumnAlignment));
         }
 
         return columns.ToImmutableList();
     }
 
-    private static double[] GetScoresFromResult(ParticipantResult result)
+    #endregion
+
+    #region TeamDisciplines
+
+    private void AddTeamDisciplineTables()
+    {
+        var columns = CreateColumnsForTeamDiscipline();
+
+        foreach (var teamDiscipline in _tournament.TeamDisciplines)
+        {
+            var disciplineIds = teamDiscipline.BasedOn.Select(d => d.Id).ToList();
+
+            var rows = teamDiscipline
+                .ParticipatingTeams.Select(team =>
+                {
+                    var memberScores = team.Members.ToDictionary(
+                        member => member,
+                        member =>
+                            _calculatedResults
+                                .Where(result =>
+                                    result.Key.ParticipantId == member.Id
+                                    && disciplineIds.Contains(result.Key.DisciplineId)
+                                )
+                                .Select(r => r.Value.Max())
+                                .DefaultIfEmpty(0)
+                                .Max()
+                    );
+
+                    var totalScore = memberScores.Values.Sum();
+                    return (team, memberScores, totalScore);
+                })
+                .OrderByDescending(result => result.totalScore)
+                .Select(
+                    (result, index) =>
+                    {
+                        var (team, memberScores, totalScore) = result;
+
+                        var values = new List<string>(4 + memberScores.Count)
+                        {
+                            (index + 1).ToString(),
+                            team.StartNumber.ToString(),
+                            team.Name,
+                        };
+
+                        foreach (var (member, score) in memberScores)
+                        {
+                            values.Add(member.Name);
+                            values.Add(Math.Round(score, ScoreRoundingPrecision).ToString(GermanCultureInfo));
+                        }
+
+                        values.Add(Math.Round(totalScore, ScoreRoundingPrecision).ToString(GermanCultureInfo));
+
+                        return new ScoreboardData.Table.Row(team.Id, values.ToImmutableList());
+                    }
+                )
+                .ToImmutableList();
+
+            var table = new ScoreboardData.Table(teamDiscipline.Name, columns, rows);
+            _tables.Add(table);
+        }
+    }
+
+    private ImmutableList<ScoreboardData.Table.Column> CreateColumnsForTeamDiscipline()
+    {
+        var columns = new List<ScoreboardData.Table.Column>(4 + _tournament.TeamSize * 2)
+        {
+            new(
+                "Platz",
+                new ScoreboardData.Table.Column.Width.Fixed(125),
+                ScoreboardData.Table.Column.Alignment.Center
+            ),
+            new(
+                "Startnummer",
+                new ScoreboardData.Table.Column.Width.Fixed(125),
+                ScoreboardData.Table.Column.Alignment.Center
+            ),
+            new("Name", new ScoreboardData.Table.Column.Width.Variable(1), ScoreboardData.Table.Column.Alignment.Left),
+        };
+
+        for (var i = 1; i <= _tournament.TeamSize; i++)
+        {
+            columns.Add(
+                new ScoreboardData.Table.Column(
+                    $"Schütze {i}",
+                    new ScoreboardData.Table.Column.Width.Variable(1),
+                    ScoreboardData.Table.Column.Alignment.Right
+                )
+            );
+            columns.Add(
+                new ScoreboardData.Table.Column(
+                    "Punkte",
+                    new ScoreboardData.Table.Column.Width.Fixed(200),
+                    ScoreboardData.Table.Column.Alignment.Left
+                )
+            );
+        }
+
+        columns.Add(
+            new ScoreboardData.Table.Column(
+                "Gesamt",
+                new ScoreboardData.Table.Column.Width.Fixed(200),
+                ScoreboardData.Table.Column.Alignment.Right
+            )
+        );
+
+        return columns.ToImmutableList();
+    }
+
+    #endregion
+
+    private static decimal[] GetScoresFromResult(ParticipantResult result)
     {
         return result
             .Rounds.Select(round =>
                 round
                     .Values.Zip(
                         result.Discipline.Values,
-                        (value, disciplineValue) => disciplineValue.IsAdded ? value : -value
+                        (value, disciplineValue) =>
+                            disciplineValue.IsAdded ? Convert.ToDecimal(value) : -Convert.ToDecimal(value)
                     )
                     .Sum()
             )

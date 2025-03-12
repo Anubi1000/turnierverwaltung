@@ -4,13 +4,20 @@ namespace Turnierverwaltung.Server.Database.Model;
 
 public class Team
 {
-    public int Id { get; set; }
+    // Common properties
+    public int Id { get; init; }
 
     [MaxLength(150)]
     public string Name { get; set; } = "";
+    public int StartNumber { get; set; }
 
-    public int StartNumber { get; set; } = 0;
+    // Tournament
+    public int TournamentId { get; init; }
+    public Tournament Tournament { get; init; } = null!;
+
+    // Members
     public ICollection<Participant> Members { get; set; } = new List<Participant>();
+
+    // ParticipatingDisciplines
     public ICollection<TeamDiscipline> ParticipatingDisciplines { get; set; } = new List<TeamDiscipline>();
-    public int TournamentId { get; set; }
 }
