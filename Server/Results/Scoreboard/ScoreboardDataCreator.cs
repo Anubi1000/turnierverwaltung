@@ -6,7 +6,7 @@ using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Utils;
 
-namespace Turnierverwaltung.Server.Model.Results;
+namespace Turnierverwaltung.Server.Results.Scoreboard;
 
 public class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamentId)
 {
@@ -22,7 +22,7 @@ public class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamen
         decimal[]
     >.Empty;
 
-    public static Task<ScoreboardData?> GetScoreboardDataAsync(ApplicationDbContext dbContext, int tournamentId)
+    public static Task<ScoreboardData?> CreateScoreboardDataAsync(ApplicationDbContext dbContext, int tournamentId)
     {
         var creator = new ScoreboardDataCreator(dbContext, tournamentId);
         return creator.CreateScoreboardData();

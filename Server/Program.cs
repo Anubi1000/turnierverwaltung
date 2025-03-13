@@ -140,8 +140,23 @@ public static class Program
                 if (!type.IsNested)
                     return OpenApiOptions.CreateDefaultSchemaReferenceId(jsonTypeInfo);
 
-                var parentName = type.DeclaringType?.Name;
-                return parentName + "_" + type.Name;
+                if (type.DeclaringType is not null)
+                {
+                    var attributes = type.DeclaringType.GetCustomAttributes<JsonDerivedTypeAttribute>();
+                    if (attributes.Any())
+                    {
+                        return OpenApiOptions.CreateDefaultSchemaReferenceId(jsonTypeInfo);
+                    }
+                }
+
+                return GetFullName(type);
+
+                string GetFullName(Type type)
+                {
+                    if (type.DeclaringType == null)
+                        return type.Name;
+                    return GetFullName(type.DeclaringType) + "_" + type.Name;
+                }
             };
 
             options.AddSchemaTransformer(

@@ -64,6 +64,22 @@
           "System.Diagnostics.EventLog": "6.0.0"
         }
       },
+      "DocumentFormat.OpenXml": {
+        "type": "Transitive",
+        "resolved": "3.3.0",
+        "contentHash": "JogRPJNiE6kKvbuCqVRX691pPWeGMqdQgjrUwRYkdpfkMmtElfqAgcRR73geYj7OtBeEpstldZXXzJw27LUI9w==",
+        "dependencies": {
+          "DocumentFormat.OpenXml.Framework": "3.3.0"
+        }
+      },
+      "DocumentFormat.OpenXml.Framework": {
+        "type": "Transitive",
+        "resolved": "3.3.0",
+        "contentHash": "R5CLzEoeyr7XDB7g3NTxRobcU19agaxVAhGZm+fZUShJGiU4bw8oUgnA2BNFepigJckfFMayOBMAbV3kDXNInA==",
+        "dependencies": {
+          "System.IO.Packaging": "8.0.1"
+        }
+      },
       "FluentValidation": {
         "type": "Transitive",
         "resolved": "11.11.0",
@@ -344,6 +360,11 @@
         "resolved": "8.0.0",
         "contentHash": "ne1843evDugl0md7Fjzy6QjJrzsjh46ZKbhf8GwBXb5f/gw97J4bxMs0NQKifDuThh/f0bZ0e62NPl1jzTuRqA=="
       },
+      "System.IO.Packaging": {
+        "type": "Transitive",
+        "resolved": "8.0.1",
+        "contentHash": "KYkIOAvPexQOLDxPO2g0BVoWInnQhPpkFzRqvNrNrMhVT6kqhVr0zEb6KCHlptLFukxnZrjuMVAnxK7pOGUYrw=="
+      },
       "System.Memory": {
         "type": "Transitive",
         "resolved": "4.6.0",
@@ -429,6 +450,7 @@
       "turnierverwaltung.server": {
         "type": "Project",
         "dependencies": {
+          "DocumentFormat.OpenXml": "[3.3.0, )",
           "FluentValidation": "[11.11.0, )",
           "Microsoft.AspNetCore.OpenApi": "[9.0.1, )",
           "Microsoft.EntityFrameworkCore.Sqlite": "[9.0.1, )",

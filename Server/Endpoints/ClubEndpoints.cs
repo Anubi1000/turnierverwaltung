@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -17,36 +18,27 @@ public static class ClubEndpoints
         var tournamentIndependentGroup = baseGroup.MapGroup("/clubs/{clubId:int}");
 
         // Tournament-based routes
-        tournamentDependentGroup
-            .MapGet("/", GetClubs)
-            .Produces<List<ListClubDto>>()
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentDependentGroup.MapGet("/", GetClubs);
 
-        tournamentDependentGroup.MapPost("/", CreateClub).Produces<int>().Produces(StatusCodes.Status404NotFound);
+        tournamentDependentGroup.MapPost("/", CreateClub);
 
         // Club routes
-        tournamentIndependentGroup
-            .MapGet("/", GetClub)
-            .Produces<ClubDetailDto>()
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapGet("/", GetClub);
 
-        tournamentIndependentGroup
-            .MapPut("/", UpdateClub)
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapPut("/", UpdateClub);
 
-        tournamentIndependentGroup
-            .MapDelete("/", DeleteClub)
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapDelete("/", DeleteClub);
 
         return builder;
     }
 
-    public static async Task<IResult> GetClubs(ApplicationDbContext dbContext, int tournamentId)
+    public static async Task<Results<NotFound, Ok<List<ListClubDto>>>> GetClubs(
+        ApplicationDbContext dbContext,
+        int tournamentId
+    )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var clubs = await dbContext
             .Clubs.AsNoTracking()
@@ -56,10 +48,10 @@ public static class ClubEndpoints
             .Select(c => new ListClubDto(c.Id, c.Name))
             .ToListAsync();
 
-        return Results.Ok(clubs);
+        return TypedResults.Ok(clubs);
     }
 
-    public static async Task<IResult> CreateClub(
+    public static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateClub(
         ApplicationDbContext dbContext,
         IValidator<ClubEditDto> validator,
         int tournamentId,
@@ -67,7 +59,7 @@ public static class ClubEndpoints
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var validationResult = await validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
@@ -80,10 +72,10 @@ public static class ClubEndpoints
         dbContext.Add(club);
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok(club.Id);
+        return TypedResults.Ok(club.Id);
     }
 
-    public static async Task<IResult> GetClub(ApplicationDbContext dbContext, int clubId)
+    public static async Task<Results<NotFound, Ok<ClubDetailDto>>> GetClub(ApplicationDbContext dbContext, int clubId)
     {
         var club = await dbContext
             .Clubs.AsNoTracking()
@@ -91,10 +83,10 @@ public static class ClubEndpoints
             .Select(c => new ClubDetailDto(c.Id, c.TournamentId, c.Name, c.Members.Count))
             .SingleOrDefaultAsync();
 
-        return club is not null ? Results.Ok(club) : Results.NotFound();
+        return club is null ? TypedResults.NotFound() : TypedResults.Ok(club);
     }
 
-    public static async Task<IResult> UpdateClub(
+    public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateClub(
         ApplicationDbContext dbContext,
         IValidator<ClubEditDto> validator,
         int clubId,
@@ -103,7 +95,7 @@ public static class ClubEndpoints
     {
         var club = await dbContext.Clubs.FindAsync(clubId);
         if (club is null)
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var validationResult = await validator.ValidateAsync(dto);
         if (!validationResult.IsValid)
@@ -114,19 +106,19 @@ public static class ClubEndpoints
         club.Name = dto.Name;
 
         await dbContext.SaveChangesAsync();
-        return Results.Ok();
+        return TypedResults.Ok();
     }
 
-    public static async Task<IResult> DeleteClub(ApplicationDbContext dbContext, int clubId)
+    public static async Task<Results<NotFound, Ok>> DeleteClub(ApplicationDbContext dbContext, int clubId)
     {
         var club = await dbContext.Clubs.FindAsync(clubId);
         if (club is null)
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         dbContext.Remove(club);
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok();
+        return TypedResults.Ok();
     }
 
     private static ClubEditDto SanitizeEditDto(ClubEditDto dto)

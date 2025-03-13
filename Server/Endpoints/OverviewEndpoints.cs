@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database;
-using Turnierverwaltung.Server.Model.Results;
+using Turnierverwaltung.Server.Results.Scoreboard;
+using Turnierverwaltung.Server.Results.Word;
 
 namespace Turnierverwaltung.Server.Endpoints;
 
@@ -13,18 +16,50 @@ public static class OverviewEndpoints
             .WithTags("Overview")
             .RequireAuthorization();
 
-        baseGroup.MapGet("/", GetOverviewData).Produces<ScoreboardData>().Produces(StatusCodes.Status404NotFound);
+        baseGroup.MapGet("/", GetOverviewData);
+
+        baseGroup.MapGet("/download", GetScoreDocument);
 
         return builder;
     }
 
-    private static async Task<IResult> GetOverviewData(ApplicationDbContext dbContext, int tournamentId)
+    private static async Task<Results<NotFound, Ok<ScoreboardData>>> GetOverviewData(
+        ApplicationDbContext dbContext,
+        int tournamentId
+    )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
-        var scoreboardData = await ScoreboardDataCreator.GetScoreboardDataAsync(dbContext, tournamentId);
+        var scoreboardData = await ScoreboardDataCreator.CreateScoreboardDataAsync(dbContext, tournamentId);
 
-        return Results.Ok(scoreboardData);
+        return TypedResults.Ok(scoreboardData);
+    }
+
+    private static async Task<IResult> GetScoreDocument(
+        ApplicationDbContext dbContext,
+        int tournamentId,
+        [FromQuery] string? tables
+    )
+    {
+        if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
+            return TypedResults.NotFound();
+
+        var scoreboardData = await ScoreboardDataCreator.CreateScoreboardDataAsync(dbContext, tournamentId);
+        if (scoreboardData is null)
+            return TypedResults.NotFound();
+
+        if (string.IsNullOrEmpty(tables))
+        {
+            var wordDoc = WordFileCreator.CreateWordScoreFile(scoreboardData);
+
+            return TypedResults.File(
+                fileContents: wordDoc,
+                contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                fileDownloadName: "Ergebnisse.docx"
+            );
+        }
+
+        throw new NotImplementedException("Separate documents are currently not implemented.");
     }
 }

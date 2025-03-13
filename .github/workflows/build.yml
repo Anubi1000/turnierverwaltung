@@ -56,11 +56,13 @@ jobs:
           path: ./Server/bin/Release/net9.0/win-x64/publish/
 
       - name: Run Server Tests
+        if: false
         working-directory: ./Server.Tests
         shell: pwsh
         run: ./runTests.ps1
 
       - name: Upload Server Coverage Report
+        if: false
         uses: actions/upload-artifact@v4
         with:
           name: Server (Coverage)

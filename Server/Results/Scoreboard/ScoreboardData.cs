@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
-namespace Turnierverwaltung.Server.Model.Results;
+namespace Turnierverwaltung.Server.Results.Scoreboard;
 
 public record ScoreboardData(string TournamentName, ImmutableList<ScoreboardData.Table> Tables)
 {
@@ -23,7 +23,7 @@ public record ScoreboardData(string TournamentName, ImmutableList<ScoreboardData
 
             [JsonDerivedType(typeof(Fixed))]
             [JsonDerivedType(typeof(Variable))]
-            public abstract record Width
+            public interface Width
             {
                 public record Fixed([property: JsonPropertyName("width")] int WidthValue) : Width;
 

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -18,50 +19,32 @@ public static class ParticipantEndpoints
         var tournamentIndependentGroup = baseGroup.MapGroup("/participants/{participantId:int}");
 
         // Tournament-based routes
-        tournamentDependentGroup
-            .MapGet("/", GetParticipants)
-            .Produces<List<ListParticipantDto>>()
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentDependentGroup.MapGet("/", GetParticipants);
 
-        tournamentDependentGroup
-            .MapPost("/", CreateParticipant)
-            .Produces<int>()
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentDependentGroup.MapPost("/", CreateParticipant);
 
         // Participant routes
-        tournamentIndependentGroup
-            .MapGet("/", GetParticipant)
-            .Produces<ParticipantDetailDto>()
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapGet("/", GetParticipant);
 
-        tournamentIndependentGroup
-            .MapPut("/", UpdateParticipant)
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapPut("/", UpdateParticipant);
 
-        tournamentIndependentGroup
-            .MapDelete("/", DeleteParticipant)
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapDelete("/", DeleteParticipant);
 
         // Result routes
-        tournamentIndependentGroup
-            .MapGet("/results/{disciplineId:int}", GetParticipantResults)
-            .Produces<ParticipantResultDetailDto>()
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapGet("/results/{disciplineId:int}", GetParticipantResults);
 
-        tournamentIndependentGroup
-            .MapPut("/results/{disciplineId:int}", UpdateParticipantResults)
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapPut("/results/{disciplineId:int}", UpdateParticipantResults);
 
         return builder;
     }
 
-    public static async Task<IResult> GetParticipants(ApplicationDbContext dbContext, int tournamentId)
+    public static async Task<Results<NotFound, Ok<List<ListParticipantDto>>>> GetParticipants(
+        ApplicationDbContext dbContext,
+        int tournamentId
+    )
     {
         if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var participants = await dbContext
             .Participants.AsNoTracking()
@@ -72,10 +55,10 @@ public static class ParticipantEndpoints
             .Select(p => new ListParticipantDto(p.Id, p.Name, p.StartNumber))
             .ToListAsync();
 
-        return Results.Ok(participants);
+        return TypedResults.Ok(participants);
     }
 
-    private static async Task<IResult> CreateParticipant(
+    private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateParticipant(
         ApplicationDbContext dbContext,
         IValidator<ParticipantEditDto> validator,
         int tournamentId,
@@ -83,7 +66,7 @@ public static class ParticipantEndpoints
     )
     {
         if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var context = new ValidationContext<ParticipantEditDto>(dto)
         {
@@ -108,10 +91,13 @@ public static class ParticipantEndpoints
         dbContext.Participants.Add(participant);
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok(participant.Id);
+        return TypedResults.Ok(participant.Id);
     }
 
-    private static async Task<IResult> GetParticipant(ApplicationDbContext dbContext, int participantId)
+    private static async Task<Results<NotFound, Ok<ParticipantDetailDto>>> GetParticipant(
+        ApplicationDbContext dbContext,
+        int participantId
+    )
     {
         var participant = await dbContext
             .Participants.AsNoTracking()
@@ -129,10 +115,10 @@ public static class ParticipantEndpoints
             ))
             .SingleOrDefaultAsync();
 
-        return participant is null ? Results.NotFound() : Results.Ok(participant);
+        return participant is null ? TypedResults.NotFound() : TypedResults.Ok(participant);
     }
 
-    private static async Task<IResult> UpdateParticipant(
+    private static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateParticipant(
         ApplicationDbContext dbContext,
         IValidator<ParticipantEditDto> validator,
         int participantId,
@@ -141,7 +127,7 @@ public static class ParticipantEndpoints
     {
         var participant = await dbContext.Participants.FindAsync(participantId);
         if (participant is null)
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var context = new ValidationContext<ParticipantEditDto>(dto)
         {
@@ -161,33 +147,36 @@ public static class ParticipantEndpoints
 
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok();
+        return TypedResults.Ok();
     }
 
-    private static async Task<IResult> DeleteParticipant(ApplicationDbContext dbContext, int participantId)
+    private static async Task<Results<NotFound, Ok>> DeleteParticipant(
+        ApplicationDbContext dbContext,
+        int participantId
+    )
     {
         var participant = await dbContext.Participants.FindAsync(participantId);
         if (participant is null)
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         dbContext.Remove(participant);
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok();
+        return TypedResults.Ok();
     }
 
-    private static async Task<IResult> GetParticipantResults(
+    private static async Task<Results<NotFound, Ok<ParticipantResultDetailDto>>> GetParticipantResults(
         ApplicationDbContext dbContext,
         int participantId,
         int disciplineId
     )
     {
         if (!await dbContext.Participants.AsNoTracking().AnyAsync(p => p.Id == participantId))
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var discipline = await dbContext.Disciplines.AsNoTracking().FirstOrDefaultAsync(d => d.Id == disciplineId);
         if (discipline == null)
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var disciplineValues = discipline
             .Values.Select(v => new ParticipantResultDetailDto.DisciplineValue(v.Name, v.IsAdded))
@@ -198,14 +187,14 @@ public static class ParticipantEndpoints
             .FirstOrDefaultAsync(pr => pr.ParticipantId == participantId && pr.DisciplineId == disciplineId);
 
         if (participantResult is null)
-            return Results.Ok(new ParticipantResultDetailDto(disciplineValues, []));
+            return TypedResults.Ok(new ParticipantResultDetailDto(disciplineValues, []));
 
         var roundResults = participantResult
             .Rounds.Select(round => new ParticipantResultDetailDto.RoundResult(round.Values))
             .ToList();
 
         var resultDto = new ParticipantResultDetailDto(disciplineValues, roundResults);
-        return Results.Ok(resultDto);
+        return TypedResults.Ok(resultDto);
     }
 
     /// <summary>
@@ -214,10 +203,10 @@ public static class ParticipantEndpoints
     /// <param name="dbContext">The database context used to access participant and discipline data.</param>
     /// <param name="validator">The validator for validating the participant result data.</param>
     /// <param name="participantId">The ID of the participant whose results are being updated.</param>
-    /// <param name="disciplineId">The ID of the discipline associated with the participant's results.</param>
-    /// <param name="dto">The data transfer object containing the updated participant results.</param>
+    /// <param name="disciplineId">The ID of the discipline associated with the participant's Typedresults.</param>
+    /// <param name="dto">The data transfer object containing the updated participant Typedresults.</param>
     /// <returns>A result indicating the outcome of the update operation.</returns>
-    private static async Task<IResult> UpdateParticipantResults(
+    private static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateParticipantResults(
         ApplicationDbContext dbContext,
         IValidator<ParticipantResultEditDto> validator,
         int participantId,
@@ -227,7 +216,7 @@ public static class ParticipantEndpoints
     {
         // Check if the participant exists
         if (!await dbContext.Participants.AsNoTracking().AnyAsync(p => p.Id == participantId))
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         // Get the count of discipline values
         var disciplineValueCount = await dbContext
@@ -238,7 +227,7 @@ public static class ParticipantEndpoints
 
         // Return NotFound if no discipline was found
         if (disciplineValueCount is 0)
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         // Set up validation context with discipline value count and validate dto
         var context = new ValidationContext<ParticipantResultEditDto>(dto)
@@ -284,7 +273,7 @@ public static class ParticipantEndpoints
 
         // Save changes to database
         await dbContext.SaveChangesAsync();
-        return Results.Ok();
+        return TypedResults.Ok();
     }
 
     private static ParticipantEditDto SanitizeEditDto(ParticipantEditDto dto)

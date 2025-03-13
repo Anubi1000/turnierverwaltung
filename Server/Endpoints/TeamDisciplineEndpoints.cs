@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -17,37 +18,26 @@ public static class TeamDisciplineEndpoints
         var tournamentDependentGroup = baseGroup.MapGroup("/tournaments/{tournamentId:int}/team_disciplines");
         var tournamentIndependentGroup = baseGroup.MapGroup("/team_disciplines/{teamDisciplineId:int}");
 
-        tournamentDependentGroup
-            .MapGet("/", GetTeamDisciplines)
-            .Produces<List<ListTeamDisciplineDto>>()
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentDependentGroup.MapGet("/", GetTeamDisciplines);
 
-        tournamentDependentGroup
-            .MapPost("/", CreateTeamDiscipline)
-            .Produces<int>()
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentDependentGroup.MapPost("/", CreateTeamDiscipline);
 
-        tournamentIndependentGroup
-            .MapGet("/", GetTeamDiscipline)
-            .Produces<TeamDisciplineDetailDto>()
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapGet("/", GetTeamDiscipline);
 
-        tournamentIndependentGroup
-            .MapPut("/", UpdateTeamDiscipline)
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapPut("/", UpdateTeamDiscipline);
 
-        tournamentIndependentGroup
-            .MapDelete("/", DeleteTeamDiscipline)
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound);
+        tournamentIndependentGroup.MapDelete("/", DeleteTeamDiscipline);
+
         return builder;
     }
 
-    private static async Task<IResult> GetTeamDisciplines(ApplicationDbContext dbContext, int tournamentId)
+    private static async Task<Results<NotFound, Ok<List<ListTeamDisciplineDto>>>> GetTeamDisciplines(
+        ApplicationDbContext dbContext,
+        int tournamentId
+    )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var teamDisciplines = await dbContext
             .TeamDisciplines.Where(t => t.TournamentId == tournamentId)
@@ -56,10 +46,10 @@ public static class TeamDisciplineEndpoints
             .Select(t => new ListTeamDisciplineDto(t.Id, t.Name))
             .ToListAsync();
 
-        return Results.Ok(teamDisciplines);
+        return TypedResults.Ok(teamDisciplines);
     }
 
-    private static async Task<IResult> CreateTeamDiscipline(
+    private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateTeamDiscipline(
         ApplicationDbContext dbContext,
         IValidator<TeamDisciplineEditDto> validator,
         int tournamentId,
@@ -67,7 +57,7 @@ public static class TeamDisciplineEndpoints
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var context = new ValidationContext<TeamDisciplineEditDto>(dto)
         {
@@ -92,10 +82,13 @@ public static class TeamDisciplineEndpoints
         dbContext.Add(teamDiscipline);
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok(teamDiscipline.Id);
+        return TypedResults.Ok(teamDiscipline.Id);
     }
 
-    private static async Task<IResult> GetTeamDiscipline(ApplicationDbContext dbContext, int teamDisciplineId)
+    private static async Task<Results<NotFound, Ok<TeamDisciplineDetailDto>>> GetTeamDiscipline(
+        ApplicationDbContext dbContext,
+        int teamDisciplineId
+    )
     {
         var teamDiscipline = await dbContext
             .TeamDisciplines.AsNoTracking()
@@ -106,10 +99,10 @@ public static class TeamDisciplineEndpoints
             ))
             .FirstOrDefaultAsync();
 
-        return teamDiscipline is null ? Results.NotFound() : Results.Ok(teamDiscipline);
+        return teamDiscipline is null ? TypedResults.NotFound() : TypedResults.Ok(teamDiscipline);
     }
 
-    private static async Task<IResult> UpdateTeamDiscipline(
+    private static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateTeamDiscipline(
         ApplicationDbContext dbContext,
         IValidator<TeamDisciplineEditDto> validator,
         int teamDisciplineId,
@@ -120,7 +113,7 @@ public static class TeamDisciplineEndpoints
             .TeamDisciplines.Include(t => t.BasedOn)
             .FirstOrDefaultAsync(t => t.Id == teamDisciplineId);
         if (teamDiscipline is null)
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         var context = new ValidationContext<TeamDisciplineEditDto>(dto)
         {
@@ -144,19 +137,22 @@ public static class TeamDisciplineEndpoints
 
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok();
+        return TypedResults.Ok();
     }
 
-    private static async Task<IResult> DeleteTeamDiscipline(ApplicationDbContext dbContext, int teamDisciplineId)
+    private static async Task<Results<NotFound, Ok>> DeleteTeamDiscipline(
+        ApplicationDbContext dbContext,
+        int teamDisciplineId
+    )
     {
         var teamDiscipline = await dbContext.TeamDisciplines.FindAsync(teamDisciplineId);
         if (teamDiscipline is null)
-            return Results.NotFound();
+            return TypedResults.NotFound();
 
         dbContext.Remove(teamDiscipline);
         await dbContext.SaveChangesAsync();
 
-        return Results.Ok();
+        return TypedResults.Ok();
     }
 
     private static TeamDisciplineEditDto SanitizeEditDto(TeamDisciplineEditDto dto)
