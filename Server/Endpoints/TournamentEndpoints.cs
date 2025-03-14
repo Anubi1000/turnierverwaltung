@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
-using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Model.Validation;
 
@@ -30,11 +29,12 @@ public static class TournamentEndpoints
     }
 
     /// <summary>
-    /// Retrieves a list of tournaments from the database, ordered by date, name, and ID.
+    ///     Retrieves a list of tournaments from the database, ordered by date, name, and ID.
     /// </summary>
     /// <param name="dbContext">The application database context used to query tournaments.</param>
     /// <returns>
-    /// An <see cref="IResult"/> containing an HTTP 200 OK response with a list of <see cref="ListTournamentDto"/> objects.
+    ///     An <see cref="IResult" /> containing an HTTP 200 OK response with a list of <see cref="ListTournamentDto" />
+    ///     objects.
     /// </returns>
     public static async Task<Ok<List<ListTournamentDto>>> GetTournaments(ApplicationDbContext dbContext)
     {
@@ -50,15 +50,15 @@ public static class TournamentEndpoints
     }
 
     /// <summary>
-    /// Creates a new tournament and saves it to the database.
+    ///     Creates a new tournament and saves it to the database.
     /// </summary>
     /// <param name="dbContext">The application database context used to add and save the new tournament.</param>
-    /// <param name="validator">The validator for <see cref="TournamentEditDto"/> to ensure the input is valid.</param>
+    /// <param name="validator">The validator for <see cref="TournamentEditDto" /> to ensure the input is valid.</param>
     /// <param name="dto">The data transfer object containing the tournament details to be created.</param>
     /// <returns>
-    /// An <see cref="IResult"/> containing:
-    /// - HTTP 200 OK with the created tournament's ID if successful.
-    /// - HTTP 400 Bad Request with validation errors if the input is invalid.
+    ///     An <see cref="IResult" /> containing:
+    ///     - HTTP 200 OK with the created tournament's ID if successful.
+    ///     - HTTP 400 Bad Request with validation errors if the input is invalid.
     /// </returns>
     public static async Task<Results<ValidationProblem, Ok<int>>> CreateTournament(
         ApplicationDbContext dbContext,
@@ -90,14 +90,14 @@ public static class TournamentEndpoints
     }
 
     /// <summary>
-    /// Retrieves the details of a specific tournament by its ID.
+    ///     Retrieves the details of a specific tournament by its ID.
     /// </summary>
     /// <param name="dbContext">The application database context used to query the tournament.</param>
     /// <param name="tournamentId">The ID of the tournament to retrieve.</param>
     /// <returns>
-    /// An <see cref="IResult"/> containing:
-    /// - HTTP 200 OK with the tournament details if found.
-    /// - HTTP 404 Not Found if no tournament with the given ID exists.
+    ///     An <see cref="IResult" /> containing:
+    ///     - HTTP 200 OK with the tournament details if found.
+    ///     - HTTP 404 Not Found if no tournament with the given ID exists.
     /// </returns>
     public static async Task<Results<NotFound, Ok<TournamentDetailDto>>> GetTournament(
         ApplicationDbContext dbContext,
@@ -123,17 +123,17 @@ public static class TournamentEndpoints
     }
 
     /// <summary>
-    /// Updates an existing tournament with new details provided in the DTO.
+    ///     Updates an existing tournament with new details provided in the DTO.
     /// </summary>
     /// <param name="dbContext">The application database context used to query and update the tournament.</param>
-    /// <param name="validator">The validator for <see cref="TournamentEditDto"/> to ensure the input is valid.</param>
+    /// <param name="validator">The validator for <see cref="TournamentEditDto" /> to ensure the input is valid.</param>
     /// <param name="tournamentId">The ID of the tournament to be updated.</param>
     /// <param name="dto">The data transfer object containing the updated tournament details.</param>
     /// <returns>
-    /// An <see cref="IResult"/> containing:
-    /// - HTTP 200 OK if the tournament is successfully updated.
-    /// - HTTP 404 Not Found if no tournament with the given ID exists.
-    /// - HTTP 400 Bad Request with validation errors if the input is invalid.
+    ///     An <see cref="IResult" /> containing:
+    ///     - HTTP 200 OK if the tournament is successfully updated.
+    ///     - HTTP 404 Not Found if no tournament with the given ID exists.
+    ///     - HTTP 400 Bad Request with validation errors if the input is invalid.
     /// </returns>
     public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateTournament(
         ApplicationDbContext dbContext,
@@ -170,14 +170,14 @@ public static class TournamentEndpoints
     }
 
     /// <summary>
-    /// Deletes a tournament by its ID from the database.
+    ///     Deletes a tournament by its ID from the database.
     /// </summary>
     /// <param name="dbContext">The application database context used to query and remove the tournament.</param>
     /// <param name="tournamentId">The ID of the tournament to be deleted.</param>
     /// <returns>
-    /// An <see cref="IResult"/> containing:
-    /// - HTTP 200 OK if the tournament is successfully deleted.
-    /// - HTTP 404 Not Found if no tournament with the given ID exists.
+    ///     An <see cref="IResult" /> containing:
+    ///     - HTTP 200 OK if the tournament is successfully deleted.
+    ///     - HTTP 404 Not Found if no tournament with the given ID exists.
     /// </returns>
     public static async Task<Results<NotFound, Ok>> DeleteTournament(ApplicationDbContext dbContext, int tournamentId)
     {

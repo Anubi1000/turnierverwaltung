@@ -9,7 +9,7 @@ public record ScoreboardData(string TournamentName, ImmutableList<ScoreboardData
     {
         public record Column(
             string Name,
-            [property: JsonPropertyName("width")] Column.Width ColumnWidth,
+            [property: JsonPropertyName("width")] Column.IWidth ColumnWidth,
             [property: JsonPropertyName("alignment")] Column.Alignment ColumnAlignment
         )
         {
@@ -23,11 +23,11 @@ public record ScoreboardData(string TournamentName, ImmutableList<ScoreboardData
 
             [JsonDerivedType(typeof(Fixed))]
             [JsonDerivedType(typeof(Variable))]
-            public interface Width
+            public interface IWidth
             {
-                public record Fixed([property: JsonPropertyName("width")] int WidthValue) : Width;
+                public record Fixed([property: JsonPropertyName("width")] int WidthValue) : IWidth;
 
-                public record Variable([property: JsonPropertyName("weight")] float Weight) : Width;
+                public record Variable([property: JsonPropertyName("weight")] float Weight) : IWidth;
             }
         }
 

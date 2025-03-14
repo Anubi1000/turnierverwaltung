@@ -198,7 +198,7 @@ public static class ParticipantEndpoints
     }
 
     /// <summary>
-    /// Updates the results of a participant for a given discipline.
+    ///     Updates the results of a participant for a given discipline.
     /// </summary>
     /// <param name="dbContext">The database context used to access participant and discipline data.</param>
     /// <param name="validator">The validator for validating the participant result data.</param>

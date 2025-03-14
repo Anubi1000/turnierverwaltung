@@ -80,6 +80,7 @@ public static class Program
         services.AddScoped<IValidator<ParticipantEditDto>, ParticipantEditDtoValidator>();
         services.AddScoped<IValidator<ParticipantResultEditDto>, ParticipantResultEditDtoValidator>();
         services.AddScoped<IValidator<TeamDisciplineEditDto>, TeamDisciplineEditDtoValidator>();
+        services.AddScoped<IValidator<WordDocGenerationDto>, WordDocGenerationDtoValidator>();
 
         // Add database context
         var connectionString = GetDbPath();
@@ -144,9 +145,7 @@ public static class Program
                 {
                     var attributes = type.DeclaringType.GetCustomAttributes<JsonDerivedTypeAttribute>();
                     if (attributes.Any())
-                    {
                         return OpenApiOptions.CreateDefaultSchemaReferenceId(jsonTypeInfo);
-                    }
                 }
 
                 return GetFullName(type);

@@ -5,23 +5,37 @@ using Turnierverwaltung.Server.Results.Scoreboard;
 
 namespace Turnierverwaltung.Server.Results.Word;
 
-public class WordFileCreator
+/// <summary>
+///     Class responsible for creating Word documents containing scoreboard data.
+/// </summary>
+public partial class WordFileCreator
 {
     private const string MainColor = "1b5e20";
     private const string MainFont = "Aptos";
+    private const string AlternateColor = "b9dabb";
+    private const string FirstPlaceColor = "ffd700";
+    private const string SecondPlaceColor = "c0c0c0";
+    private const string ThirdPlaceColor = "bf8970";
 
-    private const int A4Width = 842 * 20;
-    private const int A4Height = 595 * 20;
+    private const string DisciplineHeadlineStyle = "DisciplineHeadline";
+    private const string ScoreTableStyle = "ScoreTable";
+
+    private const int A4Width = 16838;
+    private const int A4Height = 11906;
     private const int A4Margin = 720;
 
-    private const int TableWidth = 15388;
-    private const float PixelToEmuFactor = 7;
+    private const int MaxTableWidth = 5000;
+    private const float PixelConversionFactor = 2.75f;
+    private readonly Body _body;
+    private readonly MainDocumentPart _mainPart;
 
     private readonly MemoryStream _stream = new();
+    private readonly Styles _styles;
     private readonly WordprocessingDocument _wordDocument;
-    private readonly MainDocumentPart _mainPart;
-    private readonly Body _body;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="WordFileCreator" /> class.
+    /// </summary>
     private WordFileCreator()
     {
         _wordDocument = WordprocessingDocument.Create(_stream, WordprocessingDocumentType.Document);
@@ -29,57 +43,95 @@ public class WordFileCreator
         _mainPart = _wordDocument.AddMainDocumentPart();
         _mainPart.Document = new Document();
 
+        var stylePart = _mainPart.AddNewPart<StyleDefinitionsPart>();
+        stylePart.Styles = new Styles();
+        _styles = stylePart.Styles;
+
         _body = _mainPart.Document.AppendChild(new Body());
     }
 
+    /// <summary>
+    ///     Creates a Word document for a specific scoreboard table.
+    /// </summary>
+    /// <param name="scoreboardData">The scoreboard data containing tables.</param>
+    /// <param name="tableIndex">The index of the table to generate.</param>
+    /// <returns>A byte array representing the Word document.</returns>
     public static byte[] CreateWordScoreFileForTable(ScoreboardData scoreboardData, int tableIndex)
     {
-        throw new NotImplementedException("Not implemented");
+        var creator = new WordFileCreator();
+        creator.SetPageSize();
+        creator.AddTableHeadingStyle();
+        creator.AddTableStyle();
+
+        var table = scoreboardData.Tables[tableIndex];
+        creator.AddTableHeading(scoreboardData.TournamentName, table.Name);
+        creator.AddTable(table);
+
+        return creator.GetDocumentData();
     }
 
+    /// <summary>
+    ///     Creates a Word document containing all scoreboard tables.
+    /// </summary>
+    /// <param name="scoreboardData">The scoreboard data containing multiple tables.</param>
+    /// <returns>A byte array representing the Word document.</returns>
     public static byte[] CreateWordScoreFile(ScoreboardData scoreboardData)
     {
         var creator = new WordFileCreator();
         creator.SetPageSize();
+        creator.AddTableHeadingStyle();
+        creator.AddTableStyle();
 
         for (var index = 0; index < scoreboardData.Tables.Count; index++)
         {
             var table = scoreboardData.Tables[index];
-            creator.AddDisciplineHeader(scoreboardData.TournamentName, table.Name);
-
+            creator.AddTableHeading(scoreboardData.TournamentName, table.Name);
             creator.AddTable(table);
 
             if (index != scoreboardData.Tables.Count - 1)
-            {
                 creator._body.Append(new Paragraph(new Run(new Break { Type = BreakValues.Page })));
-            }
         }
 
         return creator.GetDocumentData();
     }
 
+    /// <summary>
+    ///     Sets the page size and margins for the Word document.
+    /// </summary>
     private void SetPageSize()
     {
-        var size = new PageSize
-        {
-            Orient = PageOrientationValues.Landscape,
-            Height = A4Height,
-            Width = A4Width,
-        };
+        var sectionProperties = new SectionProperties();
+        sectionProperties.AppendChild(
+            new PageSize
+            {
+                Orient = PageOrientationValues.Landscape,
+                Height = A4Height,
+                Width = A4Width,
+            }
+        );
 
-        var margins = new PageMargin
-        {
-            Left = A4Margin,
-            Top = A4Margin,
-            Right = A4Margin,
-            Bottom = A4Margin,
-        };
+        sectionProperties.AppendChild(
+            new PageMargin
+            {
+                Left = A4Margin,
+                Top = A4Margin,
+                Right = A4Margin,
+                Bottom = A4Margin,
+                Header = A4Margin,
+                Footer = A4Margin,
+                Gutter = 0,
+            }
+        );
 
-        var sectionProperties = new SectionProperties(size, margins);
         _body.AppendChild(sectionProperties);
     }
 
-    private void AddDisciplineHeader(string tournamentName, string disciplineName)
+    /// <summary>
+    ///     Adds a table header to the document.
+    /// </summary>
+    /// <param name="tournamentName">The name of the tournament.</param>
+    /// <param name="disciplineName">The name of the discipline.</param>
+    private void AddTableHeading(string tournamentName, string disciplineName)
     {
         var paragraph = new Paragraph
         {
@@ -91,41 +143,35 @@ public class WordFileCreator
 
         paragraph.AppendChild(CreateHeadlineRun(tournamentName, "52"));
         paragraph.AppendChild(CreateHeadlineRun("Der Verein", "40"));
-        paragraph.AppendChild(CreateHeadlineRun(disciplineName, "32"));
+        paragraph.AppendChild(CreateHeadlineRun(disciplineName, "32", false));
 
         _body.AppendChild(paragraph);
     }
 
-    private void AddTable(ScoreboardData.Table scoreTable)
+    /// <summary>
+    ///     Adds a table header style to the document.
+    /// </summary>
+    private void AddTableHeadingStyle()
     {
-        var columnWidths = CalculateColumnWidths(scoreTable.Columns);
-
-        var tableProperties = new TableProperties(
-            new TableWidth { Width = TableWidth.ToString(), Type = TableWidthUnitValues.Dxa },
-            new TableBorders
+        var style = new Style
+        {
+            Type = StyleValues.Character,
+            StyleId = DisciplineHeadlineStyle,
+            StyleRunProperties = new StyleRunProperties
             {
-                LeftBorder = new LeftBorder { Val = BorderValues.Single },
-                TopBorder = new TopBorder { Val = BorderValues.Single },
-                RightBorder = new RightBorder { Val = BorderValues.Single },
-                BottomBorder = new BottomBorder { Val = BorderValues.Single },
-                InsideHorizontalBorder = new InsideHorizontalBorder { Val = BorderValues.Single },
-                InsideVerticalBorder = new InsideVerticalBorder { Val = BorderValues.Single },
+                Bold = new Bold(),
+                Color = new Color { Val = MainColor },
+                RunFonts = new RunFonts { Ascii = MainFont },
             },
-            new TableCellMargin
-            {
-                LeftMargin = new LeftMargin { Width = "80" },
-                TopMargin = new TopMargin { Width = "60" },
-                RightMargin = new RightMargin { Width = "60" },
-                BottomMargin = new BottomMargin { Width = "60" },
-            }
-        );
+        };
 
-        var table = new Table(tableProperties);
-        table.AddChild(CreateTableHeader(scoreTable.Columns, columnWidths));
-
-        _body.AppendChild(table);
+        _styles.AppendChild(style);
     }
 
+    /// <summary>
+    ///     Finalizes and retrieves the Word document data as a byte array.
+    /// </summary>
+    /// <returns>The byte array of the document.</returns>
     private byte[] GetDocumentData()
     {
         _mainPart.Document.Save();
@@ -138,116 +184,36 @@ public class WordFileCreator
         return data;
     }
 
-    private static Run CreateHeadlineRun(string text, string fontSize)
+    /// <summary>
+    ///     Creates a formatted run for a headline.
+    /// </summary>
+    /// <param name="text">The text to display.</param>
+    /// <param name="fontSize">The font size of the text.</param>
+    /// <param name="addBreak">Whether to add a line break after the text.</param>
+    /// <returns>A Run element with the specified formatting.</returns>
+    private static Run CreateHeadlineRun(string text, string fontSize, bool addBreak = true)
     {
-        var properties = new RunProperties(
-            new Bold(),
-            new FontSize { Val = fontSize },
-            new Color { Val = MainColor },
-            new RunFonts { Ascii = MainFont }
+        var run = new Run();
+        run.AppendChild(
+            new RunProperties
+            {
+                RunStyle = new RunStyle { Val = DisciplineHeadlineStyle },
+                FontSize = new FontSize { Val = fontSize },
+            }
         );
+        run.AppendChild(new Text(text));
 
-        var run = new Run(properties, new Text(text), new Break());
+        if (addBreak)
+            run.AppendChild(new Break());
 
         return run;
     }
 
-    private static TableRow CreateTableHeader(IList<ScoreboardData.Table.Column> columns, int[] columnWidths)
-    {
-        var row = new TableRow();
-
-        for (var index = 0; index < columns.Count; index++)
-        {
-            var column = columns[index];
-
-            var paragraph = new Paragraph(
-                new ParagraphProperties
-                {
-                    SpacingBetweenLines = new SpacingBetweenLines { After = "0" },
-                    Justification = GetJustification(column.ColumnAlignment),
-                },
-                new Run(
-                    new RunProperties(
-                        new Bold(),
-                        new FontSize { Val = "24" },
-                        new Color { Val = "FFFFFF" },
-                        new RunFonts { Ascii = MainFont }
-                    ),
-                    new Text(column.Name)
-                )
-            );
-
-            var cellProperties = new TableCellProperties
-            {
-                TableCellWidth = new TableCellWidth
-                {
-                    Width = columnWidths[index].ToString(),
-                    Type = TableWidthUnitValues.Dxa,
-                },
-                TableCellVerticalAlignment = new TableCellVerticalAlignment
-                {
-                    Val = TableVerticalAlignmentValues.Center,
-                },
-                Shading = new Shading { Val = ShadingPatternValues.Clear, Fill = MainColor },
-                TableCellBorders = new TableCellBorders
-                {
-                    TopBorder = new TopBorder { Val = BorderValues.Single },
-                    BottomBorder = new BottomBorder { Val = BorderValues.Single },
-                    LeftBorder =
-                        index == 0
-                            ? new LeftBorder { Val = BorderValues.Single }
-                            : new LeftBorder { Val = BorderValues.Nil },
-                    RightBorder =
-                        index == columns.Count - 1
-                            ? new RightBorder { Val = BorderValues.Single }
-                            : new RightBorder { Val = BorderValues.Nil },
-                }
-            };
-
-            var cell = new TableCell(cellProperties, paragraph);
-
-            row.AppendChild(cell);
-        }
-
-        return row;
-    }
-
-    private static int[] CalculateColumnWidths(IList<ScoreboardData.Table.Column> columns)
-    {
-        var totalWeight = 0f;
-        var totalFixedWidth = 0;
-
-        foreach (var column in columns)
-        {
-            switch (column.ColumnWidth)
-            {
-                case ScoreboardData.Table.Column.Width.Variable variableWidth:
-                    totalWeight += variableWidth.Weight;
-                    break;
-
-                case ScoreboardData.Table.Column.Width.Fixed fixedWidth:
-                    totalFixedWidth += fixedWidth.WidthValue;
-                    break;
-            }
-        }
-
-        var remainingWidth = TableWidth - totalFixedWidth * PixelToEmuFactor;
-
-        return columns
-            .Select(column =>
-            {
-                return column.ColumnWidth switch
-                {
-                    ScoreboardData.Table.Column.Width.Fixed fixedWidth => (int)
-                        Math.Round(fixedWidth.WidthValue * PixelToEmuFactor),
-                    ScoreboardData.Table.Column.Width.Variable variableWidth => (int)
-                        Math.Round(variableWidth.Weight / totalWeight * remainingWidth),
-                    _ => throw new InvalidOperationException("Unknown column width type."),
-                };
-            })
-            .ToArray();
-    }
-
+    /// <summary>
+    ///     Gets the appropriate justification for a given text alignment.
+    /// </summary>
+    /// <param name="alignment">The text alignment.</param>
+    /// <returns>A Justification object representing the alignment.</returns>
     private static Justification GetJustification(ScoreboardData.Table.Column.Alignment alignment)
     {
         var value = alignment switch
@@ -255,7 +221,7 @@ public class WordFileCreator
             ScoreboardData.Table.Column.Alignment.Left => JustificationValues.Left,
             ScoreboardData.Table.Column.Alignment.Center => JustificationValues.Center,
             ScoreboardData.Table.Column.Alignment.Right => JustificationValues.Right,
-            _ => throw new ArgumentOutOfRangeException(nameof(alignment))
+            _ => throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null),
         };
 
         return new Justification { Val = value };

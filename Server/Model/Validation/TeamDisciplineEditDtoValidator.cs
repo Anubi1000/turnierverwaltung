@@ -15,14 +15,11 @@ public class TeamDisciplineEditDtoValidator : AbstractValidator<TeamDisciplineEd
         RuleFor(x => x.BasedOn).NotEmpty();
         RuleForEach(x => x.BasedOn)
             .MustAsync(
-                (
-                    (_, disciplineId, context, cancellationToken) =>
-                        db.Disciplines.AnyAsync(
-                            t =>
-                                t.TournamentId == (int)context.RootContextData[TournamentIdKey] && t.Id == disciplineId,
-                            cancellationToken
-                        )
-                )
+                (_, disciplineId, context, cancellationToken) =>
+                    db.Disciplines.AnyAsync(
+                        t => t.TournamentId == (int)context.RootContextData[TournamentIdKey] && t.Id == disciplineId,
+                        cancellationToken
+                    )
             );
     }
 }

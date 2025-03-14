@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Immutable;
+using System.IO.Compression;
+using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
+using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Results.Scoreboard;
 using Turnierverwaltung.Server.Results.Word;
 
@@ -18,7 +22,7 @@ public static class OverviewEndpoints
 
         baseGroup.MapGet("/", GetOverviewData);
 
-        baseGroup.MapGet("/download", GetScoreDocument);
+        baseGroup.MapPost("/download", GenerateWordScoreDocument);
 
         return builder;
     }
@@ -36,10 +40,11 @@ public static class OverviewEndpoints
         return TypedResults.Ok(scoreboardData);
     }
 
-    private static async Task<IResult> GetScoreDocument(
+    private static async Task<Results<NotFound, ValidationProblem, FileContentHttpResult>> GenerateWordScoreDocument(
         ApplicationDbContext dbContext,
+        IValidator<WordDocGenerationDto> validator,
         int tournamentId,
-        [FromQuery] string? tables
+        WordDocGenerationDto dto
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
@@ -49,17 +54,41 @@ public static class OverviewEndpoints
         if (scoreboardData is null)
             return TypedResults.NotFound();
 
-        if (string.IsNullOrEmpty(tables))
-        {
-            var wordDoc = WordFileCreator.CreateWordScoreFile(scoreboardData);
+        // Validate dto and return ValidationProblem if not valid
+        var validationResult = await validator.ValidateAsync(dto);
+        if (!validationResult.IsValid)
+            return TypedResults.ValidationProblem(validationResult.ToValidationProblemErrors());
 
-            return TypedResults.File(
-                fileContents: wordDoc,
-                contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                fileDownloadName: "Ergebnisse.docx"
-            );
+        var filteredData = scoreboardData with
+        {
+            Tables = scoreboardData.Tables.Where(table => dto.TablesToExport.Contains(table.Name)).ToImmutableList(),
+        };
+
+        if (dto.SeparateDocuments)
+        {
+            using var stream = new MemoryStream();
+
+            using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, true))
+            {
+                for (var tableIndex = 0; tableIndex < filteredData.Tables.Count; tableIndex++)
+                {
+                    var document = WordFileCreator.CreateWordScoreFileForTable(filteredData, tableIndex);
+                    var entry = archive.CreateEntry($"{filteredData.Tables[tableIndex].Name}.docx");
+                    await using var entryStream = entry.Open();
+                    await entryStream.WriteAsync(document);
+                }
+            }
+
+            var zipData = stream.ToArray();
+            return TypedResults.File(zipData, "application/zip", "Ergebnisse.zip");
         }
 
-        throw new NotImplementedException("Separate documents are currently not implemented.");
+        var wordDoc = WordFileCreator.CreateWordScoreFile(filteredData);
+
+        return TypedResults.File(
+            wordDoc,
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "Ergebnisse.docx"
+        );
     }
 }

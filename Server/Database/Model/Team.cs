@@ -9,6 +9,7 @@ public class Team
 
     [MaxLength(150)]
     public string Name { get; set; } = "";
+
     public int StartNumber { get; set; }
 
     // Tournament

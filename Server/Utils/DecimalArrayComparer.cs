@@ -22,9 +22,7 @@ public class DecimalArrayComparer : IComparer<decimal[]>
 
             var comparison = value1.CompareTo(value2);
             if (comparison != 0)
-            {
                 return comparison;
-            }
         }
 
         return 0; // Arrays are equal when compared

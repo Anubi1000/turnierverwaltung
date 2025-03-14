@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Database.Model;
 

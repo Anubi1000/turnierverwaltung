@@ -131,9 +131,7 @@ public static class TeamDisciplineEndpoints
         teamDiscipline.Name = dto.Name;
         teamDiscipline.BasedOn.Clear();
         foreach (var discipline in basedOn)
-        {
             teamDiscipline.BasedOn.Add(discipline);
-        }
 
         await dbContext.SaveChangesAsync();
 

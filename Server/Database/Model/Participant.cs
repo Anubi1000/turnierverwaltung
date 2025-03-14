@@ -9,6 +9,7 @@ public class Participant
 
     [MaxLength(150)]
     public string Name { get; set; } = "";
+
     public int StartNumber { get; set; }
     public Gender Gender { get; set; } = Gender.Male;
 

@@ -9,6 +9,7 @@ public class Discipline
 
     [MaxLength(150)]
     public string Name { get; set; } = "";
+
     public int AmountOfBestRoundsToShow { get; set; } = 1;
     public bool AreGendersSeparated { get; set; }
 

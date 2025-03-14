@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Utils;
 
@@ -8,7 +7,7 @@ namespace Turnierverwaltung.Server.Model.Validation;
 public class TournamentEditDtoValidator : AbstractValidator<TournamentEditDto>
 {
     /// <summary>
-    /// Key used to store and retrieve the previous value of TeamSize from the validation context.
+    ///     Key used to store and retrieve the previous value of TeamSize from the validation context.
     /// </summary>
     public const string PreviousTeamSizeKey = "PreviousTeamSize";
 
