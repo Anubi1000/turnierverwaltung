@@ -47,19 +47,23 @@ public partial class WordFileCreator
                 TableStyleRowBandSize = new TableStyleRowBandSize { Val = 1 },
                 TableBorders = new TableBorders
                 {
-                    LeftBorder = new LeftBorder { Val = BorderValues.Single },
-                    TopBorder = new TopBorder { Val = BorderValues.Single },
-                    RightBorder = new RightBorder { Val = BorderValues.Single },
-                    BottomBorder = new BottomBorder { Val = BorderValues.Single },
-                    InsideHorizontalBorder = new InsideHorizontalBorder { Val = BorderValues.Single },
+                    LeftBorder = new LeftBorder { Val = BorderValues.Single, Size = TableBorderSize },
+                    TopBorder = new TopBorder { Val = BorderValues.Single, Size = TableBorderSize },
+                    RightBorder = new RightBorder { Val = BorderValues.Single, Size = TableBorderSize },
+                    BottomBorder = new BottomBorder { Val = BorderValues.Single, Size = TableBorderSize },
+                    InsideHorizontalBorder = new InsideHorizontalBorder
+                    {
+                        Val = BorderValues.Single,
+                        Size = TableBorderSize,
+                    },
                     InsideVerticalBorder = new InsideVerticalBorder { Val = BorderValues.None },
                 },
                 TableCellMarginDefault = new TableCellMarginDefault
                 {
-                    StartMargin = new StartMargin { Width = "60" },
-                    TopMargin = new TopMargin { Width = "60" },
-                    EndMargin = new EndMargin { Width = "60" },
-                    BottomMargin = new BottomMargin { Width = "60" },
+                    StartMargin = new StartMargin { Width = TableCellMargin },
+                    TopMargin = new TopMargin { Width = TableCellMargin },
+                    EndMargin = new EndMargin { Width = TableCellMargin },
+                    BottomMargin = new BottomMargin { Width = TableCellMargin },
                 },
             },
 

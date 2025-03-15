@@ -20,7 +20,7 @@ using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server;
 
-public static class Program
+public static partial class Program
 {
     public static void Main(string[] args)
     {
@@ -46,8 +46,6 @@ public static class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        //app.UseHttpsRedirection();
-
         app.MapGroup("/").WithTags("Util").MapUtilEndpoints();
 
         app.MapTournamentEndpoints();
@@ -63,55 +61,16 @@ public static class Program
 
         app.UseDefaultFiles();
         app.MapStaticAssets();
-        app.MapFallbackToFile("/index.html");
+        app.MapFallbackToFile("index.html");
 
         app.Run();
     }
 
-    private static void ConfigureServices(IServiceCollection services, WebApplicationBuilder builder)
-    {
-        // Add OpenApi document generation
-        AddApiDoc(services);
-
-        // Add auto validation
-        services.AddScoped<IValidator<TournamentEditDto>, TournamentEditDtoValidator>();
-        services.AddScoped<IValidator<ClubEditDto>, ClubEditDtoValidator>();
-        services.AddScoped<IValidator<DisciplineEditDto>, DisciplineEditDtoValidator>();
-        services.AddScoped<IValidator<ParticipantEditDto>, ParticipantEditDtoValidator>();
-        services.AddScoped<IValidator<ParticipantResultEditDto>, ParticipantResultEditDtoValidator>();
-        services.AddScoped<IValidator<TeamDisciplineEditDto>, TeamDisciplineEditDtoValidator>();
-        services.AddScoped<IValidator<WordDocGenerationDto>, WordDocGenerationDtoValidator>();
-
-        // Add database context
-        var connectionString = GetDbPath();
-        services.AddDbContext<ApplicationDbContext>(options =>
-        {
-            options.UseSqlite(connectionString);
-        });
-
-        // Add DateTime to timestamp converter
-        services.Configure<JsonOptions>(options =>
-        {
-            options.SerializerOptions.Converters.Add(new DateTimeToTimestampConverter());
-            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        });
-
-        // Add localhost auth
-        services
-            .AddAuthentication("localhost")
-            .AddScheme<AuthenticationSchemeOptions, LocalhostAuthenticationHandler>("localhost", _ => { });
-        services.AddAuthorization();
-
-#if DEBUG
-        services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-#endif
-    }
-
-    private static string GetDbPath()
+    private static string GetDataDirectory()
     {
         var dir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         if (dir == "")
-            dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            dir = AppContext.BaseDirectory;
         if (dir == null)
             throw new DirectoryNotFoundException("Could not find suitable data dir");
 
@@ -119,60 +78,20 @@ public static class Program
 
         Directory.CreateDirectory(dir);
 
-        return $"Data Source={dir}/Data.db";
+        return dir;
     }
 
-    private static void AddApiDoc(IServiceCollection services)
+    public static string GetUserData(UserDataType type)
     {
-        services.AddOpenApi(options =>
+        var dir = GetDataDirectory();
+
+        dir += type switch
         {
-            options.AddDocumentTransformer(
-                (document, context, cancellationToken) =>
-                {
-                    document.Info = new OpenApiInfo { Title = "Turnierverwaltung.Server", Version = "1.0.0" };
+            UserDataType.Database => "/Data.db",
+            UserDataType.WordDocumentIcon => "/Custom/WordIcon.png",
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+        };
 
-                    return Task.CompletedTask;
-                }
-            );
-
-            options.CreateSchemaReferenceId = jsonTypeInfo =>
-            {
-                var type = jsonTypeInfo.Type;
-                if (!type.IsNested)
-                    return OpenApiOptions.CreateDefaultSchemaReferenceId(jsonTypeInfo);
-
-                if (type.DeclaringType is not null)
-                {
-                    var attributes = type.DeclaringType.GetCustomAttributes<JsonDerivedTypeAttribute>();
-                    if (attributes.Any())
-                        return OpenApiOptions.CreateDefaultSchemaReferenceId(jsonTypeInfo);
-                }
-
-                return GetFullName(type);
-
-                string GetFullName(Type type)
-                {
-                    if (type.DeclaringType == null)
-                        return type.Name;
-                    return GetFullName(type.DeclaringType) + "_" + type.Name;
-                }
-            };
-
-            options.AddSchemaTransformer(
-                (schema, context, cancellationToken) =>
-                {
-                    if (
-                        context.JsonTypeInfo.Type == typeof(DateTime)
-                        && context.JsonTypeInfo.Converter is DateTimeToTimestampConverter
-                    )
-                    {
-                        schema.Format = "int64";
-                        schema.Type = "integer";
-                    }
-
-                    return Task.CompletedTask;
-                }
-            );
-        });
+        return dir;
     }
 }

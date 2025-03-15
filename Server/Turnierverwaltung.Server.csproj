@@ -21,8 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Migrations\"/>
-        <Folder Include="Properties\PublishProfiles\"/>
         <ProjectReference Include="..\Client\Turnierverwaltung.Client.esproj">
             <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
         </ProjectReference>

@@ -11,10 +11,4 @@
     <ItemGroup>
         <Script Include="tsconfig.json" />
     </ItemGroup>
-    
-    <Target Name="Run install"
-            BeforeTargets="BeforeRestore">
-        <Exec Command="pnpm install"/>
-    </Target>
-
 </Project>

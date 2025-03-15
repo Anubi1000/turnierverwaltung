@@ -17,7 +17,9 @@ public partial class WordFileCreator
     private const string SecondPlaceColor = "c0c0c0";
     private const string ThirdPlaceColor = "bf8970";
 
-    private const string DisciplineHeadlineStyle = "DisciplineHeadline";
+    private const int TableBorderSize = 12;
+    private const string TableCellMargin = "80";
+
     private const string ScoreTableStyle = "ScoreTable";
 
     private const int A4Width = 16838;
@@ -26,12 +28,14 @@ public partial class WordFileCreator
 
     private const int MaxTableWidth = 5000;
     private const float PixelConversionFactor = 2.75f;
-    private readonly Body _body;
-    private readonly MainDocumentPart _mainPart;
 
     private readonly MemoryStream _stream = new();
-    private readonly Styles _styles;
     private readonly WordprocessingDocument _wordDocument;
+    private readonly MainDocumentPart _mainPart;
+    private readonly Styles _styles;
+    private readonly Body _body;
+
+    private string? _logoPartId;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="WordFileCreator" /> class.
@@ -51,35 +55,36 @@ public partial class WordFileCreator
     }
 
     /// <summary>
-    ///     Creates a Word document for a specific scoreboard table.
+    ///     Creates a Word document for a specific scoreboard table and writes it to the specified stream. The returned stream needs to be disposed after use.
     /// </summary>
     /// <param name="scoreboardData">The scoreboard data containing tables.</param>
     /// <param name="tableIndex">The index of the table to generate.</param>
+    /// <param name="stream">The stream to write the document to.</param>
     /// <returns>A byte array representing the Word document.</returns>
-    public static byte[] CreateWordScoreFileForTable(ScoreboardData scoreboardData, int tableIndex)
+    public static MemoryStream CreateWordFileForTableAsStream(ScoreboardData scoreboardData, int tableIndex)
     {
         var creator = new WordFileCreator();
+        creator.AddLogoImagePart();
         creator.SetPageSize();
-        creator.AddTableHeadingStyle();
         creator.AddTableStyle();
 
         var table = scoreboardData.Tables[tableIndex];
         creator.AddTableHeading(scoreboardData.TournamentName, table.Name);
         creator.AddTable(table);
 
-        return creator.GetDocumentData();
+        return creator.DisposeAndGetStream();
     }
 
     /// <summary>
-    ///     Creates a Word document containing all scoreboard tables.
+    ///     Creates a Word document containing all scoreboard tables. The returned stream needs to be disposed after use.
     /// </summary>
     /// <param name="scoreboardData">The scoreboard data containing multiple tables.</param>
     /// <returns>A byte array representing the Word document.</returns>
-    public static byte[] CreateWordScoreFile(ScoreboardData scoreboardData)
+    public static MemoryStream CreateWordScoreFileAsStream(ScoreboardData scoreboardData)
     {
         var creator = new WordFileCreator();
+        creator.AddLogoImagePart();
         creator.SetPageSize();
-        creator.AddTableHeadingStyle();
         creator.AddTableStyle();
 
         for (var index = 0; index < scoreboardData.Tables.Count; index++)
@@ -92,7 +97,7 @@ public partial class WordFileCreator
                 creator._body.Append(new Paragraph(new Run(new Break { Type = BreakValues.Page })));
         }
 
-        return creator.GetDocumentData();
+        return creator.DisposeAndGetStream();
     }
 
     /// <summary>
@@ -144,44 +149,38 @@ public partial class WordFileCreator
         paragraph.AppendChild(CreateHeadlineRun(tournamentName, "52"));
         paragraph.AppendChild(CreateHeadlineRun("Der Verein", "40"));
         paragraph.AppendChild(CreateHeadlineRun(disciplineName, "32", false));
+        paragraph.AppendChild(new Run(CreateLogoDrawing()));
 
         _body.AppendChild(paragraph);
     }
 
-    /// <summary>
-    ///     Adds a table header style to the document.
-    /// </summary>
-    private void AddTableHeadingStyle()
+    private void AddLogoImagePart()
     {
-        var style = new Style
-        {
-            Type = StyleValues.Character,
-            StyleId = DisciplineHeadlineStyle,
-            StyleRunProperties = new StyleRunProperties
-            {
-                Bold = new Bold(),
-                Color = new Color { Val = MainColor },
-                RunFonts = new RunFonts { Ascii = MainFont },
-            },
-        };
+        var logoPath = Program.GetUserData(UserDataType.WordDocumentIcon);
+        if (!File.Exists(logoPath))
+            return;
 
-        _styles.AppendChild(style);
+        var imgPart = _mainPart.AddImagePart(ImagePartType.Png);
+        using (var stream = new FileStream(logoPath, FileMode.Open, FileAccess.Read))
+        {
+            imgPart.FeedData(stream);
+        }
+
+        _logoPartId = _mainPart.GetIdOfPart(imgPart);
     }
 
     /// <summary>
-    ///     Finalizes and retrieves the Word document data as a byte array.
+    ///     Disposes the word document and returns the underlying memory stream containing the document.
     /// </summary>
-    /// <returns>The byte array of the document.</returns>
-    private byte[] GetDocumentData()
+    /// <returns>The <see cref="MemoryStream"/> containing the document</returns>
+    private MemoryStream DisposeAndGetStream()
     {
         _mainPart.Document.Save();
         _wordDocument.Save();
         _wordDocument.Dispose();
 
-        var data = _stream.ToArray();
-        _stream.Dispose();
-
-        return data;
+        _stream.Seek(0, SeekOrigin.Begin);
+        return _stream;
     }
 
     /// <summary>
@@ -197,7 +196,9 @@ public partial class WordFileCreator
         run.AppendChild(
             new RunProperties
             {
-                RunStyle = new RunStyle { Val = DisciplineHeadlineStyle },
+                Bold = new Bold(),
+                Color = new Color { Val = MainColor },
+                RunFonts = new RunFonts { Ascii = MainFont },
                 FontSize = new FontSize { Val = fontSize },
             }
         );

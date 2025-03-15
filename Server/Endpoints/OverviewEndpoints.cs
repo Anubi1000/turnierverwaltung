@@ -40,7 +40,7 @@ public static class OverviewEndpoints
         return TypedResults.Ok(scoreboardData);
     }
 
-    private static async Task<Results<NotFound, ValidationProblem, FileContentHttpResult>> GenerateWordScoreDocument(
+    private static async Task<Results<NotFound, ValidationProblem, FileStreamHttpResult>> GenerateWordScoreDocument(
         ApplicationDbContext dbContext,
         IValidator<WordDocGenerationDto> validator,
         int tournamentId,
@@ -64,29 +64,31 @@ public static class OverviewEndpoints
             Tables = scoreboardData.Tables.Where(table => dto.TablesToExport.Contains(table.Name)).ToImmutableList(),
         };
 
-        if (dto.SeparateDocuments)
+        // If only one table requested it can be returned directly as a document
+        if (dto.SeparateDocuments && filteredData.Tables.Count > 1)
         {
-            using var stream = new MemoryStream();
+            var zipStream = new MemoryStream();
 
-            using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, true))
+            using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
             {
                 for (var tableIndex = 0; tableIndex < filteredData.Tables.Count; tableIndex++)
                 {
-                    var document = WordFileCreator.CreateWordScoreFileForTable(filteredData, tableIndex);
                     var entry = archive.CreateEntry($"{filteredData.Tables[tableIndex].Name}.docx");
                     await using var entryStream = entry.Open();
-                    await entryStream.WriteAsync(document);
+
+                    using var fileStream = WordFileCreator.CreateWordFileForTableAsStream(filteredData, tableIndex);
+                    await fileStream.CopyToAsync(entryStream);
                 }
             }
 
-            var zipData = stream.ToArray();
-            return TypedResults.File(zipData, "application/zip", "Ergebnisse.zip");
+            zipStream.Seek(0, SeekOrigin.Begin);
+            return TypedResults.File(zipStream, "application/zip", "Ergebnisse.zip");
         }
 
-        var wordDoc = WordFileCreator.CreateWordScoreFile(filteredData);
+        var wordDocStream = WordFileCreator.CreateWordScoreFileAsStream(filteredData);
 
         return TypedResults.File(
-            wordDoc,
+            wordDocStream,
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "Ergebnisse.docx"
         );
