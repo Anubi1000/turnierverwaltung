@@ -1,22 +1,7 @@
-using System.Reflection;
-using System.Text.Json.Serialization;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Json;
-using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using Turnierverwaltung.Server.Auth;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Endpoints;
-using Turnierverwaltung.Server.Model.Transfer;
-using Turnierverwaltung.Server.Model.Transfer.Club;
-using Turnierverwaltung.Server.Model.Transfer.Discipline;
-using Turnierverwaltung.Server.Model.Transfer.Participant;
-using Turnierverwaltung.Server.Model.Transfer.TeamDiscipline;
-using Turnierverwaltung.Server.Model.Transfer.Tournament;
-using Turnierverwaltung.Server.Model.Validation;
-using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server;
 

@@ -1,14 +1,20 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Frozen;
+using System.Collections.Immutable;
+using Turnierverwaltung.Server.Database.Model;
 
 namespace Turnierverwaltung.Server.Results.Scoreboard;
 
 public partial class ScoreboardDataCreator
 {
-    private void AddTeamDisciplineTables()
+    private static void CreateTeamDisciplineTables(
+        Tournament tournament,
+        FrozenDictionary<ParticipantResult, decimal[]> calculatedResults,
+        List<ScoreboardData.Table> tables
+    )
     {
-        var columns = CreateColumnsForTeamDiscipline();
+        var columns = CreateColumnsForTeamDiscipline(tournament.TeamSize);
 
-        foreach (var teamDiscipline in _tournament.TeamDisciplines)
+        foreach (var teamDiscipline in tournament.TeamDisciplines)
         {
             var disciplineIds = teamDiscipline.BasedOn.Select(d => d.Id).ToList();
 
@@ -18,7 +24,7 @@ public partial class ScoreboardDataCreator
                     var memberScores = team.Members.ToDictionary(
                         member => member,
                         member =>
-                            _calculatedResults
+                            calculatedResults
                                 .Where(result =>
                                     result.Key.ParticipantId == member.Id
                                     && disciplineIds.Contains(result.Key.DisciplineId)
@@ -57,14 +63,13 @@ public partial class ScoreboardDataCreator
                 )
                 .ToImmutableList();
 
-            var table = new ScoreboardData.Table(teamDiscipline.Name, columns, rows);
-            _tables.Add(table);
+            tables.Add(new ScoreboardData.Table(teamDiscipline.Name, columns, rows));
         }
     }
 
-    private ImmutableList<ScoreboardData.Table.Column> CreateColumnsForTeamDiscipline()
+    private static ImmutableList<ScoreboardData.Table.Column> CreateColumnsForTeamDiscipline(int teamSize)
     {
-        var columns = new List<ScoreboardData.Table.Column>(4 + _tournament.TeamSize * 2)
+        var columns = new List<ScoreboardData.Table.Column>(4 + teamSize * 2)
         {
             new(
                 "Platz",
@@ -79,7 +84,7 @@ public partial class ScoreboardDataCreator
             new("Name", new ScoreboardData.Table.Column.IWidth.Variable(1), ScoreboardData.Table.Column.Alignment.Left),
         };
 
-        for (var i = 1; i <= _tournament.TeamSize; i++)
+        for (var i = 1; i <= teamSize; i++)
         {
             columns.Add(
                 new ScoreboardData.Table.Column(

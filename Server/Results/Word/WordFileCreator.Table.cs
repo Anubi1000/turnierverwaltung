@@ -5,11 +5,15 @@ namespace Turnierverwaltung.Server.Results.Word;
 
 public partial class WordFileCreator
 {
-    /// <summary>
-    ///     Adds a table to the Word document based on the provided scoreboard table.
-    /// </summary>
-    /// <param name="scoreTable">The scoreboard table containing columns and rows.</param>
-    private void AddTable(ScoreboardData.Table scoreTable)
+    private const int TableBorderSize = 12;
+    private const string TableCellMargin = "80";
+
+    private const string ScoreTableStyle = "ScoreTable";
+
+    private const int MaxTableWidth = 5000;
+    private const float PixelConversionFactor = 2.75f;
+
+    private static Table CreateScoreTable(ScoreboardData.Table scoreTable)
     {
         var table = new Table();
 
@@ -28,13 +32,10 @@ public partial class WordFileCreator
             table.AppendChild(CreateTableResultRow(row, scoreTable.Columns, index));
         }
 
-        _body.AppendChild(table);
+        return table;
     }
 
-    /// <summary>
-    ///     Adds a table style to the Word document, defining font, alignment, and borders.
-    /// </summary>
-    private void AddTableStyle()
+    private static Style CreateTableStyle()
     {
         var tableStyle = new Style
         {
@@ -118,7 +119,7 @@ public partial class WordFileCreator
             }
         );
 
-        _styles.AppendChild(tableStyle);
+        return tableStyle;
     }
 
     /// <summary>
@@ -129,6 +130,7 @@ public partial class WordFileCreator
     private static TableRow CreateTableHeader(IList<ScoreboardData.Table.Column> columns)
     {
         var row = new TableRow();
+        row.AppendChild(new TableRowProperties(new TableHeader()));
 
         foreach (var column in columns)
         {

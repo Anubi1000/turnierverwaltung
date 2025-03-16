@@ -5,10 +5,7 @@ using Turnierverwaltung.Server.Results.Scoreboard;
 
 namespace Turnierverwaltung.Server.Results.Word;
 
-/// <summary>
-///     Class responsible for creating Word documents containing scoreboard data.
-/// </summary>
-public partial class WordFileCreator
+public partial class WordFileCreator : IWordFileCreator
 {
     private const string MainColor = "1b5e20";
     private const string MainFont = "Aptos";
@@ -17,105 +14,130 @@ public partial class WordFileCreator
     private const string SecondPlaceColor = "c0c0c0";
     private const string ThirdPlaceColor = "bf8970";
 
-    private const int TableBorderSize = 12;
-    private const string TableCellMargin = "80";
-
-    private const string ScoreTableStyle = "ScoreTable";
-
     private const int A4Width = 16838;
     private const int A4Height = 11906;
     private const int A4Margin = 720;
 
-    private const int MaxTableWidth = 5000;
-    private const float PixelConversionFactor = 2.75f;
-
-    private readonly MemoryStream _stream = new();
-    private readonly WordprocessingDocument _wordDocument;
-    private readonly MainDocumentPart _mainPart;
-    private readonly Styles _styles;
-    private readonly Body _body;
-
-    private string? _logoPartId;
-
     /// <summary>
-    ///     Initializes a new instance of the <see cref="WordFileCreator" /> class.
+    ///     Creates a Word document as a memory stream containing all tables from the scoreboard data.
     /// </summary>
-    private WordFileCreator()
+    /// <param name="scoreboardData">The scoreboard data to be included in the document.</param>
+    /// <returns>A memory stream containing the generated Word document.</returns>
+    public MemoryStream CreateWordFileAsStream(ScoreboardData scoreboardData)
     {
-        _wordDocument = WordprocessingDocument.Create(_stream, WordprocessingDocumentType.Document);
-
-        _mainPart = _wordDocument.AddMainDocumentPart();
-        _mainPart.Document = new Document();
-
-        var stylePart = _mainPart.AddNewPart<StyleDefinitionsPart>();
-        stylePart.Styles = new Styles();
-        _styles = stylePart.Styles;
-
-        _body = _mainPart.Document.AppendChild(new Body());
-    }
-
-    /// <summary>
-    ///     Creates a Word document for a specific scoreboard table and writes it to the specified stream. The returned stream needs to be disposed after use.
-    /// </summary>
-    /// <param name="scoreboardData">The scoreboard data containing tables.</param>
-    /// <param name="tableIndex">The index of the table to generate.</param>
-    /// <param name="stream">The stream to write the document to.</param>
-    /// <returns>A byte array representing the Word document.</returns>
-    public static MemoryStream CreateWordFileForTableAsStream(ScoreboardData scoreboardData, int tableIndex)
-    {
-        var creator = new WordFileCreator();
-        creator.AddLogoImagePart();
-        creator.SetPageSize();
-        creator.AddTableStyle();
-
-        var table = scoreboardData.Tables[tableIndex];
-        creator.AddTableHeading(scoreboardData.TournamentName, table.Name);
-        creator.AddTable(table);
-
-        return creator.DisposeAndGetStream();
-    }
-
-    /// <summary>
-    ///     Creates a Word document containing all scoreboard tables. The returned stream needs to be disposed after use.
-    /// </summary>
-    /// <param name="scoreboardData">The scoreboard data containing multiple tables.</param>
-    /// <returns>A byte array representing the Word document.</returns>
-    public static MemoryStream CreateWordScoreFileAsStream(ScoreboardData scoreboardData)
-    {
-        var creator = new WordFileCreator();
-        creator.AddLogoImagePart();
-        creator.SetPageSize();
-        creator.AddTableStyle();
-
-        for (var index = 0; index < scoreboardData.Tables.Count; index++)
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
         {
-            var table = scoreboardData.Tables[index];
-            creator.AddTableHeading(scoreboardData.TournamentName, table.Name);
-            creator.AddTable(table);
+            // Add main part
+            var mainPart = document.AddMainDocumentPart();
+            mainPart.Document = new Document();
 
-            if (index != scoreboardData.Tables.Count - 1)
-                creator._body.Append(new Paragraph(new Run(new Break { Type = BreakValues.Page })));
+            // Add logo
+            var logoPartId = AddLogoImagePart(mainPart);
+
+            // Add styles
+            AddStyles(mainPart);
+
+            // Add body
+            var body = mainPart.Document.AppendChild(new Body());
+
+            for (var index = 0; index < scoreboardData.Tables.Count; index++)
+            {
+                var table = scoreboardData.Tables[index];
+                body.AppendChild(CreateTableHeading(scoreboardData.TournamentName, table.Name, logoPartId));
+                body.AppendChild(CreateScoreTable(table));
+
+                var footerPartId = AddFooterPart(mainPart, scoreboardData.TournamentName, table.Name);
+
+                if (index != scoreboardData.Tables.Count - 1)
+                    body.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties { SectionProperties = GetSectionProperties(footerPartId) },
+                            new Run(new Break { Type = BreakValues.Page })
+                        )
+                    );
+                else
+                    body.AppendChild(GetSectionProperties(footerPartId));
+            }
+
+            mainPart.Document.Save();
+            document.Save();
         }
 
-        return creator.DisposeAndGetStream();
+        stream.Seek(0, SeekOrigin.Begin);
+        return stream;
     }
 
     /// <summary>
-    ///     Sets the page size and margins for the Word document.
+    ///     Creates a Word document as a memory stream containing a single scoreboard table.
     /// </summary>
-    private void SetPageSize()
+    /// <param name="scoreboardData">The scoreboard data containing multiple tables.</param>
+    /// <param name="tableIndex">The index of the table to include in the document.</param>
+    /// <returns>A memory stream containing the generated Word document.</returns>
+    public MemoryStream CreateWordFileForTableAsStream(ScoreboardData scoreboardData, int tableIndex)
     {
-        var sectionProperties = new SectionProperties();
-        sectionProperties.AppendChild(
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
+        {
+            // Add main part
+            var mainPart = document.AddMainDocumentPart();
+            mainPart.Document = new Document();
+
+            // Add logo
+            var logoPartId = AddLogoImagePart(mainPart);
+
+            // Add styles
+            AddStyles(mainPart);
+
+            // Add body
+            var body = mainPart.Document.AppendChild(new Body());
+
+            var table = scoreboardData.Tables[tableIndex];
+            body.AppendChild(CreateTableHeading(scoreboardData.TournamentName, table.Name, logoPartId));
+            body.AppendChild(CreateScoreTable(table));
+
+            var footerPartId = AddFooterPart(mainPart, scoreboardData.TournamentName, table.Name);
+            body.AppendChild(GetSectionProperties(footerPartId));
+
+            mainPart.Document.Save();
+            document.Save();
+        }
+
+        stream.Seek(0, SeekOrigin.Begin);
+        return stream;
+    }
+
+    /// <summary>
+    ///     Adds styles to the Word document.
+    /// </summary>
+    /// <param name="mainPart">The main document part.</param>
+    private static void AddStyles(MainDocumentPart mainPart)
+    {
+        var stylePart = mainPart.AddNewPart<StyleDefinitionsPart>();
+        stylePart.Styles = new Styles();
+        var styles = stylePart.Styles;
+
+        styles.AppendChild(CreateTableStyle());
+
+        styles.Save();
+    }
+
+    /// <summary>
+    ///     Creates section properties with a footer reference and page setup.
+    /// </summary>
+    /// <param name="footerPartId">The ID of the footer part.</param>
+    /// <returns>A SectionProperties object for the document.</returns>
+    private static SectionProperties GetSectionProperties(string footerPartId)
+    {
+        var sectionProperties = new SectionProperties(
+            new FooterReference { Type = HeaderFooterValues.Default, Id = footerPartId },
+            new PageNumberType { Start = 1 },
             new PageSize
             {
                 Orient = PageOrientationValues.Landscape,
                 Height = A4Height,
                 Width = A4Width,
-            }
-        );
-
-        sectionProperties.AppendChild(
+            },
             new PageMargin
             {
                 Left = A4Margin,
@@ -128,15 +150,60 @@ public partial class WordFileCreator
             }
         );
 
-        _body.AppendChild(sectionProperties);
+        return sectionProperties;
     }
 
     /// <summary>
-    ///     Adds a table header to the document.
+    ///     Adds a footer part to the document.
+    /// </summary>
+    /// <param name="mainPart">The main document part.</param>
+    /// <param name="tournamentName">The tournament name.</param>
+    /// <param name="tableName">The table name.</param>
+    /// <returns>The ID of the footer part.</returns>
+    private static string AddFooterPart(MainDocumentPart mainPart, string tournamentName, string tableName)
+    {
+        var footerPart = mainPart.AddNewPart<FooterPart>();
+        footerPart.Footer = new Footer(
+            new Paragraph(
+                // Tournament name
+                new Run(new Text(tournamentName)),
+                // Table name
+                new Run(
+                    new PositionalTab
+                    {
+                        RelativeTo = AbsolutePositionTabPositioningBaseValues.Margin,
+                        Alignment = AbsolutePositionTabAlignmentValues.Center,
+                        Leader = AbsolutePositionTabLeaderCharValues.None,
+                    }
+                ),
+                new Run(new Text(tableName)),
+                // Page
+                new Run(
+                    new PositionalTab
+                    {
+                        RelativeTo = AbsolutePositionTabPositioningBaseValues.Margin,
+                        Alignment = AbsolutePositionTabAlignmentValues.Right,
+                        Leader = AbsolutePositionTabLeaderCharValues.None,
+                    }
+                ),
+                new SimpleField { Instruction = "PAGE" },
+                new Run(new Text(" / ") { Space = SpaceProcessingModeValues.Preserve }),
+                new SimpleField { Instruction = "SECTIONPAGES" }
+            )
+        );
+        footerPart.Footer.Save();
+
+        return mainPart.GetIdOfPart(footerPart);
+    }
+
+    /// <summary>
+    ///     Creates a paragraph for the table heading, including tournament name, discipline name, and logo.
     /// </summary>
     /// <param name="tournamentName">The name of the tournament.</param>
     /// <param name="disciplineName">The name of the discipline.</param>
-    private void AddTableHeading(string tournamentName, string disciplineName)
+    /// <param name="logoPartId">The ID of the logo part, if available.</param>
+    /// <returns>A formatted Paragraph element.</returns>
+    private static Paragraph CreateTableHeading(string tournamentName, string disciplineName, string? logoPartId)
     {
         var paragraph = new Paragraph
         {
@@ -149,38 +216,10 @@ public partial class WordFileCreator
         paragraph.AppendChild(CreateHeadlineRun(tournamentName, "52"));
         paragraph.AppendChild(CreateHeadlineRun("Der Verein", "40"));
         paragraph.AppendChild(CreateHeadlineRun(disciplineName, "32", false));
-        paragraph.AppendChild(new Run(CreateLogoDrawing()));
+        if (logoPartId is not null)
+            paragraph.AppendChild(new Run(CreateLogoDrawing(logoPartId)));
 
-        _body.AppendChild(paragraph);
-    }
-
-    private void AddLogoImagePart()
-    {
-        var logoPath = Program.GetUserData(UserDataType.WordDocumentIcon);
-        if (!File.Exists(logoPath))
-            return;
-
-        var imgPart = _mainPart.AddImagePart(ImagePartType.Png);
-        using (var stream = new FileStream(logoPath, FileMode.Open, FileAccess.Read))
-        {
-            imgPart.FeedData(stream);
-        }
-
-        _logoPartId = _mainPart.GetIdOfPart(imgPart);
-    }
-
-    /// <summary>
-    ///     Disposes the word document and returns the underlying memory stream containing the document.
-    /// </summary>
-    /// <returns>The <see cref="MemoryStream"/> containing the document</returns>
-    private MemoryStream DisposeAndGetStream()
-    {
-        _mainPart.Document.Save();
-        _wordDocument.Save();
-        _wordDocument.Dispose();
-
-        _stream.Seek(0, SeekOrigin.Begin);
-        return _stream;
+        return paragraph;
     }
 
     /// <summary>

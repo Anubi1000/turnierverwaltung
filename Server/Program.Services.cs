@@ -12,6 +12,8 @@ using Turnierverwaltung.Server.Model.Transfer.Participant;
 using Turnierverwaltung.Server.Model.Transfer.TeamDiscipline;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Model.Validation;
+using Turnierverwaltung.Server.Results.Scoreboard;
+using Turnierverwaltung.Server.Results.Word;
 using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server;
@@ -23,7 +25,7 @@ public static partial class Program
         // Add OpenApi document generation
         AddApiDoc(services);
 
-        // Add auto validation
+        // Add validators
         services.AddScoped<IValidator<TournamentEditDto>, TournamentEditDtoValidator>();
         services.AddScoped<IValidator<ClubEditDto>, ClubEditDtoValidator>();
         services.AddScoped<IValidator<DisciplineEditDto>, DisciplineEditDtoValidator>();
@@ -32,6 +34,9 @@ public static partial class Program
         services.AddScoped<IValidator<TeamDisciplineEditDto>, TeamDisciplineEditDtoValidator>();
         services.AddScoped<IValidator<WordDocGenerationDto>, WordDocGenerationDtoValidator>();
 
+        services.AddScoped<IScoreboardDataCreator, ScoreboardDataCreator>();
+        services.AddScoped<IWordFileCreator, WordFileCreator>();
+
         // Add database context
         var connectionString = $"Data Source={GetUserData(UserDataType.Database)}";
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -39,7 +44,7 @@ public static partial class Program
             options.UseSqlite(connectionString);
         });
 
-        // Add DateTime to timestamp converter
+        // Add json converter
         services.Configure<JsonOptions>(options =>
         {
             options.SerializerOptions.Converters.Add(new DateTimeToTimestampConverter());

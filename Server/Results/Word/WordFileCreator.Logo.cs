@@ -1,5 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Drawing.Wordprocessing;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DPictures = DocumentFormat.OpenXml.Drawing.Pictures;
 using DWp = DocumentFormat.OpenXml.Drawing.Wordprocessing;
@@ -10,24 +10,24 @@ public partial class WordFileCreator
 {
     private const int LogoSize = 1100000;
 
-    private Drawing CreateLogoDrawing()
+    private static Drawing CreateLogoDrawing(string logoPartId)
     {
         return new Drawing(
             new DWp.Anchor(
-                new SimplePosition { X = 0, Y = 0 },
-                new HorizontalPosition
+                new DWp.SimplePosition { X = 0, Y = 0 },
+                new DWp.HorizontalPosition
                 {
-                    RelativeFrom = HorizontalRelativePositionValues.Column,
-                    PositionOffset = new PositionOffset("-1"),
+                    RelativeFrom = DWp.HorizontalRelativePositionValues.Column,
+                    PositionOffset = new DWp.PositionOffset("-1"),
                 },
-                new VerticalPosition
+                new DWp.VerticalPosition
                 {
-                    RelativeFrom = VerticalRelativePositionValues.Paragraph,
-                    PositionOffset = new PositionOffset("0"),
+                    RelativeFrom = DWp.VerticalRelativePositionValues.Paragraph,
+                    PositionOffset = new DWp.PositionOffset("0"),
                 },
-                new Extent { Cx = LogoSize, Cy = LogoSize },
-                new WrapNone(),
-                new DocProperties { Id = 1, Name = "Logo" },
+                new DWp.Extent { Cx = LogoSize, Cy = LogoSize },
+                new DWp.WrapNone(),
+                new DWp.DocProperties { Id = 1, Name = "Logo" },
                 new DWp.NonVisualGraphicFrameDrawingProperties
                 {
                     GraphicFrameLocks = new GraphicFrameLocks { NoChangeAspect = true },
@@ -45,7 +45,7 @@ public partial class WordFileCreator
                                 NonVisualPictureDrawingProperties = new DPictures.NonVisualPictureDrawingProperties(),
                             },
                             new DPictures.BlipFill(
-                                new Blip { Embed = _logoPartId, CompressionState = BlipCompressionValues.Print },
+                                new Blip { Embed = logoPartId, CompressionState = BlipCompressionValues.Print },
                                 new Stretch { FillRectangle = new FillRectangle() }
                             ),
                             new DPictures.ShapeProperties(
@@ -77,5 +77,20 @@ public partial class WordFileCreator
                 RelativeHeight = 10000,
             }
         );
+    }
+
+    private static string? AddLogoImagePart(MainDocumentPart mainPart)
+    {
+        var logoPath = Program.GetUserData(UserDataType.WordDocumentIcon);
+        if (!File.Exists(logoPath))
+            return null;
+
+        var imgPart = mainPart.AddImagePart(ImagePartType.Png);
+        using (var stream = new FileStream(logoPath, FileMode.Open, FileAccess.Read))
+        {
+            imgPart.FeedData(stream);
+        }
+
+        return mainPart.GetIdOfPart(imgPart);
     }
 }

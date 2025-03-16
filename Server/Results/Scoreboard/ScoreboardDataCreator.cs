@@ -8,28 +8,14 @@ using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Results.Scoreboard;
 
-public partial class ScoreboardDataCreator(ApplicationDbContext dbContext, int tournamentId)
+public partial class ScoreboardDataCreator(ApplicationDbContext dbContext) : IScoreboardDataCreator
 {
     private const int ScoreRoundingPrecision = 10;
 
     private static readonly CultureInfo GermanCultureInfo = CultureInfo.GetCultureInfo("de-DE");
     private static readonly DecimalArrayComparer DecimalArrayComparer = new();
-    private readonly List<ScoreboardData.Table> _tables = [];
 
-    private FrozenDictionary<ParticipantResult, decimal[]> _calculatedResults = FrozenDictionary<
-        ParticipantResult,
-        decimal[]
-    >.Empty;
-
-    private Tournament _tournament = null!;
-
-    public static Task<ScoreboardData?> CreateScoreboardDataAsync(ApplicationDbContext dbContext, int tournamentId)
-    {
-        var creator = new ScoreboardDataCreator(dbContext, tournamentId);
-        return creator.CreateScoreboardData();
-    }
-
-    private async Task<ScoreboardData?> CreateScoreboardData()
+    public async Task<ScoreboardData?> CreateScoreboardDataAsync(int tournamentId)
     {
         Tournament? tournament;
         await using (await dbContext.Database.BeginTransactionAsync())
@@ -60,15 +46,15 @@ public partial class ScoreboardDataCreator(ApplicationDbContext dbContext, int t
         if (tournament is null)
             return null;
 
-        _tournament = tournament;
-        _calculatedResults = tournament
+        var calculatedResults = tournament
             .Participants.SelectMany(p => p.Results)
             .ToFrozenDictionary(result => result, GetScoresFromResult);
 
-        AddDisciplineTables();
-        AddTeamDisciplineTables();
+        var tables = new List<ScoreboardData.Table>();
+        CreateDisciplineTables(tournament, calculatedResults, tables);
+        CreateTeamDisciplineTables(tournament, calculatedResults, tables);
 
-        return new ScoreboardData(_tournament.Name, _tables.ToImmutableList());
+        return new ScoreboardData(tournament.Name, tables.ToImmutableList());
     }
 
     private static decimal[] GetScoresFromResult(ParticipantResult result)

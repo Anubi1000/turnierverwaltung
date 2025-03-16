@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Frozen;
+using System.Collections.Immutable;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Utils;
 
@@ -6,19 +7,23 @@ namespace Turnierverwaltung.Server.Results.Scoreboard;
 
 public partial class ScoreboardDataCreator
 {
-    private void AddDisciplineTables()
+    private static void CreateDisciplineTables(
+        Tournament tournament,
+        FrozenDictionary<ParticipantResult, decimal[]> calculatedResults,
+        List<ScoreboardData.Table> tables
+    )
     {
         var columnCache = new Dictionary<int, ImmutableList<ScoreboardData.Table.Column>>();
 
-        foreach (var discipline in _tournament.Disciplines)
+        foreach (var discipline in tournament.Disciplines)
         {
             var columns = columnCache.GetOrCompute(discipline.AmountOfBestRoundsToShow, CreateColumnsForDiscipline);
 
-            var participantScores = _tournament
+            var participantScores = tournament
                 .Participants.Select(participant =>
                 {
                     var result = participant.Results.FirstOrDefault(result => result.DisciplineId == discipline.Id);
-                    var scores = result is not null ? _calculatedResults[result] : [];
+                    var scores = result is not null ? calculatedResults[result] : [];
                     return (participant, scores);
                 })
                 .Where(result => result.scores.Length != 0)
@@ -29,21 +34,38 @@ public partial class ScoreboardDataCreator
                 var immediateScores = participantScores.ToList();
 
                 foreach (var gender in Enum.GetValues<Gender>())
-                    CreateDisciplineTable(
-                        discipline.Name + (gender == Gender.Male ? "(m)" : "(w)"),
-                        discipline.AmountOfBestRoundsToShow,
-                        immediateScores.Where(result => result.participant.Gender == gender),
-                        columns
+                {
+                    var genderSuffix = gender switch
+                    {
+                        Gender.Male => " (m)",
+                        Gender.Female => " (f)",
+                    };
+
+                    tables.Add(
+                        CreateDisciplineTable(
+                            discipline.Name + genderSuffix,
+                            discipline.AmountOfBestRoundsToShow,
+                            immediateScores.Where(result => result.participant.Gender == gender),
+                            columns
+                        )
                     );
+                }
             }
             else
             {
-                CreateDisciplineTable(discipline.Name, discipline.AmountOfBestRoundsToShow, participantScores, columns);
+                tables.Add(
+                    CreateDisciplineTable(
+                        discipline.Name,
+                        discipline.AmountOfBestRoundsToShow,
+                        participantScores,
+                        columns
+                    )
+                );
             }
         }
     }
 
-    private void CreateDisciplineTable(
+    private static ScoreboardData.Table CreateDisciplineTable(
         string name,
         int roundsToShow,
         IEnumerable<(Participant participant, decimal[] scores)> participantScores,
@@ -54,8 +76,7 @@ public partial class ScoreboardDataCreator
             .Select((result, index) => CreateDisciplineRow(result.participant, result.scores, index, roundsToShow))
             .ToImmutableList();
 
-        var table = new ScoreboardData.Table(name, columns, rows);
-        _tables.Add(table);
+        return new ScoreboardData.Table(name, columns, rows);
     }
 
     private static ScoreboardData.Table.Row CreateDisciplineRow(
