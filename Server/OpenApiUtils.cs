@@ -6,11 +6,11 @@ using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server;
 
-public static partial class Program
+public static class OpenApiUtils
 {
-    private static void AddApiDoc(IServiceCollection services)
+    public static IServiceCollection AddAppApiDoc(this IServiceCollection services)
     {
-        services.AddOpenApi(options =>
+        return services.AddOpenApi(options =>
         {
             options.AddDocumentTransformer(
                 (document, context, cancellationToken) =>

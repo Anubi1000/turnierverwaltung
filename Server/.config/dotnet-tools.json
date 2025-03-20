@@ -8,6 +8,13 @@
         "dotnet-ef"
       ],
       "rollForward": false
+    },
+    "wix": {
+      "version": "5.0.2",
+      "commands": [
+        "wix"
+      ],
+      "rollForward": false
     }
   }
 }

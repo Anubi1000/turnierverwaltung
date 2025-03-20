@@ -39,6 +39,9 @@ public partial class ScoreboardDataCreator
                     {
                         Gender.Male => " (m)",
                         Gender.Female => " (f)",
+#pragma warning disable CA2208
+                        _ => throw new ArgumentOutOfRangeException(nameof(gender), gender, null)
+#pragma warning restore CA2208
                     };
 
                     tables.Add(

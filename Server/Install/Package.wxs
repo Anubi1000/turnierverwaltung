@@ -1,0 +1,30 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+    <Package Name="Turnierverwaltung" Manufacturer="Anubi1000" Version="1.0.0.0" UpgradeCode="e95aaebf-cfa2-4fa4-b0ad-316edcb14971">
+        <MediaTemplate EmbedCab="yes" />
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+        <ui:WixUI Id="WixUI_InstallDir_NoLicense" InstallDirectory="INSTALLFOLDER" />
+        <UIRef Id="WixUI_ErrorProgressText" />
+
+        <?define SourceDir="..\bin\Release\net9.0\win-x64\publish"?>
+        <ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
+            <Component Directory="INSTALLFOLDER">
+                <File Id="ApplicationExe" Source="$(var.SourceDir)\Turnierverwaltung.Server.exe" KeyPath="yes">
+                    <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="Turnierverwaltung" WorkingDirectory="INSTALLFOLDER" Advertise="yes" />
+                </File>
+                <File Source="$(var.SourceDir)\e_sqlite3.dll" />
+                <File Source="$(var.SourceDir)\appsettings.json" />
+                <File Source="$(var.SourceDir)\Turnierverwaltung.Server.staticwebassets.endpoints.json" />
+            </Component>
+            <Files Directory="INSTALLFOLDER" Subdirectory="wwwroot" Include="$(var.SourceDir)\wwwroot\**" />
+        </ComponentGroup>
+
+        <StandardDirectory Id="ProgramFiles6432Folder">
+            <Directory Id="INSTALLFOLDER" Name="!(bind.Property.Manufacturer)\!(bind.Property.ProductName)" />
+        </StandardDirectory>
+
+        <Feature Id="Main">
+            <ComponentGroupRef Id="AppComponents" />
+        </Feature>
+    </Package>
+</Wix>

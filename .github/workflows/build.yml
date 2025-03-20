@@ -45,8 +45,9 @@ jobs:
         run: dotnet restore --locked-mode
 
       - name: Build Server
-        working-directory: ./Server
-        run: dotnet publish --no-restore /p:PublishProfile=Properties/PublishProfiles/Win_x64.xml
+        working-directory: ./Server/Install
+        shell: pwsh
+        run: ./Publish.ps1
 
       - name: Upload Server
         uses: actions/upload-artifact@v4
@@ -59,7 +60,7 @@ jobs:
         if: false
         working-directory: ./Server.Tests
         shell: pwsh
-        run: ./runTests.ps1
+        run: ./RunTests.ps1
 
       - name: Upload Server Coverage Report
         if: false
