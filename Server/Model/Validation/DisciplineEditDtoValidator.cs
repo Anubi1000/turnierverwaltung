@@ -14,7 +14,9 @@ public class DisciplineEditDtoValidator : AbstractValidator<DisciplineEditDto>
 
         RuleFor(x => x.AmountOfBestRoundsToShow).InclusiveBetween(1, 5);
 
-        RuleFor(x => x.Values).NotEmpty().ForEach(x => x.SetValidator(new DisciplineEditDtoValueValidator()));
+        RuleFor(x => x.Values)
+            .NotEmpty()
+            .ForEach(value => value.ChildRules(child => child.RuleFor(x => x.Name).NotEmpty().MaximumLength(150)));
 
         RuleFor(x => x.Values.Count).MustNotChange(PreviousValueAmountKey);
     }

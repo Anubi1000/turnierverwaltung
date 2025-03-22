@@ -2,10 +2,11 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Turnierverwaltung.Server.Results.Scoreboard;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Results.Word;
 
-public partial class WordFileCreator : IWordFileCreator
+public partial class WordFileCreator(IUserDataService userDataService) : IWordFileCreator
 {
     private const string MainColor = "1b5e20";
     private const string MainFont = "Aptos";

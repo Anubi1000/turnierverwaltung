@@ -79,14 +79,14 @@ public partial class WordFileCreator
         );
     }
 
-    private static string? AddLogoImagePart(MainDocumentPart mainPart)
+    private string? AddLogoImagePart(MainDocumentPart mainPart)
     {
-        var logoPath = Program.GetUserData(UserDataType.WordDocumentIcon);
-        if (!File.Exists(logoPath))
+        var imageData = userDataService.GetWordDocumentLogo();
+        if (imageData is null)
             return null;
 
         var imgPart = mainPart.AddImagePart(ImagePartType.Png);
-        using (var stream = new FileStream(logoPath, FileMode.Open, FileAccess.Read))
+        using (var stream = new MemoryStream(imageData, false))
         {
             imgPart.FeedData(stream);
         }

@@ -85,6 +85,15 @@
         "resolved": "11.11.0",
         "contentHash": "cyIVdQBwSipxWG8MA3Rqox7iNbUNUTK5bfJi9tIdm4CAfH71Oo5ABLP4/QyrUwuakqpUEPGtE43BDddvEehuYw=="
       },
+      "FluentValidation.DependencyInjectionExtensions": {
+        "type": "Transitive",
+        "resolved": "11.11.0",
+        "contentHash": "viTKWaMbL3yJYgGI0DiCeavNbE9UPMWFVK2XS9nYXGbm3NDMd0/L5ER4wBzmTtW3BYh3SrlSXm9RACiKZ6stlA==",
+        "dependencies": {
+          "FluentValidation": "11.11.0",
+          "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
+        }
+      },
       "Microsoft.AspNetCore.OpenApi": {
         "type": "Transitive",
         "resolved": "9.0.1",
@@ -345,6 +354,11 @@
           "SQLitePCLRaw.core": "2.1.10"
         }
       },
+      "Swashbuckle.AspNetCore.SwaggerUI": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "IMqmgclFiZL2QIfopOmWYofZzckrl+SdMt1h4mKC0jc94F+uzt3IHA3YFC0CGlwBqTTSnxHqNUKomNTeAhZbYA=="
+      },
       "System.Collections.Immutable": {
         "type": "Transitive",
         "resolved": "8.0.0",
@@ -452,9 +466,11 @@
         "dependencies": {
           "DocumentFormat.OpenXml": "[3.3.0, )",
           "FluentValidation": "[11.11.0, )",
+          "FluentValidation.DependencyInjectionExtensions": "[11.11.0, )",
           "Microsoft.AspNetCore.OpenApi": "[9.0.1, )",
           "Microsoft.EntityFrameworkCore.Sqlite": "[9.0.1, )",
           "SharpGrip.FluentValidation.AutoValidation.Endpoints": "[1.5.0, )",
+          "Swashbuckle.AspNetCore.SwaggerUI": "[8.0.0, )",
           "Yarp.ReverseProxy": "[2.3.0, )"
         }
       }

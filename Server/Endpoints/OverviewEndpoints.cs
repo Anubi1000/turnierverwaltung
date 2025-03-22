@@ -17,7 +17,7 @@ public static class OverviewEndpoints
     {
         var baseGroup = builder
             .MapGroup("/api/tournaments/{tournamentId:int}/overview")
-            .WithTags("Overview")
+            .WithTags("Tournament / Overview")
             .RequireAuthorization();
 
         baseGroup.MapGet("/", GetOverviewData);

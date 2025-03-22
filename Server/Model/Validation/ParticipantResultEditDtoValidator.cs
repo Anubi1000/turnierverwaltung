@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Turnierverwaltung.Server.Model.Transfer.Participant;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Model.Validation;
 
@@ -10,14 +11,9 @@ public class ParticipantResultEditDtoValidator : AbstractValidator<ParticipantRe
     public ParticipantResultEditDtoValidator()
     {
         RuleForEach(x => x.Rounds)
-            .ChildRules(result =>
+            .ChildRules(child =>
             {
-                result
-                    .RuleFor(x => x.Values)
-                    .Must((_, value, context) => value.Count == (int)context.RootContextData[DisciplineValueCountKey])
-                    .WithMessage(
-                        "The count of items in '{PropertyName}' needs to be equal to the number of values in the discipline"
-                    );
+                child.RuleFor(x => x.Values.Count).MustNotChange(DisciplineValueCountKey);
             });
     }
 }
