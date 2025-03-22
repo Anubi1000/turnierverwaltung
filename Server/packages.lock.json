@@ -73,6 +73,12 @@
           "System.Text.Json": "9.0.1"
         }
       },
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[9.0.3, )",
+        "resolved": "9.0.3",
+        "contentHash": "1rqGTfubVg0qj2PsK6esyq3PIxtYJYrN3LsYUV9RrvH3anmt3fT3ozYdAZZH4U8JU/pt5pPIUk8NBSu26wtekA=="
+      },
       "SharpGrip.FluentValidation.AutoValidation.Endpoints": {
         "type": "Direct",
         "requested": "[1.5.0, )",

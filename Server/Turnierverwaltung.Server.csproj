@@ -6,6 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>partial</TrimMode>
     </PropertyGroup>
 
     <ItemGroup>
@@ -25,6 +27,8 @@
         <ProjectReference Include="..\Client\Turnierverwaltung.Client.esproj">
             <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
         </ProjectReference>
+
+        <TrimmerRootDescriptor Include="linker.xml" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
