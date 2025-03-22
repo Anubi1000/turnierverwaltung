@@ -209,12 +209,11 @@ private fun createTeamDisciplineColumns(teamSize: Int): MutableList<ScoreboardDa
         ScoreboardData.Table.Column("Name", ScoreboardData.Table.Column.Width.Variable(1.0f), ScoreboardData.Table.Column.Alignment.LEFT),
     )
 
-    repeat(teamSize) { i ->
-        columns.add(ScoreboardData.Table.Column("Schütze ${i + 1}", ScoreboardData.Table.Column.Width.Variable(1f), ScoreboardData.Table.Column.Alignment.RIGHT))
-        columns.add(ScoreboardData.Table.Column("Punkte", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.LEFT))
-    }
+    columns.add(ScoreboardData.Table.Column("Anzahl Serien", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.CENTER))
+    columns.add(ScoreboardData.Table.Column("mögliche Ringe", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.CENTER))
+    columns.add(ScoreboardData.Table.Column("erreichte Ringe ", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.CENTER))
 
-    columns.add(ScoreboardData.Table.Column("Gesamt", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.RIGHT))
+    columns.add(ScoreboardData.Table.Column("Trefferquote (%)", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.RIGHT))
     return columns
 }
 
@@ -224,7 +223,10 @@ private fun Tournament.calculateTeamResults(teamDiscipline: TeamDiscipline): Map
             .mapNotNull { discipline -> ScoreCalculationUtils.getScoreForParticipant(member, discipline) }
             .maxOrNull() ?: 0.0
     }
-    memberScores.values.sum() to memberScores
+    val averages = memberScores.values.average()
+    val percentage = averages / 5 * 10
+    val rounded_percentage = Math.round(percentage).toDouble()
+    rounded_percentage to memberScores
 }
 
 private fun createTeamRow(rank: Int, result: Map.Entry<Team, Pair<Double, Map<Participant, Double>>>): ScoreboardData.Table.Row {
@@ -232,10 +234,11 @@ private fun createTeamRow(rank: Int, result: Map.Entry<Team, Pair<Double, Map<Pa
     val (totalScore, memberScores) = scoreData
 
     val values = mutableListOf(rank.toString(), team.startNumber.toString(), team.name)
-    memberScores.forEach { (member, score) ->
-        values.add(member.name)
-        values.add(score.toString().replace(".", ","))
-    }
+
+    values.add(memberScores.size.toString())
+    val maxPoints = memberScores.size * 50
+    values.add(maxPoints.toDouble().toString().replace(".", ","))
+    values.add(memberScores.values.sum().toString().replace(".", ","))
     values.add(totalScore.toString().replace(".", ","))
 
     return ScoreboardData.Table.Row(id = team.id, values = values)

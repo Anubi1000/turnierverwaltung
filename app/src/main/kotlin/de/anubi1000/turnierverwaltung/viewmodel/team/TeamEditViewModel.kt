@@ -93,7 +93,7 @@ class TeamEditViewModel(
 
     private fun getValidationState(team: EditTeam, teamSize: Int): ComposeState<Boolean> = derivedStateOf {
         validateName(team.name) != null &&
-            team.members.size == teamSize &&
+            team.members.size >= teamSize &&
             validateStartNumber(team.startNumber) != null
     }
 

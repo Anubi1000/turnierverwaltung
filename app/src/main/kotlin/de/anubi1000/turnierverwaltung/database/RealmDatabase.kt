@@ -39,7 +39,7 @@ fun createBaseRealmConfig() = RealmConfiguration.Builder(
 
 private fun createRealm(): Realm {
     val documentsPath = FileSystemView.getFileSystemView().defaultDirectory.path
-    val dataDir = Path(documentsPath).resolve("Turnierverwaltung")
+    val dataDir = Path(documentsPath).resolve("Turnierverwaltung_Nationencup")
     val config = createBaseRealmConfig()
         .schemaVersion(0)
         .directory(dataDir.pathString)
