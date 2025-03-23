@@ -16,6 +16,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment
 import org.mongodb.kbson.ObjectId
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 @Serializable
 data class ScoreboardData(
@@ -113,7 +115,7 @@ fun Tournament.toScoreboardData(): ScoreboardData {
     }
 
     teamDisciplines.forEach { teamDiscipline ->
-        val columns = createTeamDisciplineColumns(teamSize)
+        val columns = createTeamDisciplineColumns()
         val results = calculateTeamResults(teamDiscipline)
 
         val rows = results.entries.sortedByDescending { it.value.first }.mapIndexed { index, result ->
@@ -202,44 +204,51 @@ private fun createTable(name: String, columns: List<ScoreboardData.Table.Column>
     },
 )
 
-private fun createTeamDisciplineColumns(teamSize: Int): MutableList<ScoreboardData.Table.Column> {
+private fun createTeamDisciplineColumns(): MutableList<ScoreboardData.Table.Column> {
     val columns = mutableListOf(
         ScoreboardData.Table.Column("Platz", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.CENTER),
-        ScoreboardData.Table.Column("Startnummer", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.CENTER),
         ScoreboardData.Table.Column("Name", ScoreboardData.Table.Column.Width.Variable(1.0f), ScoreboardData.Table.Column.Alignment.LEFT),
     )
 
-    columns.add(ScoreboardData.Table.Column("Anzahl Serien", ScoreboardData.Table.Column.Width.Fixed(150), ScoreboardData.Table.Column.Alignment.CENTER))
-    columns.add(ScoreboardData.Table.Column("mögliche Ringe", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.CENTER))
-    columns.add(ScoreboardData.Table.Column("erreichte Ringe ", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.CENTER))
+    columns.add(ScoreboardData.Table.Column("Anzahl Serien", ScoreboardData.Table.Column.Width.Fixed(400), ScoreboardData.Table.Column.Alignment.CENTER))
+    columns.add(ScoreboardData.Table.Column("mögliche Ringe", ScoreboardData.Table.Column.Width.Fixed(300), ScoreboardData.Table.Column.Alignment.CENTER))
+    columns.add(ScoreboardData.Table.Column("erreichte Ringe ", ScoreboardData.Table.Column.Width.Fixed(300), ScoreboardData.Table.Column.Alignment.CENTER))
 
-    columns.add(ScoreboardData.Table.Column("Trefferquote (%)", ScoreboardData.Table.Column.Width.Fixed(200), ScoreboardData.Table.Column.Alignment.RIGHT))
+    columns.add(ScoreboardData.Table.Column("Trefferquote (%)", ScoreboardData.Table.Column.Width.Fixed(300), ScoreboardData.Table.Column.Alignment.RIGHT))
     return columns
 }
 
-private fun Tournament.calculateTeamResults(teamDiscipline: TeamDiscipline): Map<Team, Pair<Double, Map<Participant, Double>>> = teams.filter { it.participatingDisciplines.contains(teamDiscipline) }.associateWith { team ->
-    val memberScores = team.members.associateWith { member ->
-        teamDiscipline.basedOn
-            .mapNotNull { discipline -> ScoreCalculationUtils.getScoreForParticipant(member, discipline) }
-            .maxOrNull() ?: 0.0
+private fun Tournament.calculateTeamResults(teamDiscipline: TeamDiscipline): Map<Team, Pair<Double, Map<Participant, List<Double>>>> {
+    return teams.filter { it.participatingDisciplines.contains(teamDiscipline) }.associateWith { team ->
+        val memberScores = team.members.associateWith { member ->
+            teamDiscipline.basedOn
+                .flatMap { discipline -> ScoreCalculationUtils.getScoreForParticipantAllRounds(member, discipline)?.toList() ?: emptyList() }
+        }
+        val allScores = memberScores.values.flatten()
+        val reachedScore = allScores.sum()
+        val maxPossible = allScores.size * 50.5
+        val percentage = reachedScore / maxPossible * 100
+        val roundedPercentage = BigDecimal(percentage).setScale(2, RoundingMode.HALF_EVEN).toDouble()
+        roundedPercentage to memberScores
     }
-    val averages = memberScores.values.average()
-    val percentage = averages / 5 * 10
-    val rounded_percentage = Math.round(percentage).toDouble()
-    rounded_percentage to memberScores
 }
 
-private fun createTeamRow(rank: Int, result: Map.Entry<Team, Pair<Double, Map<Participant, Double>>>): ScoreboardData.Table.Row {
+private fun createTeamRow(rank: Int, result: Map.Entry<Team, Pair<Double, Map<Participant, List<Double>>>>): ScoreboardData.Table.Row {
     val (team, scoreData) = result
     val (totalScore, memberScores) = scoreData
 
-    val values = mutableListOf(rank.toString(), team.startNumber.toString(), team.name)
+    val values = mutableListOf(rank.toString(), team.name)
 
-    values.add(memberScores.size.toString())
-    val maxPoints = memberScores.size * 50
-    values.add(maxPoints.toDouble().toString().replace(".", ","))
-    values.add(memberScores.values.sum().toString().replace(".", ","))
-    values.add(totalScore.toString().replace(".", ","))
+    val numResults = memberScores.values.sumOf {
+        it.size
+    }
+    values.add(numResults.toString()) // Anzahl Serien
+    values.add(memberScores.values.sumOf {
+        it.sum()
+    }.toString().replace(".", ",")) //erreichte Ringe
+    val maxPoints = numResults * 50.5
+    values.add(maxPoints.toString().replace(".", ",")) // mögliche Ringe
+    values.add(totalScore.toString().replace(".", ",")) // Prozent
 
     return ScoreboardData.Table.Row(id = team.id, values = values)
 }
