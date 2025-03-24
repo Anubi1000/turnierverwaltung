@@ -13,17 +13,14 @@ public static class ParticipantResultEndpoints
 {
     public static IEndpointRouteBuilder MapParticipantResultEndpoints(this IEndpointRouteBuilder builder)
     {
-        var baseGroup = builder.MapGroup("/api/participants/{participantId:int}/results/{disciplineId:int}").WithTags("Participant / Results").RequireAuthorization();
+        var baseGroup = builder
+            .MapGroup("/api/participants/{participantId:int}/results/{disciplineId:int}")
+            .WithTags("Participant / Results")
+            .RequireAuthorization();
 
-        baseGroup.MapGet(
-            "/",
-            GetParticipantResults
-        );
+        baseGroup.MapGet("/", GetParticipantResults);
 
-        baseGroup.MapPut(
-            "/",
-            UpdateParticipantResults
-        );
+        baseGroup.MapPut("/", UpdateParticipantResults);
 
         return builder;
     }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Database.Model;
 
@@ -7,13 +8,11 @@ public class Discipline
     // Common properties
     public int Id { get; init; }
 
-    [MaxLength(150)]
+    [MaxLength(Constants.MaxNameLength)]
     public string Name { get; set; } = "";
 
     public int AmountOfBestRoundsToShow { get; set; } = 1;
     public bool AreGendersSeparated { get; set; }
-
-    // Need to explicitly mark as updated because property is saved as json
     public List<Value> Values { get; init; } = [];
 
     // Tournament
@@ -28,7 +27,7 @@ public class Discipline
 
     public class Value
     {
-        [MaxLength(150)]
+        [MaxLength(Constants.MaxNameLength)]
         public string Name { get; set; } = "";
 
         public bool IsAdded { get; set; } = true;

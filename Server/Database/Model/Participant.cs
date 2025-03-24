@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Database.Model;
 
@@ -7,7 +8,7 @@ public class Participant
     // Common properties
     public int Id { get; init; }
 
-    [MaxLength(150)]
+    [MaxLength(Constants.MaxNameLength)]
     public string Name { get; set; } = "";
 
     public int StartNumber { get; set; }

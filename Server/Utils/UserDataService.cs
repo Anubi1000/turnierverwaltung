@@ -4,15 +4,14 @@ public interface IUserDataService
 {
     public string DataDirectory { get; }
     public string GetUserDataPath(UserDataType type);
-    public byte[]? GetWordDocumentLogo();
+    public Task<ReadOnlyMemory<byte>?> GetWordDocumentLogo();
 }
 
 public class UserDataService : IUserDataService
 {
-    private readonly Lock _syncLock = new();
+    private readonly SemaphoreSlim _syncLock = new(1, 1);
     private bool _searchedWordDocumentLogo;
-
-    private byte[]? _wordDocumentLogo;
+    private ReadOnlyMemory<byte>? _wordDocumentLogo;
 
     private UserDataService(string dataDirectory)
     {
@@ -34,12 +33,13 @@ public class UserDataService : IUserDataService
         };
     }
 
-    public byte[]? GetWordDocumentLogo()
+    public async Task<ReadOnlyMemory<byte>?> GetWordDocumentLogo()
     {
         if (_searchedWordDocumentLogo)
             return _wordDocumentLogo;
 
-        lock (_syncLock)
+        await _syncLock.WaitAsync();
+        try
         {
             if (_searchedWordDocumentLogo)
                 return _wordDocumentLogo;
@@ -51,9 +51,14 @@ public class UserDataService : IUserDataService
                 return null;
             }
 
-            var bytes = File.ReadAllBytes(path);
+            var bytes = await File.ReadAllBytesAsync(path);
             _wordDocumentLogo = bytes;
+            _searchedWordDocumentLogo = true;
             return bytes;
+        }
+        finally
+        {
+            _syncLock.Release();
         }
     }
 

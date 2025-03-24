@@ -13,7 +13,7 @@
     <ItemGroup>
         <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0"/>
         <PackageReference Include="FluentValidation" Version="11.11.0"/>
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,7 +28,7 @@
             <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
         </ProjectReference>
 
-        <TrimmerRootDescriptor Include="linker.xml" />
+        <TrimmerRootDescriptor Include="linker.xml"/>
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">

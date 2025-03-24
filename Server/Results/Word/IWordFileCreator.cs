@@ -4,6 +4,6 @@ namespace Turnierverwaltung.Server.Results.Word;
 
 public interface IWordFileCreator
 {
-    public MemoryStream CreateWordFileAsStream(ScoreboardData scoreboardData);
-    public MemoryStream CreateWordFileForTableAsStream(ScoreboardData scoreboardData, int tableIndex);
+    public Task<MemoryStream> CreateWordFileAsStream(ScoreboardData scoreboardData);
+    public Task<MemoryStream> CreateWordFileForTableAsStream(ScoreboardData scoreboardData, int tableIndex);
 }

@@ -14,7 +14,7 @@ public class TournamentEditDtoValidator : AbstractValidator<TournamentEditDto>
     public TournamentEditDtoValidator()
     {
         // Validate that Name is not empty and does not exceed 150 characters.
-        RuleFor(tournament => tournament.Name).NotEmpty().MaximumLength(150);
+        RuleFor(tournament => tournament.Name).NotEmpty().MaximumLength(Constants.MaxNameLength);
 
         // Validate that Date is not set to DateTime.MinValue.
         RuleFor(tournament => tournament.Date)

@@ -1,11 +1,11 @@
 ﻿<linker>
     <assembly fullname="Turnierverwaltung.Server">
-        <type fullname="Turnierverwaltung.Server.Database.*" preserve="all" />
+        <type fullname="Turnierverwaltung.Server.Database.*" preserve="all"/>
     </assembly>
 
     <!--Keep EFCore because it is not compatible with trimming-->
-    <assembly fullname="Microsoft.EntityFrameworkCore" preserve="all" />
-    <assembly fullname="Microsoft.EntityFrameworkCore.Abstractions" preserve="all" />
-    <assembly fullname="Microsoft.EntityFrameworkCore.Relational" preserve="all" />
-    <assembly fullname="Microsoft.EntityFrameworkCore.Sqlite" preserve="all" />
+    <assembly fullname="Microsoft.EntityFrameworkCore" preserve="all"/>
+    <assembly fullname="Microsoft.EntityFrameworkCore.Abstractions" preserve="all"/>
+    <assembly fullname="Microsoft.EntityFrameworkCore.Relational" preserve="all"/>
+    <assembly fullname="Microsoft.EntityFrameworkCore.Sqlite" preserve="all"/>
 </linker>

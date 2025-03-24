@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Model.Transfer.TeamDiscipline;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Model.Validation;
 
@@ -11,8 +12,10 @@ public class TeamDisciplineEditDtoValidator : AbstractValidator<TeamDisciplineEd
 
     public TeamDisciplineEditDtoValidator(ApplicationDbContext db)
     {
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(150);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(Constants.MaxNameLength);
+
         RuleFor(x => x.BasedOn).NotEmpty();
+
         RuleForEach(x => x.BasedOn)
             .MustAsync(
                 (_, disciplineId, context, cancellationToken) =>

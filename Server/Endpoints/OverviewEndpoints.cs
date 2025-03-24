@@ -79,7 +79,10 @@ public static class OverviewEndpoints
                     var entry = archive.CreateEntry($"{filteredData.Tables[tableIndex].Name}.docx");
                     await using var entryStream = entry.Open();
 
-                    using var fileStream = wordFileCreator.CreateWordFileForTableAsStream(filteredData, tableIndex);
+                    using var fileStream = await wordFileCreator.CreateWordFileForTableAsStream(
+                        filteredData,
+                        tableIndex
+                    );
                     await fileStream.CopyToAsync(entryStream);
                 }
             }
@@ -88,7 +91,7 @@ public static class OverviewEndpoints
             return TypedResults.File(zipStream, "application/zip", "Ergebnisse.zip");
         }
 
-        var wordDocStream = wordFileCreator.CreateWordFileAsStream(filteredData);
+        var wordDocStream = await wordFileCreator.CreateWordFileAsStream(filteredData);
 
         return TypedResults.File(
             wordDocStream,

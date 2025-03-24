@@ -79,16 +79,16 @@ public partial class WordFileCreator
         );
     }
 
-    private string? AddLogoImagePart(MainDocumentPart mainPart)
+    private async Task<string?> AddLogoImagePart(MainDocumentPart mainPart)
     {
-        var imageData = userDataService.GetWordDocumentLogo();
-        if (imageData is null)
+        var imageData = await userDataService.GetWordDocumentLogo();
+        if (!imageData.HasValue)
             return null;
 
         var imgPart = mainPart.AddImagePart(ImagePartType.Png);
-        using (var stream = new MemoryStream(imageData, false))
+        await using (var stream = imgPart.GetStream(FileMode.Create, FileAccess.Write))
         {
-            imgPart.FeedData(stream);
+            await stream.WriteAsync(imageData.Value);
         }
 
         return mainPart.GetIdOfPart(imgPart);

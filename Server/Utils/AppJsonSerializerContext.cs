@@ -13,42 +13,36 @@ namespace Turnierverwaltung.Server.Utils;
 [JsonSerializable(typeof(ClubEditDto), GenerationMode = JsonSourceGenerationMode.Metadata)]
 [JsonSerializable(typeof(List<ListClubDto>))]
 // Discipline
-[
-    JsonSerializable(typeof(DisciplineDetailDto)),
-    JsonSerializable(typeof(List<DisciplineDetailDto.Value>), TypeInfoPropertyName = "DisciplineDetailDtoListValue"),
-    JsonSerializable(typeof(DisciplineDetailDto.Value), TypeInfoPropertyName = "DisciplineDetailDtoValue")
-]
+[JsonSerializable(typeof(DisciplineDetailDto))]
+[JsonSerializable(typeof(List<DisciplineDetailDto.Value>), TypeInfoPropertyName = "DisciplineDetailDtoListValue")]
+[JsonSerializable(typeof(DisciplineDetailDto.Value), TypeInfoPropertyName = "DisciplineDetailDtoValue")]
 [JsonSerializable(typeof(DisciplineEditDto), GenerationMode = JsonSourceGenerationMode.Metadata)]
 [JsonSerializable(typeof(List<ListDisciplineDto>))]
 // Participant
 [JsonSerializable(typeof(List<ListParticipantDto>))]
 [JsonSerializable(typeof(List<ParticipantDetailDto>))]
 [JsonSerializable(typeof(ParticipantEditDto), GenerationMode = JsonSourceGenerationMode.Metadata)]
-[
-    JsonSerializable(typeof(ParticipantResultDetailDto)),
-    JsonSerializable(
-        typeof(List<ParticipantResultDetailDto.RoundResult>),
-        TypeInfoPropertyName = "ParticipantResultDetailDtoListRoundResult"
-    ),
-    JsonSerializable(
-        typeof(ParticipantResultDetailDto.RoundResult),
-        TypeInfoPropertyName = "ParticipantResultDetailDtoRoundResult"
-    )
-]
+[JsonSerializable(typeof(ParticipantResultDetailDto))]
+[JsonSerializable(
+    typeof(List<ParticipantResultDetailDto.RoundResult>),
+    TypeInfoPropertyName = "ParticipantResultDetailDtoListRoundResult"
+)]
+[JsonSerializable(
+    typeof(ParticipantResultDetailDto.RoundResult),
+    TypeInfoPropertyName = "ParticipantResultDetailDtoRoundResult"
+)]
 [JsonSerializable(typeof(ParticipantResultEditDto), GenerationMode = JsonSourceGenerationMode.Metadata)]
 // TeamDiscipline
 [JsonSerializable(typeof(List<ListTeamDisciplineDto>))]
-[
-    JsonSerializable(typeof(TeamDisciplineDetailDto)),
-    JsonSerializable(
-        typeof(List<TeamDisciplineDetailDto.Discipline>),
-        TypeInfoPropertyName = "TeamDisciplineDetailDtoListDiscipline"
-    ),
-    JsonSerializable(
-        typeof(TeamDisciplineDetailDto.Discipline),
-        TypeInfoPropertyName = "TeamDisciplineDetailDtoDiscipline"
-    )
-]
+[JsonSerializable(typeof(TeamDisciplineDetailDto))]
+[JsonSerializable(
+    typeof(List<TeamDisciplineDetailDto.Discipline>),
+    TypeInfoPropertyName = "TeamDisciplineDetailDtoListDiscipline"
+)]
+[JsonSerializable(
+    typeof(TeamDisciplineDetailDto.Discipline),
+    TypeInfoPropertyName = "TeamDisciplineDetailDtoDiscipline"
+)]
 [JsonSerializable(typeof(TeamDisciplineEditDto), GenerationMode = JsonSourceGenerationMode.Metadata)]
 // Tournament
 [JsonSerializable(typeof(List<ListTournamentDto>))]

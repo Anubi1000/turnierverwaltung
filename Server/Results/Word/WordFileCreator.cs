@@ -24,7 +24,7 @@ public partial class WordFileCreator(IUserDataService userDataService) : IWordFi
     /// </summary>
     /// <param name="scoreboardData">The scoreboard data to be included in the document.</param>
     /// <returns>A memory stream containing the generated Word document.</returns>
-    public MemoryStream CreateWordFileAsStream(ScoreboardData scoreboardData)
+    public async Task<MemoryStream> CreateWordFileAsStream(ScoreboardData scoreboardData)
     {
         var stream = new MemoryStream();
         using (var document = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
@@ -34,7 +34,7 @@ public partial class WordFileCreator(IUserDataService userDataService) : IWordFi
             mainPart.Document = new Document();
 
             // Add logo
-            var logoPartId = AddLogoImagePart(mainPart);
+            var logoPartId = await AddLogoImagePart(mainPart);
 
             // Add styles
             AddStyles(mainPart);
@@ -75,7 +75,7 @@ public partial class WordFileCreator(IUserDataService userDataService) : IWordFi
     /// <param name="scoreboardData">The scoreboard data containing multiple tables.</param>
     /// <param name="tableIndex">The index of the table to include in the document.</param>
     /// <returns>A memory stream containing the generated Word document.</returns>
-    public MemoryStream CreateWordFileForTableAsStream(ScoreboardData scoreboardData, int tableIndex)
+    public async Task<MemoryStream> CreateWordFileForTableAsStream(ScoreboardData scoreboardData, int tableIndex)
     {
         var stream = new MemoryStream();
         using (var document = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
@@ -85,7 +85,7 @@ public partial class WordFileCreator(IUserDataService userDataService) : IWordFi
             mainPart.Document = new Document();
 
             // Add logo
-            var logoPartId = AddLogoImagePart(mainPart);
+            var logoPartId = await AddLogoImagePart(mainPart);
 
             // Add styles
             AddStyles(mainPart);

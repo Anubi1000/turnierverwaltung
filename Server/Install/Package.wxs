@@ -14,9 +14,10 @@
                     <Shortcut Id="DesktopShortcut" Directory="DesktopFolder" Name="Turnierverwaltung"
                               WorkingDirectory="INSTALLFOLDER" Advertise="yes"/>
                 </File>
-                <File Source="$(var.SourceDir)\e_sqlite3.dll"/>
-                <File Source="$(var.SourceDir)\appsettings.json"/>
-                <File Source="$(var.SourceDir)\Turnierverwaltung.Server.staticwebassets.endpoints.json"/>
+                <File Id="SqliteDll" Source="$(var.SourceDir)\e_sqlite3.dll"/>
+                <File Id="AppSettings" Source="$(var.SourceDir)\appsettings.json"/>
+                <File Id="WebAssetsConfig"
+                      Source="$(var.SourceDir)\Turnierverwaltung.Server.staticwebassets.endpoints.json"/>
             </Component>
             <Files Directory="INSTALLFOLDER" Subdirectory="wwwroot" Include="$(var.SourceDir)\wwwroot\**"/>
         </ComponentGroup>

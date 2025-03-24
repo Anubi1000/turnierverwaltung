@@ -10,7 +10,7 @@ public class DisciplineEditDtoValidator : AbstractValidator<DisciplineEditDto>
 
     public DisciplineEditDtoValidator()
     {
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(150);
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(Constants.MaxNameLength);
 
         RuleFor(x => x.AmountOfBestRoundsToShow).InclusiveBetween(1, 5);
 

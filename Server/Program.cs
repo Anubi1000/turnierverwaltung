@@ -189,7 +189,8 @@ public class Program
     private static X509Certificate2 CreateSelfSignedCertificate()
     {
         var localIps = Dns.GetHostEntry(Dns.GetHostName())
-            .AddressList.Where(ip => ip.AddressFamily is AddressFamily.InterNetwork or AddressFamily.InterNetworkV6);
+            .AddressList.Where(ip => ip.AddressFamily is AddressFamily.InterNetwork or AddressFamily.InterNetworkV6)
+            .ToList();
 
         using var rsa = RSA.Create();
         var request = new CertificateRequest(
@@ -200,11 +201,16 @@ public class Program
         );
 
         var sanBuilder = new SubjectAlternativeNameBuilder();
+        sanBuilder.AddDnsName("localhost");
+
         foreach (var ip in localIps)
             sanBuilder.AddIpAddress(ip);
-        sanBuilder.AddIpAddress(IPAddress.Loopback);
-        sanBuilder.AddIpAddress(IPAddress.IPv6Loopback);
-        sanBuilder.AddDnsName("localhost");
+
+        if (!localIps.Contains(IPAddress.Loopback))
+            sanBuilder.AddIpAddress(IPAddress.Loopback);
+
+        if (!localIps.Contains(IPAddress.IPv6Loopback))
+            sanBuilder.AddIpAddress(IPAddress.IPv6Loopback);
 
         request.CertificateExtensions.Add(sanBuilder.Build());
         request.CertificateExtensions.Add(
