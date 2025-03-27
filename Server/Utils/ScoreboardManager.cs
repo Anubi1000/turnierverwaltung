@@ -8,7 +8,13 @@ using Turnierverwaltung.Server.Results.Scoreboard;
 
 namespace Turnierverwaltung.Server.Utils;
 
-public class ScoreboardManager : IDisposable
+public interface IScoreboardManager
+{
+    public int CurrentTournamentId { get; }
+    public Task SetCurrentTournament(int tournamentId);
+}
+
+public class ScoreboardManager : IScoreboardManager, IDisposable
 {
     private readonly IEntityChangeNotifier _changeNotifier;
     private readonly IHubContext<ScoreboardHub, ScoreboardHub.IScoreboardClient> _scoreboardHub;
@@ -27,33 +33,45 @@ public class ScoreboardManager : IDisposable
         changeNotifier.RegisterAsyncListener(DatabaseUpdateListener);
     }
 
-    public int CurrentTournamentId { get; private set; }
-
     public void Dispose()
     {
         _changeNotifier.UnregisterListener(DatabaseUpdateListener);
     }
 
+    public int CurrentTournamentId { get; private set; }
+
     public async Task SetCurrentTournament(int tournamentId)
     {
         CurrentTournamentId = tournamentId;
         using var scope = _serviceProvider.CreateScope();
-        await OnTournamentUpdate(scope);
+        await SendUpdateToScoreboard(scope);
     }
 
-    private async Task OnTournamentUpdate(IServiceScope scope)
+    private async Task SendUpdateToScoreboard(IServiceScope scope)
     {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<ScoreboardManager>>();
+        if (CurrentTournamentId is 0)
+        {
+            logger.LogDebug("Sending clear notification to scoreboard");
+            await _scoreboardHub.Clients.All.ClearScoreboard();
+            return;
+        }
+
         var scoreboardDataCreator = scope.ServiceProvider.GetRequiredService<IScoreboardDataCreator>();
         var data = await scoreboardDataCreator.CreateScoreboardDataAsync(CurrentTournamentId);
         if (data is null)
             return;
 
+        logger.LogDebug("Sending updated data to scoreboard");
         await _scoreboardHub.Clients.All.SendUpdate(data);
     }
 
     private async Task DatabaseUpdateListener(EntityChangedEvent changedEvent)
     {
         using var scope = _serviceProvider.CreateScope();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<ScoreboardManager>>();
+        logger.LogDebug("Handling entity changed event: {}", changedEvent);
+
         switch (changedEvent.Entity)
         {
             case Tournament tournament:
@@ -75,6 +93,14 @@ public class ScoreboardManager : IDisposable
             case ParticipantResult result:
                 await HandleParticipantResultUpdate(result, changedEvent.Action, scope);
                 return;
+
+            case Team team:
+                await HandleTeamUpdate(team, changedEvent.Action, scope);
+                return;
+
+            case TeamDiscipline teamDiscipline:
+                await HandleTeamDisciplineUpdate(teamDiscipline, changedEvent.Action, scope);
+                return;
         }
     }
 
@@ -89,11 +115,11 @@ public class ScoreboardManager : IDisposable
                 return Task.CompletedTask;
 
             case EntityAction.Updated:
-                return OnTournamentUpdate(scope);
+                return SendUpdateToScoreboard(scope);
 
             case EntityAction.Deleted:
                 CurrentTournamentId = 0;
-                return Task.CompletedTask;
+                return SendUpdateToScoreboard(scope);
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(action), action, null);
@@ -112,7 +138,7 @@ public class ScoreboardManager : IDisposable
 
             case EntityAction.Updated:
             case EntityAction.Deleted:
-                return OnTournamentUpdate(scope);
+                return SendUpdateToScoreboard(scope);
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(action), action, null);
@@ -129,7 +155,7 @@ public class ScoreboardManager : IDisposable
             case EntityAction.Added:
             case EntityAction.Updated:
             case EntityAction.Deleted:
-                return OnTournamentUpdate(scope);
+                return SendUpdateToScoreboard(scope);
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(action), action, null);
@@ -146,7 +172,7 @@ public class ScoreboardManager : IDisposable
             case EntityAction.Added:
             case EntityAction.Updated:
             case EntityAction.Deleted:
-                return OnTournamentUpdate(scope);
+                return SendUpdateToScoreboard(scope);
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(action), action, null);
@@ -168,8 +194,42 @@ public class ScoreboardManager : IDisposable
             case EntityAction.Added:
             case EntityAction.Updated:
             case EntityAction.Deleted:
-                await OnTournamentUpdate(scope);
+                await SendUpdateToScoreboard(scope);
                 return;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(action), action, null);
+        }
+    }
+
+    private Task HandleTeamUpdate(Team team, EntityAction action, IServiceScope scope)
+    {
+        if (team.TournamentId != CurrentTournamentId)
+            return Task.CompletedTask;
+
+        switch (action)
+        {
+            case EntityAction.Added:
+            case EntityAction.Updated:
+            case EntityAction.Deleted:
+                return SendUpdateToScoreboard(scope);
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(action), action, null);
+        }
+    }
+
+    private Task HandleTeamDisciplineUpdate(TeamDiscipline teamDiscipline, EntityAction action, IServiceScope scope)
+    {
+        if (teamDiscipline.TournamentId != CurrentTournamentId)
+            return Task.CompletedTask;
+
+        switch (action)
+        {
+            case EntityAction.Added:
+            case EntityAction.Updated:
+            case EntityAction.Deleted:
+                return SendUpdateToScoreboard(scope);
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(action), action, null);

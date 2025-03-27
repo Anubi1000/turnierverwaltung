@@ -12,7 +12,6 @@ using Turnierverwaltung.Server.Auth;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Notification;
 using Turnierverwaltung.Server.Endpoints;
-using Turnierverwaltung.Server.Hubs;
 using Turnierverwaltung.Server.Results.Scoreboard;
 using Turnierverwaltung.Server.Results.Word;
 using Turnierverwaltung.Server.Utils;
@@ -86,8 +85,7 @@ public class Program
         app.MapParticipantEndpoints();
         app.MapParticipantResultEndpoints();
         app.MapTeamDisciplineEndpoints();
-
-        app.MapHub<ScoreboardHub>("/api/scoreboard");
+        app.MapScoreboardEndpoints();
 
 #if DEBUG
         app.MapReverseProxy();
@@ -110,6 +108,7 @@ public class Program
         services.AddScoped<IWordFileCreator, WordFileCreator>();
 
         services.AddScoped<IEntityChangeNotifier, EntityChangeNotifier>();
+        services.AddScoped<IScoreboardManager, ScoreboardManager>();
 
         services.AddValidatorsFromAssemblyContaining<Program>();
 
@@ -117,7 +116,12 @@ public class Program
         ConfigureJsonSerialisation(services);
         ConfigureAuthentication(services);
 
-        services.AddSignalR();
+        services
+            .AddSignalR()
+            .AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+            });
 
 #if DEBUG
         services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));

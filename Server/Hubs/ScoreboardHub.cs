@@ -8,5 +8,6 @@ public class ScoreboardHub : Hub<ScoreboardHub.IScoreboardClient>
     public interface IScoreboardClient
     {
         Task SendUpdate(ScoreboardData scoreboardData);
+        Task ClearScoreboard();
     }
 }
