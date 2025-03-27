@@ -3,7 +3,7 @@ using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Database.Model;
 
-public class Team
+public sealed class Team
 {
     // Common properties
     public int Id { get; init; }

@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database.Model;
+using Turnierverwaltung.Server.Database.Notification;
 
 namespace Turnierverwaltung.Server.Database;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IEntityChangeNotifier notifier)
+    : DbContext(options)
 {
     public DbSet<Club> Clubs { get; set; }
     public DbSet<Discipline> Disciplines { get; set; }
@@ -38,5 +40,35 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .HasForeignKey(pr => pr.DisciplineId);
 
         modelBuilder.Entity<ParticipantResult>().OwnsMany(pr => pr.Rounds).ToJson();
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        var ids = base.SaveChanges(acceptAllChangesOnSuccess);
+        NotifyChanges().GetAwaiter().GetResult();
+        return ids;
+    }
+
+    public override async Task<int> SaveChangesAsync(
+        bool acceptAllChangesOnSuccess,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var ids = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        await NotifyChanges();
+        return ids;
+    }
+
+    private async Task NotifyChanges()
+    {
+        var entries = ChangeTracker
+            .Entries()
+            .Where(e => e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted);
+
+        foreach (var entry in entries)
+        {
+            var eventData = new EntityChangedEvent(entry.Entity, entry.State.ToAction());
+            await notifier.NotifyAsync(eventData);
+        }
     }
 }

@@ -5,6 +5,7 @@ using Turnierverwaltung.Server.Model.Transfer.Discipline;
 using Turnierverwaltung.Server.Model.Transfer.Participant;
 using Turnierverwaltung.Server.Model.Transfer.TeamDiscipline;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
+using Turnierverwaltung.Server.Results.Scoreboard;
 
 namespace Turnierverwaltung.Server.Utils;
 
@@ -48,6 +49,8 @@ namespace Turnierverwaltung.Server.Utils;
 [JsonSerializable(typeof(List<ListTournamentDto>))]
 [JsonSerializable(typeof(TournamentDetailDto))]
 [JsonSerializable(typeof(TournamentEditDto), GenerationMode = JsonSourceGenerationMode.Metadata)]
+// Scoreboard
+[JsonSerializable(typeof(ScoreboardData))]
 // Util
 [JsonSerializable(typeof(AuthInfoDto))]
 [JsonSerializable(typeof(WordDocGenerationDto))]

@@ -51,8 +51,6 @@ public class ParticipantEditDtoValidatorTests : IDisposable
     [Fact]
     public async Task WhenNameIsEmpty_HasError()
     {
-        var (contexwt, collecton) = DbTestUtils.GetInMemoryApplicationDbContextA();
-
         var dto = CreateValidDto("");
         var context = CreateValidationContext(dto, 1);
         var result = await _validator.TestValidateAsync(context, TestContext.Current.CancellationToken);

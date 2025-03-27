@@ -3,7 +3,7 @@
 namespace Turnierverwaltung.Server.Database.Model;
 
 [PrimaryKey(nameof(ParticipantId), nameof(DisciplineId))]
-public class ParticipantResult
+public sealed class ParticipantResult
 {
     // Participant
     public int ParticipantId { get; init; }

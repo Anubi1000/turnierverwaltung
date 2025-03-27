@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Auth;
 using Turnierverwaltung.Server.Database;
+using Turnierverwaltung.Server.Database.Notification;
 using Turnierverwaltung.Server.Endpoints;
+using Turnierverwaltung.Server.Hubs;
 using Turnierverwaltung.Server.Results.Scoreboard;
 using Turnierverwaltung.Server.Results.Word;
 using Turnierverwaltung.Server.Utils;
@@ -85,6 +87,8 @@ public class Program
         app.MapParticipantResultEndpoints();
         app.MapTeamDisciplineEndpoints();
 
+        app.MapHub<ScoreboardHub>("/api/scoreboard");
+
 #if DEBUG
         app.MapReverseProxy();
 #else
@@ -105,11 +109,15 @@ public class Program
         services.AddScoped<IScoreboardDataCreator, ScoreboardDataCreator>();
         services.AddScoped<IWordFileCreator, WordFileCreator>();
 
+        services.AddScoped<IEntityChangeNotifier, EntityChangeNotifier>();
+
         services.AddValidatorsFromAssemblyContaining<Program>();
 
         ConfigureDatabases(services);
         ConfigureJsonSerialisation(services);
         ConfigureAuthentication(services);
+
+        services.AddSignalR();
 
 #if DEBUG
         services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));

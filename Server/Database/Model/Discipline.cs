@@ -3,7 +3,7 @@ using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Database.Model;
 
-public class Discipline
+public sealed class Discipline
 {
     // Common properties
     public int Id { get; init; }
@@ -20,7 +20,7 @@ public class Discipline
     public Tournament Tournament { get; init; } = null!;
 
     // Results
-    public ICollection<ParticipantResult> Results { get; init; } = null!;
+    public ICollection<ParticipantResult> Results { get; init; } = new List<ParticipantResult>();
 
     // Used In (Team Disciplines)
     public ICollection<TeamDiscipline> UsedIn { get; } = new List<TeamDiscipline>();

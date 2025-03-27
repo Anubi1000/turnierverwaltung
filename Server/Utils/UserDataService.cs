@@ -54,7 +54,7 @@ public class UserDataService : IUserDataService
             var bytes = await File.ReadAllBytesAsync(path);
             _wordDocumentLogo = bytes;
             _searchedWordDocumentLogo = true;
-            return bytes;
+            return _wordDocumentLogo;
         }
         finally
         {
