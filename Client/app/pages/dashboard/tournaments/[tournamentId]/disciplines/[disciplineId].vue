@@ -20,7 +20,7 @@ const {
   data: discipline,
   isPending,
   suspense,
-} = useQuery<DisciplineDetailDto>(QueryOptions.discipline(disciplineId));
+} = useQuery<DisciplineDetailDto>(disciplineQueryOptions(disciplineId));
 if (isPending.value) await suspense();
 
 watchEffect(() => {
@@ -39,10 +39,10 @@ const { mutate: mutateDelete } = useMutation<undefined, FetchError, undefined>({
     navigateTo(".");
 
     await queryClient.refetchQueries({
-      queryKey: QueryKeys.disciplines(tournamentId),
+      queryKey: disciplinesQueryKey(tournamentId),
     });
     await queryClient.invalidateQueries({
-      queryKey: QueryKeys.discipline(disciplineId),
+      queryKey: disciplineQueryKey(disciplineId),
     });
   },
   onError: (error) => {

@@ -49,7 +49,7 @@ const { mutate } = useMutation<undefined, FetchError, ParticipantResultEditDto>(
       toast.add(Toasts.itemUpdateSuccess("Teilnehmer", "Der"));
 
       await queryClient.invalidateQueries({
-        queryKey: QueryKeys.participantResults(participantId, disciplineId),
+        queryKey: participantResultsQueryKey(participantId, disciplineId),
       });
 
       navigateTo(`../../${participantId}`);

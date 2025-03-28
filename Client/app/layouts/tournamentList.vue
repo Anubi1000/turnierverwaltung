@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/vue-query";
 const route = useRoute();
 
 const { data, isPending, suspense } = useQuery<ListTournamentDto[]>(
-  QueryOptions.tournaments(),
+  tournamentsQueryOptions(),
 );
 if (isPending) await suspense();
 

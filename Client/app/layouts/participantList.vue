@@ -7,7 +7,7 @@ const route = useRoute();
 const tournamentId = provideIdFromRoute("tournamentId");
 
 const { data, isPending, suspense } = useQuery<ListParticipantDto[]>(
-  QueryOptions.participants(tournamentId),
+  participantsQueryOptions(tournamentId),
 );
 if (isPending) await suspense();
 

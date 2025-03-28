@@ -14,14 +14,14 @@ const {
   data: participant,
   isPending: isParticipantPending,
   suspense: participantSuspense,
-} = useQuery<ParticipantDetailDto>(QueryOptions.participant(participantId));
+} = useQuery<ParticipantDetailDto>(participantQueryOptions(participantId));
 
 const {
   data: results,
   isPending: isResultsPending,
   suspense: resultsSuspense,
 } = useQuery<ParticipantResultDetailDto>(
-  QueryOptions.participantResults(participantId, disciplineId),
+  participantResultsQueryOptions(participantId, disciplineId),
 );
 
 if (isParticipantPending || isResultsPending)

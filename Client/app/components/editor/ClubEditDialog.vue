@@ -14,7 +14,7 @@ const toast = useToast();
 const tournamentId = injectId("tournamentId");
 
 const { data, isPending, suspense } = useQuery<ClubDetailDto>({
-  ...QueryOptions.club(clubId),
+  ...clubQueryOptions(clubId),
   enabled: edit,
 });
 if (edit && isPending.value) await suspense();
@@ -58,11 +58,11 @@ const { mutate } = useMutation<number | undefined, FetchError, ClubEditDto>({
 
     visible.value = false;
     await queryClient.invalidateQueries({
-      queryKey: QueryKeys.clubs(tournamentId),
+      queryKey: clubsQueryKey(tournamentId),
     });
 
     if (edit) {
-      await queryClient.invalidateQueries({ queryKey: QueryKeys.club(clubId) });
+      await queryClient.invalidateQueries({ queryKey: clubQueryKey(clubId) });
     } else {
       navigateTo(`/dashboard/tournaments/${tournamentId}/clubs/${data}`);
     }

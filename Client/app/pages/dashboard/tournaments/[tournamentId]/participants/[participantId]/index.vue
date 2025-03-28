@@ -20,7 +20,7 @@ const {
   data: participant,
   isPending,
   suspense,
-} = useQuery<ParticipantDetailDto>(QueryOptions.participant(participantId));
+} = useQuery<ParticipantDetailDto>(participantQueryOptions(participantId));
 if (isPending.value) await suspense();
 
 watchEffect(() => {
@@ -39,10 +39,10 @@ const { mutate: mutateDelete } = useMutation<undefined, FetchError, undefined>({
     navigateTo(".");
 
     await queryClient.refetchQueries({
-      queryKey: QueryKeys.participants(tournamentId),
+      queryKey: participantsQueryKey(tournamentId),
     });
     await queryClient.invalidateQueries({
-      queryKey: QueryKeys.participant(participantId),
+      queryKey: participantQueryKey(participantId),
     });
   },
   onError: (error) => {

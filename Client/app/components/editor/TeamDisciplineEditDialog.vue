@@ -15,10 +15,10 @@ const tournamentId = injectId("tournamentId");
 
 const { data: disciplines, isPending: areDisciplinesPending } = useQuery<
   ListDisciplineDto[]
->(QueryOptions.disciplines(tournamentId));
+>(disciplinesQueryOptions(tournamentId));
 
 const { data, isPending, suspense } = useQuery<TeamDisciplineDetailDto>({
-  ...QueryOptions.teamDiscipline(teamDisciplineId),
+  ...teamDisciplineQueryOptions(teamDisciplineId),
   enabled: edit,
 });
 if (edit && isPending.value) await suspense();
@@ -69,12 +69,12 @@ const { mutate } = useMutation<
 
     visible.value = false;
     await queryClient.invalidateQueries({
-      queryKey: QueryKeys.teamDisciplines(tournamentId),
+      queryKey: teamDisciplinesQueryKey(tournamentId),
     });
 
     if (edit) {
       await queryClient.invalidateQueries({
-        queryKey: QueryKeys.teamDiscipline(teamDisciplineId),
+        queryKey: teamDisciplineQueryKey(teamDisciplineId),
       });
     } else {
       navigateTo(

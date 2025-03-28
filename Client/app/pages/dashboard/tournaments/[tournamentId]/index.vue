@@ -20,7 +20,7 @@ const {
   data: tournament,
   isPending,
   suspense,
-} = useQuery<TournamentDetailDto>(QueryOptions.tournament(tournamentId));
+} = useQuery<TournamentDetailDto>(tournamentQueryOptions(tournamentId));
 if (isPending.value) await suspense();
 
 watchEffect(() => {
@@ -37,9 +37,9 @@ const { mutate: mutateDelete } = useMutation<undefined, FetchError, undefined>({
   onSuccess: async () => {
     toast.add(Toasts.itemDeleteSuccess("Turnier", "Das"));
     navigateTo(".");
-    await queryClient.refetchQueries({ queryKey: QueryKeys.tournaments() });
+    await queryClient.refetchQueries({ queryKey: tournamentsQueryKey() });
     await queryClient.invalidateQueries({
-      queryKey: QueryKeys.tournament(tournamentId),
+      queryKey: tournamentQueryKey(tournamentId),
     });
   },
   onError: (error) => {

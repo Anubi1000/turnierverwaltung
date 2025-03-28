@@ -15,7 +15,7 @@ const toast = useToast();
 const tournamentId = inject<number>("tournamentId", -1);
 
 const { data, isPending, suspense } = useQuery<DisciplineDetailDto>({
-  ...QueryOptions.discipline(disciplineId),
+  ...disciplineQueryOptions(disciplineId),
   enabled: edit,
 });
 if (edit && isPending.value) await suspense();
@@ -88,12 +88,12 @@ const { mutate } = useMutation<
 
     visible.value = false;
     await queryClient.invalidateQueries({
-      queryKey: QueryKeys.disciplines(tournamentId),
+      queryKey: disciplinesQueryKey(tournamentId),
     });
 
     if (edit) {
       await queryClient.invalidateQueries({
-        queryKey: QueryKeys.discipline(disciplineId),
+        queryKey: disciplineQueryKey(disciplineId),
       });
     } else {
       navigateTo(`/dashboard/tournaments/${tournamentId}/disciplines/${data}`);

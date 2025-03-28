@@ -12,7 +12,7 @@ const queryClient = useQueryClient();
 const toast = useToast();
 
 const { data, isPending, suspense } = useQuery<TournamentDetailDto>({
-  ...QueryOptions.tournament(tournamentId),
+  ...tournamentQueryOptions(tournamentId),
   enabled: edit,
 });
 if (edit && isPending.value) await suspense();
@@ -61,11 +61,11 @@ const { mutate } = useMutation<
     );
 
     visible.value = false;
-    await queryClient.invalidateQueries({ queryKey: QueryKeys.tournaments() });
+    await queryClient.invalidateQueries({ queryKey: tournamentsQueryKey() });
 
     if (edit) {
       await queryClient.invalidateQueries({
-        queryKey: QueryKeys.tournament(tournamentId),
+        queryKey: tournamentQueryKey(tournamentId),
       });
     } else {
       navigateTo(`/dashboard/tournaments/${data}`);
