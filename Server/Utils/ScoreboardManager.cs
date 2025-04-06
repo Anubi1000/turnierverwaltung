@@ -17,18 +17,21 @@ public interface IScoreboardManager
 public class ScoreboardManager : IScoreboardManager, IDisposable
 {
     private readonly IEntityChangeNotifier _changeNotifier;
+    private readonly ILogger<ScoreboardManager> _logger;
     private readonly IHubContext<ScoreboardHub, ScoreboardHub.IScoreboardClient> _scoreboardHub;
     private readonly IServiceProvider _serviceProvider;
 
     public ScoreboardManager(
-        IServiceProvider serviceProvider,
         IEntityChangeNotifier changeNotifier,
-        IHubContext<ScoreboardHub, ScoreboardHub.IScoreboardClient> scoreboardHub
+        ILogger<ScoreboardManager> logger,
+        IHubContext<ScoreboardHub, ScoreboardHub.IScoreboardClient> scoreboardHub,
+        IServiceProvider serviceProvider
     )
     {
-        _serviceProvider = serviceProvider;
         _changeNotifier = changeNotifier;
+        _logger = logger;
         _scoreboardHub = scoreboardHub;
+        _serviceProvider = serviceProvider;
 
         changeNotifier.RegisterAsyncListener(DatabaseUpdateListener);
     }
@@ -49,10 +52,9 @@ public class ScoreboardManager : IScoreboardManager, IDisposable
 
     private async Task SendUpdateToScoreboard(IServiceScope scope)
     {
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<ScoreboardManager>>();
         if (CurrentTournamentId is 0)
         {
-            logger.LogDebug("Sending clear notification to scoreboard");
+            _logger.LogDebug("Sending clear notification to scoreboard");
             await _scoreboardHub.Clients.All.ClearScoreboard();
             return;
         }
@@ -62,15 +64,14 @@ public class ScoreboardManager : IScoreboardManager, IDisposable
         if (data is null)
             return;
 
-        logger.LogDebug("Sending updated data to scoreboard");
+        _logger.LogDebug("Sending updated data to scoreboard");
         await _scoreboardHub.Clients.All.SendUpdate(data);
     }
 
     private async Task DatabaseUpdateListener(EntityChangedEvent changedEvent)
     {
         using var scope = _serviceProvider.CreateScope();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<ScoreboardManager>>();
-        logger.LogDebug("Handling entity changed event: {}", changedEvent);
+        _logger.LogDebug("Handling entity changed event: {}", changedEvent);
 
         switch (changedEvent.Entity)
         {

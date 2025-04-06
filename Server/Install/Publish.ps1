@@ -1,1 +1,0 @@
-﻿dotnet publish --no-restore /p:PublishProfile=../Properties/PublishProfiles/Win_x64.xml ../Turnierverwaltung.Server.csproj

@@ -13,6 +13,7 @@ public sealed class Tournament
 
     public DateTime Date { get; set; } = DateTime.UtcNow;
     public int TeamSize { get; init; } = 3;
+    public bool IsTeamSizeFixed { get; init; } = true;
 
     public ICollection<Club> Clubs { get; } = new List<Club>();
     public ICollection<Discipline> Disciplines { get; } = new List<Discipline>();

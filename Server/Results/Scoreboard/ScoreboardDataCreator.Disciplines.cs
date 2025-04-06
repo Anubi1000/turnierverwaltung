@@ -27,32 +27,21 @@ public partial class ScoreboardDataCreator
                     return (participant, scores);
                 })
                 .Where(result => result.scores.Length != 0)
-                .OrderByDescending(result => result.scores, DecimalArrayComparer);
+                .OrderByDescending(result => result.scores, DecimalArrayComparer.Instance);
 
             if (discipline.AreGendersSeparated)
             {
                 var immediateScores = participantScores.ToList();
 
                 foreach (var gender in Enum.GetValues<Gender>())
-                {
-                    var genderSuffix = gender switch
-                    {
-                        Gender.Male => " (m)",
-                        Gender.Female => " (f)",
-#pragma warning disable CA2208
-                        _ => throw new ArgumentOutOfRangeException(nameof(gender), gender, null)
-#pragma warning restore CA2208
-                    };
-
                     tables.Add(
                         CreateDisciplineTable(
-                            discipline.Name + genderSuffix,
+                            $"{discipline.Name} {GetGenderSuffix(gender)}",
                             discipline.AmountOfBestRoundsToShow,
                             immediateScores.Where(result => result.participant.Gender == gender),
                             columns
                         )
                     );
-                }
             }
             else
             {
@@ -66,6 +55,16 @@ public partial class ScoreboardDataCreator
                 );
             }
         }
+    }
+
+    private static string GetGenderSuffix(Gender gender)
+    {
+        return gender switch
+        {
+            Gender.Male => "(m)",
+            Gender.Female => "(f)",
+            _ => throw new ArgumentOutOfRangeException(nameof(gender), gender, null),
+        };
     }
 
     private static ScoreboardData.Table CreateDisciplineTable(

@@ -11,10 +11,12 @@ public class TournamentEditDtoValidator : AbstractValidator<TournamentEditDto>
     /// </summary>
     public const string PreviousTeamSizeKey = "PreviousTeamSize";
 
+    public const string PreviousIsTeamSizeFixedKey = "PreviousIsTeamSizeFixed";
+
     public TournamentEditDtoValidator()
     {
-        // Validate that Name is not empty and does not exceed 150 characters.
-        RuleFor(tournament => tournament.Name).NotEmpty().MaximumLength(Constants.MaxNameLength);
+        // Validate that Name is a valid name.
+        RuleFor(tournament => tournament.Name).MustBeValidName();
 
         // Validate that Date is not set to DateTime.MinValue.
         RuleFor(tournament => tournament.Date)
@@ -26,5 +28,7 @@ public class TournamentEditDtoValidator : AbstractValidator<TournamentEditDto>
             .GreaterThanOrEqualTo(2)
             .LessThanOrEqualTo(25)
             .MustNotChange(PreviousTeamSizeKey);
+
+        RuleFor(tournament => tournament.IsTeamSizeFixed).NotNull().MustNotChange(PreviousIsTeamSizeFixedKey);
     }
 }

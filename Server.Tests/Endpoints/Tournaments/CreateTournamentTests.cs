@@ -29,7 +29,7 @@ public class CreateTournamentTests : IDisposable
     [Fact]
     public async Task WithValidData_ReturnsOkWithTournamentId()
     {
-        var dto = new TournamentEditDto("Test Tournament", DateTestUtils.GetTestDate(), 3);
+        var dto = new TournamentEditDto("Test Tournament", DateTestUtils.GetTestDate(), 3, true);
 
         var result = await TournamentEndpoints.CreateTournament(_dbContext, _validator, dto);
         var okResult = result.Should().BeOfType<Ok<int>>().Subject;
@@ -45,7 +45,7 @@ public class CreateTournamentTests : IDisposable
     [Fact]
     public async Task WithInvalidData_ReturnsValidationProblem()
     {
-        var dto = new TournamentEditDto("", DateTestUtils.GetTestDate(), 3);
+        var dto = new TournamentEditDto("", DateTestUtils.GetTestDate(), 3, true);
 
         var result = await TournamentEndpoints.CreateTournament(_dbContext, _validator, dto);
         result

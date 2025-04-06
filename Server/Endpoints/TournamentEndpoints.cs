@@ -15,15 +15,15 @@ public static class TournamentEndpoints
     {
         var group = builder.MapGroup("/api/tournaments").WithTags("Tournament").RequireAuthorization();
 
-        group.MapGet("/", GetTournaments);
+        group.MapGet("/", GetTournaments).WithName("GetTournaments");
 
-        group.MapPost("/", CreateTournament);
+        group.MapPost("/", CreateTournament).WithName("CreateTournament");
 
-        group.MapGet("/{tournamentId:int}", GetTournament);
+        group.MapGet("/{tournamentId:int}", GetTournament).WithName("GetTournament");
 
-        group.MapPut("/{tournamentId:int}", UpdateTournament);
+        group.MapPut("/{tournamentId:int}", UpdateTournament).WithName("UpdateTournament");
 
-        group.MapDelete("/{tournamentId:int}", DeleteTournament);
+        group.MapDelete("/{tournamentId:int}", DeleteTournament).WithName("DeleteTournament");
 
         return builder;
     }
@@ -80,6 +80,7 @@ public static class TournamentEndpoints
             Name = dto.Name,
             Date = dto.Date,
             TeamSize = dto.TeamSize,
+            IsTeamSizeFixed = dto.IsTeamSizeFixed,
         };
 
         // Save tournament to database
@@ -112,6 +113,7 @@ public static class TournamentEndpoints
                 t.Name,
                 t.Date,
                 t.TeamSize,
+                t.IsTeamSizeFixed,
                 t.Clubs.Count,
                 t.Disciplines.Count + t.TeamDisciplines.Count,
                 t.Participants.Count,
@@ -150,7 +152,11 @@ public static class TournamentEndpoints
         // Validate dto and return ValidationProblem if not valid
         var context = new ValidationContext<TournamentEditDto>(dto)
         {
-            RootContextData = { [TournamentEditDtoValidator.PreviousTeamSizeKey] = tournament.TeamSize },
+            RootContextData =
+            {
+                [TournamentEditDtoValidator.PreviousTeamSizeKey] = tournament.TeamSize,
+                [TournamentEditDtoValidator.PreviousIsTeamSizeFixedKey] = tournament.IsTeamSizeFixed,
+            },
         };
 
         var validationResult = await validator.ValidateAsync(context);

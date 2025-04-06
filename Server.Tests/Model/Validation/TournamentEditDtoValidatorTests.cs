@@ -12,7 +12,7 @@ public class TournamentEditDtoValidatorTests
 
     private static TournamentEditDto CreateValidDto(string name = "Valid Name", DateTime? date = null, int teamSize = 3)
     {
-        return new TournamentEditDto(name, date ?? DateTime.Now, teamSize);
+        return new TournamentEditDto(name, date ?? DateTime.Now, teamSize, true);
     }
 
     [Fact]

@@ -75,9 +75,9 @@
       },
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
-        "requested": "[9.0.3, )",
-        "resolved": "9.0.3",
-        "contentHash": "1rqGTfubVg0qj2PsK6esyq3PIxtYJYrN3LsYUV9RrvH3anmt3fT3ozYdAZZH4U8JU/pt5pPIUk8NBSu26wtekA=="
+        "requested": "[9.0.5, )",
+        "resolved": "9.0.5",
+        "contentHash": "4L7wbb3Y4BJgIeSnmAf/C6S/qCs9rT1b0dX72uj3qo0qvUH7D0U1tU5ZlC7A3Wb8E/dXK4caOi4JkdLTVJaXhw=="
       },
       "SharpGrip.FluentValidation.AutoValidation.Endpoints": {
         "type": "Direct",
@@ -93,15 +93,6 @@
         "requested": "[8.0.0, )",
         "resolved": "8.0.0",
         "contentHash": "IMqmgclFiZL2QIfopOmWYofZzckrl+SdMt1h4mKC0jc94F+uzt3IHA3YFC0CGlwBqTTSnxHqNUKomNTeAhZbYA=="
-      },
-      "Yarp.ReverseProxy": {
-        "type": "Direct",
-        "requested": "[2.3.0, )",
-        "resolved": "2.3.0",
-        "contentHash": "gxtkN3a+9biu9V9Zd5NaTO6VZWXAnS2mhQ0R/VXmSPoTuiQNZsakKikrKpDtKxrL5nUYzbRsHtl40WNq+ZBKKg==",
-        "dependencies": {
-          "System.IO.Hashing": "8.0.0"
-        }
       },
       "DocumentFormat.OpenXml.Framework": {
         "type": "Transitive",
@@ -431,11 +422,6 @@
           "System.Composition.Hosting": "7.0.0",
           "System.Composition.Runtime": "7.0.0"
         }
-      },
-      "System.IO.Hashing": {
-        "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "ne1843evDugl0md7Fjzy6QjJrzsjh46ZKbhf8GwBXb5f/gw97J4bxMs0NQKifDuThh/f0bZ0e62NPl1jzTuRqA=="
       },
       "System.IO.Packaging": {
         "type": "Transitive",

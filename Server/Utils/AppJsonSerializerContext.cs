@@ -3,6 +3,7 @@ using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Model.Transfer.Club;
 using Turnierverwaltung.Server.Model.Transfer.Discipline;
 using Turnierverwaltung.Server.Model.Transfer.Participant;
+using Turnierverwaltung.Server.Model.Transfer.Team;
 using Turnierverwaltung.Server.Model.Transfer.TeamDiscipline;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Results.Scoreboard;
@@ -33,6 +34,10 @@ namespace Turnierverwaltung.Server.Utils;
     TypeInfoPropertyName = "ParticipantResultDetailDtoRoundResult"
 )]
 [JsonSerializable(typeof(ParticipantResultEditDto), GenerationMode = JsonSourceGenerationMode.Metadata)]
+// Team
+[JsonSerializable(typeof(List<ListTeamDto>))]
+[JsonSerializable(typeof(TeamDetailDto))]
+[JsonSerializable(typeof(TeamEditDto), GenerationMode = JsonSourceGenerationMode.Metadata)]
 // TeamDiscipline
 [JsonSerializable(typeof(List<ListTeamDisciplineDto>))]
 [JsonSerializable(typeof(TeamDisciplineDetailDto))]

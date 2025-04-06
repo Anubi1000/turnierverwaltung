@@ -5,11 +5,19 @@ namespace Turnierverwaltung.Server.Database.Model;
 
 public sealed class TeamDiscipline
 {
+    public enum ScoreDisplayType
+    {
+        Normal,
+        Nationcup,
+    }
+
     // Common properties
     public int Id { get; set; }
 
     [MaxLength(Constants.MaxNameLength)]
     public string Name { get; set; } = "";
+
+    public ScoreDisplayType DisplayType { get; set; } = ScoreDisplayType.Normal;
 
     // Tournament
     public int TournamentId { get; init; }

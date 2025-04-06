@@ -369,11 +369,6 @@
         "resolved": "6.0.0",
         "contentHash": "lcyUiXTsETK2ALsZrX+nWuHSIQeazhqPphLfaRxzdGaG93+0kELqpgEHtwWOlQe7+jSFnKwaCAgL4kjeZCQJnw=="
       },
-      "System.IO.Hashing": {
-        "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "ne1843evDugl0md7Fjzy6QjJrzsjh46ZKbhf8GwBXb5f/gw97J4bxMs0NQKifDuThh/f0bZ0e62NPl1jzTuRqA=="
-      },
       "System.IO.Packaging": {
         "type": "Transitive",
         "resolved": "8.0.1",
@@ -453,14 +448,6 @@
           "xunit.v3.runner.common": "[1.1.0]"
         }
       },
-      "Yarp.ReverseProxy": {
-        "type": "Transitive",
-        "resolved": "2.3.0",
-        "contentHash": "gxtkN3a+9biu9V9Zd5NaTO6VZWXAnS2mhQ0R/VXmSPoTuiQNZsakKikrKpDtKxrL5nUYzbRsHtl40WNq+ZBKKg==",
-        "dependencies": {
-          "System.IO.Hashing": "8.0.0"
-        }
-      },
       "turnierverwaltung.server": {
         "type": "Project",
         "dependencies": {
@@ -470,8 +457,7 @@
           "Microsoft.AspNetCore.OpenApi": "[9.0.1, )",
           "Microsoft.EntityFrameworkCore.Sqlite": "[9.0.1, )",
           "SharpGrip.FluentValidation.AutoValidation.Endpoints": "[1.5.0, )",
-          "Swashbuckle.AspNetCore.SwaggerUI": "[8.0.0, )",
-          "Yarp.ReverseProxy": "[2.3.0, )"
+          "Swashbuckle.AspNetCore.SwaggerUI": "[8.0.0, )"
         }
       }
     }

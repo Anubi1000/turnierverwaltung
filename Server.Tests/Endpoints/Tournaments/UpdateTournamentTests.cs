@@ -38,7 +38,7 @@ public class UpdateTournamentTests : IDisposable
         _dbContext.Add(tournament);
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var dto = new TournamentEditDto("New Name", DateTestUtils.GetTestDate(1), 3);
+        var dto = new TournamentEditDto("New Name", DateTestUtils.GetTestDate(1), 3, true);
 
         var result = await TournamentEndpoints.UpdateTournament(_dbContext, _validator, 1, dto);
         result.Should().BeOfType<Ok>();
@@ -64,7 +64,7 @@ public class UpdateTournamentTests : IDisposable
         _dbContext.Add(tournament);
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var dto = new TournamentEditDto("", DateTestUtils.GetTestDate(), 5);
+        var dto = new TournamentEditDto("", DateTestUtils.GetTestDate(), 5, true);
 
         var result = await TournamentEndpoints.UpdateTournament(_dbContext, _validator, 1, dto);
         result
@@ -78,7 +78,7 @@ public class UpdateTournamentTests : IDisposable
     [Fact]
     public async Task WhenTournamentDoesNotExist_ReturnsNotFound()
     {
-        var dto = new TournamentEditDto("New Name", DateTestUtils.GetTestDate(), 3);
+        var dto = new TournamentEditDto("New Name", DateTestUtils.GetTestDate(), 3, true);
 
         var result = await TournamentEndpoints.UpdateTournament(_dbContext, _validator, 1, dto);
         result.Should().BeOfType<NotFound>();

@@ -4,7 +4,6 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
-using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Results.Scoreboard;
 
@@ -13,7 +12,6 @@ public partial class ScoreboardDataCreator(ApplicationDbContext dbContext) : ISc
     private const int ScoreRoundingPrecision = 10;
 
     private static readonly CultureInfo GermanCultureInfo = CultureInfo.GetCultureInfo("de-DE");
-    private static readonly DecimalArrayComparer DecimalArrayComparer = new();
 
     public async Task<ScoreboardData?> CreateScoreboardDataAsync(int tournamentId)
     {
@@ -70,5 +68,25 @@ public partial class ScoreboardDataCreator(ApplicationDbContext dbContext) : ISc
                     .Sum()
             )
             .ToArray();
+    }
+
+    private static void CreateTeamDisciplineTables(
+        Tournament tournament,
+        FrozenDictionary<ParticipantResult, decimal[]> calculatedResults,
+        List<ScoreboardData.Table> tables
+    )
+    {
+        foreach (var teamDiscipline in tournament.TeamDisciplines)
+            switch (teamDiscipline.DisplayType)
+            {
+                case TeamDiscipline.ScoreDisplayType.Normal:
+                    CreateTeamDisciplineTableNormal(tournament, teamDiscipline, calculatedResults, tables);
+                    break;
+                case TeamDiscipline.ScoreDisplayType.Nationcup:
+                    CreateTeamDisciplineTableNationcup(tournament, teamDiscipline, calculatedResults, tables);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
     }
 }

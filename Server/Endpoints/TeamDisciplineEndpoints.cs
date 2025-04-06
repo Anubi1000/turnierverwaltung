@@ -18,10 +18,12 @@ public static class TeamDisciplineEndpoints
         var tournamentDependentGroup = baseGroup.MapGroup("/tournaments/{tournamentId:int}/team_disciplines");
         var tournamentIndependentGroup = baseGroup.MapGroup("/team_disciplines/{teamDisciplineId:int}");
 
+        // Tournament-based routes
         tournamentDependentGroup.MapGet("/", GetTeamDisciplines);
 
         tournamentDependentGroup.MapPost("/", CreateTeamDiscipline);
 
+        // TeamDiscipline routes
         tournamentIndependentGroup.MapGet("/", GetTeamDiscipline);
 
         tournamentIndependentGroup.MapPut("/", UpdateTeamDiscipline);

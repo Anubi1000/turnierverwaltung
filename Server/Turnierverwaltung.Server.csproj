@@ -24,15 +24,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Client\Turnierverwaltung.Client.esproj">
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-        </ProjectReference>
+        <Content Include="..\Client\dist\**\*.*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>wwwroot\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </Content>
 
         <TrimmerRootDescriptor Include="linker.xml"/>
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-        <PackageReference Include="Yarp.ReverseProxy" Version="2.3.0"/>
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="8.0.0"/>
     </ItemGroup>
 </Project>

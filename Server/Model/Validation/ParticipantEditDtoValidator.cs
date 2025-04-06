@@ -11,7 +11,7 @@ public class ParticipantEditDtoValidator : AbstractValidator<ParticipantEditDto>
 
     public ParticipantEditDtoValidator(ApplicationDbContext db)
     {
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(150);
+        RuleFor(x => x.Name).MustBeValidName();
 
         RuleFor(x => x.StartNumber).GreaterThanOrEqualTo(1).LessThanOrEqualTo(100_000);
 

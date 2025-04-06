@@ -26,6 +26,11 @@ public class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.WebHost.ConfigureKestrel(options =>
+        {
+            options.AddServerHeader = false;
+        });
+
         // Create temporary logger until dependency container is ready
         using (
             var loggerFactory = LoggerFactory.Create(logBuilder =>
@@ -87,13 +92,15 @@ public class Program
         app.MapTeamDisciplineEndpoints();
         app.MapScoreboardEndpoints();
 
-#if DEBUG
-        app.MapReverseProxy();
-#else
-        app.UseDefaultFiles();
-        app.MapStaticAssets();
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            OnPrepareResponse = context =>
+            {
+                if (context.Context.Response.ContentType != MimeTypes.Html)
+                    context.Context.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+            }
+        });
         app.MapFallbackToFile("index.html");
-#endif
 
         app.Run();
     }
@@ -122,10 +129,6 @@ public class Program
             {
                 options.PayloadSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
             });
-
-#if DEBUG
-        services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-#endif
     }
 
     private static void ConfigureDatabases(IServiceCollection services)

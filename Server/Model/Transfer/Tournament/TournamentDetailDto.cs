@@ -5,6 +5,7 @@ public record TournamentDetailDto(
     string Name,
     DateTime Date,
     int TeamSize,
+    bool IsTeamSizeFixed,
     int ClubCount,
     int DisciplineCount,
     int ParticipantCount,

@@ -2,14 +2,18 @@
 
 public class DecimalArrayComparer : IComparer<decimal[]>
 {
+    private DecimalArrayComparer() { }
+
+    public static DecimalArrayComparer Instance { get; } = new();
+
     public int Compare(decimal[]? array1, decimal[]? array2)
     {
-        // Ensure that neither array is null
-        if (array1 == null && array2 == null)
+        if (array1 == array2)
             return 0;
-        if (array1 == null)
+
+        if (array1 is null)
             return -1;
-        if (array2 == null)
+        if (array2 is null)
             return 1;
 
         var maxLength = Math.Max(array1.Length, array2.Length);

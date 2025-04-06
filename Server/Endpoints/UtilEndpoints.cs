@@ -6,8 +6,8 @@ public static class UtilEndpoints
 {
     public static IEndpointRouteBuilder MapUtilEndpoints(this IEndpointRouteBuilder builder)
     {
-        builder.MapGet("/ping", Ping);
-        builder.MapGet("/auth", CheckAuth);
+        builder.MapGet("/ping", Ping).WithName("GetPing");
+        builder.MapGet("/auth", CheckAuth).WithName("CheckAuth");
 
         return builder;
     }

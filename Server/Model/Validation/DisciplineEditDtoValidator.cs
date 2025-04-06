@@ -10,13 +10,13 @@ public class DisciplineEditDtoValidator : AbstractValidator<DisciplineEditDto>
 
     public DisciplineEditDtoValidator()
     {
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(Constants.MaxNameLength);
+        RuleFor(x => x.Name).MustBeValidName();
 
         RuleFor(x => x.AmountOfBestRoundsToShow).InclusiveBetween(1, 5);
 
         RuleFor(x => x.Values)
             .NotEmpty()
-            .ForEach(value => value.ChildRules(child => child.RuleFor(x => x.Name).NotEmpty().MaximumLength(150)));
+            .ForEach(value => value.ChildRules(child => child.RuleFor(x => x.Name).MustBeValidName()));
 
         RuleFor(x => x.Values.Count).MustNotChange(PreviousValueAmountKey);
     }

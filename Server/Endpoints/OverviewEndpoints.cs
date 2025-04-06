@@ -8,6 +8,7 @@ using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Results.Scoreboard;
 using Turnierverwaltung.Server.Results.Word;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Endpoints;
 
@@ -88,15 +89,11 @@ public static class OverviewEndpoints
             }
 
             zipStream.Seek(0, SeekOrigin.Begin);
-            return TypedResults.File(zipStream, "application/zip", "Ergebnisse.zip");
+            return TypedResults.Stream(zipStream, MimeTypes.Zip, $"{filteredData.TournamentName}.zip");
         }
 
         var wordDocStream = await wordFileCreator.CreateWordFileAsStream(filteredData);
 
-        return TypedResults.File(
-            wordDocStream,
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            "Ergebnisse.docx"
-        );
+        return TypedResults.Stream(wordDocStream, MimeTypes.Docx, $"{filteredData.TournamentName}.docx");
     }
 }
