@@ -53,10 +53,6 @@ class TeamRepositoryImpl(private val realm: Realm) : TeamRepository {
             realm.write {
                 val tournament = queryById<Tournament>(tournamentId) ?: throw IllegalArgumentException("Tournament with specified id not found")
 
-                require(team.members.size == tournament.teamSize) {
-                    "Team needs to have the required sze"
-                }
-
                 val members = mapParticipants(team)
                 val participatingDisciplines = mapTeamDisciplines(team)
 
