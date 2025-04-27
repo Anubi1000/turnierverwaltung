@@ -218,19 +218,17 @@ private fun createTeamDisciplineColumns(): MutableList<ScoreboardData.Table.Colu
     return columns
 }
 
-private fun Tournament.calculateTeamResults(teamDiscipline: TeamDiscipline): Map<Team, Pair<Double, Map<Participant, List<Double>>>> {
-    return teams.filter { it.participatingDisciplines.contains(teamDiscipline) }.associateWith { team ->
-        val memberScores = team.members.associateWith { member ->
-            teamDiscipline.basedOn
-                .flatMap { discipline -> ScoreCalculationUtils.getScoreForParticipantAllRounds(member, discipline)?.toList() ?: emptyList() }
-        }
-        val allScores = memberScores.values.flatten()
-        val reachedScore = allScores.sum()
-        val maxPossible = allScores.size * 50.5
-        val percentage = reachedScore / maxPossible * 100
-        val roundedPercentage = BigDecimal(percentage).setScale(2, RoundingMode.HALF_EVEN).toDouble()
-        roundedPercentage to memberScores
+private fun Tournament.calculateTeamResults(teamDiscipline: TeamDiscipline): Map<Team, Pair<Double, Map<Participant, List<Double>>>> = teams.filter { it.participatingDisciplines.contains(teamDiscipline) }.associateWith { team ->
+    val memberScores = team.members.associateWith { member ->
+        teamDiscipline.basedOn
+            .flatMap { discipline -> ScoreCalculationUtils.getScoreForParticipantAllRounds(member, discipline)?.toList() ?: emptyList() }
     }
+    val allScores = memberScores.values.flatten()
+    val reachedScore = allScores.sum()
+    val maxPossible = allScores.size * 50.5
+    val percentage = reachedScore / maxPossible * 100
+    val roundedPercentage = BigDecimal(percentage).setScale(2, RoundingMode.HALF_EVEN).toDouble()
+    roundedPercentage to memberScores
 }
 
 private fun createTeamRow(rank: Int, result: Map.Entry<Team, Pair<Double, Map<Participant, List<Double>>>>): ScoreboardData.Table.Row {
@@ -243,12 +241,19 @@ private fun createTeamRow(rank: Int, result: Map.Entry<Team, Pair<Double, Map<Pa
         it.size
     }
     values.add(numResults.toString()) // Anzahl Serien
-    values.add(memberScores.values.sumOf {
-        it.sum()
-    }.toString().replace(".", ",")) //erreichte Ringe
-    val maxPoints = numResults * 50.5
+
+    values.add(
+        BigDecimal(
+            memberScores.values.sumOf {
+                it.sum()
+            },
+        ).setScale(2, RoundingMode.HALF_EVEN).toString().replace(".", ","),
+    ) // erreichte Ringe
+
+    val maxPoints = BigDecimal(numResults * 50.5).setScale(2, RoundingMode.HALF_EVEN)
     values.add(maxPoints.toString().replace(".", ",")) // mögliche Ringe
-    values.add(totalScore.toString().replace(".", ",")) // Prozent
+
+    values.add(BigDecimal(totalScore).setScale(2, RoundingMode.HALF_EVEN).toString().replace(".", ",")) // Prozent
 
     return ScoreboardData.Table.Row(id = team.id, values = values)
 }
