@@ -211,8 +211,8 @@ private fun createTeamDisciplineColumns(): MutableList<ScoreboardData.Table.Colu
     )
 
     columns.add(ScoreboardData.Table.Column("Anzahl Serien", ScoreboardData.Table.Column.Width.Fixed(400), ScoreboardData.Table.Column.Alignment.CENTER))
+    columns.add(ScoreboardData.Table.Column("erreichte Ringe", ScoreboardData.Table.Column.Width.Fixed(300), ScoreboardData.Table.Column.Alignment.CENTER))
     columns.add(ScoreboardData.Table.Column("mögliche Ringe", ScoreboardData.Table.Column.Width.Fixed(300), ScoreboardData.Table.Column.Alignment.CENTER))
-    columns.add(ScoreboardData.Table.Column("erreichte Ringe ", ScoreboardData.Table.Column.Width.Fixed(300), ScoreboardData.Table.Column.Alignment.CENTER))
 
     columns.add(ScoreboardData.Table.Column("Trefferquote (%)", ScoreboardData.Table.Column.Width.Fixed(300), ScoreboardData.Table.Column.Alignment.RIGHT))
     return columns
