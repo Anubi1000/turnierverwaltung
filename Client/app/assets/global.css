@@ -1,7 +1,0 @@
-@import "tailwindcss";
-@import "tailwindcss-primeui";
-
-:root {
-  font-size: 15px;
-  font-family: "Inter", sans-serif;
-}

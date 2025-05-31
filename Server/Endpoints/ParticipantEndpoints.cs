@@ -19,16 +19,18 @@ public static class ParticipantEndpoints
         var tournamentIndependentGroup = baseGroup.MapGroup("/participants/{participantId:int}");
 
         // Tournament-based routes
-        tournamentDependentGroup.MapGet("/", GetParticipants);
+        tournamentDependentGroup.MapGet("/", GetParticipants).WithName("GetParticipants");
 
-        tournamentDependentGroup.MapPost("/", CreateParticipant);
+        tournamentDependentGroup.MapPost("/", CreateParticipant).WithName("CreateParticipant");
+
+        tournamentDependentGroup.MapGet("/nextStartNumber", GetNextParticipantStartNumber).WithName("GetNextParticipantStartNumber");
 
         // Participant routes
-        tournamentIndependentGroup.MapGet("/", GetParticipant);
+        tournamentIndependentGroup.MapGet("/", GetParticipant).WithName("GetParticipant");
 
-        tournamentIndependentGroup.MapPut("/", UpdateParticipant);
+        tournamentIndependentGroup.MapPut("/", UpdateParticipant).WithName("UpdateParticipant");
 
-        tournamentIndependentGroup.MapDelete("/", DeleteParticipant);
+        tournamentIndependentGroup.MapDelete("/", DeleteParticipant).WithName("DeleteParticipant");
 
         return builder;
     }
@@ -51,6 +53,18 @@ public static class ParticipantEndpoints
             .ToListAsync();
 
         return TypedResults.Ok(participants);
+    }
+
+    private static async Task<Results<NotFound, Ok<int>>> GetNextParticipantStartNumber(ApplicationDbContext dbContext, int tournamentId)
+    {
+        if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
+            return TypedResults.NotFound();
+
+        var currentMaxStartNumber = await dbContext.Participants.AsNoTracking()
+            .Where(p => p.TournamentId == tournamentId)
+            .MaxAsync(p => (int?) p.StartNumber);
+
+        return TypedResults.Ok(currentMaxStartNumber.HasValue ? currentMaxStartNumber.Value + 1: 1);
     }
 
     private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateParticipant(

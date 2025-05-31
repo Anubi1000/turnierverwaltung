@@ -43,11 +43,22 @@ jobs:
 
       - name: Restore .NET Packages
         run: dotnet restore --locked-mode
+      
+      - name: Setup Server Dependencies
+        shell: pwsh
+        run: ./Scripts/SetupDependencies.ps1
+
+      - name: Build Client
+        shell: pwsh
+        run: ./Scripts/BuildClient.ps1
 
       - name: Build Server
-        working-directory: ./Server/Install
         shell: pwsh
-        run: ./Publish.ps1
+        run: ./Scripts/BuildServer.ps1
+      
+      - name: Build Installer
+        shell: pwsh
+        run: ./Scripts/BuildInstaller.ps1
 
       - name: Upload Server
         uses: actions/upload-artifact@v4
@@ -55,6 +66,14 @@ jobs:
           name: Server
           retention-days: 7
           path: ./Server/bin/Release/net9.0/win-x64/publish/
+
+      - name: Lint Client
+        working-directory: Client
+        run: pnpm run Lint
+      
+      - name: Check Client Formatting
+        working-directory: Client
+        run: pnpm run format:check
 
       - name: Run Server Tests
         if: false

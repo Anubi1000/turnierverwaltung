@@ -19,16 +19,16 @@ public static class DisciplineEndpoints
         var tournamentIndependentGroup = baseGroup.MapGroup("/disciplines/{disciplineId:int}");
 
         // Tournament-based routes
-        tournamentDependentGroup.MapGet("/", GetDisciplines);
+        tournamentDependentGroup.MapGet("/", GetDisciplines).WithName("GetDisciplines");
 
-        tournamentDependentGroup.MapPost("/", CreateDiscipline);
+        tournamentDependentGroup.MapPost("/", CreateDiscipline).WithName("CreateDiscipline");
 
         // Discipline routes
-        tournamentIndependentGroup.MapGet("/", GetDiscipline);
+        tournamentIndependentGroup.MapGet("/", GetDiscipline).WithName("GetDiscipline");
 
-        tournamentIndependentGroup.MapPut("/", UpdateDiscipline);
+        tournamentIndependentGroup.MapPut("/", UpdateDiscipline).WithName("UpdateDiscipline");
 
-        tournamentIndependentGroup.MapDelete("/", DeleteDiscipline);
+        tournamentIndependentGroup.MapDelete("/", DeleteDiscipline).WithName("DeleteDiscipline");
 
         return builder;
     }

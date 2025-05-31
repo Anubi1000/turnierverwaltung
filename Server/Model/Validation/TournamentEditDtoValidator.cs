@@ -23,11 +23,24 @@ public class TournamentEditDtoValidator : AbstractValidator<TournamentEditDto>
             .Must(date => !date.Equals(DateTime.MinValue))
             .WithMessage("'{PropertyName}' must not be undefined.");
 
-        // Validate that TeamSize is between 2 and 25 and has not changed from its previous value.
+        // Validate that TeamSize is between 2 and 25 and has not changed from its previous value when IsTeamSizeFixed is true.
         RuleFor(tournament => tournament.TeamSize)
             .GreaterThanOrEqualTo(2)
             .LessThanOrEqualTo(25)
-            .MustNotChange(PreviousTeamSizeKey);
+            .Must(
+                (_, value, context) =>
+                {
+                    if (
+                        context.RootContextData.TryGetValue(PreviousIsTeamSizeFixedKey, out var isTeamSizeFixed)
+                        && (bool)isTeamSizeFixed
+                    )
+                        return !context.RootContextData.TryGetValue(PreviousTeamSizeKey, out var previousTeamSize)
+                            || value.Equals(previousTeamSize);
+
+                    return true;
+                }
+            )
+            .WithMessage("\'{PropertyName}\' is not allowed to change if IsTeamSizeFixed is true.");
 
         RuleFor(tournament => tournament.IsTeamSizeFixed).NotNull().MustNotChange(PreviousIsTeamSizeFixedKey);
     }

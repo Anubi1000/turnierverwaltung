@@ -18,9 +18,9 @@ public static class ParticipantResultEndpoints
             .WithTags("Participant / Results")
             .RequireAuthorization();
 
-        baseGroup.MapGet("/", GetParticipantResults);
+        baseGroup.MapGet("/", GetParticipantResults).WithName("GetParticipantResults");
 
-        baseGroup.MapPut("/", UpdateParticipantResults);
+        baseGroup.MapPut("/", UpdateParticipantResults).WithName("UpdateParticipantResults");
 
         return builder;
     }

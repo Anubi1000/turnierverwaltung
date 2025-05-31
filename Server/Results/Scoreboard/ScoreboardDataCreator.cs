@@ -79,10 +79,10 @@ public partial class ScoreboardDataCreator(ApplicationDbContext dbContext) : ISc
         foreach (var teamDiscipline in tournament.TeamDisciplines)
             switch (teamDiscipline.DisplayType)
             {
-                case TeamDiscipline.ScoreDisplayType.Normal:
+                case TeamScoreDisplayType.Normal:
                     CreateTeamDisciplineTableNormal(tournament, teamDiscipline, calculatedResults, tables);
                     break;
-                case TeamDiscipline.ScoreDisplayType.Nationcup:
+                case TeamScoreDisplayType.Nationcup:
                     CreateTeamDisciplineTableNationcup(tournament, teamDiscipline, calculatedResults, tables);
                     break;
                 default:

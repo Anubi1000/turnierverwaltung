@@ -1,3 +1,5 @@
-﻿namespace Turnierverwaltung.Server.Model.Transfer.TeamDiscipline;
+﻿using Turnierverwaltung.Server.Database.Model;
 
-public record TeamDisciplineEditDto(string Name, List<int> BasedOn);
+namespace Turnierverwaltung.Server.Model.Transfer.TeamDiscipline;
+
+public record TeamDisciplineEditDto(string Name, TeamScoreDisplayType DisplayType, List<int> BasedOn);

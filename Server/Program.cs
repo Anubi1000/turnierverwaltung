@@ -90,16 +90,19 @@ public class Program
         app.MapParticipantEndpoints();
         app.MapParticipantResultEndpoints();
         app.MapTeamDisciplineEndpoints();
+        app.MapTeamEndpoints();
         app.MapScoreboardEndpoints();
 
-        app.UseStaticFiles(new StaticFileOptions
-        {
-            OnPrepareResponse = context =>
+        app.UseStaticFiles(
+            new StaticFileOptions
             {
-                if (context.Context.Response.ContentType != MimeTypes.Html)
-                    context.Context.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+                OnPrepareResponse = context =>
+                {
+                    if (context.Context.Response.ContentType != MimeTypes.Html)
+                        context.Context.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+                },
             }
-        });
+        );
         app.MapFallbackToFile("index.html");
 
         app.Run();

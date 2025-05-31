@@ -19,16 +19,16 @@ public static class TeamDisciplineEndpoints
         var tournamentIndependentGroup = baseGroup.MapGroup("/team_disciplines/{teamDisciplineId:int}");
 
         // Tournament-based routes
-        tournamentDependentGroup.MapGet("/", GetTeamDisciplines);
+        tournamentDependentGroup.MapGet("/", GetTeamDisciplines).WithName("GetTeamDisciplines");
 
-        tournamentDependentGroup.MapPost("/", CreateTeamDiscipline);
+        tournamentDependentGroup.MapPost("/", CreateTeamDiscipline).WithName("CreateTeamDiscipline");
 
         // TeamDiscipline routes
-        tournamentIndependentGroup.MapGet("/", GetTeamDiscipline);
+        tournamentIndependentGroup.MapGet("/", GetTeamDiscipline).WithName("GetTeamDiscipline");
 
-        tournamentIndependentGroup.MapPut("/", UpdateTeamDiscipline);
+        tournamentIndependentGroup.MapPut("/", UpdateTeamDiscipline).WithName("UpdateTeamDiscipline");
 
-        tournamentIndependentGroup.MapDelete("/", DeleteTeamDiscipline);
+        tournamentIndependentGroup.MapDelete("/", DeleteTeamDiscipline).WithName("DeleteTeamDiscipline");
 
         return builder;
     }
@@ -77,6 +77,7 @@ public static class TeamDisciplineEndpoints
         var teamDiscipline = new TeamDiscipline
         {
             Name = dto.Name,
+            DisplayType = dto.DisplayType,
             BasedOn = basedOn,
             TournamentId = tournamentId,
         };
@@ -97,6 +98,7 @@ public static class TeamDisciplineEndpoints
             .Where(t => t.Id == teamDisciplineId)
             .Select(t => new TeamDisciplineDetailDto(
                 t.Name,
+                t.DisplayType,
                 t.BasedOn.Select(d => new TeamDisciplineDetailDto.Discipline(d.Id, d.Name)).ToList()
             ))
             .FirstOrDefaultAsync();
@@ -131,6 +133,7 @@ public static class TeamDisciplineEndpoints
         var basedOn = await dbContext.Disciplines.Where(d => dto.BasedOn.Contains(d.Id)).ToListAsync();
 
         teamDiscipline.Name = dto.Name;
+        teamDiscipline.DisplayType = dto.DisplayType;
         teamDiscipline.BasedOn.Clear();
         foreach (var discipline in basedOn)
             teamDiscipline.BasedOn.Add(discipline);

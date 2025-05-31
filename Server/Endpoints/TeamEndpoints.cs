@@ -19,16 +19,18 @@ public static class TeamEndpoints
         var tournamentIndependentGroup = baseGroup.MapGroup("/teams/{teamId:int}");
 
         // Tournament-based routes
-        tournamentDependentGroup.MapGet("/", GetTeams);
+        tournamentDependentGroup.MapGet("/", GetTeams).WithName("GetTeams");
 
-        tournamentDependentGroup.MapPost("/", CreateTeam);
+        tournamentDependentGroup.MapPost("/", CreateTeam).WithName("CreateTeam");
 
-        // TeamROutes
-        tournamentIndependentGroup.MapGet("/", GetTeam);
+        tournamentDependentGroup.MapGet("/nextStartNumber", GetNextTeamStartNumber).WithName("GetNextTeamStartNumber");
 
-        tournamentIndependentGroup.MapPut("/", UpdateTeam);
+        // TeamRoutes
+        tournamentIndependentGroup.MapGet("/", GetTeam).WithName("GetTeam");
 
-        tournamentIndependentGroup.MapDelete("/", DeleteTeam);
+        tournamentIndependentGroup.MapPut("/", UpdateTeam).WithName("UpdateTeam");
+
+        tournamentIndependentGroup.MapDelete("/", DeleteTeam).WithName("DeleteTeam");
 
         return builder;
     }
@@ -94,18 +96,36 @@ public static class TeamEndpoints
         return TypedResults.Ok(team.Id);
     }
 
+    private static async Task<Results<NotFound, Ok<int>>> GetNextTeamStartNumber(ApplicationDbContext dbContext,
+        int tournamentId)
+    {
+        if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
+            return TypedResults.NotFound();
+
+        var currentMaxStartNumber = await dbContext.Teams.AsNoTracking()
+            .Where(p => p.TournamentId == tournamentId)
+            .MaxAsync(p => (int?) p.StartNumber);
+
+        return TypedResults.Ok(currentMaxStartNumber.HasValue ? currentMaxStartNumber.Value + 1: 1);
+    }
+
     private static async Task<Results<NotFound, Ok<TeamDetailDto>>> GetTeam(ApplicationDbContext dbContext, int teamId)
     {
-        var team = await dbContext
-            .Teams.AsNoTracking()
-            .Where(t => t.Id == teamId)
-            .Select(t => new TeamDetailDto(
-                t.Name,
-                t.StartNumber,
-                t.Members.Count,
-                t.ParticipatingDisciplines.Select(d => new TeamDetailDto.TeamDiscipline(d.Id, d.Name)).ToList()
-            ))
-            .FirstOrDefaultAsync();
+        TeamDetailDto? team;
+        await using (await dbContext.Database.BeginTransactionAsync())
+        {
+            team = await dbContext
+                .Teams.AsNoTracking()
+                .AsSplitQuery()
+                .Where(t => t.Id == teamId)
+                .Select(t => new TeamDetailDto(
+                    t.Name,
+                    t.StartNumber,
+                    t.Members.Select(m => new TeamDetailDto.Member(m.Id, m.Name)).ToList(),
+                    t.ParticipatingDisciplines.Select(d => new TeamDetailDto.TeamDiscipline(d.Id, d.Name)).ToList()
+                ))
+                .FirstOrDefaultAsync();
+        }
 
         return team is null ? TypedResults.NotFound() : TypedResults.Ok(team);
     }

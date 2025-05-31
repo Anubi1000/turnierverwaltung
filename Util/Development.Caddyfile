@@ -1,4 +1,4 @@
-﻿localhost {
+﻿:80 {
     @api_paths path /api* /swagger* /openapi* /ping /auth
 
     handle @api_paths {
@@ -6,6 +6,6 @@
 	}
 
     handle {
-		reverse_proxy http://localhost:3000
+		reverse_proxy http://localhost:5173
 	}
 }

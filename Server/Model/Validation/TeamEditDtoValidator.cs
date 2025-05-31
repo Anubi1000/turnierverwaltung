@@ -17,7 +17,7 @@ public class TeamEditDtoValidator : AbstractValidator<TeamEditDto>
 
         RuleFor(x => x.Members)
             .MustAsync(
-                async (dto, members, context, cancellationToken) =>
+                async (_, members, context, cancellationToken) =>
                 {
                     var tournament = await db
                         .Tournaments.AsNoTracking()
@@ -31,7 +31,7 @@ public class TeamEditDtoValidator : AbstractValidator<TeamEditDto>
 
                     return true;
                 }
-            );
+            ).WithMessage("\'{PropertyName}\' needs to contain the same amount of members as specified in the tournament.");
 
         RuleForEach(x => x.Members)
             .MustAsync(

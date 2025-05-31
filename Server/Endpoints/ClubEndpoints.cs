@@ -18,16 +18,16 @@ public static class ClubEndpoints
         var tournamentIndependentGroup = baseGroup.MapGroup("/clubs/{clubId:int}");
 
         // Tournament-based routes
-        tournamentDependentGroup.MapGet("/", GetClubs);
+        tournamentDependentGroup.MapGet("/", GetClubs).WithName("GetClubs");
 
-        tournamentDependentGroup.MapPost("/", CreateClub);
+        tournamentDependentGroup.MapPost("/", CreateClub).WithName("CreateClub");
 
         // Club routes
-        tournamentIndependentGroup.MapGet("/", GetClub);
+        tournamentIndependentGroup.MapGet("/", GetClub).WithName("GetClub");
 
-        tournamentIndependentGroup.MapPut("/", UpdateClub);
+        tournamentIndependentGroup.MapPut("/", UpdateClub).WithName("UpdateClub");
 
-        tournamentIndependentGroup.MapDelete("/", DeleteClub);
+        tournamentIndependentGroup.MapDelete("/", DeleteClub).WithName("DeleteClub");
 
         return builder;
     }
