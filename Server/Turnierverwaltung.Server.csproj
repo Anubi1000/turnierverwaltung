@@ -8,6 +8,8 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <PublishTrimmed>true</PublishTrimmed>
         <TrimMode>partial</TrimMode>
+
+        <CompressionEnabled>false</CompressionEnabled>
     </PropertyGroup>
 
     <ItemGroup>

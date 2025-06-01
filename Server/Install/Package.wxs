@@ -15,8 +15,6 @@
                 </File>
                 <File Id="SqliteDll" Source="$(var.SourceDir)\e_sqlite3.dll"/>
                 <File Id="AppSettings" Source="$(var.SourceDir)\appsettings.json"/>
-                <File Id="WebAssetsConfig"
-                      Source="$(var.SourceDir)\Turnierverwaltung.Server.staticwebassets.endpoints.json"/>
             </Component>
             <Files Directory="INSTALLFOLDER" Subdirectory="wwwroot" Include="$(var.SourceDir)\wwwroot\**"/>
         </ComponentGroup>
