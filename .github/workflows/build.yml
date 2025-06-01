@@ -69,7 +69,7 @@ jobs:
 
       - name: Lint Client
         working-directory: Client
-        run: pnpm run Lint
+        run: pnpm run lint
       
       - name: Check Client Formatting
         working-directory: Client
