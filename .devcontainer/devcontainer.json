@@ -1,0 +1,19 @@
+{
+  "name": "Turnierverwaltung",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "cd Server && dotnet restore && cd ../Client && pnpm i",
+  "postStartCommand": "./start.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "esbenp.prettier-vscode",
+        "vue.volar",
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  },
+  "forwardPorts": [8080, 5097, 5173]
+}
