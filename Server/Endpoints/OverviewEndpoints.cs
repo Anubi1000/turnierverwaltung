@@ -21,9 +21,9 @@ public static class OverviewEndpoints
             .WithTags("Tournament / Overview")
             .RequireAuthorization();
 
-        baseGroup.MapGet("/", GetOverviewData);
+        baseGroup.MapGet("/", GetOverviewData).WithName("GetTournamentOverview");
 
-        baseGroup.MapPost("/download", GenerateWordScoreDocument);
+        baseGroup.MapPost("/download", GenerateWordScoreDocument).WithName("GetTournamentScoreboardAsWord");
 
         return builder;
     }
@@ -65,7 +65,7 @@ public static class OverviewEndpoints
 
         var filteredData = scoreboardData with
         {
-            Tables = scoreboardData.Tables.Where(table => dto.TablesToExport.Contains(table.Name)).ToImmutableList(),
+            Tables = scoreboardData.Tables.Where(table => dto.TablesToExport.Contains(table.Id)).ToImmutableList(),
         };
 
         // If only one table requested it can be returned directly as a document

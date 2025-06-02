@@ -577,7 +577,7 @@ export const useDeleteTournament = <
   return useMutation(mutationOptions, queryClient);
 };
 
-export const getApiTournamentsTournamentIdOverview = (
+export const getTournamentOverview = (
   tournamentId: MaybeRef<number>,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<ScoreboardData>> => {
@@ -589,21 +589,21 @@ export const getApiTournamentsTournamentIdOverview = (
   );
 };
 
-export const getGetApiTournamentsTournamentIdOverviewQueryKey = (
+export const getGetTournamentOverviewQueryKey = (
   tournamentId: MaybeRef<number>,
 ) => {
   return ["api", "tournaments", tournamentId, "overview"] as const;
 };
 
-export const getGetApiTournamentsTournamentIdOverviewQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiTournamentsTournamentIdOverview>>,
+export const getGetTournamentOverviewQueryOptions = <
+  TData = Awaited<ReturnType<typeof getTournamentOverview>>,
   TError = AxiosError<void>,
 >(
   tournamentId: MaybeRef<number>,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getApiTournamentsTournamentIdOverview>>,
+        Awaited<ReturnType<typeof getTournamentOverview>>,
         TError,
         TData
       >
@@ -613,16 +613,12 @@ export const getGetApiTournamentsTournamentIdOverviewQueryOptions = <
 ) => {
   const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-  const queryKey =
-    getGetApiTournamentsTournamentIdOverviewQueryKey(tournamentId);
+  const queryKey = getGetTournamentOverviewQueryKey(tournamentId);
 
   const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getApiTournamentsTournamentIdOverview>>
+    Awaited<ReturnType<typeof getTournamentOverview>>
   > = ({ signal }) =>
-    getApiTournamentsTournamentIdOverview(tournamentId, {
-      signal,
-      ...axiosOptions,
-    });
+    getTournamentOverview(tournamentId, { signal, ...axiosOptions });
 
   return {
     queryKey,
@@ -630,26 +626,26 @@ export const getGetApiTournamentsTournamentIdOverviewQueryOptions = <
     enabled: computed(() => !!unref(tournamentId)),
     ...queryOptions,
   } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiTournamentsTournamentIdOverview>>,
+    Awaited<ReturnType<typeof getTournamentOverview>>,
     TError,
     TData
   >;
 };
 
-export type GetApiTournamentsTournamentIdOverviewQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getApiTournamentsTournamentIdOverview>>
+export type GetTournamentOverviewQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getTournamentOverview>>
 >;
-export type GetApiTournamentsTournamentIdOverviewQueryError = AxiosError<void>;
+export type GetTournamentOverviewQueryError = AxiosError<void>;
 
-export function useGetApiTournamentsTournamentIdOverview<
-  TData = Awaited<ReturnType<typeof getApiTournamentsTournamentIdOverview>>,
+export function useGetTournamentOverview<
+  TData = Awaited<ReturnType<typeof getTournamentOverview>>,
   TError = AxiosError<void>,
 >(
   tournamentId: MaybeRef<number>,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof getApiTournamentsTournamentIdOverview>>,
+        Awaited<ReturnType<typeof getTournamentOverview>>,
         TError,
         TData
       >
@@ -660,7 +656,7 @@ export function useGetApiTournamentsTournamentIdOverview<
 ): UseQueryReturnType<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
-  const queryOptions = getGetApiTournamentsTournamentIdOverviewQueryOptions(
+  const queryOptions = getGetTournamentOverviewQueryOptions(
     tournamentId,
     options,
   );
@@ -679,7 +675,7 @@ export function useGetApiTournamentsTournamentIdOverview<
   return query;
 }
 
-export const postApiTournamentsTournamentIdOverviewDownload = (
+export const getTournamentScoreboardAsWord = (
   tournamentId: MaybeRef<number>,
   wordDocGenerationDto: MaybeRef<WordDocGenerationDto>,
   options?: AxiosRequestConfig,
@@ -694,71 +690,58 @@ export const postApiTournamentsTournamentIdOverviewDownload = (
   );
 };
 
-export const getPostApiTournamentsTournamentIdOverviewDownloadMutationOptions =
-  <
-    TError = AxiosError<HttpValidationProblemDetails | void>,
-    TContext = unknown,
-  >(options?: {
-    mutation?: UseMutationOptions<
-      Awaited<
-        ReturnType<typeof postApiTournamentsTournamentIdOverviewDownload>
-      >,
-      TError,
-      { tournamentId: number; data: WordDocGenerationDto },
-      TContext
-    >;
-    axios?: AxiosRequestConfig;
-  }): UseMutationOptions<
-    Awaited<ReturnType<typeof postApiTournamentsTournamentIdOverviewDownload>>,
+export const getGetTournamentScoreboardAsWordMutationOptions = <
+  TError = AxiosError<HttpValidationProblemDetails | void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof getTournamentScoreboardAsWord>>,
     TError,
     { tournamentId: number; data: WordDocGenerationDto },
     TContext
-  > => {
-    const mutationKey = ["postApiTournamentsTournamentIdOverviewDownload"];
-    const { mutation: mutationOptions, axios: axiosOptions } = options
-      ? options.mutation &&
-        "mutationKey" in options.mutation &&
-        options.mutation.mutationKey
-        ? options
-        : { ...options, mutation: { ...options.mutation, mutationKey } }
-      : { mutation: { mutationKey }, axios: undefined };
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof getTournamentScoreboardAsWord>>,
+  TError,
+  { tournamentId: number; data: WordDocGenerationDto },
+  TContext
+> => {
+  const mutationKey = ["getTournamentScoreboardAsWord"];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
-    const mutationFn: MutationFunction<
-      Awaited<
-        ReturnType<typeof postApiTournamentsTournamentIdOverviewDownload>
-      >,
-      { tournamentId: number; data: WordDocGenerationDto }
-    > = (props) => {
-      const { tournamentId, data } = props ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof getTournamentScoreboardAsWord>>,
+    { tournamentId: number; data: WordDocGenerationDto }
+  > = (props) => {
+    const { tournamentId, data } = props ?? {};
 
-      return postApiTournamentsTournamentIdOverviewDownload(
-        tournamentId,
-        data,
-        axiosOptions,
-      );
-    };
-
-    return { mutationFn, ...mutationOptions };
+    return getTournamentScoreboardAsWord(tournamentId, data, axiosOptions);
   };
 
-export type PostApiTournamentsTournamentIdOverviewDownloadMutationResult =
-  NonNullable<
-    Awaited<ReturnType<typeof postApiTournamentsTournamentIdOverviewDownload>>
-  >;
-export type PostApiTournamentsTournamentIdOverviewDownloadMutationBody =
-  WordDocGenerationDto;
-export type PostApiTournamentsTournamentIdOverviewDownloadMutationError =
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GetTournamentScoreboardAsWordMutationResult = NonNullable<
+  Awaited<ReturnType<typeof getTournamentScoreboardAsWord>>
+>;
+export type GetTournamentScoreboardAsWordMutationBody = WordDocGenerationDto;
+export type GetTournamentScoreboardAsWordMutationError =
   AxiosError<HttpValidationProblemDetails | void>;
 
-export const usePostApiTournamentsTournamentIdOverviewDownload = <
+export const useGetTournamentScoreboardAsWord = <
   TError = AxiosError<HttpValidationProblemDetails | void>,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
-      Awaited<
-        ReturnType<typeof postApiTournamentsTournamentIdOverviewDownload>
-      >,
+      Awaited<ReturnType<typeof getTournamentScoreboardAsWord>>,
       TError,
       { tournamentId: number; data: WordDocGenerationDto },
       TContext
@@ -767,13 +750,13 @@ export const usePostApiTournamentsTournamentIdOverviewDownload = <
   },
   queryClient?: QueryClient,
 ): UseMutationReturnType<
-  Awaited<ReturnType<typeof postApiTournamentsTournamentIdOverviewDownload>>,
+  Awaited<ReturnType<typeof getTournamentScoreboardAsWord>>,
   TError,
   { tournamentId: number; data: WordDocGenerationDto },
   TContext
 > => {
   const mutationOptions =
-    getPostApiTournamentsTournamentIdOverviewDownloadMutationOptions(options);
+    getGetTournamentScoreboardAsWordMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

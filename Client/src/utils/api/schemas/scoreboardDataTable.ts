@@ -8,6 +8,7 @@ import type { ScoreboardDataTableColumn } from "./scoreboardDataTableColumn";
 import type { ScoreboardDataTableRow } from "./scoreboardDataTableRow";
 
 export interface ScoreboardDataTable {
+  id: string;
   name: string;
   columns: ScoreboardDataTableColumn[];
   rows: ScoreboardDataTableRow[];

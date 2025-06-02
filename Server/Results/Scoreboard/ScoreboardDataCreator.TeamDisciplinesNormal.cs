@@ -62,7 +62,7 @@ public partial class ScoreboardDataCreator
             )
             .ToImmutableList();
 
-        tables.Add(new ScoreboardData.Table(teamDiscipline.Name, columns, rows));
+        tables.Add(new ScoreboardData.Table(teamDiscipline.Id.ToString(), teamDiscipline.Name, columns, rows));
     }
 
     private static ImmutableList<ScoreboardData.Table.Column> CreateColumnsForTeamDisciplineNormal(int teamSize)

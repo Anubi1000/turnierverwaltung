@@ -34,19 +34,31 @@ public partial class ScoreboardDataCreator
                 var immediateScores = participantScores.ToList();
 
                 foreach (var gender in Enum.GetValues<Gender>())
+                {
+                    var id = discipline.Id + "_";
+                    id += gender switch
+                    {
+                        Gender.Male => "m",
+                        Gender.Female => "f",
+                        _ => throw new ArgumentException("Unknown gender: " + gender)
+                    };
+
                     tables.Add(
                         CreateDisciplineTable(
+                            id,
                             $"{discipline.Name} {GetGenderSuffix(gender)}",
                             discipline.AmountOfBestRoundsToShow,
                             immediateScores.Where(result => result.participant.Gender == gender),
                             columns
                         )
                     );
+                }
             }
             else
             {
                 tables.Add(
                     CreateDisciplineTable(
+                        discipline.Id.ToString(),
                         discipline.Name,
                         discipline.AmountOfBestRoundsToShow,
                         participantScores,
@@ -68,6 +80,7 @@ public partial class ScoreboardDataCreator
     }
 
     private static ScoreboardData.Table CreateDisciplineTable(
+        string id,
         string name,
         int roundsToShow,
         IEnumerable<(Participant participant, decimal[] scores)> participantScores,
@@ -78,7 +91,9 @@ public partial class ScoreboardDataCreator
             .Select((result, index) => CreateDisciplineRow(result.participant, result.scores, index, roundsToShow))
             .ToImmutableList();
 
-        return new ScoreboardData.Table(name, columns, rows);
+
+
+        return new ScoreboardData.Table(id, name, columns, rows);
     }
 
     private static ScoreboardData.Table.Row CreateDisciplineRow(
