@@ -21,8 +21,9 @@ public record ScoreboardData(string TournamentName, ImmutableList<ScoreboardData
                 Right,
             }
 
-            [JsonDerivedType(typeof(Fixed))]
-            [JsonDerivedType(typeof(Variable))]
+            [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
+            [JsonDerivedType(typeof(Fixed), "fixed")]
+            [JsonDerivedType(typeof(Variable), "variable")]
             public interface IWidth
             {
                 public record Fixed([property: JsonPropertyName("width")] int WidthValue) : IWidth;

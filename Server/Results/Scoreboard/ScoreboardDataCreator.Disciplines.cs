@@ -74,7 +74,7 @@ public partial class ScoreboardDataCreator
         return gender switch
         {
             Gender.Male => "(m)",
-            Gender.Female => "(f)",
+            Gender.Female => "(w)",
             _ => throw new ArgumentOutOfRangeException(nameof(gender), gender, null),
         };
     }
@@ -113,7 +113,7 @@ public partial class ScoreboardDataCreator
 
         for (var i = 0; i < roundsToShow; i++)
         {
-            var score = "";
+            var score = "-";
             if (i < scores.Length)
                 score = Math.Round(scores[i], ScoreRoundingPrecision).ToString(GermanCultureInfo);
 

@@ -11,6 +11,8 @@ export const RouteNames = {
   TOURNAMENT_CREATE: "tournamentCreate",
   TOURNAMENT_EDIT: "tournamentEdit",
 
+  TOURNAMENT_SCORES: "tournamentOverview",
+
   CLUB_LIST: "clubList",
   CLUB_DETAIL: "clubDetail",
   CLUB_CREATE: "clubCreate",
@@ -111,6 +113,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
     component: () => import("@/pages/tournaments/TournamentOverviewLayout.vue"),
     children: [
+      {
+        name: RouteNames.TOURNAMENT_SCORES,
+        path: "scores",
+        meta: { requiresAuth: true },
+        component: () => import("@/pages/scores/Scores.vue"),
+      },
       {
         name: LayoutNames.CLUB_LIST,
         path: "clubs",

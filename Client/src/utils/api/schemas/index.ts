@@ -48,3 +48,5 @@ export * from "./teamScoreDisplayType";
 export * from "./tournamentDetailDto";
 export * from "./tournamentEditDto";
 export * from "./wordDocGenerationDto";
+export * from "./scoreboardDataTableColumnIWidthFixedType";
+export * from "./scoreboardDataTableColumnIWidthVariableType";

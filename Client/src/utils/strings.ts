@@ -16,6 +16,7 @@ export const strings = {
   listLoadingFailed: "Das Laden der Liste ist fehlgeschlagen",
   noEntriesAvailable: "Keine Einträge vorhanden",
   noResultsFound: "Keine Ergebnisse gefunden",
+  overviewLoadingFailed: "Das Laden der Übersicht ist fehlgeschlagen",
 
   login: "Anmelden",
   save: "Speichern",

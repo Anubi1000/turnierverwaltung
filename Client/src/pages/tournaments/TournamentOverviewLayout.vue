@@ -10,6 +10,7 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import AddBox from "~icons/material-symbols/add-box";
 import ArrowBack from "~icons/material-symbols/arrow-back";
+import Dashboard from "~icons/material-symbols/dashboard";
 import Group from "~icons/material-symbols/group";
 import Groups from "~icons/material-symbols/groups";
 import LibraryAdd from "~icons/material-symbols/library-add";
@@ -34,6 +35,17 @@ const routerViewKey = useRouterViewKey(2);
 
     <div class="flex flex-grow flex-row overflow-y-hidden">
       <div class="flex min-w-64 flex-col gap-2 overflow-y-auto">
+        <DashboardNavigationItem
+          :link="{
+            name: RouteNames.TOURNAMENT_SCORES,
+            params: { tournamentId: tournamentId },
+          }"
+          :selected="currentRoute == RouteNames.TOURNAMENT_SCORES"
+        >
+          <Dashboard />
+          {{ strings.overview }}
+        </DashboardNavigationItem>
+
         <DashboardNavigationItem
           :link="{
             name: RouteNames.CLUB_LIST,

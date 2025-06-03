@@ -6,3 +6,9 @@ export interface ItemListItem {
   link: RouteLocationRaw;
   content?: string;
 }
+
+export interface ItemListItemRaw {
+  id: string;
+  title: string;
+  content?: string;
+}

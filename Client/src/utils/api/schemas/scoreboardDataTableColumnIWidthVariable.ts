@@ -4,7 +4,9 @@
  * Turnierverwaltung.Server
  * OpenAPI spec version: 1.0.0
  */
+import type { ScoreboardDataTableColumnIWidthVariableType } from "./scoreboardDataTableColumnIWidthVariableType";
 
 export interface ScoreboardDataTableColumnIWidthVariable {
+  type: ScoreboardDataTableColumnIWidthVariableType;
   weight: number;
 }

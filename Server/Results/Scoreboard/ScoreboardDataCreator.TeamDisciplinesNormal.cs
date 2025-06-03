@@ -71,12 +71,12 @@ public partial class ScoreboardDataCreator
         {
             new(
                 "Platz",
-                new ScoreboardData.Table.Column.IWidth.Fixed(125),
+                new ScoreboardData.Table.Column.IWidth.Fixed(100),
                 ScoreboardData.Table.Column.Alignment.Center
             ),
             new(
                 "Startnummer",
-                new ScoreboardData.Table.Column.IWidth.Fixed(125),
+                new ScoreboardData.Table.Column.IWidth.Fixed(200),
                 ScoreboardData.Table.Column.Alignment.Center
             ),
             new("Name", new ScoreboardData.Table.Column.IWidth.Variable(1), ScoreboardData.Table.Column.Alignment.Left),
@@ -94,7 +94,7 @@ public partial class ScoreboardDataCreator
             columns.Add(
                 new ScoreboardData.Table.Column(
                     "Punkte",
-                    new ScoreboardData.Table.Column.IWidth.Fixed(200),
+                    new ScoreboardData.Table.Column.IWidth.Fixed(150),
                     ScoreboardData.Table.Column.Alignment.Left
                 )
             );
@@ -103,7 +103,7 @@ public partial class ScoreboardDataCreator
         columns.Add(
             new ScoreboardData.Table.Column(
                 "Gesamt",
-                new ScoreboardData.Table.Column.IWidth.Fixed(200),
+                new ScoreboardData.Table.Column.IWidth.Fixed(150),
                 ScoreboardData.Table.Column.Alignment.Right
             )
         );
