@@ -3,15 +3,16 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "postCreateCommand": "cd Server && dotnet restore && cd ../Client && pnpm i",
-  "postStartCommand": "./start.sh",
+  "postCreateCommand": "/scripts/postCreate.sh",
+  "postStartCommand": "/scripts/postStart.sh",
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-dotnettools.csharp",
         "esbenp.prettier-vscode",
         "vue.volar",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss"
       ]
     }
   },
