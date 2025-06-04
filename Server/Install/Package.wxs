@@ -6,7 +6,7 @@
 
         <ui:WixUI Id="WixUI_InstallDir_NoLicense" InstallDirectory="INSTALLFOLDER"/>
 
-        <?define SourceDir="..\bin\Release\net9.0\win-x64\publish"?>
+        <?define SourceDir="..\bin\ReleaseOptimized\net9.0\win-x64\publish"?>
         <ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
             <Component Directory="INSTALLFOLDER">
                 <File Id="ApplicationExe" Source="$(var.SourceDir)\Turnierverwaltung.Server.exe" KeyPath="yes">
