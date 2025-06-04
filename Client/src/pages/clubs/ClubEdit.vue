@@ -27,7 +27,8 @@ const { data, isPending, isError } = useGetClub(clubId);
 
 useSeoMeta({
   title: computed(
-    () => `${strings.club.edit} - ${data.value?.data.name ?? strings.loading}`,
+    () =>
+      `${strings.club.edit} - ${data.value?.data.name ?? strings.status.loading}`,
   ),
 });
 

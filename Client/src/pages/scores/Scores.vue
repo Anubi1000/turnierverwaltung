@@ -1,76 +1,98 @@
 <script setup lang="ts">
+import ScoreDownloadDialog from "./ScoreDownloadDialog.vue";
 import HeadlineRow from "@/components/HeadlineRow.vue";
-import ItemListRaw from "@/components/itemlist/ItemListRaw.vue";
+import ItemList from "@/components/itemlist/ItemList.vue";
 import LoadingMessage from "@/components/messages/LoadingMessage.vue";
 import StatusMessage from "@/components/messages/StatusMessage.vue";
 import ScoreboardTable from "@/pages/scores/ScoreboardTable.vue";
 import { useGetTournamentOverview } from "@/utils/api/api.ts";
 import { strings } from "@/utils/strings.ts";
-import type { ItemListItemRaw } from "@/utils/types";
+import type { ItemListItem } from "@/utils/types";
 import { getIdFromRoute } from "@/utils/utils";
-import { computed, ref } from "vue";
-import {useSeoMeta} from "@unhead/vue";
+import { useSeoMeta } from "@unhead/vue";
+import Button from "primevue/button";
+import { computed, ref, watch } from "vue";
+import Save from "~icons/material-symbols/save";
+import Scoreboard from "~icons/material-symbols/scoreboard";
 
+// Fetch overview data
 const tournamentId = getIdFromRoute("tournamentId");
-
 const { data, isPending, isError } = useGetTournamentOverview(tournamentId);
 
-const mappedItems = computed<ItemListItemRaw[] | undefined>(() => {
+// Map tables to list items
+const mappedItems = computed<ItemListItem[] | undefined>(() => {
   const tables = data.value?.data.tables;
   if (!tables) return undefined;
 
-  return tables.map<ItemListItemRaw>((item) => ({
+  return tables.map<ItemListItem>((item) => ({
     id: item.id.toString(),
     title: item.name,
   }));
 });
 
+// Set first table as selected if none selected and tables available
 const selectedTableId = ref<string | undefined>();
-
-const selectedTableItem = computed(() => {
-  const id = selectedTableId.value;
-  if (id) {
-    return mappedItems.value?.find((item) => item.id === id);
-  }
-  return undefined;
+watch(data, (newData) => {
+  if (
+    selectedTableId.value ||
+    !newData?.data ||
+    newData.data.tables.length === 0
+  )
+    return;
+  selectedTableId.value = newData.data.tables[0].id;
 });
 
-const selectedTable = computed(() => {
-  const id = selectedTableId.value;
-  if (id) {
-    return data.value?.data.tables.find((item) => item.id === id);
-  }
-  return undefined;
-});
+// Compute selected table
+const selectedTable = computed(() =>
+  data.value?.data.tables.find((item) => item.id === selectedTableId.value),
+);
 
+// Update title depending on selected table
 useSeoMeta({
   title: computed(() => {
-    let title = strings.overview
-    if (selectedTable.value) title += ` - ${selectedTable.value.name}`
+    let title = strings.overview;
+    if (selectedTable.value) title += ` - ${selectedTable.value.name}`;
     return title;
-  })
-})
+  }),
+});
 
-function onItemClick(item: ItemListItemRaw) {
-  selectedTableId.value = item.id;
-}
+const showDownloadDialog = ref(false);
 </script>
 
 <template>
-  <ItemListRaw
+  <ItemList
     :is-loading="isPending"
     :is-error="isError"
     :items="mappedItems"
-    :selected-item="selectedTableItem"
-    @itemClick="onItemClick"
-  />
+    :selected-item-id="selectedTableId"
+    :use-router-link="false"
+    @itemClick="(item) => (selectedTableId = item.id)"
+  >
+    <template #actionButton>
+      <Button :label="strings.actions.save" @click="showDownloadDialog = true">
+        <template #icon>
+          <Save />
+        </template>
+      </Button>
+
+      <Button
+        severity="secondary"
+        :label="strings.scores.showOnScoreboard"
+        @click="showDownloadDialog = true"
+      >
+        <template #icon>
+          <Scoreboard />
+        </template>
+      </Button>
+    </template>
+  </ItemList>
 
   <LoadingMessage v-if="isPending" />
 
   <StatusMessage
     v-else-if="isError || !data"
     severity="error"
-    :message="strings.overviewLoadingFailed"
+    :message="strings.status.overviewLoadingFailed"
   />
 
   <StatusMessage
@@ -80,10 +102,20 @@ function onItemClick(item: ItemListItemRaw) {
   />
 
   <div v-else class="flex flex-grow flex-col pl-4">
-    <HeadlineRow :title="selectedTable.name ?? strings.loading">
-      <template #actions> </template>
-    </HeadlineRow>
+    <ScoreDownloadDialog
+      v-model:visible="showDownloadDialog"
+      :data="data.data"
+      :tournament-id="tournamentId"
+    />
 
-    <ScoreboardTable v-if="selectedTable" :table="selectedTable" />
+    <HeadlineRow :title="selectedTable.name" />
+
+    <StatusMessage
+      v-if="selectedTable.rows.length === 0"
+      severity="info"
+      :message="strings.status.noEntriesAvailable"
+    />
+
+    <ScoreboardTable v-else :table="selectedTable" />
   </div>
 </template>

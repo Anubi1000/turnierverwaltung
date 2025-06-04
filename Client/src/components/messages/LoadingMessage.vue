@@ -4,5 +4,5 @@ import { strings } from "@/utils/strings.ts";
 </script>
 
 <template>
-  <StatusMessage severity="secondary" :message="strings.loading" />
+  <StatusMessage severity="secondary" :message="strings.status.loading" />
 </template>

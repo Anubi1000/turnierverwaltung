@@ -23,7 +23,7 @@ const results = computed(() => resultsQuery.data.value?.data);
 useSeoMeta({
   title: computed(
     () =>
-      `${strings.participant.editResults} - ${participant.value?.name ?? strings.loading}`,
+      `${strings.participant.editResults} - ${participant.value?.name ?? strings.status.loading}`,
   ),
 });
 </script>

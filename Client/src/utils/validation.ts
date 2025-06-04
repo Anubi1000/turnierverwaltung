@@ -91,4 +91,10 @@ export function getTeamEditDtoSchema(
   });
 }
 
-export class teamEditDtoSchema {}
+export const wordDocGenerationDtoSchema = object({
+  tablesToExport: string()
+    .nonempty()
+    .array()
+    .nonempty(strings.status.atLeastOneSelectedTable),
+  separateDocuments: boolean(),
+});

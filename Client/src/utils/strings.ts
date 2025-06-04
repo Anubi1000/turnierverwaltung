@@ -9,21 +9,28 @@ export const strings = {
   overview: "Übersicht",
 
   scoreboard: "Scoreboard",
-  loading: "Lädt...",
   searchTerm: "Suchbegriff",
   newRound: "Neue Runde",
   round: "Runde",
-  listLoadingFailed: "Das Laden der Liste ist fehlgeschlagen",
-  noEntriesAvailable: "Keine Einträge vorhanden",
-  noResultsFound: "Keine Ergebnisse gefunden",
-  overviewLoadingFailed: "Das Laden der Übersicht ist fehlgeschlagen",
 
-  login: "Anmelden",
-  save: "Speichern",
-  delete: "Löschen",
-  cancel: "Abbrechen",
-  edit: "Bearbeiten",
-  back: "Zurück",
+  status: {
+    loading: "Lädt...",
+    listLoadingFailed: "Das Laden der Liste ist fehlgeschlagen",
+    noEntriesAvailable: "Keine Einträge vorhanden",
+    noResultsFound: "Keine Ergebnisse gefunden",
+    overviewLoadingFailed: "Das Laden der Übersicht ist fehlgeschlagen",
+    atLeastOneSelectedTable:
+      "Es muss mindestens eine Tabelle ausgewählt werden",
+  },
+
+  actions: {
+    login: "Anmelden",
+    save: "Speichern",
+    delete: "Löschen",
+    cancel: "Abbrechen",
+    edit: "Bearbeiten",
+    back: "Zurück",
+  },
 
   name: "Name",
   date: "Datum",
@@ -38,6 +45,13 @@ export const strings = {
   basedOn: "Basiert auf",
   type: "Typ",
   members: "Mitglieder",
+
+  scores: {
+    showOnScoreboard: "Auf Scoreboard anzeigen",
+    downloadOverview: "Übersicht herunterladen",
+    exportTables: "Tabellen zu exportieren",
+    separateDocuments: "Separate Dokumente",
+  },
 
   tournament: {
     item: "Turnier",

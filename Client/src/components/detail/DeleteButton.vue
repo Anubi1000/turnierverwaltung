@@ -5,7 +5,7 @@ import Delete from "~icons/material-symbols/delete";
 </script>
 
 <template>
-  <Button :label="strings.delete" severity="danger">
+  <Button :label="strings.actions.delete" severity="danger">
     <template #icon>
       <Delete />
     </template>

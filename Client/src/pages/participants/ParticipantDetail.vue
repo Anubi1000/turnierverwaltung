@@ -37,7 +37,7 @@ const { data, isPending, isError } = useGetParticipant(participantId);
 useSeoMeta({
   title: computed(
     () =>
-      `${strings.participant.item} - ${data.value?.data.name ?? strings.loading}`,
+      `${strings.participant.item} - ${data.value?.data.name ?? strings.status.loading}`,
   ),
 });
 
@@ -49,7 +49,7 @@ function onDeleteButtonClick() {
     createDeleteDialog(
       strings.participant.deleteDlg.header,
       strings.participant.deleteDlg.message(
-        data.value?.data.name ?? strings.loading,
+        data.value?.data.name ?? strings.status.loading,
       ),
       async () => {
         await deleteParticipant.mutateAsync({

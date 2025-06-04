@@ -110,8 +110,8 @@ createApp(App)
         "Nov",
         "Dez",
       ],
-      emptyMessage: strings.noEntriesAvailable,
-      emptySearchMessage: strings.noResultsFound,
+      emptyMessage: strings.status.noEntriesAvailable,
+      emptySearchMessage: strings.status.noResultsFound,
     },
   })
   .use(ConfirmationService)

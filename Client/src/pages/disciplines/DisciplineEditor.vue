@@ -77,7 +77,7 @@ const onSubmit = handleSubmit(async (values) => {
               <tr>
                 <th>{{ strings.name }}</th>
                 <th>{{ strings.isAdded }}</th>
-                <th v-if="!edit">{{ strings.delete }}</th>
+                <th v-if="!edit">{{ strings.actions.delete }}</th>
               </tr>
             </thead>
 

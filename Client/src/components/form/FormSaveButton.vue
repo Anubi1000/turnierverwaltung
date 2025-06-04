@@ -5,7 +5,7 @@ import Save from "~icons/material-symbols/save";
 </script>
 
 <template>
-  <Button :label="strings.save" type="submit">
+  <Button :label="strings.actions.save" type="submit">
     <template #icon>
       <Save />
     </template>

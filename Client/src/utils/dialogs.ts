@@ -11,11 +11,11 @@ export function createDeleteDialog(
     message: message,
     modal: true,
     acceptProps: {
-      label: strings.delete,
+      label: strings.actions.delete,
       severity: "danger",
     },
     rejectProps: {
-      label: strings.cancel,
+      label: strings.actions.cancel,
       text: true,
     },
     accept: accept,

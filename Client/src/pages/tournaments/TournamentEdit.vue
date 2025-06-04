@@ -27,7 +27,7 @@ const { data, isPending, isError } = useGetTournament(tournamentId);
 useSeoMeta({
   title: computed(
     () =>
-      `${strings.tournament.edit} - ${data.value?.data.name ?? strings.loading}`,
+      `${strings.tournament.edit} - ${data.value?.data.name ?? strings.status.loading}`,
   ),
 });
 

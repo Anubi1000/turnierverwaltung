@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import DashboardHeader from "@/components/DashboardHeader.vue";
+import BackButton from "@/components/navigation/BackButton.vue";
 import DashboardNavigationItem from "@/components/navigation/DashboardNavigationItem.vue";
 import { useGetTournament } from "@/utils/api/api.ts";
 import { LayoutNames, RouteNames } from "@/utils/routes.ts";
 import { strings } from "@/utils/strings.ts";
 import { getIdFromRoute, useRouterViewKey } from "@/utils/utils.ts";
-import Button from "primevue/button";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import AddBox from "~icons/material-symbols/add-box";
-import ArrowBack from "~icons/material-symbols/arrow-back";
 import Dashboard from "~icons/material-symbols/dashboard";
 import Group from "~icons/material-symbols/group";
 import Groups from "~icons/material-symbols/groups";
@@ -23,7 +22,7 @@ const tournamentId = getIdFromRoute("tournamentId");
 
 const tournamentQuery = useGetTournament(tournamentId);
 const tournamentName = computed(
-  () => tournamentQuery.data.value?.data.name ?? strings.loading,
+  () => tournamentQuery.data.value?.data.name ?? strings.status.loading,
 );
 
 const routerViewKey = useRouterViewKey(2);
@@ -101,19 +100,12 @@ const routerViewKey = useRouterViewKey(2);
           {{ strings.teamDiscipline.items }}
         </DashboardNavigationItem>
 
-        <RouterLink
-          class="mx-2 mt-auto mb-1"
+        <BackButton
           :to="{
             name: RouteNames.TOURNAMENT_DETAIL,
             params: { tournamentId: tournamentId },
           }"
-        >
-          <Button class="w-full" :label="strings.back" severity="secondary">
-            <template #icon>
-              <ArrowBack />
-            </template>
-          </Button>
-        </RouterLink>
+        />
       </div>
 
       <RouterView :key="routerViewKey" />

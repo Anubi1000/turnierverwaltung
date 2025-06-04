@@ -34,7 +34,8 @@ const { data, isPending, isError } = useGetClub(clubId);
 
 useSeoMeta({
   title: computed(
-    () => `${strings.club.item} - ${data.value?.data.name ?? strings.loading}`,
+    () =>
+      `${strings.club.item} - ${data.value?.data.name ?? strings.status.loading}`,
   ),
 });
 
@@ -45,7 +46,9 @@ function onDeleteButtonClick() {
   confirm.require(
     createDeleteDialog(
       strings.club.deleteDlg.header,
-      strings.club.deleteDlg.message(data.value?.data.name ?? strings.loading),
+      strings.club.deleteDlg.message(
+        data.value?.data.name ?? strings.status.loading,
+      ),
       async () => {
         await deleteClub.mutateAsync({
           clubId: clubId,

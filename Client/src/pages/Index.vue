@@ -23,7 +23,7 @@ const authStore = useAuthStore();
         class="w-full"
         :to="{ name: RouteNames.TOURNAMENT_LIST }"
       >
-        <Button class="w-full" :label="strings.login">
+        <Button class="w-full" :label="strings.actions.login">
           <template #icon>
             <Login class="p-button-icon-right" />
           </template>

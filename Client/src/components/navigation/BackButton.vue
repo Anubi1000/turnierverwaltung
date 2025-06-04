@@ -2,18 +2,18 @@
 import { strings } from "@/utils/strings.ts";
 import Button from "primevue/button";
 import type { RouteLocationRaw } from "vue-router";
-import Edit from "~icons/material-symbols/edit";
+import ArrowBack from "~icons/material-symbols/arrow-back";
 
 defineProps<{
-  link: RouteLocationRaw;
+  to: RouteLocationRaw;
 }>();
 </script>
 
 <template>
-  <RouterLink :to="link">
-    <Button :label="strings.actions.edit">
+  <RouterLink class="mx-2 mt-auto mb-1" :to="to">
+    <Button class="w-full" :label="strings.actions.back" severity="secondary">
       <template #icon>
-        <Edit />
+        <ArrowBack />
       </template>
     </Button>
   </RouterLink>

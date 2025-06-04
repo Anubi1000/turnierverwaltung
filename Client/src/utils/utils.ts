@@ -60,3 +60,16 @@ export function useFetch<T>(fetchFn: () => Promise<AxiosResponse<T>>) {
     hasError,
   };
 }
+
+export function extractFileNameFromContentDisposition(header: string) {
+  const filenameStarMatch = header.match(/filename\*\s*=\s*UTF-8''([^;\n]+)/i);
+  if (filenameStarMatch) {
+    return decodeURIComponent(filenameStarMatch[1]);
+  } else {
+    const filenameMatch = header.match(/filename\s*=\s*"([^"]+)"/i);
+    if (filenameMatch) {
+      return filenameMatch[1];
+    }
+  }
+  return undefined;
+}

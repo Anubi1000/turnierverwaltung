@@ -11,11 +11,16 @@ import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
 import Search from "~icons/material-symbols/search";
 
-const { items } = defineProps<{
+const { items, useRouterLink = true } = defineProps<{
   isLoading: boolean;
   isError: boolean;
   items: ItemListItem[] | undefined;
-  selectedItem: ItemListItem | undefined;
+  selectedItemId: string | undefined;
+  useRouterLink?: boolean;
+}>();
+
+const emit = defineEmits<{
+  (e: "itemClick", item: ItemListItem): void;
 }>();
 
 const searchTerm = ref("");
@@ -53,34 +58,37 @@ const filteredItems = computed(() => {
     <StatusMessage
       v-else-if="isError || !items || !filteredItems"
       severity="error"
-      :message="strings.listLoadingFailed"
+      :message="strings.status.listLoadingFailed"
     />
 
     <StatusMessage
       v-else-if="items.length === 0"
       severity="info"
-      :message="strings.noEntriesAvailable"
+      :message="strings.status.noEntriesAvailable"
     />
 
     <StatusMessage
       v-else-if="filteredItems.length === 0"
       severity="info"
-      :message="strings.noResultsFound"
+      :message="strings.status.noResultsFound"
     />
 
-    <RouterLink
-      v-else
-      v-for="item in filteredItems"
-      class="mx-2 my-1"
-      :key="item.id"
-      :to="item.link"
-    >
-      <Card
-        selectable
-        :selected="item.id === selectedItem?.id"
-        :title="item.title"
-        :content="item.content"
-      />
-    </RouterLink>
+    <template v-else>
+      <component
+        :is="useRouterLink ? RouterLink : 'div'"
+        v-for="item in filteredItems"
+        :key="item.id"
+        v-bind="useRouterLink ? { to: item.link } : {}"
+        class="mx-2 my-1"
+        @click="!useRouterLink && emit('itemClick', item)"
+      >
+        <Card
+          selectable
+          :selected="item.id === selectedItemId"
+          :title="item.title"
+          :content="item.content"
+        />
+      </component>
+    </template>
   </div>
 </template>

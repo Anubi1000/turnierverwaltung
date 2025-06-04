@@ -36,7 +36,8 @@ const { data, isPending, isError } = useGetTeam(teamId);
 
 useSeoMeta({
   title: computed(
-    () => `${strings.team.item} - ${data.value?.data.name ?? strings.loading}`,
+    () =>
+      `${strings.team.item} - ${data.value?.data.name ?? strings.status.loading}`,
   ),
 });
 
@@ -47,7 +48,9 @@ function onDeleteButtonClick() {
   confirm.require(
     createDeleteDialog(
       strings.team.deleteDlg.header,
-      strings.team.deleteDlg.message(data.value?.data.name ?? strings.loading),
+      strings.team.deleteDlg.message(
+        data.value?.data.name ?? strings.status.loading,
+      ),
       async () => {
         await deleteTeam.mutateAsync({
           teamId: teamId,

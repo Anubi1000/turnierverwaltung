@@ -28,13 +28,7 @@ const mappedItems = computed<ItemListItem[] | undefined>(() => {
   }));
 });
 
-const selectedParticipant = computed(() => {
-  const id = route.params.participantId;
-  if (id) {
-    return mappedItems.value?.find((item) => item.id === id);
-  }
-  return undefined;
-});
+const selectedItemId = route.params.clubId as string | undefined;
 
 const routerViewKey = useRouterViewKey(3);
 </script>
@@ -44,7 +38,7 @@ const routerViewKey = useRouterViewKey(3);
     :is-loading="isPending"
     :is-error="isError"
     :items="mappedItems"
-    :selected-item="selectedParticipant"
+    :selected-item-id="selectedItemId"
   >
     <template #actionButton>
       <CreateButton

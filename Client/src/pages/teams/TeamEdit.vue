@@ -27,7 +27,8 @@ const { data, isPending, isError } = useGetTeam(teamId);
 
 useSeoMeta({
   title: computed(
-    () => `${strings.team.edit} - ${data.value?.data.name ?? strings.loading}`,
+    () =>
+      `${strings.team.edit} - ${data.value?.data.name ?? strings.status.loading}`,
   ),
 });
 

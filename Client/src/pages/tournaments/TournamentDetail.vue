@@ -36,7 +36,7 @@ const { data, isPending, isError } = useGetTournament(tournamentId);
 useSeoMeta({
   title: computed(
     () =>
-      `${strings.tournament.item} - ${data.value?.data.name ?? strings.loading}`,
+      `${strings.tournament.item} - ${data.value?.data.name ?? strings.status.loading}`,
   ),
 });
 
@@ -48,7 +48,7 @@ function onDeleteButtonClick() {
     createDeleteDialog(
       strings.tournament.deleteDlg.header,
       strings.tournament.deleteDlg.message(
-        data.value?.data.name ?? strings.loading,
+        data.value?.data.name ?? strings.status.loading,
       ),
       async () => {
         await deleteTournament.mutateAsync({
@@ -91,7 +91,7 @@ function onDeleteButtonClick() {
         <!--Open Button-->
         <RouterLink
           :to="{
-            name: RouteNames.CLUB_LIST,
+            name: RouteNames.TOURNAMENT_SCORES,
             params: { tournamentId: tournamentId },
           }"
         >

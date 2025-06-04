@@ -28,7 +28,7 @@ const { data, isPending, isError } = useGetDiscipline(disciplineId);
 useSeoMeta({
   title: computed(
     () =>
-      `${strings.discipline.edit} - ${data.value?.data.name ?? strings.loading}`,
+      `${strings.discipline.edit} - ${data.value?.data.name ?? strings.status.loading}`,
   ),
 });
 

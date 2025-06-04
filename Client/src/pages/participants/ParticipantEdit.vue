@@ -28,7 +28,7 @@ const { data, isPending, isError } = useGetParticipant(participantId);
 useSeoMeta({
   title: computed(
     () =>
-      `${strings.participant.edit} - ${data.value?.data.name ?? strings.loading}`,
+      `${strings.participant.edit} - ${data.value?.data.name ?? strings.status.loading}`,
   ),
 });
 

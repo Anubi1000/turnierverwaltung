@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import DashboardHeader from "@/components/DashboardHeader.vue";
+import BackButton from "@/components/navigation/BackButton.vue";
 import DashboardNavigationItem from "@/components/navigation/DashboardNavigationItem.vue";
 import { LayoutNames, RouteNames } from "@/utils/routes.ts";
 import { strings } from "@/utils/strings.ts";
 import { useRouterViewKey } from "@/utils/utils.ts";
-import Button from "primevue/button";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import ArrowBack from "~icons/material-symbols/arrow-back";
 import Groups from "~icons/material-symbols/groups";
 
 const route = useRoute();
@@ -32,18 +31,11 @@ const routerViewKey = useRouterViewKey(2);
           {{ strings.tournament.items }}
         </DashboardNavigationItem>
 
-        <RouterLink
-          class="mx-2 mt-auto mb-1"
+        <BackButton
           :to="{
             name: RouteNames.ROOT,
           }"
-        >
-          <Button class="w-full" :label="strings.back" severity="secondary">
-            <template #icon>
-              <ArrowBack />
-            </template>
-          </Button>
-        </RouterLink>
+        />
       </div>
 
       <RouterView :key="routerViewKey" />
