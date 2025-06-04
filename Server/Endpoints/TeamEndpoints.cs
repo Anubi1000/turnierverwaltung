@@ -96,17 +96,20 @@ public static class TeamEndpoints
         return TypedResults.Ok(team.Id);
     }
 
-    private static async Task<Results<NotFound, Ok<int>>> GetNextTeamStartNumber(ApplicationDbContext dbContext,
-        int tournamentId)
+    private static async Task<Results<NotFound, Ok<int>>> GetNextTeamStartNumber(
+        ApplicationDbContext dbContext,
+        int tournamentId
+    )
     {
         if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
             return TypedResults.NotFound();
 
-        var currentMaxStartNumber = await dbContext.Teams.AsNoTracking()
+        var currentMaxStartNumber = await dbContext
+            .Teams.AsNoTracking()
             .Where(p => p.TournamentId == tournamentId)
-            .MaxAsync(p => (int?) p.StartNumber);
+            .MaxAsync(p => (int?)p.StartNumber);
 
-        return TypedResults.Ok(currentMaxStartNumber.HasValue ? currentMaxStartNumber.Value + 1: 1);
+        return TypedResults.Ok(currentMaxStartNumber.HasValue ? currentMaxStartNumber.Value + 1 : 1);
     }
 
     private static async Task<Results<NotFound, Ok<TeamDetailDto>>> GetTeam(ApplicationDbContext dbContext, int teamId)

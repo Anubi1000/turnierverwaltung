@@ -40,7 +40,7 @@ public partial class ScoreboardDataCreator
                     {
                         Gender.Male => "m",
                         Gender.Female => "f",
-                        _ => throw new ArgumentException("Unknown gender: " + gender)
+                        _ => throw new ArgumentException("Unknown gender: " + gender),
                     };
 
                     tables.Add(
@@ -90,8 +90,6 @@ public partial class ScoreboardDataCreator
         var rows = participantScores
             .Select((result, index) => CreateDisciplineRow(result.participant, result.scores, index, roundsToShow))
             .ToImmutableList();
-
-
 
         return new ScoreboardData.Table(id, name, columns, rows);
     }

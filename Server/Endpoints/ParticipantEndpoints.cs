@@ -23,7 +23,9 @@ public static class ParticipantEndpoints
 
         tournamentDependentGroup.MapPost("/", CreateParticipant).WithName("CreateParticipant");
 
-        tournamentDependentGroup.MapGet("/nextStartNumber", GetNextParticipantStartNumber).WithName("GetNextParticipantStartNumber");
+        tournamentDependentGroup
+            .MapGet("/nextStartNumber", GetNextParticipantStartNumber)
+            .WithName("GetNextParticipantStartNumber");
 
         // Participant routes
         tournamentIndependentGroup.MapGet("/", GetParticipant).WithName("GetParticipant");
@@ -55,16 +57,20 @@ public static class ParticipantEndpoints
         return TypedResults.Ok(participants);
     }
 
-    private static async Task<Results<NotFound, Ok<int>>> GetNextParticipantStartNumber(ApplicationDbContext dbContext, int tournamentId)
+    private static async Task<Results<NotFound, Ok<int>>> GetNextParticipantStartNumber(
+        ApplicationDbContext dbContext,
+        int tournamentId
+    )
     {
         if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
             return TypedResults.NotFound();
 
-        var currentMaxStartNumber = await dbContext.Participants.AsNoTracking()
+        var currentMaxStartNumber = await dbContext
+            .Participants.AsNoTracking()
             .Where(p => p.TournamentId == tournamentId)
-            .MaxAsync(p => (int?) p.StartNumber);
+            .MaxAsync(p => (int?)p.StartNumber);
 
-        return TypedResults.Ok(currentMaxStartNumber.HasValue ? currentMaxStartNumber.Value + 1: 1);
+        return TypedResults.Ok(currentMaxStartNumber.HasValue ? currentMaxStartNumber.Value + 1 : 1);
     }
 
     private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateParticipant(

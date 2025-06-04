@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using Turnierverwaltung.Server.Endpoints;

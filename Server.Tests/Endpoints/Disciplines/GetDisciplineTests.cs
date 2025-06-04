@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
-using FluentAssertions.Equivalency;
+using AwesomeAssertions;
+using AwesomeAssertions.Equivalency;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database;

@@ -63,14 +63,14 @@ public class Program
         });
 
         // Authentication
-        builder.Services
-            .AddAuthentication("localhost_auth")
+        builder
+            .Services.AddAuthentication("localhost_auth")
             .AddScheme<AuthenticationSchemeOptions, LocalhostAuthenticationHandler>("localhost_auth", _ => { });
         builder.Services.AddAuthorization();
 
         // SignalR
-        builder.Services
-            .AddSignalR()
+        builder
+            .Services.AddSignalR()
             .AddJsonProtocol(options =>
             {
                 options.PayloadSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);

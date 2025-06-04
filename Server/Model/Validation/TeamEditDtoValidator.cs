@@ -31,7 +31,10 @@ public class TeamEditDtoValidator : AbstractValidator<TeamEditDto>
 
                     return true;
                 }
-            ).WithMessage("\'{PropertyName}\' needs to contain the same amount of members as specified in the tournament.");
+            )
+            .WithMessage(
+                "\'{PropertyName}\' needs to contain the same amount of members as specified in the tournament."
+            );
 
         RuleForEach(x => x.Members)
             .MustAsync(

@@ -8,5 +8,6 @@ public record TeamDetailDto(
 )
 {
     public record Member(int Id, string Name);
+
     public record TeamDiscipline(int Id, string Name);
 }
