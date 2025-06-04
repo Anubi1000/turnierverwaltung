@@ -8,7 +8,6 @@ public sealed class Team
     // Common properties
     public int Id { get; init; }
 
-    [MaxLength(Constants.MaxNameLength)]
     public string Name { get; set; } = "";
 
     public int StartNumber { get; set; }

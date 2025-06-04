@@ -8,7 +8,6 @@ public sealed class Tournament
     // Common properties
     public int Id { get; init; }
 
-    [MaxLength(Constants.MaxNameLength)]
     public string Name { get; set; } = "";
 
     public DateTime Date { get; set; } = DateTime.UtcNow;

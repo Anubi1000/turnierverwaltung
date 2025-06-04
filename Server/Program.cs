@@ -1,12 +1,6 @@
-using System.Net;
-using System.Net.Sockets;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.Json;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Auth;
 using Turnierverwaltung.Server.Database;
@@ -24,65 +18,91 @@ public class Program
     {
         ValidatorOptions.Global.LanguageManager.Enabled = false;
 
-        var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateSlimBuilder(args);
 
+        // Kestrel
+        builder.WebHost.UseKestrelHttpsConfiguration();
         builder.WebHost.ConfigureKestrel(options =>
         {
             options.AddServerHeader = false;
         });
 
-        // Create temporary logger until dependency container is ready
-        using (
-            var loggerFactory = LoggerFactory.Create(logBuilder =>
-                logBuilder.AddConfiguration(builder.Configuration.GetSection("Logging")).AddConsole()
-            )
-        )
-        {
-            var logger = loggerFactory.CreateLogger<Program>();
+        // UserDataService
+        var userDataService = UserDataService.CreateNew();
+        builder.Services.AddSingleton<IUserDataService>(userDataService);
 
-            // Setup user data service
-            var dataService = UserDataService.CreateNew();
-            logger.LogInformation("Current data directory: {}", dataService.DataDirectory);
-            builder.Services.AddSingleton<IUserDataService>(dataService);
+#if !RELEASEOPTIMIZED
+        if (builder.Environment.IsDevelopment())
+            builder.Services.AddAppApiDoc();
+#endif
 
-            // Add user config file if it exists
-            var userConfigFile = dataService.GetUserDataPath(UserDataType.Config);
-            if (File.Exists(userConfigFile))
+        builder.Services.AddScoped<IScoreboardDataCreator, ScoreboardDataCreator>();
+        builder.Services.AddScoped<IWordFileCreator, WordFileCreator>();
+
+        builder.Services.AddScoped<IEntityChangeNotifier, EntityChangeNotifier>();
+        builder.Services.AddScoped<IScoreboardManager, ScoreboardManager>();
+
+        // Validators
+        builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+        // Database
+        builder.Services.AddDbContext<ApplicationDbContext>(
+            (serviceProvider, options) =>
             {
-                builder.Configuration.AddJsonFile(userConfigFile, false, false);
-                logger.LogInformation("Found user config file at {}", userConfigFile);
+                var dataService = serviceProvider.GetRequiredService<IUserDataService>();
+                options.UseSqlite($"Data Source={dataService.GetUserDataPath(UserDataType.Database)}");
             }
+        );
 
-            logger.LogInformation("Configuring services");
-            ConfigureServices(builder);
-            SetupHttps(builder, dataService, logger);
-        }
+        // Json serialisation
+        builder.Services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.Converters.Add(new DateTimeToTimestampConverter());
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+        });
+
+        // Authentication
+        builder.Services
+            .AddAuthentication("localhost_auth")
+            .AddScheme<AuthenticationSchemeOptions, LocalhostAuthenticationHandler>("localhost_auth", _ => { });
+        builder.Services.AddAuthorization();
+
+        // SignalR
+        builder.Services
+            .AddSignalR()
+            .AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+            });
 
         var app = builder.Build();
 
+        app.Logger.LogInformation("Data Directory: {}", userDataService.DataDirectory);
+
+        // Database migrations
         using (var scope = app.Services.CreateScope())
         {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("Running database migrations");
-
+            app.Logger.LogInformation("Running database migrations");
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             dbContext.Database.Migrate();
         }
 
+        // Development pages
+#if !RELEASEOPTIMIZED
         if (app.Environment.IsDevelopment())
         {
-#if DEBUG
             app.MapOpenApi();
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Turnierverwaltung"));
-#endif
             app.UseDeveloperExceptionPage();
         }
+#endif
 
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapGroup("/").WithTags("Util").MapUtilEndpoints();
-
+        // Map endpoints
+        app.MapUtilEndpoints();
         app.MapTournamentEndpoints();
         app.MapOverviewEndpoints();
         app.MapClubEndpoints();
@@ -93,6 +113,7 @@ public class Program
         app.MapTeamEndpoints();
         app.MapScoreboardEndpoints();
 
+        // Map static files
         app.UseStaticFiles(
             new StaticFileOptions
             {
@@ -106,140 +127,5 @@ public class Program
         app.MapFallbackToFile("index.html");
 
         app.Run();
-    }
-
-    private static void ConfigureServices(WebApplicationBuilder builder)
-    {
-        var services = builder.Services;
-        if (builder.Environment.IsDevelopment())
-            services.AddAppApiDoc();
-
-        services.AddScoped<IScoreboardDataCreator, ScoreboardDataCreator>();
-        services.AddScoped<IWordFileCreator, WordFileCreator>();
-
-        services.AddScoped<IEntityChangeNotifier, EntityChangeNotifier>();
-        services.AddScoped<IScoreboardManager, ScoreboardManager>();
-
-        services.AddValidatorsFromAssemblyContaining<Program>();
-
-        ConfigureDatabases(services);
-        ConfigureJsonSerialisation(services);
-        ConfigureAuthentication(services);
-
-        services
-            .AddSignalR()
-            .AddJsonProtocol(options =>
-            {
-                options.PayloadSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-            });
-    }
-
-    private static void ConfigureDatabases(IServiceCollection services)
-    {
-        services.AddDbContext<ApplicationDbContext>(
-            (serviceProvider, options) =>
-            {
-                var dataService = serviceProvider.GetRequiredService<IUserDataService>();
-                options.UseSqlite($"Data Source={dataService.GetUserDataPath(UserDataType.Database)}");
-            }
-        );
-    }
-
-    private static void ConfigureJsonSerialisation(IServiceCollection services)
-    {
-        services.Configure<JsonOptions>(options =>
-        {
-            options.SerializerOptions.Converters.Add(new DateTimeToTimestampConverter());
-            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-        });
-    }
-
-    private static void ConfigureAuthentication(IServiceCollection services)
-    {
-        services
-            .AddAuthentication("localhost")
-            .AddScheme<AuthenticationSchemeOptions, LocalhostAuthenticationHandler>("localhost", _ => { });
-        services.AddAuthorization();
-    }
-
-    private static void SetupHttps(WebApplicationBuilder builder, UserDataService dataService, ILogger<Program> logger)
-    {
-        if (builder.Configuration.GetValue<bool>("DisableInbuiltCertificate") || builder.Environment.IsDevelopment())
-            return;
-
-        var path = dataService.GetUserDataPath(UserDataType.CertificateWithKey);
-        logger.LogInformation("Using certificate at {} for https", path);
-
-        if (!File.Exists(path))
-        {
-            logger.LogInformation("Generating new https certificate");
-
-            var cert = CreateSelfSignedCertificate();
-            File.WriteAllBytes(path, cert.Export(X509ContentType.Pfx));
-
-            File.WriteAllText(
-                dataService.GetUserDataPath(UserDataType.Certificate),
-                "-----BEGIN CERTIFICATE-----\r\n"
-                    + Convert.ToBase64String(
-                        cert.Export(X509ContentType.Cert),
-                        Base64FormattingOptions.InsertLineBreaks
-                    )
-                    + "\r\n-----END CERTIFICATE-----"
-            );
-        }
-
-        builder.WebHost.ConfigureKestrel(options =>
-        {
-            var certPath = dataService.GetUserDataPath(UserDataType.CertificateWithKey);
-            options.Listen(
-                IPAddress.Any,
-                443,
-                listenOptions =>
-                {
-                    listenOptions.UseHttps(certPath);
-                    listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-                }
-            );
-        });
-    }
-
-    private static X509Certificate2 CreateSelfSignedCertificate()
-    {
-        var localIps = Dns.GetHostEntry(Dns.GetHostName())
-            .AddressList.Where(ip => ip.AddressFamily is AddressFamily.InterNetwork or AddressFamily.InterNetworkV6)
-            .ToList();
-
-        using var rsa = RSA.Create();
-        var request = new CertificateRequest(
-            "CN=Turnierverwaltung",
-            rsa,
-            HashAlgorithmName.SHA256,
-            RSASignaturePadding.Pkcs1
-        );
-
-        var sanBuilder = new SubjectAlternativeNameBuilder();
-        sanBuilder.AddDnsName("localhost");
-
-        foreach (var ip in localIps)
-            sanBuilder.AddIpAddress(ip);
-
-        if (!localIps.Contains(IPAddress.Loopback))
-            sanBuilder.AddIpAddress(IPAddress.Loopback);
-
-        if (!localIps.Contains(IPAddress.IPv6Loopback))
-            sanBuilder.AddIpAddress(IPAddress.IPv6Loopback);
-
-        request.CertificateExtensions.Add(sanBuilder.Build());
-        request.CertificateExtensions.Add(
-            new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature | X509KeyUsageFlags.KeyEncipherment, true)
-        );
-        request.CertificateExtensions.Add(
-            new X509EnhancedKeyUsageExtension(new OidCollection { new Oid("1.3.6.1.5.5.7.3.1") }, true)
-        );
-
-        var cert = request.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(10));
-
-        return cert;
     }
 }

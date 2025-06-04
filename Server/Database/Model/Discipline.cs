@@ -8,7 +8,6 @@ public sealed class Discipline
     // Common properties
     public int Id { get; init; }
 
-    [MaxLength(Constants.MaxNameLength)]
     public string Name { get; set; } = "";
 
     public int AmountOfBestRoundsToShow { get; set; } = 1;
@@ -27,7 +26,6 @@ public sealed class Discipline
 
     public class Value
     {
-        [MaxLength(Constants.MaxNameLength)]
         public string Name { get; set; } = "";
 
         public bool IsAdded { get; set; } = true;

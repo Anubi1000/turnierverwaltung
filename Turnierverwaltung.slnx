@@ -1,4 +1,9 @@
-﻿<Solution>
-  <Project Path="Server.Tests\Turnierverwaltung.Server.Tests.csproj" Type="Classic C#" />
-  <Project Path="Server\Turnierverwaltung.Server.csproj" Type="Classic C#" />
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <BuildType Name="ReleaseOptimized" />
+  </Configurations>
+  <Project Path="Server.Tests\Turnierverwaltung.Server.Tests.csproj" />
+  <Project Path="Server\Turnierverwaltung.Server.csproj" />
 </Solution>

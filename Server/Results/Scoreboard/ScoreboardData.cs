@@ -13,7 +13,7 @@ public record ScoreboardData(string TournamentName, ImmutableList<ScoreboardData
             [property: JsonPropertyName("alignment")] Column.Alignment ColumnAlignment
         )
         {
-            [JsonConverter(typeof(JsonStringEnumConverter))]
+            [JsonConverter(typeof(JsonStringEnumConverter<Alignment>))]
             public enum Alignment
             {
                 Left,

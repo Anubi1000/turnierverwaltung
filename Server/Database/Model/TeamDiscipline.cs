@@ -8,7 +8,6 @@ public sealed class TeamDiscipline
     // Common properties
     public int Id { get; set; }
 
-    [MaxLength(Constants.MaxNameLength)]
     public string Name { get; set; } = "";
 
     public TeamScoreDisplayType DisplayType { get; set; } = TeamScoreDisplayType.Normal;

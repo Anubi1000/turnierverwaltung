@@ -6,8 +6,10 @@ public static class UtilEndpoints
 {
     public static IEndpointRouteBuilder MapUtilEndpoints(this IEndpointRouteBuilder builder)
     {
-        builder.MapGet("/ping", Ping).WithName("GetPing");
-        builder.MapGet("/auth", CheckAuth).WithName("CheckAuth");
+        var group = builder.MapGroup("/api").WithTags("Util");
+
+        group.MapGet("/ping", Ping).WithName("GetPing");
+        group.MapGet("/auth", CheckAuth).WithName("CheckAuth");
 
         return builder;
     }

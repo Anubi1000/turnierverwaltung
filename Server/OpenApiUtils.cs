@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+#if !RELEASEOPTIMIZED
+using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
@@ -62,3 +63,4 @@ public static class OpenApiUtils
         });
     }
 }
+#endif

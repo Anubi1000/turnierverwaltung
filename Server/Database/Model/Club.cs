@@ -8,7 +8,6 @@ public sealed class Club
     // Common properties
     public int Id { get; init; }
 
-    [MaxLength(Constants.MaxNameLength)]
     public string Name { get; set; } = "";
 
     // Tournament
