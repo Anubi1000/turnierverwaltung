@@ -5,7 +5,10 @@ import ItemList from "@/components/itemlist/ItemList.vue";
 import LoadingMessage from "@/components/messages/LoadingMessage.vue";
 import StatusMessage from "@/components/messages/StatusMessage.vue";
 import ScoreboardTable from "@/pages/scores/ScoreboardTable.vue";
-import { useGetTournamentOverview } from "@/utils/api/api.ts";
+import {
+  setScoreboardTournament,
+  useGetTournamentOverview,
+} from "@/utils/api/api.ts";
 import { strings } from "@/utils/strings.ts";
 import type { ItemListItem } from "@/utils/types";
 import { getIdFromRoute } from "@/utils/utils";
@@ -57,6 +60,14 @@ useSeoMeta({
 });
 
 const showDownloadDialog = ref(false);
+
+async function showTournamentOnScoreboard() {
+  await setScoreboardTournament(tournamentId, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
 </script>
 
 <template>
@@ -78,7 +89,7 @@ const showDownloadDialog = ref(false);
       <Button
         severity="secondary"
         :label="strings.scores.showOnScoreboard"
-        @click="showDownloadDialog = true"
+        @click="showTournamentOnScoreboard"
       >
         <template #icon>
           <Scoreboard />

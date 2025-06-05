@@ -50,11 +50,11 @@ import type { MaybeRef } from "vue";
 export const getPing = (
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<string>> => {
-  return axios.default.get(`/ping`, options);
+  return axios.default.get(`/api/ping`, options);
 };
 
 export const getGetPingQueryKey = () => {
-  return ["ping"] as const;
+  return ["api", "ping"] as const;
 };
 
 export const getGetPingQueryOptions = <
@@ -119,11 +119,11 @@ export function useGetPing<
 export const checkAuth = (
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<AuthInfoDto>> => {
-  return axios.default.get(`/auth`, options);
+  return axios.default.get(`/api/auth`, options);
 };
 
 export const getCheckAuthQueryKey = () => {
-  return ["auth"] as const;
+  return ["api", "auth"] as const;
 };
 
 export const getCheckAuthQueryOptions = <
@@ -3265,37 +3265,37 @@ export const useDeleteTeam = <TError = AxiosError<void>, TContext = unknown>(
   return useMutation(mutationOptions, queryClient);
 };
 
-export const postApiScoreboardTournament = (
-  postApiScoreboardTournamentBody: MaybeRef<number>,
+export const setScoreboardTournament = (
+  setScoreboardTournamentBody: MaybeRef<number>,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<void>> => {
-  postApiScoreboardTournamentBody = unref(postApiScoreboardTournamentBody);
+  setScoreboardTournamentBody = unref(setScoreboardTournamentBody);
 
   return axios.default.post(
     `/api/scoreboard/tournament`,
-    postApiScoreboardTournamentBody,
+    setScoreboardTournamentBody,
     options,
   );
 };
 
-export const getPostApiScoreboardTournamentMutationOptions = <
+export const getSetScoreboardTournamentMutationOptions = <
   TError = AxiosError<string>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof postApiScoreboardTournament>>,
+    Awaited<ReturnType<typeof setScoreboardTournament>>,
     TError,
     { data: number },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof postApiScoreboardTournament>>,
+  Awaited<ReturnType<typeof setScoreboardTournament>>,
   TError,
   { data: number },
   TContext
 > => {
-  const mutationKey = ["postApiScoreboardTournament"];
+  const mutationKey = ["setScoreboardTournament"];
   const { mutation: mutationOptions, axios: axiosOptions } = options
     ? options.mutation &&
       "mutationKey" in options.mutation &&
@@ -3305,30 +3305,30 @@ export const getPostApiScoreboardTournamentMutationOptions = <
     : { mutation: { mutationKey }, axios: undefined };
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof postApiScoreboardTournament>>,
+    Awaited<ReturnType<typeof setScoreboardTournament>>,
     { data: number }
   > = (props) => {
     const { data } = props ?? {};
 
-    return postApiScoreboardTournament(data, axiosOptions);
+    return setScoreboardTournament(data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type PostApiScoreboardTournamentMutationResult = NonNullable<
-  Awaited<ReturnType<typeof postApiScoreboardTournament>>
+export type SetScoreboardTournamentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof setScoreboardTournament>>
 >;
-export type PostApiScoreboardTournamentMutationBody = number;
-export type PostApiScoreboardTournamentMutationError = AxiosError<string>;
+export type SetScoreboardTournamentMutationBody = number;
+export type SetScoreboardTournamentMutationError = AxiosError<string>;
 
-export const usePostApiScoreboardTournament = <
+export const useSetScoreboardTournament = <
   TError = AxiosError<string>,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof postApiScoreboardTournament>>,
+      Awaited<ReturnType<typeof setScoreboardTournament>>,
       TError,
       { data: number },
       TContext
@@ -3337,13 +3337,12 @@ export const usePostApiScoreboardTournament = <
   },
   queryClient?: QueryClient,
 ): UseMutationReturnType<
-  Awaited<ReturnType<typeof postApiScoreboardTournament>>,
+  Awaited<ReturnType<typeof setScoreboardTournament>>,
   TError,
   { data: number },
   TContext
 > => {
-  const mutationOptions =
-    getPostApiScoreboardTournamentMutationOptions(options);
+  const mutationOptions = getSetScoreboardTournamentMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
