@@ -6,3 +6,5 @@ dotnet restore
 
 cd ../Client
 echo | pnpm install
+
+dotnet dev-certs https
