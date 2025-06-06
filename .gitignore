@@ -1,6 +1,7 @@
 .idea/
 *.sln.DotSettings.user
 .vs/
+.vscode/
 
 **/bin/
 **/obj/

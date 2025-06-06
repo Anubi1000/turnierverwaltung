@@ -3,12 +3,12 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "postCreateCommand": "/scripts/postCreate.sh",
-  "postStartCommand": "/scripts/postStart.sh",
+  "postCreateCommand": "chmod +x /scripts/postCreate.sh && /scripts/postCreate.sh",
+  "postStartCommand": "chmod +x /scripts/postStart.sh && /scripts/postStart.sh",
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
         "esbenp.prettier-vscode",
         "vue.volar",
         "dbaeumer.vscode-eslint",
