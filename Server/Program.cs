@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Auth;
+using Turnierverwaltung.Server.Config;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Notification;
 using Turnierverwaltung.Server.Endpoints;
@@ -30,6 +31,10 @@ public class Program
         // UserDataService
         var userDataService = UserDataService.CreateNew();
         builder.Services.AddSingleton<IUserDataService>(userDataService);
+
+        AppConfig.SetupFile(userDataService.GetUserDataPath(UserDataType.Config));
+        builder.Configuration.AddJsonFile(userDataService.GetUserDataPath(UserDataType.Config), optional: true);
+        builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppSettings"));
 
 #if !RELEASEOPTIMIZED
         if (builder.Environment.IsDevelopment())

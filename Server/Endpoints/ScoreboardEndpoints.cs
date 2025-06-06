@@ -15,7 +15,10 @@ public static class ScoreboardEndpoints
 
         group.MapHub<ScoreboardHub>("/hub");
 
-        group.MapPost("/tournament", SetScoreboardTournament).RequireAuthorization().WithName("SetScoreboardTournament");
+        group
+            .MapPost("/tournament", SetScoreboardTournament)
+            .RequireAuthorization()
+            .WithName("SetScoreboardTournament");
 
         return builder;
     }

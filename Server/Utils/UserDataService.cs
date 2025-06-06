@@ -26,8 +26,6 @@ public class UserDataService : IUserDataService
         {
             UserDataType.Database => Path.Combine(DataDirectory, "Data.db"),
             UserDataType.Config => Path.Combine(DataDirectory, "Config.json"),
-            UserDataType.CertificateWithKey => Path.Combine(DataDirectory, "Certificate.pfx"),
-            UserDataType.Certificate => Path.Combine(DataDirectory, "Certificate.cer"),
             UserDataType.WordDocumentLogo => Path.Combine(DataDirectory, "WordDocumentLogo.png"),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
         };
@@ -79,7 +77,5 @@ public enum UserDataType
 {
     Database,
     Config,
-    CertificateWithKey,
-    Certificate,
     WordDocumentLogo,
 }
