@@ -9,4 +9,13 @@ RUN apt-get install -y debian-keyring debian-archive-keyring curl gnupg && \
     curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list && \
     apt-get update && apt-get install -y caddy
 
-COPY ./postCreate.sh  /scripts/
+# Install PowerShell
+RUN apt-get update && \
+    apt-get install -y wget && \
+    wget -q https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb && \
+    dpkg -i packages-microsoft-prod.deb && \
+    apt-get update && \
+    apt-get install -y powershell && \
+    rm packages-microsoft-prod.deb
+
+COPY ./postCreate.sh /scripts/
