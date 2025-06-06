@@ -4,7 +4,6 @@
     "dockerfile": "Dockerfile"
   },
   "postCreateCommand": "chmod +x /scripts/postCreate.sh && /scripts/postCreate.sh",
-  "postStartCommand": "chmod +x /scripts/postStart.sh && /scripts/postStart.sh",
   "customizations": {
     "vscode": {
       "extensions": [
