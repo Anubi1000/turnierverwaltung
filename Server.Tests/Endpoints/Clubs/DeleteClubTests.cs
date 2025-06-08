@@ -36,7 +36,7 @@ public class DeleteClubTests : IDisposable
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var result = await ClubEndpoints.DeleteClub(_dbContext, 1);
-        result.Should().BeOfType<Ok>();
+        result.Should().BeResult<Results<NotFound, Ok>, Ok>();
 
         var club = await _dbContext.Clubs.SingleOrDefaultAsync(c => c.Id == 1, TestContext.Current.CancellationToken);
         club.Should().BeNull();
@@ -46,6 +46,6 @@ public class DeleteClubTests : IDisposable
     public async Task WhenClubDoesNotExist_ReturnsNotFound()
     {
         var result = await ClubEndpoints.DeleteClub(_dbContext, 1);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, Ok>, NotFound>();
     }
 }

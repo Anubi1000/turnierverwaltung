@@ -34,7 +34,7 @@ public class CreateClubTests : IDisposable
         var dto = new ClubEditDto("Test Club");
 
         var result = await ClubEndpoints.CreateClub(_dbContext, _validator, 1, dto);
-        var okResult = result.Should().BeOfType<Ok<int>>().Subject;
+        var okResult = result.Should().BeResult<Results<NotFound, ValidationProblem, Ok<int>>, Ok<int>>().Subject;
 
         var clubId = okResult.Value;
         var club = await _dbContext.Clubs.SingleOrDefaultAsync(
@@ -58,8 +58,8 @@ public class CreateClubTests : IDisposable
         var result = await ClubEndpoints.CreateClub(_dbContext, _validator, 1, dto);
         result
             .Should()
-            .BeOfType<ValidationProblem>()
-            .Which.ProblemDetails.Errors.Should()
+            .BeResult<Results<NotFound, ValidationProblem, Ok<int>>, ValidationProblem>()
+            .Subject.ProblemDetails.Errors.Should()
             .HaveCount(1)
             .And.ContainKey("Name");
     }
@@ -70,6 +70,6 @@ public class CreateClubTests : IDisposable
         var dto = new ClubEditDto("Test Club");
 
         var result = await ClubEndpoints.CreateClub(_dbContext, _validator, 1, dto);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, ValidationProblem, Ok<int>>, NotFound>();
     }
 }

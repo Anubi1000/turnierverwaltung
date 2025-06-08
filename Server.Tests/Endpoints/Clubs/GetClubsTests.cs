@@ -41,8 +41,8 @@ public class GetClubsTests : IDisposable
         var result = await ClubEndpoints.GetClubs(_dbContext, 1);
         result
             .Should()
-            .BeOfType<Ok<List<ListClubDto>>>()
-            .Which.Value.Should()
+            .BeResult<Results<NotFound, Ok<List<ListClubDto>>>, Ok<List<ListClubDto>>>()
+            .Subject.Value.Should()
             .NotBeNull()
             .And.HaveSameCount(tournament.Clubs)
             .And.BeInAscendingOrder(c => c.Name)
@@ -67,13 +67,13 @@ public class GetClubsTests : IDisposable
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var result = await ClubEndpoints.GetClubs(_dbContext, 1);
-        result.Should().BeOfType<Ok<List<ListClubDto>>>().Which.Value.Should().NotBeNull().And.BeEmpty();
+        result.Should().BeResult<Results<NotFound, Ok<List<ListClubDto>>>, Ok<List<ListClubDto>>>().Subject.Value.Should().NotBeNull().And.BeEmpty();
     }
 
     [Fact]
     public async Task WhenTournamentDoesNotExist_ReturnsNotFound()
     {
         var result = await ClubEndpoints.GetClubs(_dbContext, 1);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, Ok<List<ListClubDto>>>, NotFound>();
     }
 }
