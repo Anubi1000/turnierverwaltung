@@ -4,7 +4,7 @@
     <BuildType Name="Release" />
   </Configurations>
   
-  <Project Path="Client\Turnierverwaltung.Client.proj" />
+  <Project Path="Client\Turnierverwaltung.Client.proj" Type="Javascript" />
   <Project Path="Server\Turnierverwaltung.Server.csproj" />
   <Project Path="Server.Tests\Turnierverwaltung.Server.Tests.csproj" />
 </Solution>
