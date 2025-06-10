@@ -2,8 +2,9 @@
   <Configurations>
     <BuildType Name="Debug" />
     <BuildType Name="Release" />
-    <BuildType Name="ReleaseOptimized" />
   </Configurations>
-  <Project Path="Server.Tests\Turnierverwaltung.Server.Tests.csproj" />
+  
+  <Project Path="Client\Turnierverwaltung.Client.proj" />
   <Project Path="Server\Turnierverwaltung.Server.csproj" />
+  <Project Path="Server.Tests\Turnierverwaltung.Server.Tests.csproj" />
 </Solution>

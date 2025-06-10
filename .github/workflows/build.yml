@@ -48,10 +48,6 @@ jobs:
         shell: pwsh
         run: ./Scripts/SetupDependencies.ps1
 
-      - name: Build Client
-        shell: pwsh
-        run: ./Scripts/BuildClient.ps1
-
       - name: Build Server
         shell: pwsh
         run: ./Scripts/BuildServer.ps1
@@ -76,13 +72,10 @@ jobs:
         run: pnpm run format:check
 
       - name: Run Server Tests
-        if: false
-        working-directory: ./Server.Tests
         shell: pwsh
-        run: ./RunTests.ps1
+        run: ./Scripts/RunServerTests.ps1
 
       - name: Upload Server Coverage Report
-        if: false
         uses: actions/upload-artifact@v4
         with:
           name: Server (Coverage)

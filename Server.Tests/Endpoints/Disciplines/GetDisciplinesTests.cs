@@ -41,7 +41,7 @@ public class GetDisciplinesTests : IDisposable
         var result = await DisciplineEndpoints.GetDisciplines(_dbContext, 1);
         result
             .Should()
-            .BeOfType<Ok<List<ListDisciplineDto>>>()
+            .BeResult<Results<NotFound, Ok<List<ListDisciplineDto>>>, Ok<List<ListDisciplineDto>>>()
             .Which.Value.Should()
             .NotBeNull()
             .And.HaveSameCount(tournament.Disciplines)
@@ -67,13 +67,18 @@ public class GetDisciplinesTests : IDisposable
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var result = await DisciplineEndpoints.GetDisciplines(_dbContext, 1);
-        result.Should().BeOfType<Ok<List<ListDisciplineDto>>>().Which.Value.Should().NotBeNull().And.BeEmpty();
+        result
+            .Should()
+            .BeResult<Results<NotFound, Ok<List<ListDisciplineDto>>>, Ok<List<ListDisciplineDto>>>()
+            .Which.Value.Should()
+            .NotBeNull()
+            .And.BeEmpty();
     }
 
     [Fact]
     public async Task WhenTournamentDoesNotExist_ReturnsNotFound()
     {
         var result = await DisciplineEndpoints.GetDisciplines(_dbContext, 1);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, Ok<List<ListDisciplineDto>>>, NotFound>();
     }
 }

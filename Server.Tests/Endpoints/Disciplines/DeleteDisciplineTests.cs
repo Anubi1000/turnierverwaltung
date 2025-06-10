@@ -35,7 +35,7 @@ public class DeleteDisciplineTests : IDisposable
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var result = await DisciplineEndpoints.DeleteDiscipline(_dbContext, 1);
-        result.Should().BeOfType<Ok>();
+        result.Should().BeResult<Results<NotFound, Ok>, Ok>();
 
         var discipline = await _dbContext.Disciplines.SingleOrDefaultAsync(
             d => d.Id == 1,
@@ -48,6 +48,6 @@ public class DeleteDisciplineTests : IDisposable
     public async Task WhenDisciplineDoesNotExist_ReturnsNotFound()
     {
         var result = await DisciplineEndpoints.DeleteDiscipline(_dbContext, 1);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, Ok>, NotFound>();
     }
 }

@@ -39,7 +39,7 @@ public class CreateDisciplineTests : IDisposable
         );
 
         var result = await DisciplineEndpoints.CreateDiscipline(_dbContext, _validator, 1, dto);
-        var okResult = result.Should().BeOfType<Ok<int>>().Subject;
+        var okResult = result.Should().BeResult<Results<NotFound, ValidationProblem, Ok<int>>, Ok<int>>().Subject;
 
         var disciplineId = okResult.Value;
         var discipline = await _dbContext.Disciplines.SingleOrDefaultAsync(
@@ -63,7 +63,7 @@ public class CreateDisciplineTests : IDisposable
         var result = await DisciplineEndpoints.CreateDiscipline(_dbContext, _validator, 1, dto);
         result
             .Should()
-            .BeOfType<ValidationProblem>()
+            .BeResult<Results<NotFound, ValidationProblem, Ok<int>>, ValidationProblem>()
             .Which.ProblemDetails.Errors.Should()
             .HaveCount(1)
             .And.ContainKey("Name");
@@ -75,6 +75,6 @@ public class CreateDisciplineTests : IDisposable
         var dto = new DisciplineEditDto("Test Discipline", 3, true, [new DisciplineEditDto.Value("Value1", true)]);
 
         var result = await DisciplineEndpoints.CreateDiscipline(_dbContext, _validator, 1, dto);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, ValidationProblem, Ok<int>>, NotFound>();
     }
 }

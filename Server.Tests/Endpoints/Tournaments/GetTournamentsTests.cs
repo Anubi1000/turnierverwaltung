@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Endpoints;
-using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Tests.Utils;
 

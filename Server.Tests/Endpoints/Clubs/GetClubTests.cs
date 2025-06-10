@@ -44,8 +44,8 @@ public class GetClubTests : IDisposable
         var result = await ClubEndpoints.GetClub(_dbContext, 1);
         result
             .Should()
-            .BeOfType<Ok<ClubDetailDto>>()
-            .Which.Value.Should()
+            .BeResult<Results<NotFound, Ok<ClubDetailDto>>, Ok<ClubDetailDto>>()
+            .Subject.Value.Should()
             .NotBeNull()
             .And.Satisfy<ClubDetailDto>(dto =>
             {
@@ -63,6 +63,6 @@ public class GetClubTests : IDisposable
     public async Task WhenClubDoesNotExist_ReturnsNotFound()
     {
         var result = await ClubEndpoints.GetClub(_dbContext, 1);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, Ok<ClubDetailDto>>, NotFound>();
     }
 }

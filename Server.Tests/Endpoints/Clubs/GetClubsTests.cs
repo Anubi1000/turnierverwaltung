@@ -67,7 +67,12 @@ public class GetClubsTests : IDisposable
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var result = await ClubEndpoints.GetClubs(_dbContext, 1);
-        result.Should().BeResult<Results<NotFound, Ok<List<ListClubDto>>>, Ok<List<ListClubDto>>>().Subject.Value.Should().NotBeNull().And.BeEmpty();
+        result
+            .Should()
+            .BeResult<Results<NotFound, Ok<List<ListClubDto>>>, Ok<List<ListClubDto>>>()
+            .Subject.Value.Should()
+            .NotBeNull()
+            .And.BeEmpty();
     }
 
     [Fact]

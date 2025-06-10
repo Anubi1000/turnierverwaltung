@@ -48,7 +48,7 @@ public class UpdateDisciplineTests : IDisposable
         var dto = new DisciplineEditDto("New Discipline", 2, true, [new DisciplineEditDto.Value("New Value", false)]);
 
         var result = await DisciplineEndpoints.UpdateDiscipline(_dbContext, _validator, 1, dto);
-        result.Should().BeOfType<Ok>();
+        result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, Ok>();
 
         var updatedDiscipline = await _dbContext.Disciplines.SingleOrDefaultAsync(
             d => d.Id == 1,
@@ -83,7 +83,7 @@ public class UpdateDisciplineTests : IDisposable
         var result = await DisciplineEndpoints.UpdateDiscipline(_dbContext, _validator, 1, dto);
         result
             .Should()
-            .BeOfType<ValidationProblem>()
+            .BeResult<Results<NotFound, ValidationProblem, Ok>, ValidationProblem>()
             .Which.ProblemDetails.Errors.Should()
             .HaveCount(1)
             .And.ContainKey("Name");
@@ -95,6 +95,6 @@ public class UpdateDisciplineTests : IDisposable
         var dto = new DisciplineEditDto("New Discipline", 1, true, [new DisciplineEditDto.Value("Value 1", true)]);
 
         var result = await DisciplineEndpoints.UpdateDiscipline(_dbContext, _validator, 1, dto);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, NotFound>();
     }
 }

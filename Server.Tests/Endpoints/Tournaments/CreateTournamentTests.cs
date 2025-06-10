@@ -2,12 +2,9 @@
 using AwesomeAssertions;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database;
-using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Endpoints;
-using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Model.Validation;
 using Turnierverwaltung.Server.Tests.Utils;
@@ -32,7 +29,7 @@ public class CreateTournamentTests : IDisposable
         var dto = new TournamentEditDto("Test Tournament", DateTestUtils.GetTestDate(), 3, true);
 
         var result = await TournamentEndpoints.CreateTournament(_dbContext, _validator, dto);
-        var okResult = result.Should().BeOfType<Ok<int>>().Subject;
+        var okResult = result.Should().BeResult<Results<ValidationProblem, Ok<int>>, Ok<int>>().Subject;
 
         var tournamentId = okResult.Value;
         var tournament = await _dbContext
@@ -50,7 +47,7 @@ public class CreateTournamentTests : IDisposable
         var result = await TournamentEndpoints.CreateTournament(_dbContext, _validator, dto);
         result
             .Should()
-            .BeOfType<ValidationProblem>()
+            .BeResult<Results<ValidationProblem, Ok<int>>, ValidationProblem>()
             .Which.ProblemDetails.Errors.Should()
             .HaveCount(1)
             .And.ContainKey("Name");

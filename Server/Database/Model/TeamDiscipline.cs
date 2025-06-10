@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Turnierverwaltung.Server.Utils;
-
 namespace Turnierverwaltung.Server.Database.Model;
 
 public sealed class TeamDiscipline

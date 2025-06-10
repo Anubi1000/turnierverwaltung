@@ -43,7 +43,7 @@ public class UpdateClubTests : IDisposable
         var dto = new ClubEditDto("New Name");
 
         var result = await ClubEndpoints.UpdateClub(_dbContext, _validator, 1, dto);
-        result.Should().BeOfType<Ok>();
+        result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, Ok>();
 
         var updatedClub = await _dbContext.Clubs.SingleOrDefaultAsync(
             c => c.Id == 1,
@@ -74,7 +74,7 @@ public class UpdateClubTests : IDisposable
         var result = await ClubEndpoints.UpdateClub(_dbContext, _validator, 1, dto);
         result
             .Should()
-            .BeOfType<ValidationProblem>()
+            .BeResult<Results<NotFound, ValidationProblem, Ok>, ValidationProblem>()
             .Which.ProblemDetails.Errors.Should()
             .HaveCount(1)
             .And.ContainKey("Name");
@@ -86,6 +86,6 @@ public class UpdateClubTests : IDisposable
         var dto = new ClubEditDto("New Name");
 
         var result = await ClubEndpoints.UpdateClub(_dbContext, _validator, 1, dto);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, NotFound>();
     }
 }

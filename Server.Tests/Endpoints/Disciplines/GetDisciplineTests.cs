@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using AwesomeAssertions;
-using AwesomeAssertions.Equivalency;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database;
@@ -51,7 +50,7 @@ public class GetDisciplineTests : IDisposable
         var result = await DisciplineEndpoints.GetDiscipline(_dbContext, 1);
         result
             .Should()
-            .BeOfType<Ok<DisciplineDetailDto>>()
+            .BeResult<Results<NotFound, Ok<DisciplineDetailDto>>, Ok<DisciplineDetailDto>>()
             .Which.Value.Should()
             .NotBeNull()
             .And.Satisfy<DisciplineDetailDto>(dto =>
@@ -77,6 +76,6 @@ public class GetDisciplineTests : IDisposable
     public async Task WhenDisciplineDoesNotExist_ReturnsNotFound()
     {
         var result = await DisciplineEndpoints.GetDiscipline(_dbContext, 1);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, Ok<DisciplineDetailDto>>, NotFound>();
     }
 }

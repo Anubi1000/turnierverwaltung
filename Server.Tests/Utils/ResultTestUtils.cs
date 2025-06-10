@@ -10,5 +10,8 @@ public static class ResultTestUtils
         this ObjectAssertions assertions
     )
         where TResult : INestedHttpResult
-        where TExpected : IResult => assertions.BeOfType<TResult>().Subject.Result.Should().BeOfType<TExpected>();
+        where TExpected : IResult
+    {
+        return assertions.BeOfType<TResult>().Subject.Result.Should().BeOfType<TExpected>();
+    }
 }

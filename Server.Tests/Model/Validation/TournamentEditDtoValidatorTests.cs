@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.TestHelper;
-using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Model.Validation;
 
@@ -10,9 +9,14 @@ public class TournamentEditDtoValidatorTests
 {
     private readonly TournamentEditDtoValidator _validator = new();
 
-    private static TournamentEditDto CreateValidDto(string name = "Valid Name", DateTime? date = null, int teamSize = 3)
+    private static TournamentEditDto CreateValidDto(
+        string name = "Valid Name",
+        DateTime? date = null,
+        int teamSize = 3,
+        bool isTeamSizeFixed = true
+    )
     {
-        return new TournamentEditDto(name, date ?? DateTime.Now, teamSize, true);
+        return new TournamentEditDto(name, date ?? DateTime.Now, teamSize, isTeamSizeFixed);
     }
 
     [Fact]
@@ -50,15 +54,35 @@ public class TournamentEditDtoValidatorTests
     }
 
     [Fact]
-    public void WhenTeamSizeChanges_HasError()
+    public void WhenTeamSizeChangedAndTeamSizeIsFixed_HasError()
     {
         var model = CreateValidDto(teamSize: 5);
         var context = new ValidationContext<TournamentEditDto>(model)
         {
-            RootContextData = { [TournamentEditDtoValidator.PreviousTeamSizeKey] = 3 },
+            RootContextData =
+            {
+                [TournamentEditDtoValidator.PreviousTeamSizeKey] = 3,
+                [TournamentEditDtoValidator.PreviousIsTeamSizeFixedKey] = true,
+            },
         };
         var result = _validator.TestValidate(context);
         result.ShouldHaveValidationErrorFor(x => x.TeamSize);
+    }
+
+    [Fact]
+    public void WhenTeamSizeChangedAndTeamSizeIsNotFixed_HasNoError()
+    {
+        var model = CreateValidDto(teamSize: 5, isTeamSizeFixed: false);
+        var context = new ValidationContext<TournamentEditDto>(model)
+        {
+            RootContextData =
+            {
+                [TournamentEditDtoValidator.PreviousTeamSizeKey] = 3,
+                [TournamentEditDtoValidator.PreviousIsTeamSizeFixedKey] = false,
+            },
+        };
+        var result = _validator.TestValidate(context);
+        result.ShouldNotHaveValidationErrorFor(x => x.TeamSize);
     }
 
     [Fact]
@@ -71,6 +95,30 @@ public class TournamentEditDtoValidatorTests
         };
         var result = _validator.TestValidate(context);
         result.ShouldNotHaveValidationErrorFor(x => x.TeamSize);
+    }
+
+    [Fact]
+    public void WhenTeamSizeFixedChanged_HasError()
+    {
+        var model = CreateValidDto(isTeamSizeFixed: true);
+        var context = new ValidationContext<TournamentEditDto>(model)
+        {
+            RootContextData = { [TournamentEditDtoValidator.PreviousIsTeamSizeFixedKey] = false },
+        };
+        var result = _validator.TestValidate(context);
+        result.ShouldHaveValidationErrorFor(x => x.IsTeamSizeFixed);
+    }
+
+    [Fact]
+    public void WhenTeamSizeFixedDoesNotChange_HasNoError()
+    {
+        var model = CreateValidDto(isTeamSizeFixed: true);
+        var context = new ValidationContext<TournamentEditDto>(model)
+        {
+            RootContextData = { [TournamentEditDtoValidator.PreviousIsTeamSizeFixedKey] = true },
+        };
+        var result = _validator.TestValidate(context);
+        result.ShouldNotHaveValidationErrorFor(x => x.IsTeamSizeFixed);
     }
 
     [Fact]

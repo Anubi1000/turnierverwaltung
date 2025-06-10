@@ -1,0 +1,16 @@
+﻿<Project>
+    <ItemGroup>
+        <ClientSources Include="src\**\*.*;index.html;package.json;pnpm-lock.yaml;tsconfig*;vite.config.ts" />
+        <BuildFiles Include="dist/**" />
+    </ItemGroup>
+    
+    <Target Name="Build" Inputs="@(ClientSources)" Outputs="dist\index.html">
+        <Exec Command="pnpm run build" />
+    </Target>
+
+    <Target Name="Clean">
+        <RemoveDir Directories="dist" />
+    </Target>
+
+    <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+</Project>

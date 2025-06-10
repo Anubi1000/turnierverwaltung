@@ -64,7 +64,7 @@ public class GetParticipantsTests : IDisposable
         var result = await ParticipantEndpoints.GetParticipants(_dbContext, 1);
         result
             .Should()
-            .BeOfType<Ok<List<ListParticipantDto>>>()
+            .BeResult<Results<NotFound, Ok<List<ListParticipantDto>>>, Ok<List<ListParticipantDto>>>()
             .Which.Value.Should()
             .NotBeNull()
             .And.HaveSameCount(tournament.Participants)
@@ -101,13 +101,18 @@ public class GetParticipantsTests : IDisposable
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var result = await ParticipantEndpoints.GetParticipants(_dbContext, 1);
-        result.Should().BeOfType<Ok<List<ListParticipantDto>>>().Which.Value.Should().NotBeNull().And.BeEmpty();
+        result
+            .Should()
+            .BeResult<Results<NotFound, Ok<List<ListParticipantDto>>>, Ok<List<ListParticipantDto>>>()
+            .Which.Value.Should()
+            .NotBeNull()
+            .And.BeEmpty();
     }
 
     [Fact]
     public async Task WhenTournamentDoesNotExist_ReturnsNotFound()
     {
         var result = await ParticipantEndpoints.GetParticipants(_dbContext, 1);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, Ok<List<ListParticipantDto>>>, NotFound>();
     }
 }

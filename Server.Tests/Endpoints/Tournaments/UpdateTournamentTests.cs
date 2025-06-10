@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Endpoints;
-using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Model.Validation;
 using Turnierverwaltung.Server.Tests.Utils;
@@ -41,7 +40,7 @@ public class UpdateTournamentTests : IDisposable
         var dto = new TournamentEditDto("New Name", DateTestUtils.GetTestDate(1), 3, true);
 
         var result = await TournamentEndpoints.UpdateTournament(_dbContext, _validator, 1, dto);
-        result.Should().BeOfType<Ok>();
+        result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, Ok>();
 
         var updatedTournament = await _dbContext.Tournaments.SingleOrDefaultAsync(
             t => t.Id == 1,
@@ -69,7 +68,7 @@ public class UpdateTournamentTests : IDisposable
         var result = await TournamentEndpoints.UpdateTournament(_dbContext, _validator, 1, dto);
         result
             .Should()
-            .BeOfType<ValidationProblem>()
+            .BeResult<Results<NotFound, ValidationProblem, Ok>, ValidationProblem>()
             .Which.ProblemDetails.Errors.Should()
             .HaveCount(2)
             .And.ContainKeys("Name", "TeamSize");
@@ -81,6 +80,6 @@ public class UpdateTournamentTests : IDisposable
         var dto = new TournamentEditDto("New Name", DateTestUtils.GetTestDate(), 3, true);
 
         var result = await TournamentEndpoints.UpdateTournament(_dbContext, _validator, 1, dto);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, NotFound>();
     }
 }

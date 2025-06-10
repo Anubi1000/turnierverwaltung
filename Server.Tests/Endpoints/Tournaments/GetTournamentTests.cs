@@ -1,12 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using AwesomeAssertions;
-using AwesomeAssertions.Execution;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Endpoints;
-using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Tests.Utils;
 
@@ -32,6 +30,7 @@ public class GetTournamentTests : IDisposable
             Name = "Test Tournament",
             Date = DateTestUtils.GetTestDate(),
             TeamSize = 3,
+            IsTeamSizeFixed = true,
             Clubs = { new Club { Id = 2 } },
             Disciplines = { new Discipline() },
             TeamDisciplines = { new TeamDiscipline() },
@@ -50,7 +49,7 @@ public class GetTournamentTests : IDisposable
         var result = await TournamentEndpoints.GetTournament(_dbContext, 1);
         result
             .Should()
-            .BeOfType<Ok<TournamentDetailDto>>()
+            .BeResult<Results<NotFound, Ok<TournamentDetailDto>>, Ok<TournamentDetailDto>>()
             .Which.Value.Should()
             .NotBeNull()
             .And.Satisfy<TournamentDetailDto>(dto =>
@@ -59,6 +58,7 @@ public class GetTournamentTests : IDisposable
                 dto.Name.Should().Be(tournament.Name);
                 dto.Date.Should().Be(tournament.Date);
                 dto.TeamSize.Should().Be(tournament.TeamSize);
+                dto.IsTeamSizeFixed.Should().Be(tournament.IsTeamSizeFixed);
                 dto.ClubCount.Should().Be(tournament.Clubs.Count);
                 dto.DisciplineCount.Should().Be(tournament.Disciplines.Count + tournament.TeamDisciplines.Count);
                 dto.ParticipantCount.Should().Be(tournament.Participants.Count);
@@ -70,6 +70,6 @@ public class GetTournamentTests : IDisposable
     public async Task WhenTournamentDoesNotExist_ReturnsNotFound()
     {
         var result = await TournamentEndpoints.GetTournament(_dbContext, 1);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, Ok<TournamentDetailDto>>, NotFound>();
     }
 }

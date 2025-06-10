@@ -33,7 +33,7 @@ public class Program
         builder.Services.AddSingleton<IUserDataService>(userDataService);
 
         AppConfig.SetupFile(userDataService.GetUserDataPath(UserDataType.Config));
-        builder.Configuration.AddJsonFile(userDataService.GetUserDataPath(UserDataType.Config), optional: true);
+        builder.Configuration.AddJsonFile(userDataService.GetUserDataPath(UserDataType.Config), true);
         builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppSettings"));
 
 #if !RELEASEOPTIMIZED

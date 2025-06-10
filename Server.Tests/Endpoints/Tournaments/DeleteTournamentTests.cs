@@ -35,7 +35,7 @@ public class DeleteTournamentTests : IDisposable
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var result = await TournamentEndpoints.DeleteTournament(_dbContext, 1);
-        result.Should().BeOfType<Ok>();
+        result.Should().BeResult<Results<NotFound, Ok>, Ok>();
 
         var dbTournament = await _dbContext.Tournaments.SingleOrDefaultAsync(
             t => t.Id == tournament.Id,
@@ -48,6 +48,6 @@ public class DeleteTournamentTests : IDisposable
     public async Task WhenTournamentDoesNotExist_ReturnsNotFound()
     {
         var result = await TournamentEndpoints.DeleteTournament(_dbContext, 1);
-        result.Should().BeOfType<NotFound>();
+        result.Should().BeResult<Results<NotFound, Ok>, NotFound>();
     }
 }
