@@ -1,4 +1,4 @@
-#if !RELEASEOPTIMIZED
+#if DEBUG
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.OpenApi;

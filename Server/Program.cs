@@ -36,7 +36,7 @@ public class Program
         builder.Configuration.AddJsonFile(userDataService.GetUserDataPath(UserDataType.Config), true);
         builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppSettings"));
 
-#if !RELEASEOPTIMIZED
+#if DEBUG
         if (builder.Environment.IsDevelopment())
             builder.Services.AddAppApiDoc();
 #endif
@@ -94,7 +94,7 @@ public class Program
         }
 
         // Development pages
-#if !RELEASEOPTIMIZED
+#if DEBUG
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();

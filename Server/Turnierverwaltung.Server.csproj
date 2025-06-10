@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
@@ -8,7 +7,6 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <PublishTrimmed>true</PublishTrimmed>
         <TrimMode>partial</TrimMode>
-        <Configurations>Debug;Release;ReleaseOptimized</Configurations>
 
         <CompressionEnabled>false</CompressionEnabled>
     </PropertyGroup>
@@ -21,19 +19,34 @@
         <PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Endpoints" Version="1.5.0"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Content Include="..\Client\dist\**\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <Link>wwwroot\%(RecursiveDir)%(Filename)%(Extension)</Link>
-        </Content>
-    </ItemGroup>
-
     <Target Name="BuildClient" BeforeTargets="Build">
         <MSBuild Projects="..\Client\Turnierverwaltung.Client.proj"
                  Targets="Build"/>
     </Target>
 
-    <ItemGroup Condition="'$(Configuration)' != 'Release'">
+    <Target Name="CopyClientFiles" AfterTargets="Build">
+        <CreateItem Include="..\Client\dist\**\*.*">
+            <Output TaskParameter="Include" ItemName="ClientFiles"/>
+        </CreateItem>
+
+        <Copy
+                SourceFiles="@(ClientFiles)"
+                DestinationFiles="@(ClientFiles->'$(OutputPath)wwwroot\%(RecursiveDir)%(Filename)%(Extension)')"
+                SkipUnchangedFiles="true"/>
+    </Target>
+
+    <Target Name="CopyClientFilesToPublishDir" AfterTargets="Publish">
+        <CreateItem Include="..\Client\dist\**\*.*">
+            <Output TaskParameter="Include" ItemName="ClientFiles"/>
+        </CreateItem>
+
+        <Copy
+                SourceFiles="@(ClientFiles)"
+                DestinationFiles="@(ClientFiles->'$(PublishDir)wwwroot\%(RecursiveDir)%(Filename)%(Extension)')"
+                SkipUnchangedFiles="true"/>
+    </Target>
+
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
