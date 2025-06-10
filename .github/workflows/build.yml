@@ -50,7 +50,8 @@ jobs:
 
       - name: Build Server
         shell: pwsh
-        run: ./Scripts/BuildServer.ps1
+        working-directory: ./Server
+        run: dotnet publish -p:PublishProfile=WinX64
       
       - name: Build Installer
         shell: pwsh

@@ -1,8 +1,11 @@
 ﻿<Project>
     <ItemGroup>
         <ClientSources Include="src\**\*.*;index.html;package.json;pnpm-lock.yaml;tsconfig*;vite.config.ts" />
-        <BuildFiles Include="dist/**" />
     </ItemGroup>
+
+    <Target Name="Restore" Inputs="package.json;pnpm-lock.yaml" Outputs="node_modules">
+        <Exec Command="pnpm install" />
+    </Target>
     
     <Target Name="Build" Inputs="@(ClientSources)" Outputs="dist\index.html">
         <Exec Command="pnpm run build" />
