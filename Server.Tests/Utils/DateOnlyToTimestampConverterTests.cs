@@ -10,8 +10,8 @@ public class DateOnlyToTimestampConverterTests
     [Fact]
     public void CanSerializeDateTime_ToUnixTimestamp()
     {
-        var dateTime = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        var json = JsonSerializer.Serialize(dateTime, _options);
+        var dateOnly = new DateOnly(2023, 1, 1);
+        var json = JsonSerializer.Serialize(dateOnly, _options);
 
         Assert.Equal("1672531200000", json); // Unix timestamp in milliseconds
     }
@@ -20,8 +20,8 @@ public class DateOnlyToTimestampConverterTests
     public void CanDeserializeUnixTimestamp_ToDateTime()
     {
         const string json = "1672531200000";
-        var dateTime = JsonSerializer.Deserialize<DateTime>(json, _options);
+        var dateOnly = JsonSerializer.Deserialize<DateOnly>(json, _options);
 
-        Assert.Equal(new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc), dateTime);
+        Assert.Equal(new DateOnly(2023, 1, 1), dateOnly);
     }
 }

@@ -4,6 +4,6 @@ public static class DateTestUtils
 {
     public static DateOnly GetTestDate(int daysAdded = 0)
     {
-        return DateOnly.FromDayNumber(daysAdded);
+        return DateOnly.FromDayNumber(daysAdded + 1000);
     }
 }
