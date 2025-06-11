@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -34,8 +35,8 @@ public static class DisciplineEndpoints
     }
 
     public static async Task<Results<NotFound, Ok<List<ListDisciplineDto>>>> GetDisciplines(
-        ApplicationDbContext dbContext,
-        int tournamentId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int tournamentId
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
@@ -53,10 +54,10 @@ public static class DisciplineEndpoints
     }
 
     public static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateDiscipline(
-        ApplicationDbContext dbContext,
-        IValidator<DisciplineEditDto> validator,
-        int tournamentId,
-        DisciplineEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<DisciplineEditDto> validator,
+        [FromRoute] int tournamentId,
+        [FromBody] DisciplineEditDto dto
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
@@ -86,8 +87,8 @@ public static class DisciplineEndpoints
     }
 
     public static async Task<Results<NotFound, Ok<DisciplineDetailDto>>> GetDiscipline(
-        ApplicationDbContext dbContext,
-        int disciplineId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int disciplineId
     )
     {
         var discipline = await dbContext
@@ -120,10 +121,10 @@ public static class DisciplineEndpoints
     }
 
     public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateDiscipline(
-        ApplicationDbContext dbContext,
-        IValidator<DisciplineEditDto> validator,
-        int disciplineId,
-        DisciplineEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<DisciplineEditDto> validator,
+        [FromRoute] int disciplineId,
+        [FromBody] DisciplineEditDto dto
     )
     {
         var discipline = await dbContext.Disciplines.FindAsync(disciplineId);
@@ -154,7 +155,10 @@ public static class DisciplineEndpoints
         return TypedResults.Ok();
     }
 
-    public static async Task<Results<NotFound, Ok>> DeleteDiscipline(ApplicationDbContext dbContext, int disciplineId)
+    public static async Task<Results<NotFound, Ok>> DeleteDiscipline(
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int disciplineId
+    )
     {
         var discipline = await dbContext.Disciplines.FindAsync(disciplineId);
         if (discipline is null)

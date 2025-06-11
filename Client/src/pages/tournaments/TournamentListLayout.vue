@@ -27,7 +27,7 @@ const mappedItems = computed<ItemListItem[] | undefined>(() => {
   }));
 });
 
-const selectedItemId = route.params.clubId as string | undefined;
+const selectedItemId = route.params.tournamentId as string | undefined;
 
 const routerViewKey = useRouterViewKey(3);
 </script>

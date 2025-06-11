@@ -2,6 +2,7 @@
 using System.IO.Compression;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -29,9 +30,9 @@ public static class OverviewEndpoints
     }
 
     private static async Task<Results<NotFound, Ok<ScoreboardData>>> GetOverviewData(
-        ApplicationDbContext dbContext,
-        IScoreboardDataCreator scoreboardDataCreator,
-        int tournamentId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IScoreboardDataCreator scoreboardDataCreator,
+        [FromRoute] int tournamentId
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
@@ -43,12 +44,12 @@ public static class OverviewEndpoints
     }
 
     private static async Task<Results<NotFound, ValidationProblem, FileStreamHttpResult>> GenerateWordScoreDocument(
-        ApplicationDbContext dbContext,
-        IValidator<WordDocGenerationDto> validator,
-        IScoreboardDataCreator scoreboardDataCreator,
-        IWordFileCreator wordFileCreator,
-        int tournamentId,
-        WordDocGenerationDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<WordDocGenerationDto> validator,
+        [FromServices] IScoreboardDataCreator scoreboardDataCreator,
+        [FromServices] IWordFileCreator wordFileCreator,
+        [FromRoute] int tournamentId,
+        [FromBody] WordDocGenerationDto dto
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))

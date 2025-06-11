@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -34,8 +35,8 @@ public static class TeamDisciplineEndpoints
     }
 
     private static async Task<Results<NotFound, Ok<List<ListTeamDisciplineDto>>>> GetTeamDisciplines(
-        ApplicationDbContext dbContext,
-        int tournamentId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int tournamentId
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
@@ -52,10 +53,10 @@ public static class TeamDisciplineEndpoints
     }
 
     private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateTeamDiscipline(
-        ApplicationDbContext dbContext,
-        IValidator<TeamDisciplineEditDto> validator,
-        int tournamentId,
-        TeamDisciplineEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<TeamDisciplineEditDto> validator,
+        [FromRoute] int tournamentId,
+        [FromBody] TeamDisciplineEditDto dto
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
@@ -89,8 +90,8 @@ public static class TeamDisciplineEndpoints
     }
 
     private static async Task<Results<NotFound, Ok<TeamDisciplineDetailDto>>> GetTeamDiscipline(
-        ApplicationDbContext dbContext,
-        int teamDisciplineId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int teamDisciplineId
     )
     {
         var teamDiscipline = await dbContext
@@ -107,10 +108,10 @@ public static class TeamDisciplineEndpoints
     }
 
     private static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateTeamDiscipline(
-        ApplicationDbContext dbContext,
-        IValidator<TeamDisciplineEditDto> validator,
-        int teamDisciplineId,
-        TeamDisciplineEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<TeamDisciplineEditDto> validator,
+        [FromRoute] int teamDisciplineId,
+        [FromBody] TeamDisciplineEditDto dto
     )
     {
         var teamDiscipline = await dbContext
@@ -144,8 +145,8 @@ public static class TeamDisciplineEndpoints
     }
 
     private static async Task<Results<NotFound, Ok>> DeleteTeamDiscipline(
-        ApplicationDbContext dbContext,
-        int teamDisciplineId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int teamDisciplineId
     )
     {
         var teamDiscipline = await dbContext.TeamDisciplines.FindAsync(teamDisciplineId);

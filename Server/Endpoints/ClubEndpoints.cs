@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -33,8 +34,8 @@ public static class ClubEndpoints
     }
 
     public static async Task<Results<NotFound, Ok<List<ListClubDto>>>> GetClubs(
-        ApplicationDbContext dbContext,
-        int tournamentId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int tournamentId
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
@@ -52,10 +53,10 @@ public static class ClubEndpoints
     }
 
     public static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateClub(
-        ApplicationDbContext dbContext,
-        IValidator<ClubEditDto> validator,
-        int tournamentId,
-        ClubEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<ClubEditDto> validator,
+        [FromRoute] int tournamentId,
+        [FromBody] ClubEditDto dto
     )
     {
         if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
@@ -75,7 +76,10 @@ public static class ClubEndpoints
         return TypedResults.Ok(club.Id);
     }
 
-    public static async Task<Results<NotFound, Ok<ClubDetailDto>>> GetClub(ApplicationDbContext dbContext, int clubId)
+    public static async Task<Results<NotFound, Ok<ClubDetailDto>>> GetClub(
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int clubId
+    )
     {
         var club = await dbContext
             .Clubs.AsNoTracking()
@@ -87,10 +91,10 @@ public static class ClubEndpoints
     }
 
     public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateClub(
-        ApplicationDbContext dbContext,
-        IValidator<ClubEditDto> validator,
-        int clubId,
-        ClubEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<ClubEditDto> validator,
+        [FromRoute] int clubId,
+        [FromBody] ClubEditDto dto
     )
     {
         var club = await dbContext.Clubs.FindAsync(clubId);
@@ -109,7 +113,10 @@ public static class ClubEndpoints
         return TypedResults.Ok();
     }
 
-    public static async Task<Results<NotFound, Ok>> DeleteClub(ApplicationDbContext dbContext, int clubId)
+    public static async Task<Results<NotFound, Ok>> DeleteClub(
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int clubId
+    )
     {
         var club = await dbContext.Clubs.FindAsync(clubId);
         if (club is null)

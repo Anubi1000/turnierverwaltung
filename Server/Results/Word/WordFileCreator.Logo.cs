@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Drawing;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Turnierverwaltung.Server.Utils;
 using DPictures = DocumentFormat.OpenXml.Drawing.Pictures;
 using DWp = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 
@@ -81,14 +82,15 @@ public partial class WordFileCreator
 
     private async Task<string?> AddLogoImagePart(MainDocumentPart mainPart)
     {
-        var imageData = await userDataService.GetWordDocumentLogo();
-        if (!imageData.HasValue)
+        var imageData = await userDataService.ReadAsset(UserDataService.WordIconPath);
+
+        if (imageData is null)
             return null;
 
         var imgPart = mainPart.AddImagePart(ImagePartType.Png);
         await using (var stream = imgPart.GetStream(FileMode.Create, FileAccess.Write))
         {
-            await stream.WriteAsync(imageData.Value);
+            await stream.WriteAsync(imageData);
         }
 
         return mainPart.GetIdOfPart(imgPart);

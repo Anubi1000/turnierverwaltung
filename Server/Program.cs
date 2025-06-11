@@ -3,10 +3,16 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Auth;
-using Turnierverwaltung.Server.Config;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Notification;
 using Turnierverwaltung.Server.Endpoints;
+using Turnierverwaltung.Server.Model.Transfer;
+using Turnierverwaltung.Server.Model.Transfer.Club;
+using Turnierverwaltung.Server.Model.Transfer.Discipline;
+using Turnierverwaltung.Server.Model.Transfer.Participant;
+using Turnierverwaltung.Server.Model.Transfer.TeamDiscipline;
+using Turnierverwaltung.Server.Model.Transfer.Tournament;
+using Turnierverwaltung.Server.Model.Validation;
 using Turnierverwaltung.Server.Results.Scoreboard;
 using Turnierverwaltung.Server.Results.Word;
 using Turnierverwaltung.Server.Utils;
@@ -30,11 +36,10 @@ public class Program
 
         // UserDataService
         var userDataService = UserDataService.CreateNew();
-        builder.Services.AddSingleton<IUserDataService>(userDataService);
+        builder.Services.AddSingleton(userDataService);
 
-        AppConfig.SetupFile(userDataService.GetUserDataPath(UserDataType.Config));
-        builder.Configuration.AddJsonFile(userDataService.GetUserDataPath(UserDataType.Config), true);
-        builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppSettings"));
+        var config = userDataService.LoadConfig();
+        builder.Services.AddSingleton(config);
 
 #if DEBUG
         if (builder.Environment.IsDevelopment())
@@ -48,14 +53,20 @@ public class Program
         builder.Services.AddScoped<IScoreboardManager, ScoreboardManager>();
 
         // Validators
-        builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+        builder.Services.AddScoped<IValidator<ClubEditDto>, ClubEditDtoValidator>();
+        builder.Services.AddScoped<IValidator<DisciplineEditDto>, DisciplineEditDtoValidator>();
+        builder.Services.AddScoped<IValidator<ParticipantEditDto>, ParticipantEditDtoValidator>();
+        builder.Services.AddScoped<IValidator<ParticipantResultEditDto>, ParticipantResultEditDtoValidator>();
+        builder.Services.AddScoped<IValidator<TeamDisciplineEditDto>, TeamDisciplineEditDtoValidator>();
+        builder.Services.AddScoped<IValidator<TournamentEditDto>, TournamentEditDtoValidator>();
+        builder.Services.AddScoped<IValidator<WordDocGenerationDto>, WordDocGenerationDtoValidator>();
 
         // Database
         builder.Services.AddDbContext<ApplicationDbContext>(
             (serviceProvider, options) =>
             {
-                var dataService = serviceProvider.GetRequiredService<IUserDataService>();
-                options.UseSqlite($"Data Source={dataService.GetUserDataPath(UserDataType.Database)}");
+                var dataService = serviceProvider.GetRequiredService<UserDataService>();
+                options.UseSqlite($"Data Source={dataService.GetDatabasePath()}");
             }
         );
 

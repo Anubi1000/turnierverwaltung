@@ -16,7 +16,7 @@ public static class OpenApiUtils
             options.AddDocumentTransformer(
                 (document, context, cancellationToken) =>
                 {
-                    document.Info = new OpenApiInfo { Title = "Turnierverwaltung.Server", Version = "1.0.0" };
+                    document.Info = new OpenApiInfo { Title = "Turnierverwaltung", Version = "1.0.0" };
 
                     return Task.CompletedTask;
                 }

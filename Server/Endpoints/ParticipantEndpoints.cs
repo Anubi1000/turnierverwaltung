@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -38,8 +39,8 @@ public static class ParticipantEndpoints
     }
 
     public static async Task<Results<NotFound, Ok<List<ListParticipantDto>>>> GetParticipants(
-        ApplicationDbContext dbContext,
-        int tournamentId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int tournamentId
     )
     {
         if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
@@ -58,8 +59,8 @@ public static class ParticipantEndpoints
     }
 
     private static async Task<Results<NotFound, Ok<int>>> GetNextParticipantStartNumber(
-        ApplicationDbContext dbContext,
-        int tournamentId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int tournamentId
     )
     {
         if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
@@ -74,10 +75,10 @@ public static class ParticipantEndpoints
     }
 
     private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateParticipant(
-        ApplicationDbContext dbContext,
-        IValidator<ParticipantEditDto> validator,
-        int tournamentId,
-        ParticipantEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<ParticipantEditDto> validator,
+        [FromRoute] int tournamentId,
+        [FromBody] ParticipantEditDto dto
     )
     {
         if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
@@ -110,8 +111,8 @@ public static class ParticipantEndpoints
     }
 
     private static async Task<Results<NotFound, Ok<ParticipantDetailDto>>> GetParticipant(
-        ApplicationDbContext dbContext,
-        int participantId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int participantId
     )
     {
         var participant = await dbContext
@@ -134,10 +135,10 @@ public static class ParticipantEndpoints
     }
 
     private static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateParticipant(
-        ApplicationDbContext dbContext,
-        IValidator<ParticipantEditDto> validator,
-        int participantId,
-        ParticipantEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<ParticipantEditDto> validator,
+        [FromRoute] int participantId,
+        [FromBody] ParticipantEditDto dto
     )
     {
         var participant = await dbContext.Participants.FindAsync(participantId);
@@ -166,8 +167,8 @@ public static class ParticipantEndpoints
     }
 
     private static async Task<Results<NotFound, Ok>> DeleteParticipant(
-        ApplicationDbContext dbContext,
-        int participantId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int participantId
     )
     {
         var participant = await dbContext.Participants.FindAsync(participantId);

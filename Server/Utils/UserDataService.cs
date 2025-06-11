@@ -1,17 +1,13 @@
-﻿namespace Turnierverwaltung.Server.Utils;
+﻿using System.Text.Json;
+using Turnierverwaltung.Server.Config;
 
-public interface IUserDataService
-{
-    public string DataDirectory { get; }
-    public string GetUserDataPath(UserDataType type);
-    public Task<ReadOnlyMemory<byte>?> GetWordDocumentLogo();
-}
+namespace Turnierverwaltung.Server.Utils;
 
-public class UserDataService : IUserDataService
+public class UserDataService
 {
-    private readonly SemaphoreSlim _syncLock = new(1, 1);
-    private bool _searchedWordDocumentLogo;
-    private ReadOnlyMemory<byte>? _wordDocumentLogo;
+    public const string WordIconPath = "WordIcon.png";
+
+    private readonly Dictionary<string, byte[]?> _fileCache = new();
 
     private UserDataService(string dataDirectory)
     {
@@ -20,44 +16,74 @@ public class UserDataService : IUserDataService
 
     public string DataDirectory { get; }
 
-    public string GetUserDataPath(UserDataType type)
+    private string GetConfigFilePath()
     {
-        return type switch
-        {
-            UserDataType.Database => Path.Combine(DataDirectory, "Data.db"),
-            UserDataType.Config => Path.Combine(DataDirectory, "Config.json"),
-            UserDataType.WordDocumentLogo => Path.Combine(DataDirectory, "WordDocumentLogo.png"),
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
-        };
+        return Path.Combine(DataDirectory, "Config.json");
     }
 
-    public async Task<ReadOnlyMemory<byte>?> GetWordDocumentLogo()
+    public string GetDatabasePath()
     {
-        if (_searchedWordDocumentLogo)
-            return _wordDocumentLogo;
+        return Path.Combine(DataDirectory, "Data.db");
+    }
 
-        await _syncLock.WaitAsync();
+    public async Task<byte[]?> ReadAsset(string name)
+    {
+        if (_fileCache.TryGetValue(name, out var cachedBytes))
+            return cachedBytes;
+
+        var targetPath = Path.Combine(DataDirectory, name);
+        if (!File.Exists(targetPath))
+        {
+            _fileCache[name] = null;
+            return null;
+        }
+
         try
         {
-            if (_searchedWordDocumentLogo)
-                return _wordDocumentLogo;
-
-            var path = GetUserDataPath(UserDataType.WordDocumentLogo);
-            if (!File.Exists(path))
-            {
-                _searchedWordDocumentLogo = true;
-                return null;
-            }
-
-            var bytes = await File.ReadAllBytesAsync(path);
-            _wordDocumentLogo = bytes;
-            _searchedWordDocumentLogo = true;
-            return _wordDocumentLogo;
+            var bytes = await File.ReadAllBytesAsync(targetPath);
+            _fileCache[name] = bytes;
+            return bytes;
         }
-        finally
+        catch
         {
-            _syncLock.Release();
+            _fileCache[name] = null;
+            return null;
         }
+    }
+
+    public AppConfig LoadConfig()
+    {
+        var configPath = GetConfigFilePath();
+
+        AppConfig config;
+        if (File.Exists(configPath))
+            try
+            {
+                var content = File.ReadAllText(configPath);
+                config = JsonSerializer.Deserialize(content, AppConfigJsonContext.Default.AppConfig) ?? new AppConfig();
+            }
+            catch
+            {
+                config = new AppConfig();
+            }
+        else
+            config = new AppConfig();
+
+        var changed = false;
+
+        if (config.ClubName is null)
+        {
+            config.ClubName = "Ein Verein";
+            changed = true;
+        }
+
+        if (changed || !File.Exists(configPath))
+        {
+            var json = JsonSerializer.Serialize(config, AppConfigJsonContext.Default.AppConfig);
+            File.WriteAllText(configPath, json);
+        }
+
+        return config;
     }
 
     public static UserDataService CreateNew()
@@ -71,11 +97,4 @@ public class UserDataService : IUserDataService
 
         return new UserDataService(dir);
     }
-}
-
-public enum UserDataType
-{
-    Database,
-    Config,
-    WordDocumentLogo,
 }

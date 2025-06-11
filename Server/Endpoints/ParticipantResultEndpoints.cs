@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -26,9 +27,9 @@ public static class ParticipantResultEndpoints
     }
 
     public static async Task<Results<NotFound, Ok<ParticipantResultDetailDto>>> GetParticipantResults(
-        ApplicationDbContext dbContext,
-        int participantId,
-        int disciplineId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int participantId,
+        [FromRoute] int disciplineId
     )
     {
         if (!await dbContext.Participants.AsNoTracking().AnyAsync(p => p.Id == participantId))
@@ -67,11 +68,11 @@ public static class ParticipantResultEndpoints
     /// <param name="dto">The data transfer object containing the updated participant Typedresults.</param>
     /// <returns>A result indicating the outcome of the update operation.</returns>
     public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateParticipantResults(
-        ApplicationDbContext dbContext,
-        IValidator<ParticipantResultEditDto> validator,
-        int participantId,
-        int disciplineId,
-        ParticipantResultEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<ParticipantResultEditDto> validator,
+        [FromRoute] int participantId,
+        [FromRoute] int disciplineId,
+        [FromBody] ParticipantResultEditDto dto
     )
     {
         // Check if the participant exists

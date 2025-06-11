@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -36,7 +37,7 @@ public static class TournamentEndpoints
     ///     An <see cref="IResult" /> containing an HTTP 200 OK response with a list of <see cref="ListTournamentDto" />
     ///     objects.
     /// </returns>
-    public static async Task<Ok<List<ListTournamentDto>>> GetTournaments(ApplicationDbContext dbContext)
+    public static async Task<Ok<List<ListTournamentDto>>> GetTournaments([FromServices] ApplicationDbContext dbContext)
     {
         var tournaments = await dbContext
             .Tournaments.AsNoTracking()
@@ -61,9 +62,9 @@ public static class TournamentEndpoints
     ///     - HTTP 400 Bad Request with validation errors if the input is invalid.
     /// </returns>
     public static async Task<Results<ValidationProblem, Ok<int>>> CreateTournament(
-        ApplicationDbContext dbContext,
-        IValidator<TournamentEditDto> validator,
-        TournamentEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<TournamentEditDto> validator,
+        [FromBody] TournamentEditDto dto
     )
     {
         // Validate dto and return ValidationProblem if not valid
@@ -101,8 +102,8 @@ public static class TournamentEndpoints
     ///     - HTTP 404 Not Found if no tournament with the given ID exists.
     /// </returns>
     public static async Task<Results<NotFound, Ok<TournamentDetailDto>>> GetTournament(
-        ApplicationDbContext dbContext,
-        int tournamentId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int tournamentId
     )
     {
         var tournament = await dbContext
@@ -138,10 +139,10 @@ public static class TournamentEndpoints
     ///     - HTTP 400 Bad Request with validation errors if the input is invalid.
     /// </returns>
     public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateTournament(
-        ApplicationDbContext dbContext,
-        IValidator<TournamentEditDto> validator,
-        int tournamentId,
-        TournamentEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<TournamentEditDto> validator,
+        [FromRoute] int tournamentId,
+        [FromBody] TournamentEditDto dto
     )
     {
         // Query tournament and return NotFound if it does not exist
@@ -185,7 +186,10 @@ public static class TournamentEndpoints
     ///     - HTTP 200 OK if the tournament is successfully deleted.
     ///     - HTTP 404 Not Found if no tournament with the given ID exists.
     /// </returns>
-    public static async Task<Results<NotFound, Ok>> DeleteTournament(ApplicationDbContext dbContext, int tournamentId)
+    public static async Task<Results<NotFound, Ok>> DeleteTournament(
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int tournamentId
+    )
     {
         var tournament = await dbContext.Tournaments.FindAsync(tournamentId);
         if (tournament is null)

@@ -24,8 +24,8 @@ public static class ScoreboardEndpoints
     }
 
     private static async Task<Results<BadRequest<string>, Ok>> SetScoreboardTournament(
-        ApplicationDbContext dbContext,
-        IScoreboardManager scoreboardManager,
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromBody] int tournamentId
     )
     {

@@ -1,15 +1,13 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.Extensions.Options;
 using Turnierverwaltung.Server.Config;
 using Turnierverwaltung.Server.Results.Scoreboard;
 using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Results.Word;
 
-public partial class WordFileCreator(IUserDataService userDataService, IOptions<AppConfig> configOptions)
-    : IWordFileCreator
+public partial class WordFileCreator(UserDataService userDataService, AppConfig appConfig) : IWordFileCreator
 {
     private const string MainColor = "1b5e20";
     private const string MainFont = "Aptos";
@@ -21,8 +19,6 @@ public partial class WordFileCreator(IUserDataService userDataService, IOptions<
     private const int A4Width = 16838;
     private const int A4Height = 11906;
     private const int A4Margin = 720;
-
-    private readonly AppConfig _config = configOptions.Value;
 
     /// <summary>
     ///     Creates a Word document as a memory stream containing all tables from the scoreboard data.
@@ -220,7 +216,7 @@ public partial class WordFileCreator(IUserDataService userDataService, IOptions<
         };
 
         paragraph.AppendChild(CreateHeadlineRun(tournamentName, "52"));
-        paragraph.AppendChild(CreateHeadlineRun(_config.ClubName, "40"));
+        paragraph.AppendChild(CreateHeadlineRun(appConfig.ClubName!, "40"));
         paragraph.AppendChild(CreateHeadlineRun(disciplineName, "32", false));
         if (logoPartId is not null)
             paragraph.AppendChild(new Run(CreateLogoDrawing(logoPartId)));

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
@@ -36,8 +37,8 @@ public static class TeamEndpoints
     }
 
     private static async Task<Results<NotFound, Ok<List<ListTeamDto>>>> GetTeams(
-        ApplicationDbContext dbContext,
-        int tournamentId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int tournamentId
     )
     {
         if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
@@ -56,10 +57,10 @@ public static class TeamEndpoints
     }
 
     private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateTeam(
-        ApplicationDbContext dbContext,
-        IValidator<TeamEditDto> validator,
-        int tournamentId,
-        TeamEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<TeamEditDto> validator,
+        [FromRoute] int tournamentId,
+        [FromBody] TeamEditDto dto
     )
     {
         if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
@@ -97,8 +98,8 @@ public static class TeamEndpoints
     }
 
     private static async Task<Results<NotFound, Ok<int>>> GetNextTeamStartNumber(
-        ApplicationDbContext dbContext,
-        int tournamentId
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int tournamentId
     )
     {
         if (!await dbContext.Tournaments.AsNoTracking().AnyAsync(t => t.Id == tournamentId))
@@ -112,7 +113,10 @@ public static class TeamEndpoints
         return TypedResults.Ok(currentMaxStartNumber.HasValue ? currentMaxStartNumber.Value + 1 : 1);
     }
 
-    private static async Task<Results<NotFound, Ok<TeamDetailDto>>> GetTeam(ApplicationDbContext dbContext, int teamId)
+    private static async Task<Results<NotFound, Ok<TeamDetailDto>>> GetTeam(
+        [FromServices] ApplicationDbContext dbContext,
+        int teamId
+    )
     {
         TeamDetailDto? team;
         await using (await dbContext.Database.BeginTransactionAsync())
@@ -134,10 +138,10 @@ public static class TeamEndpoints
     }
 
     private static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateTeam(
-        ApplicationDbContext dbContext,
-        IValidator<TeamEditDto> validator,
-        int teamId,
-        TeamEditDto dto
+        [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IValidator<TeamEditDto> validator,
+        [FromRoute] int teamId,
+        [FromBody] TeamEditDto dto
     )
     {
         var team = await dbContext
@@ -173,7 +177,10 @@ public static class TeamEndpoints
         return TypedResults.Ok();
     }
 
-    private static async Task<Results<NotFound, Ok>> DeleteTeam(ApplicationDbContext dbContext, int teamId)
+    private static async Task<Results<NotFound, Ok>> DeleteTeam(
+        [FromServices] ApplicationDbContext dbContext,
+        [FromRoute] int teamId
+    )
     {
         var team = await dbContext.Teams.FindAsync(teamId);
         if (team is null)
