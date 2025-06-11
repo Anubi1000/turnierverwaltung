@@ -11,12 +11,12 @@ public class TournamentEditDtoValidatorTests
 
     private static TournamentEditDto CreateValidDto(
         string name = "Valid Name",
-        DateTime? date = null,
+        DateOnly? date = null,
         int teamSize = 3,
         bool isTeamSizeFixed = true
     )
     {
-        return new TournamentEditDto(name, date ?? DateTime.Now, teamSize, isTeamSizeFixed);
+        return new TournamentEditDto(name, date ?? DateOnly.FromDateTime(DateTime.Now), teamSize, isTeamSizeFixed);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class TournamentEditDtoValidatorTests
     [Fact]
     public void WhenDateIsMinValue_HasError()
     {
-        var model = CreateValidDto(date: DateTime.MinValue);
+        var model = CreateValidDto(date: DateOnly.MinValue);
         var result = _validator.TestValidate(model);
         result.ShouldHaveValidationErrorFor(x => x.Date);
     }

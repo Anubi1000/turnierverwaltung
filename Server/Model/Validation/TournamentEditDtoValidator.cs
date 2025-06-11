@@ -20,7 +20,7 @@ public class TournamentEditDtoValidator : AbstractValidator<TournamentEditDto>
 
         // Validate that Date is not set to DateTime.MinValue.
         RuleFor(tournament => tournament.Date)
-            .Must(date => !date.Equals(DateTime.MinValue))
+            .Must(date => !date.Equals(DateOnly.MinValue))
             .WithMessage("'{PropertyName}' must not be undefined.");
 
         // Validate that TeamSize is between 2 and 25 and has not changed from its previous value when IsTeamSizeFixed is true.

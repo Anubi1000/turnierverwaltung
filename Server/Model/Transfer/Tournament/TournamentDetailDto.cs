@@ -3,7 +3,7 @@ namespace Turnierverwaltung.Server.Model.Transfer.Tournament;
 public record TournamentDetailDto(
     int Id,
     string Name,
-    DateTime Date,
+    DateOnly Date,
     int TeamSize,
     bool IsTeamSizeFixed,
     int ClubCount,

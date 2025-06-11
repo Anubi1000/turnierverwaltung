@@ -7,6 +7,11 @@ namespace Turnierverwaltung.Server.Database;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IEntityChangeNotifier notifier)
     : DbContext(options)
 {
+    public static readonly Func<ApplicationDbContext, int, Task<bool>> ExistsTournamentWithIdQuery =
+        EF.CompileAsyncQuery(
+            (ApplicationDbContext dbContext, int tournamentId) => dbContext.Tournaments.Any(t => t.Id == tournamentId)
+        );
+
     public DbSet<Club> Clubs { get; set; }
     public DbSet<Discipline> Disciplines { get; set; }
     public DbSet<Participant> Participants { get; set; }
@@ -20,10 +25,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder
             .Entity<Tournament>()
             .Property(t => t.Date)
-            .HasConversion(
-                v => new DateTimeOffset(v).ToUnixTimeSeconds(),
-                v => DateTimeOffset.FromUnixTimeSeconds(v).UtcDateTime
-            );
+            .HasConversion(v => v.DayNumber, v => DateOnly.FromDayNumber(v));
 
         modelBuilder.Entity<Discipline>().OwnsMany(d => d.Values).ToJson();
 

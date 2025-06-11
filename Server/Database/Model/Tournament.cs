@@ -7,7 +7,7 @@ public sealed class Tournament
 
     public string Name { get; set; } = "";
 
-    public DateTime Date { get; set; } = DateTime.UtcNow;
+    public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
     public int TeamSize { get; init; } = 3;
     public bool IsTeamSizeFixed { get; init; } = true;
 

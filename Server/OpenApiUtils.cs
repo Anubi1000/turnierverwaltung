@@ -50,7 +50,7 @@ public static class OpenApiUtils
                 {
                     if (
                         context.JsonTypeInfo.Type == typeof(DateTime)
-                        && context.JsonTypeInfo.Converter is DateTimeToTimestampConverter
+                        && context.JsonTypeInfo.Converter is DateOnlyToTimestampConverter
                     )
                     {
                         schema.Format = "int64";

@@ -12,6 +12,37 @@ namespace Turnierverwaltung.Server.Endpoints;
 
 public static class TournamentEndpoints
 {
+    private static readonly Func<ApplicationDbContext, IAsyncEnumerable<ListTournamentDto>> GetTournamentsQuery =
+        EF.CompileAsyncQuery(
+            (ApplicationDbContext dbContext) =>
+                dbContext
+                    .Tournaments.AsNoTracking()
+                    .OrderByDescending(t => t.Date)
+                    .ThenBy(t => t.Name)
+                    .ThenBy(t => t.Id)
+                    .Select(t => new ListTournamentDto(t.Id, t.Name, t.Date))
+        );
+
+    private static readonly Func<ApplicationDbContext, int, Task<TournamentDetailDto?>> GetTournamentQuery =
+        EF.CompileAsyncQuery(
+            (ApplicationDbContext dbContext, int tournamentId) =>
+                dbContext
+                    .Tournaments.AsNoTracking()
+                    .Where(t => t.Id == tournamentId)
+                    .Select(t => new TournamentDetailDto(
+                        t.Id,
+                        t.Name,
+                        t.Date,
+                        t.TeamSize,
+                        t.IsTeamSizeFixed,
+                        t.Clubs.Count,
+                        t.Disciplines.Count + t.TeamDisciplines.Count,
+                        t.Participants.Count,
+                        t.Teams.Count
+                    ))
+                    .FirstOrDefault()
+        );
+
     public static IEndpointRouteBuilder MapTournamentEndpoints(this IEndpointRouteBuilder builder)
     {
         var group = builder.MapGroup("/api/tournaments").WithTags("Tournament").RequireAuthorization();
@@ -39,13 +70,7 @@ public static class TournamentEndpoints
     /// </returns>
     public static async Task<Ok<List<ListTournamentDto>>> GetTournaments([FromServices] ApplicationDbContext dbContext)
     {
-        var tournaments = await dbContext
-            .Tournaments.AsNoTracking()
-            .OrderByDescending(t => t.Date)
-            .ThenBy(t => t.Name)
-            .ThenBy(t => t.Id)
-            .Select(t => new ListTournamentDto(t.Id, t.Name, t.Date))
-            .ToListAsync();
+        var tournaments = await GetTournamentsQuery(dbContext).ToListAsync();
 
         return TypedResults.Ok(tournaments);
     }
@@ -106,21 +131,7 @@ public static class TournamentEndpoints
         [FromRoute] int tournamentId
     )
     {
-        var tournament = await dbContext
-            .Tournaments.AsNoTracking()
-            .Where(t => t.Id == tournamentId)
-            .Select(t => new TournamentDetailDto(
-                t.Id,
-                t.Name,
-                t.Date,
-                t.TeamSize,
-                t.IsTeamSizeFixed,
-                t.Clubs.Count,
-                t.Disciplines.Count + t.TeamDisciplines.Count,
-                t.Participants.Count,
-                t.Teams.Count
-            ))
-            .SingleOrDefaultAsync();
+        var tournament = await GetTournamentQuery(dbContext, tournamentId);
 
         return tournament is null ? TypedResults.NotFound() : TypedResults.Ok(tournament);
     }

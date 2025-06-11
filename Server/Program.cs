@@ -73,7 +73,7 @@ public class Program
         // Json serialisation
         builder.Services.ConfigureHttpJsonOptions(options =>
         {
-            options.SerializerOptions.Converters.Add(new DateTimeToTimestampConverter());
+            options.SerializerOptions.Converters.Add(new DateOnlyToTimestampConverter());
             options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
             options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
         });

@@ -11,6 +11,26 @@ namespace Turnierverwaltung.Server.Endpoints;
 
 public static class ClubEndpoints
 {
+    private static readonly Func<ApplicationDbContext, int, IAsyncEnumerable<ListClubDto>> GetClubsQuery =
+        EF.CompileAsyncQuery(
+            (ApplicationDbContext dbContext, int tournamentId) =>
+                dbContext
+                    .Clubs.AsNoTracking()
+                    .Where(c => c.TournamentId == tournamentId)
+                    .OrderBy(c => c.Name)
+                    .ThenBy(c => c.Id)
+                    .Select(c => new ListClubDto(c.Id, c.Name))
+        );
+
+    private static readonly Func<ApplicationDbContext, int, Task<ClubDetailDto?>> GetClubQuery = EF.CompileAsyncQuery(
+        (ApplicationDbContext dbContext, int clubId) =>
+            dbContext
+                .Clubs.AsNoTracking()
+                .Where(c => c.Id == clubId)
+                .Select(c => new ClubDetailDto(c.Id, c.TournamentId, c.Name, c.Members.Count))
+                .SingleOrDefault()
+    );
+
     public static IEndpointRouteBuilder MapClubEndpoints(this IEndpointRouteBuilder builder)
     {
         var baseGroup = builder.MapGroup("/api").WithTags("Club").RequireAuthorization();
@@ -38,16 +58,10 @@ public static class ClubEndpoints
         [FromRoute] int tournamentId
     )
     {
-        if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
+        if (!await ApplicationDbContext.ExistsTournamentWithIdQuery(dbContext, tournamentId))
             return TypedResults.NotFound();
 
-        var clubs = await dbContext
-            .Clubs.AsNoTracking()
-            .Where(c => c.TournamentId == tournamentId)
-            .OrderBy(c => c.Name)
-            .ThenBy(c => c.Id)
-            .Select(c => new ListClubDto(c.Id, c.Name))
-            .ToListAsync();
+        var clubs = await GetClubsQuery(dbContext, tournamentId).ToListAsync();
 
         return TypedResults.Ok(clubs);
     }
@@ -59,7 +73,7 @@ public static class ClubEndpoints
         [FromBody] ClubEditDto dto
     )
     {
-        if (!await dbContext.Tournaments.AnyAsync(t => t.Id == tournamentId))
+        if (!await ApplicationDbContext.ExistsTournamentWithIdQuery(dbContext, tournamentId))
             return TypedResults.NotFound();
 
         var validationResult = await validator.ValidateAsync(dto);
@@ -81,12 +95,7 @@ public static class ClubEndpoints
         [FromRoute] int clubId
     )
     {
-        var club = await dbContext
-            .Clubs.AsNoTracking()
-            .Where(c => c.Id == clubId)
-            .Select(c => new ClubDetailDto(c.Id, c.TournamentId, c.Name, c.Members.Count))
-            .SingleOrDefaultAsync();
-
+        var club = await GetClubQuery(dbContext, clubId);
         return club is null ? TypedResults.NotFound() : TypedResults.Ok(club);
     }
 

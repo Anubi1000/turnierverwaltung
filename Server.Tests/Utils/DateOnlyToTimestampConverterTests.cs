@@ -3,9 +3,9 @@ using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Tests.Utils;
 
-public class DateTimeToTimestampConverterTests
+public class DateOnlyToTimestampConverterTests
 {
-    private readonly JsonSerializerOptions _options = new() { Converters = { new DateTimeToTimestampConverter() } };
+    private readonly JsonSerializerOptions _options = new() { Converters = { new DateOnlyToTimestampConverter() } };
 
     [Fact]
     public void CanSerializeDateTime_ToUnixTimestamp()

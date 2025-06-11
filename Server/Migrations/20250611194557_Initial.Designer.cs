@@ -10,14 +10,14 @@ using Turnierverwaltung.Server.Database;
 namespace Turnierverwaltung.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250406143010_Add_IsTeamSizeFixed")]
-    partial class Add_IsTeamSizeFixed
+    [Migration("20250611194557_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
 
             modelBuilder.Entity("DisciplineTeamDiscipline", b =>
                 {
@@ -57,7 +57,6 @@ namespace Turnierverwaltung.Server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("TournamentId")
@@ -84,7 +83,6 @@ namespace Turnierverwaltung.Server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("TournamentId")
@@ -111,7 +109,6 @@ namespace Turnierverwaltung.Server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("StartNumber")
@@ -157,7 +154,6 @@ namespace Turnierverwaltung.Server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("StartNumber")
@@ -184,7 +180,6 @@ namespace Turnierverwaltung.Server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("TournamentId")
@@ -203,7 +198,7 @@ namespace Turnierverwaltung.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("Date")
+                    b.Property<int>("Date")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsTeamSizeFixed")
@@ -211,7 +206,6 @@ namespace Turnierverwaltung.Server.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("TeamSize")
@@ -285,7 +279,6 @@ namespace Turnierverwaltung.Server.Migrations
 
                             b1.Property<string>("Name")
                                 .IsRequired()
-                                .HasMaxLength(150)
                                 .HasColumnType("TEXT");
 
                             b1.HasKey("DisciplineId", "__synthesizedOrdinal");
