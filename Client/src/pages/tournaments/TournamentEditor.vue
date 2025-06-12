@@ -3,7 +3,6 @@ import CardContainer from "@/components/CardContainer.vue";
 import HeadlineRow from "@/components/HeadlineRow.vue";
 import DetailCard from "@/components/detail/DetailCard.vue";
 import FormSaveButton from "@/components/form/FormSaveButton.vue";
-import FormCheckbox from "@/components/form/input/FormCheckbox.vue";
 import FormDatePicker from "@/components/form/input/FormDatePicker.vue";
 import FormInputNumber from "@/components/form/input/FormInputNumber.vue";
 import FormInputText from "@/components/form/input/FormInputText.vue";
@@ -22,18 +21,21 @@ const emit = defineEmits<{
   (e: "submit", value: TournamentEditDto): void;
 }>();
 
-const { handleSubmit, values } = useForm({
+const { handleSubmit /*, values */ } = useForm({
   validationSchema: toTypedSchema(tournamentEditDtoSchema),
   initialValues: {
-    ...initialValues,
+    name: initialValues.name,
     date: new Date(initialValues.date),
+    teamSize: initialValues.teamSize,
   },
 });
 
 const onSubmit = handleSubmit(async (values) => {
   const data: TournamentEditDto = {
-    ...values,
+    name: values.name,
     date: values.date.getTime(),
+    teamSize: values.teamSize,
+    isTeamSizeFixed: true,
   };
 
   emit("submit", data);
@@ -67,17 +69,17 @@ const onSubmit = handleSubmit(async (values) => {
               min: 2,
               max: 25,
               showButtons: true,
-              disabled: edit && values.isTeamSizeFixed,
+              disabled: edit /*&& values.isTeamSizeFixed*/,
             }"
           />
 
-          <FormCheckbox
+          <!--<FormCheckbox
             name="isTeamSizeFixed"
             :label="strings.teamSizeFixed"
             :props="{
               disabled: edit,
             }"
-          />
+          />-->
         </div>
       </DetailCard>
     </CardContainer>

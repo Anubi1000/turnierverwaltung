@@ -106,12 +106,12 @@ function onDeleteButtonClick() {
       <DetailCard :title="strings.general">
         <div class="flex flex-col gap-2">
           <DetailItem :label="strings.name" :content="data.data.name" />
-          <DetailItem
+          <!--<DetailItem
             :label="strings.type"
             :content="
               strings.formatting.teamScoreDisplayType(data.data.displayType)
             "
-          />
+          />-->
         </div>
       </DetailCard>
 

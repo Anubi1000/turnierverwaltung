@@ -120,7 +120,9 @@ function onDeleteButtonClick() {
             :label="strings.date"
             :content="strings.formatting.date(data.data.date)"
           />
-          <div class="flex">
+          <DetailItem :label="strings.teamSize" :content="data.data.teamSize" />
+
+          <!--<div class="flex">
             <DetailItem
               class="flex-1"
               :label="strings.teamSize"
@@ -131,7 +133,7 @@ function onDeleteButtonClick() {
               :label="strings.teamSizeFixed"
               :content="strings.formatting.boolean(data.data.isTeamSizeFixed)"
             />
-          </div>
+          </div>-->
         </div>
       </DetailCard>
 

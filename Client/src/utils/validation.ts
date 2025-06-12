@@ -26,7 +26,7 @@ export const tournamentEditDtoSchema = object({
   name: nameSchema,
   date: date({ message: strings.validation.dateNeeded }),
   teamSize: numberSchema(2, 25),
-  isTeamSizeFixed: boolean(),
+  //isTeamSizeFixed: boolean(),
 });
 
 export const clubEditDtoSchema = object({
@@ -62,7 +62,7 @@ export const disciplineEditDtoSchema = object({
 
 export const teamDisciplineEditDtoSchema = object({
   name: nameSchema,
-  displayType: zEnum(["Normal", "Nationcup"]),
+  //displayType: zEnum(["Normal", "Nationcup"]),
   basedOn: number().int().array().nonempty(strings.validation.disciplineNeeded),
 });
 

@@ -5,7 +5,6 @@ import DetailCard from "@/components/detail/DetailCard.vue";
 import FormSaveButton from "@/components/form/FormSaveButton.vue";
 import FormInputText from "@/components/form/input/FormInputText.vue";
 import FormMultiSelect from "@/components/form/input/FormMultiSelect.vue";
-import FormSelect from "@/components/form/input/FormSelect.vue";
 import LoadingMessage from "@/components/messages/LoadingMessage.vue";
 import StatusMessage from "@/components/messages/StatusMessage.vue";
 import { useGetDisciplines } from "@/utils/api/api.ts";
@@ -33,12 +32,19 @@ const disciplines = computed(() => disciplinesQuery.data.value?.data ?? []);
 
 const { handleSubmit } = useForm({
   validationSchema: toTypedSchema(teamDisciplineEditDtoSchema),
-  // @ts-expect-error Type somehow not valid
-  initialValues: initialValues,
+  initialValues: {
+    name: initialValues.name,
+    // @ts-expect-error Type somehow not valid
+    basedOn: [...initialValues.basedOn],
+  },
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  const data: TeamDisciplineEditDto = structuredClone(values);
+  const data: TeamDisciplineEditDto = {
+    name: values.name,
+    displayType: "Normal",
+    basedOn: [...values.basedOn],
+  };
 
   emit("submit", data);
 });
@@ -69,7 +75,7 @@ const onSubmit = handleSubmit(async (values) => {
         <div class="flex flex-col gap-2">
           <FormInputText name="name" :label="strings.name" />
 
-          <FormSelect
+          <!--<FormSelect
             name="displayType"
             :label="strings.type"
             :props="{
@@ -86,7 +92,7 @@ const onSubmit = handleSubmit(async (values) => {
               optionLabel: 'label',
               optionValue: 'value',
             }"
-          />
+          />-->
 
           <FormMultiSelect
             name="basedOn"
