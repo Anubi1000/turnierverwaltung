@@ -97,12 +97,7 @@ public class Program
         app.Logger.LogInformation("Data Directory: {}", userDataService.DataDirectory);
 
         // Database migrations
-        using (var scope = app.Services.CreateScope())
-        {
-            app.Logger.LogInformation("Running database migrations");
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            dbContext.Database.Migrate();
-        }
+        ApplyDatabaseMigrations(app, userDataService.GetDatabasePath());
 
         // Development pages
 #if DEBUG
@@ -143,5 +138,45 @@ public class Program
         app.MapFallbackToFile("index.html");
 
         app.Run();
+    }
+
+    private static void ApplyDatabaseMigrations(WebApplication app, string dbPath)
+    {
+        bool hasPendingMigrations;
+
+        using (var checkScope = app.Services.CreateScope())
+        {
+            var dbContext = checkScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            hasPendingMigrations = dbContext.Database.GetPendingMigrations().Any();
+        }
+
+        if (!hasPendingMigrations)
+        {
+            app.Logger.LogInformation("No database migrations needed");
+            return;
+        }
+
+        app.Logger.LogInformation("Pending migrations detected. Creating backup...");
+
+        if (!File.Exists(dbPath))
+        {
+            app.Logger.LogCritical("Database file not found at: {DbPath}", dbPath);
+            Environment.Exit(-1);
+        }
+
+        var backupPath = Path.Combine(
+            Path.GetDirectoryName(dbPath)!,
+            $"{Path.GetFileNameWithoutExtension(dbPath)}_backup_{DateTime.Now:yyyyMMdd_HHmmss}.db"
+        );
+
+        File.Copy(dbPath, backupPath);
+        app.Logger.LogInformation("Backup created at: {BackupPath}", backupPath);
+
+        using (var migrateScope = app.Services.CreateScope())
+        {
+            var dbContext = migrateScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            app.Logger.LogInformation("Applying migrations...");
+            dbContext.Database.Migrate();
+        }
     }
 }
