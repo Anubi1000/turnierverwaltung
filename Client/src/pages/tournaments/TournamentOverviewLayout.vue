@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import DashboardHeader from "@/components/DashboardHeader.vue";
-import BackButton from "@/components/navigation/BackButton.vue";
-import DashboardNavigationItem from "@/components/navigation/DashboardNavigationItem.vue";
+import DashboardNavigationBar from "@/components/navigation/DashboardNavigationBar.vue";
 import { useGetTournament } from "@/utils/api/api.ts";
 import { LayoutNames, RouteNames } from "@/utils/routes.ts";
 import { strings } from "@/utils/strings.ts";
+import type { NavigationBarItem } from "@/utils/types.ts";
 import { getIdFromRoute, useRouterViewKey } from "@/utils/utils.ts";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
@@ -16,7 +16,6 @@ import LibraryAdd from "~icons/material-symbols/library-add";
 import Person from "~icons/material-symbols/person";
 
 const route = useRoute();
-const currentRoute = computed(() => route.matched[1].name);
 
 const tournamentId = getIdFromRoute("tournamentId");
 
@@ -24,6 +23,76 @@ const tournamentQuery = useGetTournament(tournamentId);
 const tournamentName = computed(
   () => tournamentQuery.data.value?.data.name ?? strings.status.loading,
 );
+
+const navigationItems: NavigationBarItem[] = [
+  {
+    label: strings.overview,
+    icon: Dashboard,
+    to: {
+      name: RouteNames.TOURNAMENT_SCORES,
+      params: { tournamentId: tournamentId },
+    },
+  },
+  {
+    label: strings.club.items,
+    icon: Groups,
+    to: {
+      name: RouteNames.CLUB_LIST,
+      params: { tournamentId: tournamentId },
+    },
+  },
+  {
+    label: strings.participant.items,
+    icon: Person,
+    to: {
+      name: RouteNames.PARTICIPANT_LIST,
+      params: { tournamentId: tournamentId },
+    },
+  },
+  {
+    label: strings.team.items,
+    icon: Group,
+    to: {
+      name: RouteNames.TEAM_LIST,
+      params: { tournamentId: tournamentId },
+    },
+  },
+  {
+    label: strings.discipline.items,
+    icon: AddBox,
+    to: {
+      name: RouteNames.DISCIPLINE_LIST,
+      params: { tournamentId: tournamentId },
+    },
+  },
+  {
+    label: strings.teamDiscipline.items,
+    icon: LibraryAdd,
+    to: {
+      name: RouteNames.TEAM_DISCIPLINE_LIST,
+      params: { tournamentId: tournamentId },
+    },
+  },
+];
+
+const selectedItemIndex = computed(() => {
+  switch (route.matched[1].name) {
+    case RouteNames.TOURNAMENT_SCORES:
+      return 0;
+    case LayoutNames.CLUB_LIST:
+      return 1;
+    case LayoutNames.PARTICIPANT_LIST:
+      return 2;
+    case LayoutNames.TEAM_LIST:
+      return 3;
+    case LayoutNames.DISCIPLINE_LIST:
+      return 4;
+    case LayoutNames.TEAM_DISCIPLINE_LIST:
+      return 5;
+  }
+
+  return -1;
+});
 
 const routerViewKey = useRouterViewKey(2);
 </script>
@@ -33,80 +102,14 @@ const routerViewKey = useRouterViewKey(2);
     <DashboardHeader :title="tournamentName" />
 
     <div class="flex flex-grow flex-row overflow-y-hidden">
-      <div class="flex min-w-64 flex-col gap-2 overflow-y-auto">
-        <DashboardNavigationItem
-          :link="{
-            name: RouteNames.TOURNAMENT_SCORES,
-            params: { tournamentId: tournamentId },
-          }"
-          :selected="currentRoute == RouteNames.TOURNAMENT_SCORES"
-        >
-          <Dashboard />
-          {{ strings.overview }}
-        </DashboardNavigationItem>
-
-        <DashboardNavigationItem
-          :link="{
-            name: RouteNames.CLUB_LIST,
-            params: { tournamentId: tournamentId },
-          }"
-          :selected="currentRoute == LayoutNames.CLUB_LIST"
-        >
-          <Groups />
-          {{ strings.club.items }}
-        </DashboardNavigationItem>
-
-        <DashboardNavigationItem
-          :link="{
-            name: RouteNames.PARTICIPANT_LIST,
-            params: { tournamentId: tournamentId },
-          }"
-          :selected="currentRoute == LayoutNames.PARTICIPANT_LIST"
-        >
-          <Person />
-          {{ strings.participant.items }}
-        </DashboardNavigationItem>
-
-        <DashboardNavigationItem
-          :link="{
-            name: RouteNames.TEAM_LIST,
-            params: { tournamentId: tournamentId },
-          }"
-          :selected="currentRoute == LayoutNames.TEAM_LIST"
-        >
-          <Group />
-          {{ strings.team.items }}
-        </DashboardNavigationItem>
-
-        <DashboardNavigationItem
-          :link="{
-            name: RouteNames.DISCIPLINE_LIST,
-            params: { tournamentId: tournamentId },
-          }"
-          :selected="currentRoute == LayoutNames.DISCIPLINE_LIST"
-        >
-          <AddBox />
-          {{ strings.discipline.items }}
-        </DashboardNavigationItem>
-
-        <DashboardNavigationItem
-          :link="{
-            name: RouteNames.TEAM_DISCIPLINE_LIST,
-            params: { tournamentId: tournamentId },
-          }"
-          :selected="currentRoute == LayoutNames.TEAM_DISCIPLINE_LIST"
-        >
-          <LibraryAdd />
-          {{ strings.teamDiscipline.items }}
-        </DashboardNavigationItem>
-
-        <BackButton
-          :to="{
-            name: RouteNames.TOURNAMENT_DETAIL,
-            params: { tournamentId: tournamentId },
-          }"
-        />
-      </div>
+      <DashboardNavigationBar
+        :items="navigationItems"
+        :selected-item-index="selectedItemIndex"
+        :back-location="{
+          name: RouteNames.TOURNAMENT_DETAIL,
+          params: { tournamentId: tournamentId },
+        }"
+      />
 
       <RouterView :key="routerViewKey" />
     </div>

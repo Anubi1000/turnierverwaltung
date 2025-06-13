@@ -1,3 +1,4 @@
+import type { FunctionalComponent } from "vue";
 import type { RouteLocationRaw } from "vue-router";
 
 export interface ItemListItem {
@@ -5,4 +6,10 @@ export interface ItemListItem {
   title: string;
   link?: RouteLocationRaw;
   content?: string;
+}
+
+export interface NavigationBarItem {
+  label: string;
+  icon: FunctionalComponent;
+  to: RouteLocationRaw;
 }

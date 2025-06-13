@@ -1,44 +1,53 @@
 <script setup lang="ts">
 import DashboardHeader from "@/components/DashboardHeader.vue";
-import BackButton from "@/components/navigation/BackButton.vue";
-import DashboardNavigationItem from "@/components/navigation/DashboardNavigationItem.vue";
+import ScreenContainer from "@/components/layout/ScreenContainer.vue";
+import DashboardNavigationBar from "@/components/navigation/DashboardNavigationBar.vue";
 import { LayoutNames, RouteNames } from "@/utils/routes.ts";
 import { strings } from "@/utils/strings.ts";
+import type { NavigationBarItem } from "@/utils/types.ts";
 import { useRouterViewKey } from "@/utils/utils.ts";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import Groups from "~icons/material-symbols/groups";
 
 const route = useRoute();
-const currentRoute = computed(() => route.matched[1].name);
+
+const navigationItems: NavigationBarItem[] = [
+  {
+    label: strings.tournament.items,
+    icon: Groups,
+    to: {
+      name: RouteNames.TOURNAMENT_LIST,
+    },
+  },
+];
+
+const selectedItemIndex = computed(() => {
+  switch (route.matched[1].name) {
+    case LayoutNames.TOURNAMENT_LIST:
+      return 0;
+  }
+
+  return -1;
+});
 
 const routerViewKey = useRouterViewKey(2);
 </script>
 
 <template>
-  <div class="flex h-dvh w-dvw flex-col bg-surface-50">
+  <ScreenContainer>
     <DashboardHeader :title="strings.appName" />
 
     <div class="flex flex-grow flex-row overflow-y-hidden">
-      <div class="flex min-w-64 flex-col gap-2 overflow-y-auto">
-        <DashboardNavigationItem
-          :link="{
-            name: RouteNames.TOURNAMENT_LIST,
-          }"
-          :selected="currentRoute == LayoutNames.TOURNAMENT_LIST"
-        >
-          <Groups />
-          {{ strings.tournament.items }}
-        </DashboardNavigationItem>
-
-        <BackButton
-          :to="{
-            name: RouteNames.ROOT,
-          }"
-        />
-      </div>
+      <DashboardNavigationBar
+        :items="navigationItems"
+        :selected-item-index="selectedItemIndex"
+        :back-location="{
+          name: RouteNames.ROOT,
+        }"
+      />
 
       <RouterView :key="routerViewKey" />
     </div>
-  </div>
+  </ScreenContainer>
 </template>
