@@ -29,6 +29,6 @@ public class DecimalArrayComparer : IComparer<decimal[]>
                 return comparison;
         }
 
-        return 0; // Arrays are equal when compared
+        return 0;
     }
 }

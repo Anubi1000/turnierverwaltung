@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import HeaderBar from "@/components/HeaderBar.vue";
 import CreateButton from "@/components/itemlist/CreateButton.vue";
 import ItemList from "@/components/itemlist/ItemList.vue";
+import MainContentContainer from "@/components/layout/MainContentContainer.vue";
 import { useGetTournaments } from "@/utils/api/api.ts";
 import { RouteNames } from "@/utils/routes.ts";
 import { strings } from "@/utils/strings.ts";
@@ -27,27 +29,37 @@ const mappedItems = computed<ItemListItem[] | undefined>(() => {
   }));
 });
 
-const selectedItemId = route.params.tournamentId as string | undefined;
+const selectedItemId = computed(
+  () => route.params.tournamentId as string | undefined,
+);
 
 const routerViewKey = useRouterViewKey(3);
 </script>
 
 <template>
-  <ItemList
-    :is-loading="isPending"
-    :is-error="isError"
-    :items="mappedItems"
-    :selected-item-id="selectedItemId"
-  >
-    <template #actionButton>
-      <CreateButton
-        :label="strings.tournament.create"
-        :link="{ name: RouteNames.TOURNAMENT_CREATE }"
-      />
-    </template>
-  </ItemList>
+  <MainContentContainer class="flex-col">
+    <HeaderBar>
+      <h2 class="px-2 text-2xl font-medium">{{ strings.tournament.items }}</h2>
 
-  <div class="flex flex-grow pl-4">
-    <RouterView :key="routerViewKey" />
-  </div>
+      <div class="#header_end"></div>
+    </HeaderBar>
+
+    <MainContentContainer>
+      <ItemList
+        :is-loading="isPending"
+        :is-error="isError"
+        :items="mappedItems"
+        :selected-item-id="selectedItemId"
+      >
+        <template #actionButton>
+          <CreateButton
+            :label="strings.tournament.create"
+            :link="{ name: RouteNames.TOURNAMENT_CREATE }"
+          />
+        </template>
+      </ItemList>
+
+      <RouterView :key="routerViewKey" />
+    </MainContentContainer>
+  </MainContentContainer>
 </template>

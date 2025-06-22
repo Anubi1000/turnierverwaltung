@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <Card class="w-96">
+  <Card class="w-96 flex-grow xl:flex-grow-[0]">
     <template #title>
       <div v-if="$slots.trailing" class="flex justify-between">
         <h6 class="select-none">{{ title }}</h6>

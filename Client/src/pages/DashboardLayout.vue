@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import DashboardHeader from "@/components/DashboardHeader.vue";
 import ScreenContainer from "@/components/layout/ScreenContainer.vue";
 import DashboardNavigationBar from "@/components/navigation/DashboardNavigationBar.vue";
 import { LayoutNames, RouteNames } from "@/utils/routes.ts";
@@ -36,18 +35,15 @@ const routerViewKey = useRouterViewKey(2);
 
 <template>
   <ScreenContainer>
-    <DashboardHeader :title="strings.appName" />
+    <DashboardNavigationBar
+      :title="strings.appName"
+      :items="navigationItems"
+      :selected-item-index="selectedItemIndex"
+      :back-location="{
+        name: RouteNames.ROOT,
+      }"
+    />
 
-    <div class="flex flex-grow flex-row overflow-y-hidden">
-      <DashboardNavigationBar
-        :items="navigationItems"
-        :selected-item-index="selectedItemIndex"
-        :back-location="{
-          name: RouteNames.ROOT,
-        }"
-      />
-
-      <RouterView :key="routerViewKey" />
-    </div>
+    <RouterView :key="routerViewKey" />
   </ScreenContainer>
 </template>

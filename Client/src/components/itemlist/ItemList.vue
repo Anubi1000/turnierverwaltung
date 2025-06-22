@@ -84,7 +84,7 @@ const filteredItems = computed(() => {
       >
         <Card
           selectable
-          :selected="item.id === selectedItemId"
+          :selected="item.id == selectedItemId"
           :title="item.title"
           :content="item.content"
         />

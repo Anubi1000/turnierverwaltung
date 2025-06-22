@@ -16,22 +16,17 @@ public class UserDataService
 
     public string DataDirectory { get; }
 
-    private string GetConfigFilePath()
-    {
-        return Path.Combine(DataDirectory, "Config.json");
-    }
+    private string GetConfigFilePath() => Path.Combine(DataDirectory, "Config.json");
 
-    public string GetDatabasePath()
-    {
-        return Path.Combine(DataDirectory, "Data.db");
-    }
+    public string GetDatabasePath() => Path.Combine(DataDirectory, "Data.db");
 
     public async Task<byte[]?> ReadAsset(string name)
     {
-        if (_fileCache.TryGetValue(name, out var cachedBytes))
+        var targetPath = Path.Combine(DataDirectory, name);
+
+        if (_fileCache.TryGetValue(targetPath, out var cachedBytes))
             return cachedBytes;
 
-        var targetPath = Path.Combine(DataDirectory, name);
         if (!File.Exists(targetPath))
         {
             _fileCache[name] = null;
@@ -46,7 +41,7 @@ public class UserDataService
         }
         catch
         {
-            _fileCache[name] = null;
+            _fileCache[targetPath] = null;
             return null;
         }
     }

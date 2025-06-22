@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import LinkButton from "@/components/LinkButton.vue";
 import { strings } from "@/utils/strings.ts";
-import Button from "primevue/button";
 import type { RouteLocationRaw } from "vue-router";
 import Edit from "~icons/material-symbols/edit";
 
@@ -10,11 +10,5 @@ defineProps<{
 </script>
 
 <template>
-  <RouterLink :to="link">
-    <Button :label="strings.actions.edit">
-      <template #icon>
-        <Edit />
-      </template>
-    </Button>
-  </RouterLink>
+  <LinkButton :label="strings.actions.edit" :icon="Edit" :to="link" />
 </template>

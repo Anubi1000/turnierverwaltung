@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import HeaderBar from "@/components/HeaderBar.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NavigationItem from "@/components/navigation/NavigationItem.vue";
 import { strings } from "@/utils/strings.ts";
@@ -7,6 +8,7 @@ import type { RouteLocationRaw } from "vue-router";
 import ArrowBack from "~icons/material-symbols/arrow-back";
 
 defineProps<{
+  title: string;
   items: NavigationBarItem[];
   selectedItemIndex: number;
   backLocation: RouteLocationRaw;
@@ -14,7 +16,13 @@ defineProps<{
 </script>
 
 <template>
-  <div class="flex min-w-64 flex-col gap-2 overflow-y-auto">
+  <div
+    class="flex max-w-64 min-w-64 flex-col gap-2 overflow-y-auto border-r-1 border-r-surface-300 bg-surface-0"
+  >
+    <HeaderBar>
+      <h1 class="px-2 text-[1.55rem] font-bold">{{ title }}</h1>
+    </HeaderBar>
+
     <RouterLink v-for="(item, index) in items" :key="index" :to="item.to">
       <NavigationItem :selected="index == selectedItemIndex">
         <component :is="item.icon" />
@@ -27,7 +35,7 @@ defineProps<{
       :label="strings.actions.back"
       :icon="ArrowBack"
       :to="backLocation"
-      variant="outlined"
+      variant="text"
       full-width
     />
   </div>
