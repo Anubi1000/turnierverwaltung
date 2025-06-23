@@ -143,6 +143,7 @@ public class Program
     private static void ApplyDatabaseMigrations(WebApplication app, string dbPath)
     {
         bool hasPendingMigrations;
+        bool isInitialCreate = !File.Exists(dbPath);
 
         using (var checkScope = app.Services.CreateScope())
         {
@@ -156,22 +157,26 @@ public class Program
             return;
         }
 
-        app.Logger.LogInformation("Pending migrations detected. Creating backup...");
-
-        if (!File.Exists(dbPath))
+        // Only backup if already exists
+        if (!isInitialCreate)
         {
-            app.Logger.LogCritical("Database file not found at: {DbPath}", dbPath);
-            Environment.Exit(-1);
+            app.Logger.LogInformation("Pending migrations detected. Creating backup...");
+
+            if (!File.Exists(dbPath))
+            {
+                app.Logger.LogCritical("Database file not found at: {DbPath}", dbPath);
+                Environment.Exit(-1);
+            }
+
+            var backupPath = Path.Combine(
+                Path.GetDirectoryName(dbPath)!,
+                $"{Path.GetFileNameWithoutExtension(dbPath)}_backup_{DateTime.Now:yyyyMMdd_HHmmss}.db"
+            );
+
+            File.Copy(dbPath, backupPath);
+            app.Logger.LogInformation("Backup created at: {BackupPath}", backupPath);
         }
-
-        var backupPath = Path.Combine(
-            Path.GetDirectoryName(dbPath)!,
-            $"{Path.GetFileNameWithoutExtension(dbPath)}_backup_{DateTime.Now:yyyyMMdd_HHmmss}.db"
-        );
-
-        File.Copy(dbPath, backupPath);
-        app.Logger.LogInformation("Backup created at: {BackupPath}", backupPath);
-
+        
         using (var migrateScope = app.Services.CreateScope())
         {
             var dbContext = migrateScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

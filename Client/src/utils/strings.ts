@@ -45,6 +45,7 @@ export const strings = {
   basedOn: "Basiert auf",
   type: "Typ",
   members: "Mitglieder",
+  isShownInResult: "Wird in Ergebnis angezeigt",
 
   scores: {
     showOnScoreboard: "Auf Scoreboard anzeigen",
@@ -64,7 +65,7 @@ export const strings = {
     deleteDlg: {
       header: "Tunier löschen?",
       message: (name: string) =>
-        `Möchtest du das Tunier "${name}" wirklich löschen?`,
+        `Möchtest du das Turnier "${name}" wirklich löschen?`,
     },
   },
 

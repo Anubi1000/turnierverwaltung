@@ -8,7 +8,8 @@ public sealed class Discipline
     public string Name { get; set; } = "";
 
     public int AmountOfBestRoundsToShow { get; set; } = 1;
-    public bool AreGendersSeparated { get; set; }
+    public bool AreGendersSeparated { get; set; } = false;
+    public bool ShowInResults { get; set; } = true;
     public List<Value> Values { get; init; } = [];
 
     // Tournament

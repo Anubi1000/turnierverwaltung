@@ -39,6 +39,7 @@ const initialValues = computed<DisciplineEditDto | undefined>(() => {
     name: raw.name,
     amountOfBestRoundsToShow: raw.amountOfBestRoundsToShow,
     areGendersSeparated: raw.areGendersSeparated,
+    showInResults: raw.showInResults,
     values: raw.values.map((value) => ({
       name: value.name,
       isAdded: value.isAdded,

@@ -49,7 +49,7 @@ public static class OpenApiUtils
                 (schema, context, cancellationToken) =>
                 {
                     if (
-                        context.JsonTypeInfo.Type == typeof(DateTime)
+                        context.JsonTypeInfo.Type == typeof(DateOnly)
                         && context.JsonTypeInfo.Converter is DateOnlyToTimestampConverter
                     )
                     {

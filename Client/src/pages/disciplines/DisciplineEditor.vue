@@ -28,7 +28,7 @@ const emit = defineEmits<{
 const { handleSubmit, errors } = useForm({
   validationSchema: toTypedSchema(disciplineEditDtoSchema),
   // @ts-expect-error Type somehow not valid
-  initialValues: initialValues,
+  initialValues: structuredClone(initialValues),
 });
 
 const onSubmit = handleSubmit(async (values) => {
@@ -67,6 +67,8 @@ const onSubmit = handleSubmit(async (values) => {
             name="areGendersSeparated"
             :label="strings.gendersSeparated"
           />
+
+          <FormCheckbox name="showInResults" :label="strings.isShownInResult" />
         </div>
       </DetailCard>
 

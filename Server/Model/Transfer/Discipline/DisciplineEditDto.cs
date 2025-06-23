@@ -4,6 +4,7 @@ public record DisciplineEditDto(
     string Name,
     int AmountOfBestRoundsToShow,
     bool AreGendersSeparated,
+    bool ShowInResults,
     List<DisciplineEditDto.Value> Values
 )
 {

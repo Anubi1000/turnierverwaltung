@@ -6,6 +6,7 @@ public record DisciplineDetailDto(
     string Name,
     int AmountOfBestRoundsToShow,
     bool AreGendersSeparated,
+    bool ShowInResults,
     List<DisciplineDetailDto.Value> Values
 )
 {

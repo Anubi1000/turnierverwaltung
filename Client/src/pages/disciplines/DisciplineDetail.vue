@@ -110,6 +110,10 @@ function onDeleteButtonClick() {
             :label="strings.amountOfBestRoundsToShow"
             :content="data.data.amountOfBestRoundsToShow"
           />
+          <DetailItem
+            :label="strings.isShownInResult"
+            :content="strings.formatting.boolean(data.data.showInResults)"
+          />
         </div>
       </DetailCard>
 

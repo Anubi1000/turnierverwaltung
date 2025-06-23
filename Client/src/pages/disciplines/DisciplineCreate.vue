@@ -26,6 +26,7 @@ const initialValues: DisciplineEditDto = {
   name: "",
   amountOfBestRoundsToShow: 1,
   areGendersSeparated: false,
+  showInResults: true,
   values: [
     {
       name: "",

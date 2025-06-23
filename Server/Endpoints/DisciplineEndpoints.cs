@@ -74,6 +74,7 @@ public static class DisciplineEndpoints
             Name = dto.Name,
             AmountOfBestRoundsToShow = dto.AmountOfBestRoundsToShow,
             AreGendersSeparated = dto.AreGendersSeparated,
+            ShowInResults = dto.ShowInResults,
             TournamentId = tournamentId,
             Values = dto
                 .Values.Select(value => new Discipline.Value { Name = value.Name, IsAdded = value.IsAdded })
@@ -101,6 +102,7 @@ public static class DisciplineEndpoints
                 d.Name,
                 d.AmountOfBestRoundsToShow,
                 d.AreGendersSeparated,
+                d.ShowInResults,
                 d.Values,
             })
             .FirstOrDefaultAsync();
@@ -114,6 +116,7 @@ public static class DisciplineEndpoints
             discipline.Name,
             discipline.AmountOfBestRoundsToShow,
             discipline.AreGendersSeparated,
+            discipline.ShowInResults,
             discipline.Values.Select(v => new DisciplineDetailDto.Value(v.Name, v.IsAdded)).ToList()
         );
 

@@ -52,6 +52,7 @@ export const disciplineEditDtoSchema = object({
   name: nameSchema,
   amountOfBestRoundsToShow: numberSchema(1, 5),
   areGendersSeparated: boolean(),
+  showInResults: boolean(),
   values: object({
     name: nameSchema,
     isAdded: boolean(),
