@@ -40,8 +40,6 @@ const routerViewKey = useRouterViewKey(3);
   <MainContentContainer class="flex-col">
     <HeaderBar>
       <h2 class="px-2 text-2xl font-medium">{{ strings.tournament.items }}</h2>
-
-      <div class="#header_end"></div>
     </HeaderBar>
 
     <MainContentContainer>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import ScoreDownloadDialog from "./ScoreDownloadDialog.vue";
+import HeaderBar from "@/components/HeaderBar.vue";
 import HeadlineRow from "@/components/HeadlineRow.vue";
 import ItemList from "@/components/itemlist/ItemList.vue";
+import MainContentContainer from "@/components/layout/MainContentContainer.vue";
 import LoadingMessage from "@/components/messages/LoadingMessage.vue";
 import StatusMessage from "@/components/messages/StatusMessage.vue";
 import ScoreboardTable from "@/pages/scores/ScoreboardTable.vue";
@@ -71,62 +73,73 @@ async function showTournamentOnScoreboard() {
 </script>
 
 <template>
-  <ItemList
-    :is-loading="isPending"
-    :is-error="isError"
-    :items="mappedItems"
-    :selected-item-id="selectedTableId"
-    :use-router-link="false"
-    @itemClick="(item) => (selectedTableId = item.id)"
-  >
-    <template #actionButton>
-      <Button :label="strings.actions.save" @click="showDownloadDialog = true">
-        <template #icon>
-          <Save />
-        </template>
-      </Button>
+  <MainContentContainer class="flex-col">
+    <HeaderBar>
+      <h2 class="px-2 text-2xl font-medium">{{ strings.team.items }}</h2>
+    </HeaderBar>
 
-      <Button
-        severity="secondary"
-        :label="strings.scores.showOnScoreboard"
-        @click="showTournamentOnScoreboard"
+    <MainContentContainer>
+      <ItemList
+        :is-loading="isPending"
+        :is-error="isError"
+        :items="mappedItems"
+        :selected-item-id="selectedTableId"
+        :use-router-link="false"
+        @itemClick="(item) => (selectedTableId = item.id)"
       >
-        <template #icon>
-          <Scoreboard />
+        <template #actionButton>
+          <Button
+            :label="strings.actions.save"
+            @click="showDownloadDialog = true"
+          >
+            <template #icon>
+              <Save />
+            </template>
+          </Button>
+
+          <Button
+            severity="secondary"
+            :label="strings.scores.showOnScoreboard"
+            @click="showTournamentOnScoreboard"
+          >
+            <template #icon>
+              <Scoreboard />
+            </template>
+          </Button>
         </template>
-      </Button>
-    </template>
-  </ItemList>
+      </ItemList>
 
-  <LoadingMessage v-if="isPending" />
+      <LoadingMessage v-if="isPending" />
 
-  <StatusMessage
-    v-else-if="isError || !data"
-    severity="error"
-    :message="strings.status.overviewLoadingFailed"
-  />
+      <StatusMessage
+        v-else-if="isError || !data"
+        severity="error"
+        :message="strings.status.overviewLoadingFailed"
+      />
 
-  <StatusMessage
-    v-else-if="!selectedTable"
-    severity="secondary"
-    :message="strings.discipline.selectOne"
-  />
+      <StatusMessage
+        v-else-if="!selectedTable"
+        severity="secondary"
+        :message="strings.discipline.selectOne"
+      />
 
-  <div v-else class="flex flex-grow flex-col pl-4">
-    <ScoreDownloadDialog
-      v-model:visible="showDownloadDialog"
-      :data="data.data"
-      :tournament-id="tournamentId"
-    />
+      <div v-else class="flex flex-grow flex-col">
+        <ScoreDownloadDialog
+          v-model:visible="showDownloadDialog"
+          :data="data.data"
+          :tournament-id="tournamentId"
+        />
 
-    <HeadlineRow :title="selectedTable.name" />
+        <HeadlineRow :title="selectedTable.name" />
 
-    <StatusMessage
-      v-if="selectedTable.rows.length === 0"
-      severity="info"
-      :message="strings.status.noEntriesAvailable"
-    />
+        <StatusMessage
+          v-if="selectedTable.rows.length === 0"
+          severity="info"
+          :message="strings.status.noEntriesAvailable"
+        />
 
-    <ScoreboardTable v-else :table="selectedTable" />
-  </div>
+        <ScoreboardTable v-else :table="selectedTable" />
+      </div>
+    </MainContentContainer>
+  </MainContentContainer>
 </template>

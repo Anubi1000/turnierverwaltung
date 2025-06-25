@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CardContainer from "@/components/CardContainer.vue";
 import HeadlineRow from "@/components/HeadlineRow.vue";
+import LinkButton from "@/components/LinkButton.vue";
 import DeleteButton from "@/components/detail/DeleteButton.vue";
 import DetailCard from "@/components/detail/DetailCard.vue";
 import DetailItem from "@/components/detail/DetailItem.vue";
@@ -20,7 +21,6 @@ import { getIdFromRoute } from "@/utils/utils.ts";
 import { useQueryClient } from "@tanstack/vue-query";
 import { useSeoMeta } from "@unhead/vue";
 import { useConfirm } from "primevue";
-import Button from "primevue/button";
 import ConfirmDialog from "primevue/confirmdialog";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
@@ -89,18 +89,14 @@ function onDeleteButtonClick() {
         />
 
         <!--Open Button-->
-        <RouterLink
+        <LinkButton
+          :label="strings.tournament.open"
+          :icon="OpenInNew"
           :to="{
             name: RouteNames.TOURNAMENT_SCORES,
             params: { tournamentId: tournamentId },
           }"
-        >
-          <Button :label="strings.tournament.open">
-            <template #icon>
-              <OpenInNew />
-            </template>
-          </Button>
-        </RouterLink>
+        />
       </template>
     </HeadlineRow>
 

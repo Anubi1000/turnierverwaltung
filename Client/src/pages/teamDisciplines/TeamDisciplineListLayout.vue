@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import HeaderBar from "@/components/HeaderBar.vue";
 import CreateButton from "@/components/itemlist/CreateButton.vue";
 import ItemList from "@/components/itemlist/ItemList.vue";
+import MainContentContainer from "@/components/layout/MainContentContainer.vue";
 import { useGetTeamDisciplines } from "@/utils/api/api.ts";
 import { RouteNames } from "@/utils/routes.ts";
 import { strings } from "@/utils/strings.ts";
@@ -36,24 +38,32 @@ const routerViewKey = useRouterViewKey(3);
 </script>
 
 <template>
-  <ItemList
-    :is-loading="isPending"
-    :is-error="isError"
-    :items="mappedItems"
-    :selected-item-id="selectedItemId"
-  >
-    <template #actionButton>
-      <CreateButton
-        :label="strings.teamDiscipline.create"
-        :link="{
-          name: RouteNames.TEAM_DISCIPLINE_CREATE,
-          params: { tournamentId: tournamentId },
-        }"
-      />
-    </template>
-  </ItemList>
+  <MainContentContainer class="flex-col">
+    <HeaderBar>
+      <h2 class="px-2 text-2xl font-medium">
+        {{ strings.teamDiscipline.items }}
+      </h2>
+    </HeaderBar>
 
-  <div class="flex flex-grow pl-4">
-    <RouterView :key="routerViewKey" />
-  </div>
+    <MainContentContainer>
+      <ItemList
+        :is-loading="isPending"
+        :is-error="isError"
+        :items="mappedItems"
+        :selected-item-id="selectedItemId"
+      >
+        <template #actionButton>
+          <CreateButton
+            :label="strings.teamDiscipline.create"
+            :link="{
+              name: RouteNames.TEAM_DISCIPLINE_CREATE,
+              params: { tournamentId: tournamentId },
+            }"
+          />
+        </template>
+      </ItemList>
+
+      <RouterView :key="routerViewKey" />
+    </MainContentContainer>
+  </MainContentContainer>
 </template>

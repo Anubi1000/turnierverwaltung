@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import DashboardHeader from "@/components/DashboardHeader.vue";
+import ScreenContainer from "@/components/layout/ScreenContainer.vue";
 import DashboardNavigationBar from "@/components/navigation/DashboardNavigationBar.vue";
-import { useGetTournament } from "@/utils/api/api.ts";
 import { LayoutNames, RouteNames } from "@/utils/routes.ts";
 import { strings } from "@/utils/strings.ts";
 import type { NavigationBarItem } from "@/utils/types.ts";
@@ -16,13 +15,7 @@ import LibraryAdd from "~icons/material-symbols/library-add";
 import Person from "~icons/material-symbols/person";
 
 const route = useRoute();
-
 const tournamentId = getIdFromRoute("tournamentId");
-
-const tournamentQuery = useGetTournament(tournamentId);
-const tournamentName = computed(
-  () => tournamentQuery.data.value?.data.name ?? strings.status.loading,
-);
 
 const navigationItems: NavigationBarItem[] = [
   {
@@ -98,20 +91,17 @@ const routerViewKey = useRouterViewKey(2);
 </script>
 
 <template>
-  <div class="flex h-dvh w-dvw flex-col bg-surface-50">
-    <DashboardHeader :title="tournamentName" />
+  <ScreenContainer>
+    <DashboardNavigationBar
+      :title="strings.appName"
+      :items="navigationItems"
+      :selected-item-index="selectedItemIndex"
+      :back-location="{
+        name: RouteNames.TOURNAMENT_DETAIL,
+        params: { tournamentId: tournamentId },
+      }"
+    />
 
-    <div class="flex flex-grow flex-row overflow-y-hidden">
-      <DashboardNavigationBar
-        :items="navigationItems"
-        :selected-item-index="selectedItemIndex"
-        :back-location="{
-          name: RouteNames.TOURNAMENT_DETAIL,
-          params: { tournamentId: tournamentId },
-        }"
-      />
-
-      <RouterView :key="routerViewKey" />
-    </div>
-  </div>
+    <RouterView :key="routerViewKey" />
+  </ScreenContainer>
 </template>

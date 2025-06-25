@@ -55,10 +55,6 @@ export const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/NotFound.vue"),
   },
   {
-    path: "/sidebar",
-    component: () => import("@/pages/sidebar/SidebarPage.vue"),
-  },
-  {
     name: RouteNames.ROOT,
     path: "/",
     component: () => import("@/pages/Index.vue"),

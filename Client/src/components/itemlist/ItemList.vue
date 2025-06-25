@@ -37,8 +37,8 @@ const filteredItems = computed(() => {
 </script>
 
 <template>
-  <div class="flex max-w-72 min-w-72 flex-col overflow-y-auto">
-    <div class="sticky top-[0] flex flex-col gap-2 bg-surface-50 px-2 pb-1">
+  <div class="flex max-w-72 min-w-72 flex-col">
+    <div class="flex flex-col gap-2 px-2 pt-1">
       <slot name="actionButton" />
 
       <IconField>
@@ -53,33 +53,34 @@ const filteredItems = computed(() => {
       </IconField>
     </div>
 
-    <LoadingMessage v-if="isLoading" />
+    <div class="flex flex-col gap-2 overflow-x-visible overflow-y-auto p-2">
+      <LoadingMessage v-if="isLoading" />
 
-    <StatusMessage
-      v-else-if="isError || !items || !filteredItems"
-      severity="error"
-      :message="strings.status.listLoadingFailed"
-    />
+      <StatusMessage
+        v-else-if="isError || !items || !filteredItems"
+        severity="error"
+        :message="strings.status.listLoadingFailed"
+      />
 
-    <StatusMessage
-      v-else-if="items.length === 0"
-      severity="info"
-      :message="strings.status.noEntriesAvailable"
-    />
+      <StatusMessage
+        v-else-if="items.length === 0"
+        severity="info"
+        :message="strings.status.noEntriesAvailable"
+      />
 
-    <StatusMessage
-      v-else-if="filteredItems.length === 0"
-      severity="info"
-      :message="strings.status.noResultsFound"
-    />
+      <StatusMessage
+        v-else-if="filteredItems.length === 0"
+        severity="info"
+        :message="strings.status.noResultsFound"
+      />
 
-    <template v-else>
       <component
-        :is="useRouterLink ? RouterLink : 'div'"
+        v-else
         v-for="item in filteredItems"
+        class="overflow-visible"
+        :is="useRouterLink ? RouterLink : 'div'"
         :key="item.id"
         v-bind="useRouterLink ? { to: item.link } : {}"
-        class="mx-2 my-1"
         @click="!useRouterLink && emit('itemClick', item)"
       >
         <Card
@@ -89,6 +90,6 @@ const filteredItems = computed(() => {
           :content="item.content"
         />
       </component>
-    </template>
+    </div>
   </div>
 </template>
