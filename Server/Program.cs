@@ -176,7 +176,7 @@ public class Program
             File.Copy(dbPath, backupPath);
             app.Logger.LogInformation("Backup created at: {BackupPath}", backupPath);
         }
-        
+
         using (var migrateScope = app.Services.CreateScope())
         {
             var dbContext = migrateScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

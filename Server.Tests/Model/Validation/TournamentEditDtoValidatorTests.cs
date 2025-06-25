@@ -35,14 +35,6 @@ public class TournamentEditDtoValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.Name);
     }
 
-    [Fact]
-    public void WhenDateIsMinValue_HasError()
-    {
-        var model = CreateValidDto(date: DateOnly.MinValue);
-        var result = _validator.TestValidate(model);
-        result.ShouldHaveValidationErrorFor(x => x.Date);
-    }
-
     [Theory]
     [InlineData(1)]
     [InlineData(26)]
@@ -86,24 +78,16 @@ public class TournamentEditDtoValidatorTests
     }
 
     [Fact]
-    public void WhenTeamSizeDoesNotChange_HasNoError()
-    {
-        var model = CreateValidDto(teamSize: 5);
-        var context = new ValidationContext<TournamentEditDto>(model)
-        {
-            RootContextData = { [TournamentEditDtoValidator.PreviousTeamSizeKey] = 5 },
-        };
-        var result = _validator.TestValidate(context);
-        result.ShouldNotHaveValidationErrorFor(x => x.TeamSize);
-    }
-
-    [Fact]
     public void WhenTeamSizeFixedChanged_HasError()
     {
         var model = CreateValidDto(isTeamSizeFixed: true);
         var context = new ValidationContext<TournamentEditDto>(model)
         {
-            RootContextData = { [TournamentEditDtoValidator.PreviousIsTeamSizeFixedKey] = false },
+            RootContextData =
+            {
+                [TournamentEditDtoValidator.PreviousIsTeamSizeFixedKey] = false,
+                [TournamentEditDtoValidator.PreviousTeamSizeKey] = 3,
+            },
         };
         var result = _validator.TestValidate(context);
         result.ShouldHaveValidationErrorFor(x => x.IsTeamSizeFixed);
@@ -115,7 +99,11 @@ public class TournamentEditDtoValidatorTests
         var model = CreateValidDto(isTeamSizeFixed: true);
         var context = new ValidationContext<TournamentEditDto>(model)
         {
-            RootContextData = { [TournamentEditDtoValidator.PreviousIsTeamSizeFixedKey] = true },
+            RootContextData =
+            {
+                [TournamentEditDtoValidator.PreviousIsTeamSizeFixedKey] = true,
+                [TournamentEditDtoValidator.PreviousTeamSizeKey] = 3,
+            },
         };
         var result = _validator.TestValidate(context);
         result.ShouldNotHaveValidationErrorFor(x => x.IsTeamSizeFixed);

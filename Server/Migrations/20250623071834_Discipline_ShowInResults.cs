@@ -15,15 +15,14 @@ namespace Turnierverwaltung.Server.Migrations
                 table: "Disciplines",
                 type: "INTEGER",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: false
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "ShowInResults",
-                table: "Disciplines");
+            migrationBuilder.DropColumn(name: "ShowInResults", table: "Disciplines");
         }
     }
 }

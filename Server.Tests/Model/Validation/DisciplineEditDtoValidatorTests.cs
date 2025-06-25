@@ -11,12 +11,11 @@ public class DisciplineEditDtoValidatorTests
     private static DisciplineEditDto CreateValidDto(
         string name = "Valid Name",
         int amountOfBestRoundsToShow = 3,
-        bool areGendersSeparated = true,
         List<DisciplineEditDto.Value>? values = null
     )
     {
         values ??= [new DisciplineEditDto.Value("Valid Value", true)];
-        return new DisciplineEditDto(name, amountOfBestRoundsToShow, areGendersSeparated, values);
+        return new DisciplineEditDto(name, amountOfBestRoundsToShow, false, true, values);
     }
 
     [Fact]

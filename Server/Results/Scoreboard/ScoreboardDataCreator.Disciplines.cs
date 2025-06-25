@@ -17,7 +17,8 @@ public partial class ScoreboardDataCreator
 
         foreach (var discipline in tournament.Disciplines)
         {
-            if (!discipline.ShowInResults) continue;
+            if (!discipline.ShowInResults)
+                continue;
 
             var columns = columnCache.GetOrCompute(discipline.AmountOfBestRoundsToShow, CreateColumnsForDiscipline);
 

@@ -45,7 +45,13 @@ public class UpdateDisciplineTests : IDisposable
         _dbContext.Tournaments.Add(tournament);
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var dto = new DisciplineEditDto("New Discipline", 2, true, [new DisciplineEditDto.Value("New Value", false)]);
+        var dto = new DisciplineEditDto(
+            "New Discipline",
+            2,
+            true,
+            true,
+            [new DisciplineEditDto.Value("New Value", false)]
+        );
 
         var result = await DisciplineEndpoints.UpdateDiscipline(_dbContext, _validator, 1, dto);
         result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, Ok>();
@@ -78,7 +84,7 @@ public class UpdateDisciplineTests : IDisposable
         _dbContext.Tournaments.Add(tournament);
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var dto = new DisciplineEditDto("", 1, true, [new DisciplineEditDto.Value("Value 1", true)]);
+        var dto = new DisciplineEditDto("", 1, true, true, [new DisciplineEditDto.Value("Value 1", true)]);
 
         var result = await DisciplineEndpoints.UpdateDiscipline(_dbContext, _validator, 1, dto);
         result
@@ -92,7 +98,13 @@ public class UpdateDisciplineTests : IDisposable
     [Fact]
     public async Task WhenDisciplineDoesNotExist_ReturnsNotFound()
     {
-        var dto = new DisciplineEditDto("New Discipline", 1, true, [new DisciplineEditDto.Value("Value 1", true)]);
+        var dto = new DisciplineEditDto(
+            "New Discipline",
+            1,
+            true,
+            true,
+            [new DisciplineEditDto.Value("Value 1", true)]
+        );
 
         var result = await DisciplineEndpoints.UpdateDiscipline(_dbContext, _validator, 1, dto);
         result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, NotFound>();
