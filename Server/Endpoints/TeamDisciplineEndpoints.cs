@@ -7,6 +7,7 @@ using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Model.Transfer.TeamDiscipline;
 using Turnierverwaltung.Server.Model.Validation;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Endpoints;
 
@@ -55,6 +56,7 @@ public static class TeamDisciplineEndpoints
     private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateTeamDiscipline(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<TeamDisciplineEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int tournamentId,
         [FromBody] TeamDisciplineEditDto dto
     )
@@ -86,6 +88,8 @@ public static class TeamDisciplineEndpoints
         dbContext.Add(teamDiscipline);
         await dbContext.SaveChangesAsync();
 
+        scoreboardManager.NotifyUpdate(tournamentId);
+
         return TypedResults.Ok(teamDiscipline.Id);
     }
 
@@ -110,6 +114,7 @@ public static class TeamDisciplineEndpoints
     private static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateTeamDiscipline(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<TeamDisciplineEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int teamDisciplineId,
         [FromBody] TeamDisciplineEditDto dto
     )
@@ -140,12 +145,14 @@ public static class TeamDisciplineEndpoints
             teamDiscipline.BasedOn.Add(discipline);
 
         await dbContext.SaveChangesAsync();
+        scoreboardManager.NotifyUpdate(teamDiscipline.TournamentId);
 
         return TypedResults.Ok();
     }
 
     private static async Task<Results<NotFound, Ok>> DeleteTeamDiscipline(
         [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int teamDisciplineId
     )
     {
@@ -155,6 +162,8 @@ public static class TeamDisciplineEndpoints
 
         dbContext.Remove(teamDiscipline);
         await dbContext.SaveChangesAsync();
+
+        scoreboardManager.NotifyUpdate(teamDiscipline.TournamentId);
 
         return TypedResults.Ok();
     }

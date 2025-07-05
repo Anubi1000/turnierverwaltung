@@ -34,7 +34,7 @@ public class DeleteDisciplineTests : IDisposable
         _dbContext.Tournaments.Add(tournament);
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var result = await DisciplineEndpoints.DeleteDiscipline(_dbContext, 1);
+        var result = await DisciplineEndpoints.DeleteDiscipline(_dbContext, NoOpScoreboardManager.Instance, 1);
         result.Should().BeResult<Results<NotFound, Ok>, Ok>();
 
         var discipline = await _dbContext.Disciplines.SingleOrDefaultAsync(
@@ -47,7 +47,7 @@ public class DeleteDisciplineTests : IDisposable
     [Fact]
     public async Task WhenDisciplineDoesNotExist_ReturnsNotFound()
     {
-        var result = await DisciplineEndpoints.DeleteDiscipline(_dbContext, 1);
+        var result = await DisciplineEndpoints.DeleteDiscipline(_dbContext, NoOpScoreboardManager.Instance, 1);
         result.Should().BeResult<Results<NotFound, Ok>, NotFound>();
     }
 }

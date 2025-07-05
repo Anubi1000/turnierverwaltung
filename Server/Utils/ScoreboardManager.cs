@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using Turnierverwaltung.Server.Database;
-using Turnierverwaltung.Server.Database.Model;
-using Turnierverwaltung.Server.Database.Notification;
 using Turnierverwaltung.Server.Hubs;
 using Turnierverwaltung.Server.Results.Scoreboard;
 
@@ -11,229 +7,100 @@ namespace Turnierverwaltung.Server.Utils;
 public interface IScoreboardManager
 {
     public int CurrentTournamentId { get; }
+    public ScoreboardData? LatestScoreboardData { get; }
     public Task SetCurrentTournament(int tournamentId);
+    public void NotifyUpdate(int tournamentId);
 }
 
-public class ScoreboardManager : IScoreboardManager, IDisposable
+public sealed class ScoreboardManager(
+    ILogger<ScoreboardManager> logger,
+    IHubContext<ScoreboardHub, ScoreboardHub.IScoreboardClient> scoreboardHub,
+    IServiceProvider serviceProvider
+) : IScoreboardManager
 {
-    private readonly IEntityChangeNotifier _changeNotifier;
-    private readonly ILogger<ScoreboardManager> _logger;
-    private readonly IHubContext<ScoreboardHub, ScoreboardHub.IScoreboardClient> _scoreboardHub;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly Lock _updateLock = new();
+    private bool _isUpdateQueued;
+    private bool _isUpdateRunning;
 
-    public ScoreboardManager(
-        IEntityChangeNotifier changeNotifier,
-        ILogger<ScoreboardManager> logger,
-        IHubContext<ScoreboardHub, ScoreboardHub.IScoreboardClient> scoreboardHub,
-        IServiceProvider serviceProvider
-    )
-    {
-        _changeNotifier = changeNotifier;
-        _logger = logger;
-        _scoreboardHub = scoreboardHub;
-        _serviceProvider = serviceProvider;
-
-        changeNotifier.RegisterAsyncListener(DatabaseUpdateListener);
-    }
-
-    public void Dispose()
-    {
-        _changeNotifier.UnregisterListener(DatabaseUpdateListener);
-    }
+    public ScoreboardData? LatestScoreboardData { get; private set; }
 
     public int CurrentTournamentId { get; private set; }
 
     public async Task SetCurrentTournament(int tournamentId)
     {
         CurrentTournamentId = tournamentId;
-        using var scope = _serviceProvider.CreateScope();
-        await SendUpdateToScoreboard(scope);
+        await NotifyUpdateInternal();
     }
 
-    private async Task SendUpdateToScoreboard(IServiceScope scope)
+    public void NotifyUpdate(int tournamentId)
     {
-        if (CurrentTournamentId is 0)
-        {
-            _logger.LogDebug("Sending clear notification to scoreboard");
-            await _scoreboardHub.Clients.All.ClearScoreboard();
+        if (tournamentId != CurrentTournamentId)
             return;
+
+        lock (_updateLock)
+        {
+            if (_isUpdateRunning)
+            {
+                _isUpdateQueued = true;
+                return;
+            }
+
+            _isUpdateRunning = true;
         }
 
+        Task.Run(async () => await RunNotifyUpdateInternal());
+    }
+
+    private async Task RunNotifyUpdateInternal()
+    {
+        try
+        {
+            await NotifyUpdateInternal();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to update scoreboard");
+        }
+        finally
+        {
+            bool runAgain;
+
+            lock (_updateLock)
+            {
+                if (_isUpdateQueued)
+                {
+                    _isUpdateQueued = false;
+                    runAgain = true;
+                }
+                else
+                {
+                    _isUpdateRunning = false;
+                    runAgain = false;
+                }
+            }
+
+            if (runAgain)
+                await RunNotifyUpdateInternal();
+        }
+    }
+
+    private async Task NotifyUpdateInternal()
+    {
+        using var scope = serviceProvider.CreateScope();
         var scoreboardDataCreator = scope.ServiceProvider.GetRequiredService<IScoreboardDataCreator>();
         var data = await scoreboardDataCreator.CreateScoreboardDataAsync(CurrentTournamentId);
-        if (data is null)
+
+        if (data == null)
+        {
+            CurrentTournamentId = 0;
+            LatestScoreboardData = null;
+            logger.LogDebug("Sending clear notification to scoreboard");
+            await scoreboardHub.Clients.All.ClearScoreboard();
             return;
-
-        _logger.LogDebug("Sending updated data to scoreboard");
-        await _scoreboardHub.Clients.All.SendUpdate(data);
-    }
-
-    private async Task DatabaseUpdateListener(EntityChangedEvent changedEvent)
-    {
-        using var scope = _serviceProvider.CreateScope();
-        _logger.LogDebug("Handling entity changed event: {}", changedEvent);
-
-        switch (changedEvent.Entity)
-        {
-            case Tournament tournament:
-                await HandleTournamentUpdate(tournament, changedEvent.Action, scope);
-                return;
-
-            case Club club:
-                await HandleClubUpdate(club, changedEvent.Action, scope);
-                return;
-
-            case Discipline discipline:
-                await HandleDisciplineUpdate(discipline, changedEvent.Action, scope);
-                return;
-
-            case Participant participant:
-                await HandleParticipantUpdate(participant, changedEvent.Action, scope);
-                return;
-
-            case ParticipantResult result:
-                await HandleParticipantResultUpdate(result, changedEvent.Action, scope);
-                return;
-
-            case Team team:
-                await HandleTeamUpdate(team, changedEvent.Action, scope);
-                return;
-
-            case TeamDiscipline teamDiscipline:
-                await HandleTeamDisciplineUpdate(teamDiscipline, changedEvent.Action, scope);
-                return;
         }
-    }
 
-    private Task HandleTournamentUpdate(Tournament tournament, EntityAction action, IServiceScope scope)
-    {
-        if (tournament.Id != CurrentTournamentId)
-            return Task.CompletedTask;
-
-        switch (action)
-        {
-            case EntityAction.Added:
-                return Task.CompletedTask;
-
-            case EntityAction.Updated:
-                return SendUpdateToScoreboard(scope);
-
-            case EntityAction.Deleted:
-                CurrentTournamentId = 0;
-                return SendUpdateToScoreboard(scope);
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(action), action, null);
-        }
-    }
-
-    private Task HandleClubUpdate(Club club, EntityAction action, IServiceScope scope)
-    {
-        if (club.TournamentId != CurrentTournamentId)
-            return Task.CompletedTask;
-
-        switch (action)
-        {
-            case EntityAction.Added:
-                return Task.CompletedTask;
-
-            case EntityAction.Updated:
-            case EntityAction.Deleted:
-                return SendUpdateToScoreboard(scope);
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(action), action, null);
-        }
-    }
-
-    private Task HandleDisciplineUpdate(Discipline discipline, EntityAction action, IServiceScope scope)
-    {
-        if (discipline.TournamentId != CurrentTournamentId)
-            return Task.CompletedTask;
-
-        switch (action)
-        {
-            case EntityAction.Added:
-            case EntityAction.Updated:
-            case EntityAction.Deleted:
-                return SendUpdateToScoreboard(scope);
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(action), action, null);
-        }
-    }
-
-    private Task HandleParticipantUpdate(Participant participant, EntityAction action, IServiceScope scope)
-    {
-        if (participant.TournamentId != CurrentTournamentId)
-            return Task.CompletedTask;
-
-        switch (action)
-        {
-            case EntityAction.Added:
-            case EntityAction.Updated:
-            case EntityAction.Deleted:
-                return SendUpdateToScoreboard(scope);
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(action), action, null);
-        }
-    }
-
-    private async Task HandleParticipantResultUpdate(ParticipantResult result, EntityAction action, IServiceScope scope)
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        var isInCurrentTournament = await dbContext.Disciplines.AnyAsync(d =>
-            d.Id == result.DisciplineId && d.TournamentId == CurrentTournamentId
-        );
-        if (!isInCurrentTournament)
-            return;
-
-        switch (action)
-        {
-            case EntityAction.Added:
-            case EntityAction.Updated:
-            case EntityAction.Deleted:
-                await SendUpdateToScoreboard(scope);
-                return;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(action), action, null);
-        }
-    }
-
-    private Task HandleTeamUpdate(Team team, EntityAction action, IServiceScope scope)
-    {
-        if (team.TournamentId != CurrentTournamentId)
-            return Task.CompletedTask;
-
-        switch (action)
-        {
-            case EntityAction.Added:
-            case EntityAction.Updated:
-            case EntityAction.Deleted:
-                return SendUpdateToScoreboard(scope);
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(action), action, null);
-        }
-    }
-
-    private Task HandleTeamDisciplineUpdate(TeamDiscipline teamDiscipline, EntityAction action, IServiceScope scope)
-    {
-        if (teamDiscipline.TournamentId != CurrentTournamentId)
-            return Task.CompletedTask;
-
-        switch (action)
-        {
-            case EntityAction.Added:
-            case EntityAction.Updated:
-            case EntityAction.Deleted:
-                return SendUpdateToScoreboard(scope);
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(action), action, null);
-        }
+        LatestScoreboardData = data;
+        logger.LogDebug("Sending updated data to scoreboard");
+        await scoreboardHub.Clients.All.SendUpdate(data);
     }
 }

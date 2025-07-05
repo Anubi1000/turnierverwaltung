@@ -82,6 +82,12 @@ public partial class ScoreboardDataCreator
             new("Name", new ScoreboardData.Table.Column.IWidth.Variable(1), ScoreboardData.Table.Column.Alignment.Left),
         };
 
+        var pointsColumn = new ScoreboardData.Table.Column(
+            "Punkte",
+            new ScoreboardData.Table.Column.IWidth.Fixed(150),
+            ScoreboardData.Table.Column.Alignment.Left
+        );
+
         for (var i = 1; i <= teamSize; i++)
         {
             columns.Add(
@@ -91,13 +97,7 @@ public partial class ScoreboardDataCreator
                     ScoreboardData.Table.Column.Alignment.Right
                 )
             );
-            columns.Add(
-                new ScoreboardData.Table.Column(
-                    "Punkte",
-                    new ScoreboardData.Table.Column.IWidth.Fixed(150),
-                    ScoreboardData.Table.Column.Alignment.Left
-                )
-            );
+            columns.Add(pointsColumn);
         }
 
         columns.Add(

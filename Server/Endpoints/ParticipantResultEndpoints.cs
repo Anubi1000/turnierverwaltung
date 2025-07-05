@@ -7,6 +7,7 @@ using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Model.Transfer.Participant;
 using Turnierverwaltung.Server.Model.Validation;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Endpoints;
 
@@ -63,13 +64,15 @@ public static class ParticipantResultEndpoints
     /// </summary>
     /// <param name="dbContext">The database context used to access participant and discipline data.</param>
     /// <param name="validator">The validator for validating the participant result data.</param>
+    /// <param name="scoreboardManager">The scoreboard manager that handles the scoreboard updates.</param>
     /// <param name="participantId">The ID of the participant whose results are being updated.</param>
-    /// <param name="disciplineId">The ID of the discipline associated with the participant's Typedresults.</param>
-    /// <param name="dto">The data transfer object containing the updated participant Typedresults.</param>
+    /// <param name="disciplineId">The ID of the discipline associated with the participant's TypedResults.</param>
+    /// <param name="dto">The data transfer object containing the updated participant TypedResults.</param>
     /// <returns>A result indicating the outcome of the update operation.</returns>
     public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateParticipantResults(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<ParticipantResultEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int participantId,
         [FromRoute] int disciplineId,
         [FromBody] ParticipantResultEditDto dto
@@ -134,6 +137,13 @@ public static class ParticipantResultEndpoints
 
         // Save changes to database
         await dbContext.SaveChangesAsync();
+
+        var tournamentId = await dbContext
+            .Disciplines.Where(d => d.Id == disciplineId)
+            .Select(d => d.TournamentId)
+            .FirstAsync();
+        scoreboardManager.NotifyUpdate(tournamentId);
+
         return TypedResults.Ok();
     }
 }

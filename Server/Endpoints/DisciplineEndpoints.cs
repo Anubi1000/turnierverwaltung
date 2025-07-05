@@ -7,6 +7,7 @@ using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Model.Transfer.Discipline;
 using Turnierverwaltung.Server.Model.Validation;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Endpoints;
 
@@ -56,6 +57,7 @@ public static class DisciplineEndpoints
     public static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateDiscipline(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<DisciplineEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int tournamentId,
         [FromBody] DisciplineEditDto dto
     )
@@ -83,6 +85,8 @@ public static class DisciplineEndpoints
 
         dbContext.Add(discipline);
         await dbContext.SaveChangesAsync();
+
+        scoreboardManager.NotifyUpdate(tournamentId);
 
         return TypedResults.Ok(discipline.Id);
     }
@@ -126,6 +130,7 @@ public static class DisciplineEndpoints
     public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateDiscipline(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<DisciplineEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int disciplineId,
         [FromBody] DisciplineEditDto dto
     )
@@ -148,18 +153,21 @@ public static class DisciplineEndpoints
         discipline.Name = dto.Name;
         discipline.AmountOfBestRoundsToShow = dto.AmountOfBestRoundsToShow;
         discipline.AreGendersSeparated = dto.AreGendersSeparated;
+        discipline.ShowInResults = dto.ShowInResults;
 
         discipline.Values.Clear();
         foreach (var value in dto.Values.Select(v => new Discipline.Value { Name = v.Name, IsAdded = v.IsAdded }))
             discipline.Values.Add(value);
 
         await dbContext.SaveChangesAsync();
+        scoreboardManager.NotifyUpdate(discipline.TournamentId);
 
         return TypedResults.Ok();
     }
 
     public static async Task<Results<NotFound, Ok>> DeleteDiscipline(
         [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int disciplineId
     )
     {
@@ -169,6 +177,8 @@ public static class DisciplineEndpoints
 
         dbContext.Remove(discipline);
         await dbContext.SaveChangesAsync();
+
+        scoreboardManager.NotifyUpdate(discipline.TournamentId);
 
         return TypedResults.Ok();
     }

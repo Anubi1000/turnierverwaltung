@@ -6,6 +6,7 @@ namespace Turnierverwaltung.Server.Utils;
 public class UserDataService
 {
     public const string WordIconPath = "WordIcon.png";
+    public const string ScoreboardIconPath = "ScoreboardIcon.png";
 
     private readonly Dictionary<string, byte[]?> _fileCache = new();
 
@@ -16,9 +17,15 @@ public class UserDataService
 
     public string DataDirectory { get; }
 
-    private string GetConfigFilePath() => Path.Combine(DataDirectory, "Config.json");
+    private string GetConfigFilePath()
+    {
+        return Path.Combine(DataDirectory, "Config.json");
+    }
 
-    public string GetDatabasePath() => Path.Combine(DataDirectory, "Data.db");
+    public string GetDatabasePath()
+    {
+        return Path.Combine(DataDirectory, "Data.db");
+    }
 
     public async Task<byte[]?> ReadAsset(string name)
     {

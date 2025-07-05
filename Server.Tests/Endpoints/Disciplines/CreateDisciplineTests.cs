@@ -39,7 +39,13 @@ public class CreateDisciplineTests : IDisposable
             [new DisciplineEditDto.Value("Value1", true), new DisciplineEditDto.Value("Value2", false)]
         );
 
-        var result = await DisciplineEndpoints.CreateDiscipline(_dbContext, _validator, 1, dto);
+        var result = await DisciplineEndpoints.CreateDiscipline(
+            _dbContext,
+            _validator,
+            NoOpScoreboardManager.Instance,
+            1,
+            dto
+        );
         var okResult = result.Should().BeResult<Results<NotFound, ValidationProblem, Ok<int>>, Ok<int>>().Subject;
 
         var disciplineId = okResult.Value;
@@ -61,7 +67,13 @@ public class CreateDisciplineTests : IDisposable
 
         var dto = new DisciplineEditDto("", 3, true, true, [new DisciplineEditDto.Value("Value1", true)]);
 
-        var result = await DisciplineEndpoints.CreateDiscipline(_dbContext, _validator, 1, dto);
+        var result = await DisciplineEndpoints.CreateDiscipline(
+            _dbContext,
+            _validator,
+            NoOpScoreboardManager.Instance,
+            1,
+            dto
+        );
         result
             .Should()
             .BeResult<Results<NotFound, ValidationProblem, Ok<int>>, ValidationProblem>()
@@ -81,7 +93,13 @@ public class CreateDisciplineTests : IDisposable
             [new DisciplineEditDto.Value("Value1", true)]
         );
 
-        var result = await DisciplineEndpoints.CreateDiscipline(_dbContext, _validator, 1, dto);
+        var result = await DisciplineEndpoints.CreateDiscipline(
+            _dbContext,
+            _validator,
+            NoOpScoreboardManager.Instance,
+            1,
+            dto
+        );
         result.Should().BeResult<Results<NotFound, ValidationProblem, Ok<int>>, NotFound>();
     }
 }

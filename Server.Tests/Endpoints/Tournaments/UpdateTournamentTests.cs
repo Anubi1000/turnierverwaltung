@@ -39,7 +39,13 @@ public class UpdateTournamentTests : IDisposable
 
         var dto = new TournamentEditDto("New Name", DateTestUtils.GetTestDate(1), 3, true);
 
-        var result = await TournamentEndpoints.UpdateTournament(_dbContext, _validator, 1, dto);
+        var result = await TournamentEndpoints.UpdateTournament(
+            _dbContext,
+            _validator,
+            NoOpScoreboardManager.Instance,
+            1,
+            dto
+        );
         result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, Ok>();
 
         var updatedTournament = await _dbContext.Tournaments.SingleOrDefaultAsync(
@@ -65,7 +71,13 @@ public class UpdateTournamentTests : IDisposable
 
         var dto = new TournamentEditDto("", DateTestUtils.GetTestDate(), 5, true);
 
-        var result = await TournamentEndpoints.UpdateTournament(_dbContext, _validator, 1, dto);
+        var result = await TournamentEndpoints.UpdateTournament(
+            _dbContext,
+            _validator,
+            NoOpScoreboardManager.Instance,
+            1,
+            dto
+        );
         result
             .Should()
             .BeResult<Results<NotFound, ValidationProblem, Ok>, ValidationProblem>()
@@ -79,7 +91,13 @@ public class UpdateTournamentTests : IDisposable
     {
         var dto = new TournamentEditDto("New Name", DateTestUtils.GetTestDate(), 3, true);
 
-        var result = await TournamentEndpoints.UpdateTournament(_dbContext, _validator, 1, dto);
+        var result = await TournamentEndpoints.UpdateTournament(
+            _dbContext,
+            _validator,
+            NoOpScoreboardManager.Instance,
+            1,
+            dto
+        );
         result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, NotFound>();
     }
 }

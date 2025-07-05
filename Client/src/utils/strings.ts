@@ -197,6 +197,8 @@ export const strings = {
           return "Normal";
         case "Nationcup":
           return "Nationencup";
+        case "Triathlon":
+          return "Triathlon";
       }
     },
   },

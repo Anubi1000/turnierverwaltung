@@ -53,7 +53,13 @@ public class UpdateDisciplineTests : IDisposable
             [new DisciplineEditDto.Value("New Value", false)]
         );
 
-        var result = await DisciplineEndpoints.UpdateDiscipline(_dbContext, _validator, 1, dto);
+        var result = await DisciplineEndpoints.UpdateDiscipline(
+            _dbContext,
+            _validator,
+            NoOpScoreboardManager.Instance,
+            1,
+            dto
+        );
         result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, Ok>();
 
         var updatedDiscipline = await _dbContext.Disciplines.SingleOrDefaultAsync(
@@ -86,7 +92,13 @@ public class UpdateDisciplineTests : IDisposable
 
         var dto = new DisciplineEditDto("", 1, true, true, [new DisciplineEditDto.Value("Value 1", true)]);
 
-        var result = await DisciplineEndpoints.UpdateDiscipline(_dbContext, _validator, 1, dto);
+        var result = await DisciplineEndpoints.UpdateDiscipline(
+            _dbContext,
+            _validator,
+            NoOpScoreboardManager.Instance,
+            1,
+            dto
+        );
         result
             .Should()
             .BeResult<Results<NotFound, ValidationProblem, Ok>, ValidationProblem>()
@@ -106,7 +118,13 @@ public class UpdateDisciplineTests : IDisposable
             [new DisciplineEditDto.Value("Value 1", true)]
         );
 
-        var result = await DisciplineEndpoints.UpdateDiscipline(_dbContext, _validator, 1, dto);
+        var result = await DisciplineEndpoints.UpdateDiscipline(
+            _dbContext,
+            _validator,
+            NoOpScoreboardManager.Instance,
+            1,
+            dto
+        );
         result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, NotFound>();
     }
 }

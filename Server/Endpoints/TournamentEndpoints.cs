@@ -7,6 +7,7 @@ using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Model.Validation;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Endpoints;
 
@@ -152,6 +153,7 @@ public static class TournamentEndpoints
     public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateTournament(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<TournamentEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int tournamentId,
         [FromBody] TournamentEditDto dto
     )
@@ -183,6 +185,7 @@ public static class TournamentEndpoints
         tournament.Date = dto.Date;
 
         await dbContext.SaveChangesAsync();
+        scoreboardManager.NotifyUpdate(tournamentId);
 
         return TypedResults.Ok();
     }
@@ -199,6 +202,7 @@ public static class TournamentEndpoints
     /// </returns>
     public static async Task<Results<NotFound, Ok>> DeleteTournament(
         [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int tournamentId
     )
     {
@@ -208,6 +212,8 @@ public static class TournamentEndpoints
 
         dbContext.Remove(tournament);
         await dbContext.SaveChangesAsync();
+
+        scoreboardManager.NotifyUpdate(tournamentId);
 
         return TypedResults.Ok();
     }

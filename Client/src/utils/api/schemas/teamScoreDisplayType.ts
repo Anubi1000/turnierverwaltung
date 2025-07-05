@@ -12,4 +12,5 @@ export type TeamScoreDisplayType =
 export const TeamScoreDisplayType = {
   Normal: "Normal",
   Nationcup: "Nationcup",
+  Triathlon: "Triathlon",
 } as const;

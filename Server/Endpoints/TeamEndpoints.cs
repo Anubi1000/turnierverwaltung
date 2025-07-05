@@ -7,6 +7,7 @@ using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Model.Transfer.Team;
 using Turnierverwaltung.Server.Model.Validation;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Endpoints;
 
@@ -59,6 +60,7 @@ public static class TeamEndpoints
     private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateTeam(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<TeamEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int tournamentId,
         [FromBody] TeamEditDto dto
     )
@@ -93,6 +95,8 @@ public static class TeamEndpoints
 
         dbContext.Teams.Add(team);
         await dbContext.SaveChangesAsync();
+
+        scoreboardManager.NotifyUpdate(team.TournamentId);
 
         return TypedResults.Ok(team.Id);
     }
@@ -140,6 +144,7 @@ public static class TeamEndpoints
     private static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateTeam(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<TeamEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int teamId,
         [FromBody] TeamEditDto dto
     )
@@ -173,12 +178,14 @@ public static class TeamEndpoints
         team.ParticipatingDisciplines = participatingDisciplines;
 
         await dbContext.SaveChangesAsync();
+        scoreboardManager.NotifyUpdate(team.TournamentId);
 
         return TypedResults.Ok();
     }
 
     private static async Task<Results<NotFound, Ok>> DeleteTeam(
         [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int teamId
     )
     {
@@ -188,6 +195,8 @@ public static class TeamEndpoints
 
         dbContext.Remove(team);
         await dbContext.SaveChangesAsync();
+
+        scoreboardManager.NotifyUpdate(team.TournamentId);
 
         return TypedResults.Ok();
     }

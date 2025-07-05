@@ -4,4 +4,5 @@ public enum TeamScoreDisplayType
 {
     Normal,
     Nationcup,
+    Triathlon,
 }

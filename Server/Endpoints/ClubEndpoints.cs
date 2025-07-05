@@ -6,6 +6,7 @@ using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Model.Transfer.Club;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Endpoints;
 
@@ -102,6 +103,7 @@ public static class ClubEndpoints
     public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateClub(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<ClubEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int clubId,
         [FromBody] ClubEditDto dto
     )
@@ -119,11 +121,14 @@ public static class ClubEndpoints
         club.Name = dto.Name;
 
         await dbContext.SaveChangesAsync();
+        scoreboardManager.NotifyUpdate(club.TournamentId);
+
         return TypedResults.Ok();
     }
 
     public static async Task<Results<NotFound, Ok>> DeleteClub(
         [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int clubId
     )
     {
@@ -133,6 +138,8 @@ public static class ClubEndpoints
 
         dbContext.Remove(club);
         await dbContext.SaveChangesAsync();
+
+        scoreboardManager.NotifyUpdate(club.TournamentId);
 
         return TypedResults.Ok();
     }

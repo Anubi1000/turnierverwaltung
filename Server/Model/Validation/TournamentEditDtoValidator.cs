@@ -26,11 +26,9 @@ public class TournamentEditDtoValidator : AbstractValidator<TournamentEditDto>
                         context.RootContextData.TryGetValue(PreviousTeamSizeKey, out var previousTeamSize)
                         != context.RootContextData.TryGetValue(PreviousIsTeamSizeFixedKey, out var isTeamSizeFixed)
                     )
-                    {
                         throw new ArgumentException(
                             "If one of PreviousTeamSizeKey and PreviousIsTeamSizeFixedKey is defined, both need to be defined"
                         );
-                    }
 
                     return !(isTeamSizeFixed is true && !value.Equals(previousTeamSize));
                 }

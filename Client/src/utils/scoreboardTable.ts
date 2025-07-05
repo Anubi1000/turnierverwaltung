@@ -3,7 +3,9 @@ import type {
   ScoreboardDataTableColumnAlignment,
 } from "./api/schemas";
 
-function getColumnAlignment(alignment: ScoreboardDataTableColumnAlignment) {
+export function getColumnAlignment(
+  alignment: ScoreboardDataTableColumnAlignment,
+) {
   switch (alignment) {
     case "Left":
       return "left";
@@ -14,7 +16,7 @@ function getColumnAlignment(alignment: ScoreboardDataTableColumnAlignment) {
   }
 }
 
-function getCss(selector: string, styles: Partial<CSSStyleDeclaration>) {
+export function getCss(selector: string, styles: Partial<CSSStyleDeclaration>) {
   let css = selector + "{";
   for (const [key, value] of Object.entries(styles)) {
     const kebabKey = key.replace(

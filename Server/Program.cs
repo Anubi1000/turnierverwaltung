@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Auth;
 using Turnierverwaltung.Server.Database;
-using Turnierverwaltung.Server.Database.Notification;
 using Turnierverwaltung.Server.Endpoints;
 using Turnierverwaltung.Server.Model.Transfer;
 using Turnierverwaltung.Server.Model.Transfer.Club;
 using Turnierverwaltung.Server.Model.Transfer.Discipline;
 using Turnierverwaltung.Server.Model.Transfer.Participant;
+using Turnierverwaltung.Server.Model.Transfer.Team;
 using Turnierverwaltung.Server.Model.Transfer.TeamDiscipline;
 using Turnierverwaltung.Server.Model.Transfer.Tournament;
 using Turnierverwaltung.Server.Model.Validation;
@@ -49,8 +49,7 @@ public class Program
         builder.Services.AddScoped<IScoreboardDataCreator, ScoreboardDataCreator>();
         builder.Services.AddScoped<IWordFileCreator, WordFileCreator>();
 
-        builder.Services.AddScoped<IEntityChangeNotifier, EntityChangeNotifier>();
-        builder.Services.AddScoped<IScoreboardManager, ScoreboardManager>();
+        builder.Services.AddSingleton<IScoreboardManager, ScoreboardManager>();
 
         // Validators
         builder.Services.AddScoped<IValidator<ClubEditDto>, ClubEditDtoValidator>();
@@ -58,6 +57,7 @@ public class Program
         builder.Services.AddScoped<IValidator<ParticipantEditDto>, ParticipantEditDtoValidator>();
         builder.Services.AddScoped<IValidator<ParticipantResultEditDto>, ParticipantResultEditDtoValidator>();
         builder.Services.AddScoped<IValidator<TeamDisciplineEditDto>, TeamDisciplineEditDtoValidator>();
+        builder.Services.AddScoped<IValidator<TeamEditDto>, TeamEditDtoValidator>();
         builder.Services.AddScoped<IValidator<TournamentEditDto>, TournamentEditDtoValidator>();
         builder.Services.AddScoped<IValidator<WordDocGenerationDto>, WordDocGenerationDtoValidator>();
 
@@ -143,7 +143,7 @@ public class Program
     private static void ApplyDatabaseMigrations(WebApplication app, string dbPath)
     {
         bool hasPendingMigrations;
-        bool isInitialCreate = !File.Exists(dbPath);
+        var isInitialCreate = !File.Exists(dbPath);
 
         using (var checkScope = app.Services.CreateScope())
         {

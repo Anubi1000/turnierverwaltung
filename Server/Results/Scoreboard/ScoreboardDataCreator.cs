@@ -1,6 +1,7 @@
-﻿using System.Collections.Frozen;
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
@@ -25,6 +26,9 @@ public partial class ScoreboardDataCreator(ApplicationDbContext dbContext) : ISc
                 // TeamDisciplines > Disciplines
                 .Include(t => t.TeamDisciplines)
                 .ThenInclude(d => d.BasedOn)
+                // TeamDisciplines > Teams
+                .Include(t => t.TeamDisciplines)
+                .ThenInclude(d => d.ParticipatingTeams)
                 // Participants > Results > Discipline
                 .Include(t => t.Participants)
                 .ThenInclude(p => p.Results)
@@ -38,7 +42,6 @@ public partial class ScoreboardDataCreator(ApplicationDbContext dbContext) : ISc
                 // End
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(t => t.Id == tournamentId);
-            await dbContext.Database.CommitTransactionAsync();
         }
 
         if (tournament is null)
@@ -70,6 +73,12 @@ public partial class ScoreboardDataCreator(ApplicationDbContext dbContext) : ISc
             .ToArray();
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static string FormatScore(decimal score)
+    {
+        return decimal.Round(score, ScoreRoundingPrecision).ToString(GermanCultureInfo);
+    }
+
     private static void CreateTeamDisciplineTables(
         Tournament tournament,
         FrozenDictionary<ParticipantResult, decimal[]> calculatedResults,
@@ -84,6 +93,9 @@ public partial class ScoreboardDataCreator(ApplicationDbContext dbContext) : ISc
                     break;
                 case TeamScoreDisplayType.Nationcup:
                     CreateTeamDisciplineTableNationcup(tournament, teamDiscipline, calculatedResults, tables);
+                    break;
+                case TeamScoreDisplayType.Triathlon:
+                    CreateTeamDisciplineTableTriathlon(tournament, teamDiscipline, calculatedResults, tables);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

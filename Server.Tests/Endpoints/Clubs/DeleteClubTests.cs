@@ -35,7 +35,7 @@ public class DeleteClubTests : IDisposable
         _dbContext.Tournaments.Add(tournament);
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var result = await ClubEndpoints.DeleteClub(_dbContext, 1);
+        var result = await ClubEndpoints.DeleteClub(_dbContext, NoOpScoreboardManager.Instance, 1);
         result.Should().BeResult<Results<NotFound, Ok>, Ok>();
 
         var club = await _dbContext.Clubs.SingleOrDefaultAsync(c => c.Id == 1, TestContext.Current.CancellationToken);
@@ -45,7 +45,7 @@ public class DeleteClubTests : IDisposable
     [Fact]
     public async Task WhenClubDoesNotExist_ReturnsNotFound()
     {
-        var result = await ClubEndpoints.DeleteClub(_dbContext, 1);
+        var result = await ClubEndpoints.DeleteClub(_dbContext, NoOpScoreboardManager.Instance, 1);
         result.Should().BeResult<Results<NotFound, Ok>, NotFound>();
     }
 }

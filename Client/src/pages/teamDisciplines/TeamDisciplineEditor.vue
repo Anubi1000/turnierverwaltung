@@ -5,6 +5,7 @@ import DetailCard from "@/components/detail/DetailCard.vue";
 import FormSaveButton from "@/components/form/FormSaveButton.vue";
 import FormInputText from "@/components/form/input/FormInputText.vue";
 import FormMultiSelect from "@/components/form/input/FormMultiSelect.vue";
+import FormSelect from "@/components/form/input/FormSelect.vue";
 import LoadingMessage from "@/components/messages/LoadingMessage.vue";
 import StatusMessage from "@/components/messages/StatusMessage.vue";
 import { useGetDisciplines } from "@/utils/api/api.ts";
@@ -75,7 +76,7 @@ const onSubmit = handleSubmit(async (values) => {
         <div class="flex flex-col gap-2">
           <FormInputText name="name" :label="strings.name" />
 
-          <!--<FormSelect
+          <FormSelect
             name="displayType"
             :label="strings.type"
             :props="{
@@ -85,14 +86,14 @@ const onSubmit = handleSubmit(async (values) => {
                   label: strings.formatting.teamScoreDisplayType('Normal'),
                 },
                 {
-                  value: 'Nationcup',
-                  label: strings.formatting.teamScoreDisplayType('Nationcup'),
+                  value: 'Triathlon',
+                  label: strings.formatting.teamScoreDisplayType('Triathlon'),
                 },
               ],
               optionLabel: 'label',
               optionValue: 'value',
             }"
-          />-->
+          />
 
           <FormMultiSelect
             name="basedOn"

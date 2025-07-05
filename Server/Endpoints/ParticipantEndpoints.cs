@@ -7,6 +7,7 @@ using Turnierverwaltung.Server.Database;
 using Turnierverwaltung.Server.Database.Model;
 using Turnierverwaltung.Server.Model.Transfer.Participant;
 using Turnierverwaltung.Server.Model.Validation;
+using Turnierverwaltung.Server.Utils;
 
 namespace Turnierverwaltung.Server.Endpoints;
 
@@ -77,6 +78,7 @@ public static class ParticipantEndpoints
     private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateParticipant(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<ParticipantEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int tournamentId,
         [FromBody] ParticipantEditDto dto
     )
@@ -106,6 +108,8 @@ public static class ParticipantEndpoints
 
         dbContext.Participants.Add(participant);
         await dbContext.SaveChangesAsync();
+
+        scoreboardManager.NotifyUpdate(tournamentId);
 
         return TypedResults.Ok(participant.Id);
     }
@@ -137,6 +141,7 @@ public static class ParticipantEndpoints
     private static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateParticipant(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<ParticipantEditDto> validator,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int participantId,
         [FromBody] ParticipantEditDto dto
     )
@@ -162,12 +167,14 @@ public static class ParticipantEndpoints
         participant.ClubId = dto.ClubId;
 
         await dbContext.SaveChangesAsync();
+        scoreboardManager.NotifyUpdate(participant.TournamentId);
 
         return TypedResults.Ok();
     }
 
     private static async Task<Results<NotFound, Ok>> DeleteParticipant(
         [FromServices] ApplicationDbContext dbContext,
+        [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int participantId
     )
     {
@@ -177,6 +184,8 @@ public static class ParticipantEndpoints
 
         dbContext.Remove(participant);
         await dbContext.SaveChangesAsync();
+
+        scoreboardManager.NotifyUpdate(participant.TournamentId);
 
         return TypedResults.Ok();
     }

@@ -42,7 +42,7 @@ public class UpdateClubTests : IDisposable
 
         var dto = new ClubEditDto("New Name");
 
-        var result = await ClubEndpoints.UpdateClub(_dbContext, _validator, 1, dto);
+        var result = await ClubEndpoints.UpdateClub(_dbContext, _validator, NoOpScoreboardManager.Instance, 1, dto);
         result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, Ok>();
 
         var updatedClub = await _dbContext.Clubs.SingleOrDefaultAsync(
@@ -71,7 +71,7 @@ public class UpdateClubTests : IDisposable
 
         var dto = new ClubEditDto("");
 
-        var result = await ClubEndpoints.UpdateClub(_dbContext, _validator, 1, dto);
+        var result = await ClubEndpoints.UpdateClub(_dbContext, _validator, NoOpScoreboardManager.Instance, 1, dto);
         result
             .Should()
             .BeResult<Results<NotFound, ValidationProblem, Ok>, ValidationProblem>()
@@ -85,7 +85,7 @@ public class UpdateClubTests : IDisposable
     {
         var dto = new ClubEditDto("New Name");
 
-        var result = await ClubEndpoints.UpdateClub(_dbContext, _validator, 1, dto);
+        var result = await ClubEndpoints.UpdateClub(_dbContext, _validator, NoOpScoreboardManager.Instance, 1, dto);
         result.Should().BeResult<Results<NotFound, ValidationProblem, Ok>, NotFound>();
     }
 }

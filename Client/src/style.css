@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tailwindcss-primeui";
 @import "@fontsource-variable/inter";
+@import "@fontsource-variable/roboto-mono";
+
+@theme {
+  --font-mono: "Roboto Mono Variable", monospace;
+}
 
 :root {
   font-family: "Inter Variable", sans-serif;
