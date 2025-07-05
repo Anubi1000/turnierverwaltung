@@ -185,6 +185,83 @@ export function useCheckAuth<
   return query;
 }
 
+export const getScoreboardIcon = (
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<unknown>> => {
+  return axios.default.get(`/api/files/scoreboard_icon.png`, options);
+};
+
+export const getGetScoreboardIconQueryKey = () => {
+  return ["api", "files", "scoreboard_icon.png"] as const;
+};
+
+export const getGetScoreboardIconQueryOptions = <
+  TData = Awaited<ReturnType<typeof getScoreboardIcon>>,
+  TError = AxiosError<void>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof getScoreboardIcon>>,
+      TError,
+      TData
+    >
+  >;
+  axios?: AxiosRequestConfig;
+}) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey = getGetScoreboardIconQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getScoreboardIcon>>
+  > = ({ signal }) => getScoreboardIcon({ signal, ...axiosOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getScoreboardIcon>>,
+    TError,
+    TData
+  >;
+};
+
+export type GetScoreboardIconQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getScoreboardIcon>>
+>;
+export type GetScoreboardIconQueryError = AxiosError<void>;
+
+export function useGetScoreboardIcon<
+  TData = Awaited<ReturnType<typeof getScoreboardIcon>>,
+  TError = AxiosError<void>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getScoreboardIcon>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryReturnType<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetScoreboardIconQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryReturnType<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = unref(queryOptions).queryKey as DataTag<
+    QueryKey,
+    TData,
+    TError
+  >;
+
+  return query;
+}
+
 export const getTournaments = (
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<ListTournamentDto[]>> => {
