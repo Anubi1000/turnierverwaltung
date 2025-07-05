@@ -10,10 +10,11 @@ import {
   ZodNumber,
 } from "zod";
 
-const nameSchema = string().refine(
-  (name) => name.trim(),
-  strings.validation.nameNeeded,
-);
+const nameRegex = /^[\w.\- ']+$/;
+
+const nameSchema = string()
+  .regex(nameRegex, strings.validation.nameNeeded)
+  .refine((name) => name.trim(), strings.validation.nameNeeded);
 
 function numberSchema(min: number, max: number): ZodNumber {
   return number({ invalid_type_error: strings.validation.numberNeeded })
@@ -63,7 +64,7 @@ export const disciplineEditDtoSchema = object({
 
 export const teamDisciplineEditDtoSchema = object({
   name: nameSchema,
-  //displayType: zEnum(["Normal", "Nationcup"]),
+  displayType: zEnum(["Normal", "Triathlon"]),
   basedOn: number().int().array().nonempty(strings.validation.disciplineNeeded),
 });
 

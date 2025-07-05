@@ -71,10 +71,7 @@ const onSubmit = handleSubmit(async (values) => {
           pt: {
             label: {
               class:
-                'flex flex-wrap whitespace-normal overflow-visible items-start',
-            },
-            chipItem: {
-              class: 'first:pt-5',
+                'flex flex-wrap whitespace-normal overflow-visible items-start pt-6',
             },
           },
         }"

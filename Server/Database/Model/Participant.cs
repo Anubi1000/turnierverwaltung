@@ -18,6 +18,9 @@ public sealed class Participant
     public int ClubId { get; set; }
     public Club Club { get; init; } = null!;
 
+    // Teams
+    public ICollection<Team> Teams { get; init; } = new List<Team>();
+
     // Results
     public ICollection<ParticipantResult> Results { get; init; } = new List<ParticipantResult>();
 }

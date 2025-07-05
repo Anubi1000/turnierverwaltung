@@ -8,9 +8,7 @@ const { name } = defineProps<{
   props?: CheckboxProps;
 }>();
 
-const { value } = useField<boolean>(() => name, undefined, {
-  type: "checkbox",
-});
+const { value } = useField<boolean>(() => name);
 </script>
 
 <template>

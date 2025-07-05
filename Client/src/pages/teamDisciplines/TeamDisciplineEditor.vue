@@ -35,6 +35,7 @@ const { handleSubmit } = useForm({
   validationSchema: toTypedSchema(teamDisciplineEditDtoSchema),
   initialValues: {
     name: initialValues.name,
+    displayType: initialValues.displayType,
     // @ts-expect-error Type somehow not valid
     basedOn: [...initialValues.basedOn],
   },
@@ -43,7 +44,7 @@ const { handleSubmit } = useForm({
 const onSubmit = handleSubmit(async (values) => {
   const data: TeamDisciplineEditDto = {
     name: values.name,
-    displayType: "Normal",
+    displayType: values.displayType,
     basedOn: [...values.basedOn],
   };
 

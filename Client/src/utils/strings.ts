@@ -126,7 +126,7 @@ export const strings = {
     selectOne: "Wähle eine Disziplin aus",
     loadingError: "Beim Laden der Disziplin ist ein Fehler aufgetreten",
     count: "Anzahl Disziplinen",
-    noAvailable: "Es sind Disziplinen vorhanden",
+    noAvailable: "Es sind keine Disziplinen vorhanden",
     deleteDlg: {
       header: "Disziplin löschen?",
       message: (name: string) =>
@@ -159,7 +159,7 @@ export const strings = {
   },
 
   validation: {
-    nameNeeded: "Es muss ein Name angegeben werden",
+    nameNeeded: "Es muss ein gültiger Name angegeben werden",
     numberNeeded: "Es muss eine Zahl angegeben werden",
     dateNeeded: "Es muss ein Datum angegeben werden",
     clubNeeded: "Es muss ein Verein angegeben werden",

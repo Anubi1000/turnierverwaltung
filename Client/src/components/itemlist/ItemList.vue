@@ -4,11 +4,15 @@ import LoadingMessage from "@/components/messages/LoadingMessage.vue";
 import StatusMessage from "@/components/messages/StatusMessage.vue";
 import { strings } from "@/utils/strings.ts";
 import type { ItemListItem } from "@/utils/types.ts";
+import Button from "primevue/button";
 import IconField from "primevue/iconfield";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import { computed, ref } from "vue";
 import { RouterLink } from "vue-router";
+import Close from "~icons/material-symbols/close";
 import Search from "~icons/material-symbols/search";
 
 const { items, useRouterLink = true } = defineProps<{
@@ -37,23 +41,36 @@ const filteredItems = computed(() => {
 </script>
 
 <template>
-  <div class="flex max-w-72 min-w-72 flex-col">
+  <div class="flex max-w-72 min-w-72 flex-col border-r-1 border-r-surface-300">
     <div class="flex flex-col gap-2 px-2 pt-1">
       <slot name="actionButton" />
 
-      <IconField>
-        <InputIcon>
-          <Search class="-mt-1" />
-        </InputIcon>
-        <InputText
-          :placeholder="strings.searchTerm"
-          v-model="searchTerm"
-          class="w-full"
-        />
-      </IconField>
+      <InputGroup>
+        <IconField>
+          <InputIcon class="z-10">
+            <Search class="-mt-1" />
+          </InputIcon>
+
+          <InputText
+            :placeholder="strings.searchTerm"
+            v-model="searchTerm"
+            class="w-full"
+          />
+        </IconField>
+
+        <InputGroupAddon>
+          <Button variant="text" severity="secondary" @click="searchTerm = ''">
+            <template #icon>
+              <Close />
+            </template>
+          </Button>
+        </InputGroupAddon>
+      </InputGroup>
     </div>
 
-    <div class="flex flex-col gap-2 overflow-x-visible overflow-y-auto p-2">
+    <div
+      class="flex flex-grow flex-col gap-2 overflow-x-visible overflow-y-auto p-2"
+    >
       <LoadingMessage v-if="isLoading" />
 
       <StatusMessage

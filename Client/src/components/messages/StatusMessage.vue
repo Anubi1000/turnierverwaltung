@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <Message class="m-auto text-center" :severity="severity">{{
-    message
-  }}</Message>
+  <Message class="m-auto text-center" :severity="severity">
+    <span class="mx-auto">{{ message }}</span>
+  </Message>
 </template>

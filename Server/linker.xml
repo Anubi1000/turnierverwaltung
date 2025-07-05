@@ -2,6 +2,7 @@
     <!--Keep EFCore related because it is not compatible with trimming-->
     <assembly fullname="Turnierverwaltung.Server">
         <type fullname="Turnierverwaltung.Server.Database.*" preserve="all"/>
+        <type fullname="Turnierverwaltung.Server.Migrations.*" preserve="all"/>
     </assembly>
     <assembly fullname="Microsoft.EntityFrameworkCore" preserve="all"/>
 </linker>

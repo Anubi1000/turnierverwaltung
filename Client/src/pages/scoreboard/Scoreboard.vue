@@ -66,7 +66,7 @@ function onScrollComplete() {
     </div>
 
     <h2
-      class="px-auto bg-primary text-center text-2xl font-bold text-surface-0"
+      class="px-auto bg-primary pb-2 text-center text-2xl font-bold text-surface-0"
       v-if="selectedTable"
     >
       {{ selectedTable.name }}
@@ -79,11 +79,20 @@ function onScrollComplete() {
       Keine Disziplinen vorhanden
     </div>
 
-    <ScoreboardTable
-      v-else-if="selectedTable"
-      :key="tableNumber"
-      :table="selectedTable"
-      @on-scroll-complete="onScrollComplete"
-    />
+    <template v-else-if="selectedTable">
+      <div
+        class="m-auto text-2xl font-semibold"
+        v-if="selectedTable.rows.length === 0"
+      >
+        Keine Einträge vorhanden
+      </div>
+
+      <ScoreboardTable
+        v-else
+        :key="tableNumber"
+        :table="selectedTable"
+        @on-scroll-complete="onScrollComplete"
+      />
+    </template>
   </ScreenContainer>
 </template>

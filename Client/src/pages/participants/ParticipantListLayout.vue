@@ -22,7 +22,7 @@ const mappedItems = computed<ItemListItem[] | undefined>(() => {
 
   return rawItems.map<ItemListItem>((item) => ({
     id: item.id.toString(),
-    title: `${item.startNumber} ${item.name}`,
+    title: `${item.startNumber} - ${item.name}`,
     link: {
       name: RouteNames.PARTICIPANT_DETAIL,
       params: { tournamentId: tournamentId, participantId: item.id },

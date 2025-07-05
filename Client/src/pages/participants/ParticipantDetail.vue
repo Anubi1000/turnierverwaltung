@@ -8,7 +8,6 @@ import DetailLinkButton from "@/components/detail/DetailLinkButton.vue";
 import EditButton from "@/components/detail/EditButton.vue";
 import LoadingMessage from "@/components/messages/LoadingMessage.vue";
 import StatusMessage from "@/components/messages/StatusMessage.vue";
-import Message from "@/components/primevue/Message.vue";
 import {
   getGetParticipantQueryKey,
   getGetParticipantsQueryKey,
@@ -134,9 +133,10 @@ function onDeleteButtonClick() {
 
       <DetailCard :title="strings.results">
         <div v-if="data.data.disciplines.length === 0">
-          <Message class="text-center">{{
-            strings.discipline.noAvailable
-          }}</Message>
+          <StatusMessage
+            :message="strings.discipline.noAvailable"
+            severity="info"
+          />
         </div>
 
         <div v-else class="flex flex-col gap-2">
