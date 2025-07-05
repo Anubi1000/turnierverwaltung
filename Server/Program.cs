@@ -151,7 +151,7 @@ public class Program
             hasPendingMigrations = dbContext.Database.GetPendingMigrations().Any();
         }
 
-        if (!hasPendingMigrations)
+        if (!hasPendingMigrations && !isInitialCreate)
         {
             app.Logger.LogInformation("No database migrations needed");
             return;
