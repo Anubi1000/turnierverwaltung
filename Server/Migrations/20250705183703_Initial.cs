@@ -55,6 +55,7 @@ namespace Turnierverwaltung.Server.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     AmountOfBestRoundsToShow = table.Column<int>(type: "INTEGER", nullable: false),
                     AreGendersSeparated = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ShowInResults = table.Column<bool>(type: "INTEGER", nullable: false),
                     TournamentId = table.Column<int>(type: "INTEGER", nullable: false),
                     Values = table.Column<string>(type: "TEXT", nullable: true),
                 },
@@ -116,6 +117,37 @@ namespace Turnierverwaltung.Server.Migrations
             );
 
             migrationBuilder.CreateTable(
+                name: "Participants",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false).Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    StartNumber = table.Column<int>(type: "INTEGER", nullable: false),
+                    Gender = table.Column<int>(type: "INTEGER", nullable: false),
+                    TournamentId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ClubId = table.Column<int>(type: "INTEGER", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Participants", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Participants_Clubs_ClubId",
+                        column: x => x.ClubId,
+                        principalTable: "Clubs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade
+                    );
+                    table.ForeignKey(
+                        name: "FK_Participants_Tournaments_TournamentId",
+                        column: x => x.TournamentId,
+                        principalTable: "Tournaments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
+
+            migrationBuilder.CreateTable(
                 name: "DisciplineTeamDiscipline",
                 columns: table => new
                 {
@@ -136,44 +168,6 @@ namespace Turnierverwaltung.Server.Migrations
                         name: "FK_DisciplineTeamDiscipline_TeamDisciplines_UsedInId",
                         column: x => x.UsedInId,
                         principalTable: "TeamDisciplines",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade
-                    );
-                }
-            );
-
-            migrationBuilder.CreateTable(
-                name: "Participants",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false).Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    StartNumber = table.Column<int>(type: "INTEGER", nullable: false),
-                    Gender = table.Column<int>(type: "INTEGER", nullable: false),
-                    TournamentId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ClubId = table.Column<int>(type: "INTEGER", nullable: false),
-                    TeamId = table.Column<int>(type: "INTEGER", nullable: true),
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Participants", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Participants_Clubs_ClubId",
-                        column: x => x.ClubId,
-                        principalTable: "Clubs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade
-                    );
-                    table.ForeignKey(
-                        name: "FK_Participants_Teams_TeamId",
-                        column: x => x.TeamId,
-                        principalTable: "Teams",
-                        principalColumn: "Id"
-                    );
-                    table.ForeignKey(
-                        name: "FK_Participants_Tournaments_TournamentId",
-                        column: x => x.TournamentId,
-                        principalTable: "Tournaments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade
                     );
@@ -238,6 +232,33 @@ namespace Turnierverwaltung.Server.Migrations
                 }
             );
 
+            migrationBuilder.CreateTable(
+                name: "ParticipantTeam",
+                columns: table => new
+                {
+                    MembersId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TeamsId = table.Column<int>(type: "INTEGER", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ParticipantTeam", x => new { x.MembersId, x.TeamsId });
+                    table.ForeignKey(
+                        name: "FK_ParticipantTeam_Participants_MembersId",
+                        column: x => x.MembersId,
+                        principalTable: "Participants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade
+                    );
+                    table.ForeignKey(
+                        name: "FK_ParticipantTeam_Teams_TeamsId",
+                        column: x => x.TeamsId,
+                        principalTable: "Teams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
+
             migrationBuilder.CreateIndex(name: "IX_Clubs_TournamentId", table: "Clubs", column: "TournamentId");
 
             migrationBuilder.CreateIndex(
@@ -260,12 +281,16 @@ namespace Turnierverwaltung.Server.Migrations
 
             migrationBuilder.CreateIndex(name: "IX_Participants_ClubId", table: "Participants", column: "ClubId");
 
-            migrationBuilder.CreateIndex(name: "IX_Participants_TeamId", table: "Participants", column: "TeamId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_Participants_TournamentId",
                 table: "Participants",
                 column: "TournamentId"
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ParticipantTeam_TeamsId",
+                table: "ParticipantTeam",
+                column: "TeamsId"
             );
 
             migrationBuilder.CreateIndex(
@@ -290,6 +315,8 @@ namespace Turnierverwaltung.Server.Migrations
 
             migrationBuilder.DropTable(name: "ParticipantResults");
 
+            migrationBuilder.DropTable(name: "ParticipantTeam");
+
             migrationBuilder.DropTable(name: "TeamTeamDiscipline");
 
             migrationBuilder.DropTable(name: "Disciplines");
@@ -298,9 +325,9 @@ namespace Turnierverwaltung.Server.Migrations
 
             migrationBuilder.DropTable(name: "TeamDisciplines");
 
-            migrationBuilder.DropTable(name: "Clubs");
-
             migrationBuilder.DropTable(name: "Teams");
+
+            migrationBuilder.DropTable(name: "Clubs");
 
             migrationBuilder.DropTable(name: "Tournaments");
         }

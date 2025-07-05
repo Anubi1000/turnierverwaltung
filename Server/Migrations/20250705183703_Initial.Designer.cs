@@ -10,8 +10,8 @@ using Turnierverwaltung.Server.Database;
 namespace Turnierverwaltung.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250623071834_Discipline_ShowInResults")]
-    partial class Discipline_ShowInResults
+    [Migration("20250705183703_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,21 @@ namespace Turnierverwaltung.Server.Migrations
                     b.HasIndex("UsedInId");
 
                     b.ToTable("DisciplineTeamDiscipline");
+                });
+
+            modelBuilder.Entity("ParticipantTeam", b =>
+                {
+                    b.Property<int>("MembersId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TeamsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("MembersId", "TeamsId");
+
+                    b.HasIndex("TeamsId");
+
+                    b.ToTable("ParticipantTeam");
                 });
 
             modelBuilder.Entity("TeamTeamDiscipline", b =>
@@ -117,17 +132,12 @@ namespace Turnierverwaltung.Server.Migrations
                     b.Property<int>("StartNumber")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("TeamId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("TournamentId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClubId");
-
-                    b.HasIndex("TeamId");
 
                     b.HasIndex("TournamentId");
 
@@ -234,6 +244,21 @@ namespace Turnierverwaltung.Server.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ParticipantTeam", b =>
+                {
+                    b.HasOne("Turnierverwaltung.Server.Database.Model.Participant", null)
+                        .WithMany()
+                        .HasForeignKey("MembersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Turnierverwaltung.Server.Database.Model.Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TeamTeamDiscipline", b =>
                 {
                     b.HasOne("Turnierverwaltung.Server.Database.Model.TeamDiscipline", null)
@@ -306,10 +331,6 @@ namespace Turnierverwaltung.Server.Migrations
                         .HasForeignKey("ClubId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Turnierverwaltung.Server.Database.Model.Team", null)
-                        .WithMany("Members")
-                        .HasForeignKey("TeamId");
 
                     b.HasOne("Turnierverwaltung.Server.Database.Model.Tournament", "Tournament")
                         .WithMany("Participants")
@@ -404,11 +425,6 @@ namespace Turnierverwaltung.Server.Migrations
             modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Participant", b =>
                 {
                     b.Navigation("Results");
-                });
-
-            modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Team", b =>
-                {
-                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("Turnierverwaltung.Server.Database.Model.Tournament", b =>

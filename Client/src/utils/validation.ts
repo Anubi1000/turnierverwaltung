@@ -64,7 +64,7 @@ export const disciplineEditDtoSchema = object({
 
 export const teamDisciplineEditDtoSchema = object({
   name: nameSchema,
-  displayType: zEnum(["Normal", "Nationencup", "Triathlon"]),
+  displayType: zEnum(["Normal", "Nationcup", "Triathlon"]),
   basedOn: number().int().array().nonempty(strings.validation.disciplineNeeded),
 });
 
