@@ -13,7 +13,7 @@
     "orval": "orval"
   },
   "dependencies": {
-    "@fontsource-variable/inter": "5.2.5",
+    "@fontsource-variable/inter": "5.2.6",
     "@fontsource-variable/roboto-mono": "5.2.6",
     "@microsoft/signalr": "8.0.7",
     "@primeuix/themes": "1.1.1",
