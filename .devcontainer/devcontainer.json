@@ -1,21 +1,19 @@
 {
-    "name": "App",
-    "image": "mcr.microsoft.com/devcontainers/java:1-17",
-    "features": {
-        "ghcr.io/devcontainers/features/java:1": {
-            "version": "none",
-            "installMaven": "false",
-            "installGradle": "false"
-        }
-    },
-    "customizations": {
-        "vscode": {
-            "settings": {},
-            "extensions": [
-                "streetsidesoftware.code-spell-checker",
-                "fwcd.kotlin"
-            ]
-        }
-    },
-    "updateContentCommand": "cd app && chmod +x ./gradlew && ./gradlew dependencies --no-daemon"
+  "name": "Turnierverwaltung",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "chmod +x /scripts/postCreate.sh && /scripts/postCreate.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "esbenp.prettier-vscode",
+        "vue.volar",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss"
+      ]
+    }
+  },
+  "forwardPorts": [8080, 5097, 5173]
 }

@@ -1,0 +1,15 @@
+﻿{
+	admin off
+}
+
+:8080 {
+	@api_paths path /api* /swagger* /openapi* /ping /auth
+
+	handle @api_paths {
+		reverse_proxy http://localhost:5097
+	}
+
+	handle {
+		reverse_proxy http://localhost:5173
+	}
+}
