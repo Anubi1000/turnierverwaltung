@@ -75,7 +75,7 @@ async function showTournamentOnScoreboard() {
 <template>
   <MainContentContainer class="flex-col">
     <HeaderBar>
-      <h2 class="px-2 text-2xl font-medium">{{ strings.team.items }}</h2>
+      <h2 class="px-2 text-2xl font-medium">{{ strings.overview }}</h2>
     </HeaderBar>
 
     <MainContentContainer>

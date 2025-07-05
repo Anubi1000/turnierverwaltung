@@ -26,7 +26,7 @@ public partial class ScoreboardDataCreator
                 .Participants.Select(participant =>
                 {
                     var result = participant.Results.FirstOrDefault(result => result.DisciplineId == discipline.Id);
-                    var scores = result is not null ? calculatedResults[result] : [];
+                    var scores = result is not null ? calculatedResults[result].OrderDescending().ToArray() : [];
                     return (participant, scores);
                 })
                 .Where(result => result.scores.Length != 0)

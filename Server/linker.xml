@@ -5,4 +5,7 @@
         <type fullname="Turnierverwaltung.Server.Migrations.*" preserve="all"/>
     </assembly>
     <assembly fullname="Microsoft.EntityFrameworkCore" preserve="all"/>
+    <assembly fullname="Microsoft.EntityFrameworkCore.Abstractions" preserve="all"/>
+    <assembly fullname="Microsoft.EntityFrameworkCore.Relational" preserve="all"/>
+    <assembly fullname="Microsoft.EntityFrameworkCore.Sqlite" preserve="all"/>
 </linker>

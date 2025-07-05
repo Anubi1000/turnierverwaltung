@@ -10,7 +10,7 @@ import {
   ZodNumber,
 } from "zod";
 
-const nameRegex = /^[\w.\- ']+$/;
+const nameRegex = /^[\p{L}\p{Mn}\p{Nd}\p{Pc}.\- ']+$/u;
 
 const nameSchema = string()
   .regex(nameRegex, strings.validation.nameNeeded)
