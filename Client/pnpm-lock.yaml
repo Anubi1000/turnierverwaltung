@@ -48,8 +48,8 @@ importers:
         specifier: 0.6.1
         version: 0.6.1(tailwindcss@4.1.7)
       vee-validate:
-        specifier: 4.15.0
-        version: 4.15.0(vue@3.5.14(typescript@5.8.3))
+        specifier: 4.15.1
+        version: 4.15.1(vue@3.5.14(typescript@5.8.3))
       vue:
         specifier: 3.5.14
         version: 3.5.14(typescript@5.8.3)
@@ -3006,11 +3006,6 @@ packages:
   validator@13.15.0:
     resolution: {integrity: sha512-36B2ryl4+oL5QxZ3AzD0t5SsMNGvTtQHpjgFO5tbNxfXbMFkY822ktCDe1MnlqV3301QQI9SLHDNJokDI+Z9pA==}
     engines: {node: '>= 0.10'}
-
-  vee-validate@4.15.0:
-    resolution: {integrity: sha512-PGJh1QCFwCBjbHu5aN6vB8macYVWrajbDvgo1Y/8fz9n/RVIkLmZCJDpUgu7+mUmCOPMxeyq7vXUOhbwAqdXcA==}
-    peerDependencies:
-      vue: ^3.4.26
 
   vee-validate@4.15.1:
     resolution: {integrity: sha512-DkFsiTwEKau8VIxyZBGdO6tOudD+QoUBPuHj3e6QFqmbfCRj1ArmYWue9lEp6jLSWBIw4XPlDLjFIZNLdRAMSg==}
@@ -6371,12 +6366,6 @@ snapshots:
   utility-types@3.11.0: {}
 
   validator@13.15.0: {}
-
-  vee-validate@4.15.0(vue@3.5.14(typescript@5.8.3)):
-    dependencies:
-      '@vue/devtools-api': 7.7.6
-      type-fest: 4.41.0
-      vue: 3.5.14(typescript@5.8.3)
 
   vee-validate@4.15.1(vue@3.5.14(typescript@5.8.3)):
     dependencies:
