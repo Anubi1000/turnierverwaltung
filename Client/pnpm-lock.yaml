@@ -18,8 +18,8 @@ importers:
         specifier: 8.0.7
         version: 8.0.7
       '@primeuix/themes':
-        specifier: 1.1.1
-        version: 1.1.1
+        specifier: 1.2.1
+        version: 1.2.1
       '@tanstack/vue-query':
         specifier: 5.81.5
         version: 5.81.5(vue@3.5.17(typescript@5.8.3))
@@ -660,10 +660,6 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@primeuix/styled@0.6.3':
-    resolution: {integrity: sha512-cW8XbJ1wWN9kC7lDhGpgTZI3FnUm68tw34BRm8C+z6T3X/Ayw+kfxlApxNEafipjWYiwNM9L+TUOHumbsESjqw==}
-    engines: {node: '>=12.11.0'}
-
   '@primeuix/styled@0.7.0':
     resolution: {integrity: sha512-xUqMdQb75izeDkNWFK1QlU15aUl5LIU97Fq68IXOhrqqLsKEBnj5ftntFZrENQW70jAHwALdWP4EOGi/poc9Tg==}
     engines: {node: '>=12.11.0'}
@@ -671,12 +667,8 @@ packages:
   '@primeuix/styles@1.2.1':
     resolution: {integrity: sha512-Tri7pPgZgxrVmhJG8ijZZFolQ6vu27xnkGoAB9EFY8YlaKTM5iqkWzEcqdxy2KmgFWMXi+BrPHwO0RdQ6JCT+g==}
 
-  '@primeuix/themes@1.1.1':
-    resolution: {integrity: sha512-fcHPLfw73cOApPovtA+D9wf3N7FBruU/6oTRt+AcTK754mHhnTza9kC2jiFQfq5HnWF0u0J/5Pb943fNsnxVVA==}
-
-  '@primeuix/utils@0.5.3':
-    resolution: {integrity: sha512-7SGh7734wcF1/uK6RzO6Z6CBjGQ97GDHfpyl2F1G/c7R0z9hkT/V72ypDo82AWcCS7Ta07oIjDpOCTkSVZuEGQ==}
-    engines: {node: '>=12.11.0'}
+  '@primeuix/themes@1.2.1':
+    resolution: {integrity: sha512-DVCFDncvag47tpag3TdufDTuvUbfKnkgzmlxAQkwuMS0IlPA3wChrf9VlL2wETg/ZpJm/tHobkJBnB9FmkiqnA==}
 
   '@primeuix/utils@0.6.0':
     resolution: {integrity: sha512-ULpB87ImNAiX36OMtyDeRceWB7N/mVlh6gGLqp/lx8UMKZlLIQH/UAFND86hYXHwNpXeNKcWfMGreb0Oc0hcZA==}
@@ -3849,10 +3841,6 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@primeuix/styled@0.6.3':
-    dependencies:
-      '@primeuix/utils': 0.5.3
-
   '@primeuix/styled@0.7.0':
     dependencies:
       '@primeuix/utils': 0.6.0
@@ -3861,11 +3849,9 @@ snapshots:
     dependencies:
       '@primeuix/styled': 0.7.0
 
-  '@primeuix/themes@1.1.1':
+  '@primeuix/themes@1.2.1':
     dependencies:
-      '@primeuix/styled': 0.6.3
-
-  '@primeuix/utils@0.5.3': {}
+      '@primeuix/styled': 0.7.0
 
   '@primeuix/utils@0.6.0': {}
 
