@@ -27,8 +27,8 @@ importers:
         specifier: 2.0.12
         version: 2.0.12(vue@3.5.14(typescript@5.8.3))
       '@vee-validate/zod':
-        specifier: 4.15.0
-        version: 4.15.0(vue@3.5.14(typescript@5.8.3))(zod@3.25.32)
+        specifier: 4.15.1
+        version: 4.15.1(vue@3.5.14(typescript@5.8.3))(zod@3.25.32)
       axios:
         specifier: 1.9.0
         version: 1.9.0
@@ -1092,8 +1092,8 @@ packages:
     peerDependencies:
       vue: '>=3.5.13'
 
-  '@vee-validate/zod@4.15.0':
-    resolution: {integrity: sha512-MpvIKiyg9X5yD8bJW0no2AU7wtR2T5mrvD9tuPRiie951sU2n6QKgMV38qKKOiqFBCxsMSjIuLLLV3V5kVE4nQ==}
+  '@vee-validate/zod@4.15.1':
+    resolution: {integrity: sha512-329Z4TDBE5Vx0FdbA8S4eR9iGCFFUNGbxjpQ20ff5b5wGueScjocUIx9JHPa79LTG06RnlUR4XogQsjN4tecKA==}
     peerDependencies:
       zod: ^3.24.0
 
@@ -3004,6 +3004,11 @@ packages:
     peerDependencies:
       vue: ^3.4.26
 
+  vee-validate@4.15.1:
+    resolution: {integrity: sha512-DkFsiTwEKau8VIxyZBGdO6tOudD+QoUBPuHj3e6QFqmbfCRj1ArmYWue9lEp6jLSWBIw4XPlDLjFIZNLdRAMSg==}
+    peerDependencies:
+      vue: ^3.4.26
+
   vite-hot-client@2.0.4:
     resolution: {integrity: sha512-W9LOGAyGMrbGArYJN4LBCdOC5+Zwh7dHvOHC0KmGKkJhsOzaKbpo/jEjpPKVHIW0/jBWj8RZG0NUxfgA8BxgAg==}
     peerDependencies:
@@ -4318,10 +4323,10 @@ snapshots:
       unhead: 2.0.12
       vue: 3.5.14(typescript@5.8.3)
 
-  '@vee-validate/zod@4.15.0(vue@3.5.14(typescript@5.8.3))(zod@3.25.32)':
+  '@vee-validate/zod@4.15.1(vue@3.5.14(typescript@5.8.3))(zod@3.25.32)':
     dependencies:
       type-fest: 4.41.0
-      vee-validate: 4.15.0(vue@3.5.14(typescript@5.8.3))
+      vee-validate: 4.15.1(vue@3.5.14(typescript@5.8.3))
       zod: 3.25.32
     transitivePeerDependencies:
       - vue
@@ -6354,6 +6359,12 @@ snapshots:
   validator@13.15.0: {}
 
   vee-validate@4.15.0(vue@3.5.14(typescript@5.8.3)):
+    dependencies:
+      '@vue/devtools-api': 7.7.6
+      type-fest: 4.41.0
+      vue: 3.5.14(typescript@5.8.3)
+
+  vee-validate@4.15.1(vue@3.5.14(typescript@5.8.3)):
     dependencies:
       '@vue/devtools-api': 7.7.6
       type-fest: 4.41.0
