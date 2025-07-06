@@ -32,7 +32,7 @@ useAutoScroll(tableRef, {
   <table
     ref="tableRef"
     :id="instanceId"
-    class="flex flex-1 flex-col overflow-y-scroll"
+    class="flex flex-1 flex-col overflow-y-hidden"
   >
     <thead class="sticky top-0">
       <tr class="bg-primary font-bold text-surface-0">
