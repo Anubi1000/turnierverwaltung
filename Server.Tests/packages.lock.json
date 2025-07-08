@@ -347,8 +347,8 @@
       },
       "Swashbuckle.AspNetCore.SwaggerUI": {
         "type": "Transitive",
-        "resolved": "9.0.1",
-        "contentHash": "UuU+RvZbJZmnciVzi8G0jb3c6xeA4O8pQGrxl30eCK3pRNvurzZgS6shEei27q9wgvp0/UrTUNUM/a1kSlTfzw=="
+        "resolved": "9.0.3",
+        "contentHash": "DgJKJASz5OAygeKv2+N0FCZVhQylESqLXrtrRAqIT0vKpX7t5ImJ1FL6+6OqxKiamGkL0jchRXR8OgpMSsMh8w=="
       },
       "System.Collections.Immutable": {
         "type": "Transitive",
@@ -451,7 +451,7 @@
           "Microsoft.AspNetCore.OpenApi": "[9.0.6, )",
           "Microsoft.EntityFrameworkCore.Sqlite": "[9.0.6, )",
           "SharpGrip.FluentValidation.AutoValidation.Endpoints": "[1.5.0, )",
-          "Swashbuckle.AspNetCore.SwaggerUI": "[9.0.1, )",
+          "Swashbuckle.AspNetCore.SwaggerUI": "[9.0.3, )",
           "System.Linq.Async": "[6.0.3, )"
         }
       }
