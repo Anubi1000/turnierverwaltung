@@ -7,7 +7,7 @@
   "rebaseWhen": "behind-base-branch",
   "packageRules": [
     {
-      "matchDepTypes": ["devDependencies", packageManager"],
+      "matchDepTypes": ["devDependencies", "packageManager"],
       "matchUpdateTypes": ["patch"],
       "automerge": true
     }
