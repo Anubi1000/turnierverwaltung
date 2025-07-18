@@ -9,6 +9,17 @@
     {
       "matchDepTypes": ["devDependencies", "packageManager"],
       "matchUpdateTypes": ["patch"],
+      "matchFileNames": ["Client/**"],
+      "automerge": true
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "matchFileNames": ["Server.Tests/**"],
+      "automerge": true
+    },
+    {
+      "matchDepNames": ["dotnet-sdk"],
+      "matchUpdateTypes": ["patch"],
       "automerge": true
     }
   ]
