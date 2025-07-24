@@ -35,9 +35,9 @@
       },
       "ReportGenerator": {
         "type": "Direct",
-        "requested": "[5.4.9, )",
-        "resolved": "5.4.9",
-        "contentHash": "kgp1edbeZMHHTcQpGAdnk14AO6zDZzrxR+a0EQD7O+AZvQNV0n50gROODM3qNsCtajE8jCfnD/sDJ1AQph1ebw=="
+        "requested": "[5.4.10, )",
+        "resolved": "5.4.10",
+        "contentHash": "SaqRAL5CeIwlEh8dSJwOGkYeD+LsblWX4CRMwZxHEru8cKguZz+1qzFzKVjNZNF1Sb00jHqO30ytpN1e9nrNsw=="
       },
       "xunit.runner.visualstudio": {
         "type": "Direct",
