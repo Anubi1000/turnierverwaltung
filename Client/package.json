@@ -15,7 +15,7 @@
   "dependencies": {
     "@fontsource-variable/inter": "5.2.6",
     "@fontsource-variable/roboto-mono": "5.2.6",
-    "@microsoft/signalr": "8.0.7",
+    "@microsoft/signalr": "8.0.17",
     "@primeuix/themes": "1.2.1",
     "@tanstack/vue-query": "5.83.0",
     "@unhead/vue": "2.0.12",

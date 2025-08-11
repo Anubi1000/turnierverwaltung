@@ -15,8 +15,8 @@ importers:
         specifier: 5.2.6
         version: 5.2.6
       '@microsoft/signalr':
-        specifier: 8.0.7
-        version: 8.0.7
+        specifier: 8.0.17
+        version: 8.0.17
       '@primeuix/themes':
         specifier: 1.2.1
         version: 1.2.1
@@ -604,8 +604,8 @@ packages:
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
 
-  '@microsoft/signalr@8.0.7':
-    resolution: {integrity: sha512-PHcdMv8v5hJlBkRHAuKG5trGViQEkPYee36LnJQx4xHOQ5LL4X0nEWIxOp5cCtZ7tu+30quz5V3k0b1YNuc6lw==}
+  '@microsoft/signalr@8.0.17':
+    resolution: {integrity: sha512-5pM6xPtKZNJLO0Tq5nQasVyPFwi/WBY3QB5uc/v3dIPTpS1JXQbaXAQAPxFoQ5rTBFE094w8bbqkp17F9ReQvA==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -3709,7 +3709,7 @@ snapshots:
     dependencies:
       jsep: 1.4.0
 
-  '@microsoft/signalr@8.0.7':
+  '@microsoft/signalr@8.0.17':
     dependencies:
       abort-controller: 3.0.0
       eventsource: 2.0.2
