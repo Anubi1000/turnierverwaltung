@@ -61,8 +61,8 @@ importers:
         specifier: 9.33.0
         version: 9.33.0
       '@iconify-json/material-symbols':
-        specifier: 1.2.31
-        version: 1.2.31
+        specifier: 1.2.32
+        version: 1.2.32
       '@tailwindcss/vite':
         specifier: 4.1.11
         version: 4.1.11(vite@7.0.6(@types/node@22.17.1)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(yaml@2.8.0))
@@ -545,8 +545,8 @@ packages:
     resolution: {integrity: sha512-3WK2FREmDA2aadCjD71PE7tx5evyvmhg80ts1kXp2IzXIA0ZJ7guGM66tj40kxaqwpMSGchwEnnfYswntav76g==}
     engines: {node: '>=16.0.0'}
 
-  '@iconify-json/material-symbols@1.2.31':
-    resolution: {integrity: sha512-O3xGdrPXiFNX1qJHssAbvW42OS6wcdrFqJMGfwz+CBZzSjpMGBQG8k0Urxb5FNt6nIz7asX5xqkg68IRA4ackA==}
+  '@iconify-json/material-symbols@1.2.32':
+    resolution: {integrity: sha512-Jw3wdiNV8X1MoiS0rFzlZFYek/yYS1GTh/64L3lZkqlPo+uJAb0xdtVWZR54tzY/0G2OuWXMDqeCCQ6I2wB9/w==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -3638,7 +3638,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@iconify-json/material-symbols@1.2.31':
+  '@iconify-json/material-symbols@1.2.32':
     dependencies:
       '@iconify/types': 2.0.0
 
