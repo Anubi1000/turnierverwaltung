@@ -75,7 +75,7 @@ public static class ParticipantEndpoints
         return TypedResults.Ok(currentMaxStartNumber.HasValue ? currentMaxStartNumber.Value + 1 : 1);
     }
 
-    private static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateParticipant(
+    public static async Task<Results<NotFound, ValidationProblem, Ok<int>>> CreateParticipant(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<ParticipantEditDto> validator,
         [FromServices] IScoreboardManager scoreboardManager,
@@ -114,7 +114,7 @@ public static class ParticipantEndpoints
         return TypedResults.Ok(participant.Id);
     }
 
-    private static async Task<Results<NotFound, Ok<ParticipantDetailDto>>> GetParticipant(
+    public static async Task<Results<NotFound, Ok<ParticipantDetailDto>>> GetParticipant(
         [FromServices] ApplicationDbContext dbContext,
         [FromRoute] int participantId
     )
@@ -138,7 +138,7 @@ public static class ParticipantEndpoints
         return participant is null ? TypedResults.NotFound() : TypedResults.Ok(participant);
     }
 
-    private static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateParticipant(
+    public static async Task<Results<NotFound, ValidationProblem, Ok>> UpdateParticipant(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IValidator<ParticipantEditDto> validator,
         [FromServices] IScoreboardManager scoreboardManager,
@@ -172,7 +172,7 @@ public static class ParticipantEndpoints
         return TypedResults.Ok();
     }
 
-    private static async Task<Results<NotFound, Ok>> DeleteParticipant(
+    public static async Task<Results<NotFound, Ok>> DeleteParticipant(
         [FromServices] ApplicationDbContext dbContext,
         [FromServices] IScoreboardManager scoreboardManager,
         [FromRoute] int participantId
