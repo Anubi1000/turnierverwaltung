@@ -42,8 +42,8 @@ importers:
         specifier: 4.3.6
         version: 4.3.6(vue@3.5.18(typescript@5.9.2))
       tailwind-variants:
-        specifier: 1.0.0
-        version: 1.0.0(tailwindcss@4.1.12)
+        specifier: 2.1.0
+        version: 2.1.0(tailwind-merge@3.0.2)(tailwindcss@4.1.12)
       tailwindcss-primeui:
         specifier: 0.6.1
         version: 0.6.1(tailwindcss@4.1.12)
@@ -2807,11 +2807,15 @@ packages:
   tailwind-merge@3.0.2:
     resolution: {integrity: sha512-l7z+OYZ7mu3DTqrL88RiKrKIqO3NcpEO8V/Od04bNpvk0kiIFndGEoqfuzvj4yuhRkHKjRkII2z+KS2HfPcSxw==}
 
-  tailwind-variants@1.0.0:
-    resolution: {integrity: sha512-2WSbv4ulEEyuBKomOunut65D8UZwxrHoRfYnxGcQNnHqlSCp2+B7Yz2W+yrNDrxRodOXtGD/1oCcKGNBnUqMqA==}
+  tailwind-variants@2.1.0:
+    resolution: {integrity: sha512-82m0eRex0z6A3GpvfoTCpHr+wWJmbecfVZfP3mqLoDxeya5tN4mYJQZwa5Aw1hRZTedwpu1D2JizYenoEdyD8w==}
     engines: {node: '>=16.x', pnpm: '>=7.x'}
     peerDependencies:
+      tailwind-merge: '>=3.0.0'
       tailwindcss: '*'
+    peerDependenciesMeta:
+      tailwind-merge:
+        optional: true
 
   tailwindcss-primeui@0.6.1:
     resolution: {integrity: sha512-T69Rylcrmnt8zy9ik+qZvsLuRIrS9/k6rYJSIgZ1trnbEzGDDQSCIdmfyZknevqiHwpSJHSmQ9XT2C+S/hJY4A==}
@@ -6174,12 +6178,14 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  tailwind-merge@3.0.2: {}
+  tailwind-merge@3.0.2:
+    optional: true
 
-  tailwind-variants@1.0.0(tailwindcss@4.1.12):
+  tailwind-variants@2.1.0(tailwind-merge@3.0.2)(tailwindcss@4.1.12):
     dependencies:
-      tailwind-merge: 3.0.2
       tailwindcss: 4.1.12
+    optionalDependencies:
+      tailwind-merge: 3.0.2
 
   tailwindcss-primeui@0.6.1(tailwindcss@4.1.12):
     dependencies:
