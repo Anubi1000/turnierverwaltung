@@ -15,7 +15,7 @@ namespace Turnierverwaltung.Server.Tests.Endpoints.Participants;
 public class CreateParticipantsTests : IDisposable
 {
     private readonly ApplicationDbContext _dbContext = DbTestUtils.GetInMemoryApplicationDbContext();
-    //private readonly IValidator<ParticipantEditDto> _validator = new ParticipantEditDtoValidator();
+    private readonly IValidator<ParticipantEditDto> _validator = new ParticipantEditDtoValidator(DbTestUtils.GetInMemoryApplicationDbContext());
     public void Dispose()
     {
         _dbContext.Database.GetDbConnection().Dispose();
@@ -72,15 +72,39 @@ public class CreateParticipantsTests : IDisposable
             .Which.Value.Should().Be(4);
     }
 
-    //ParticipantEditValidator (and TeamEditDtoValidator) works different compared to othe Validators 
-    // (e.g DisciplineEditDtoValidator, TournamentEditDtoValidator)
-    /*
     [Fact]
     public async Task WithInvalidData_ReturnsValidationProblem()
     {
+
+        var tournament = new Tournament
+        {
+            Id = 1,
+            Name = "Test Tournament",
+            Clubs =
+            {
+                new Club { Id = 1, Name = "Test Club" },
+            },
+            Participants =
+            {
+                new Participant
+                {
+                    Id = 1,
+                    Name = "Participant 1",
+                    StartNumber = 1,
+                    ClubId = 1,
+                },
+            },
+        };
+
+        _dbContext.Add(tournament);
+        await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
         var dto = new ParticipantEditDto("", 7, Gender.Male, 7);
 
-        var result = await ParticipantEndpoints.CreateParticipant(_dbContext)
+        var result = await ParticipantEndpoints.CreateParticipant(_dbContext, _validator, NoOpScoreboardManager.Instance, 1, dto);
+
+        result.Should().BeResult<Results<NotFound, ValidationProblem, Ok<int>>, ValidationProblem>();
     }
-    */
+
+    
 }
