@@ -23,7 +23,7 @@
     "axios": "1.11.0",
     "file-saver": "2.0.5",
     "pinia": "3.0.3",
-    "primevue": "4.3.6",
+    "primevue": "4.3.7",
     "tailwind-variants": "1.0.0",
     "tailwindcss-primeui": "0.6.1",
     "vee-validate": "4.15.1",
