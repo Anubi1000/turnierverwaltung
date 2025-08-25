@@ -27,7 +27,7 @@
     "tailwind-variants": "1.0.0",
     "tailwindcss-primeui": "0.6.1",
     "vee-validate": "4.15.1",
-    "vue": "3.5.18",
+    "vue": "3.5.20",
     "zod": "3.25.76"
   },
   "devDependencies": {
@@ -39,7 +39,7 @@
     "@types/html-minifier-terser": "7.0.2",
     "@types/node": "22.17.2",
     "@vitejs/plugin-vue": "6.0.1",
-    "@vue/compiler-sfc": "3.5.18",
+    "@vue/compiler-sfc": "3.5.20",
     "@vue/tsconfig": "0.7.0",
     "eslint": "9.33.0",
     "eslint-plugin-vue": "10.4.0",
