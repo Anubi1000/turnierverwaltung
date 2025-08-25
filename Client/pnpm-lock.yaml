@@ -18,8 +18,8 @@ importers:
         specifier: 9.0.6
         version: 9.0.6
       '@primeuix/themes':
-        specifier: 1.2.1
-        version: 1.2.1
+        specifier: 1.2.3
+        version: 1.2.3
       '@tanstack/vue-query':
         specifier: 5.85.3
         version: 5.85.3(vue@3.5.18(typescript@5.9.2))
@@ -655,14 +655,22 @@ packages:
     resolution: {integrity: sha512-xUqMdQb75izeDkNWFK1QlU15aUl5LIU97Fq68IXOhrqqLsKEBnj5ftntFZrENQW70jAHwALdWP4EOGi/poc9Tg==}
     engines: {node: '>=12.11.0'}
 
+  '@primeuix/styled@0.7.2':
+    resolution: {integrity: sha512-tIJ6byZezTYZ9YUICNSidQHOIQOQL3zeUgjwiX0JnBTK3+WCvy4DyCBcrJ94RtiX0WGFZSYNvaGaFkTo4jU8FQ==}
+    engines: {node: '>=12.11.0'}
+
   '@primeuix/styles@1.2.1':
     resolution: {integrity: sha512-Tri7pPgZgxrVmhJG8ijZZFolQ6vu27xnkGoAB9EFY8YlaKTM5iqkWzEcqdxy2KmgFWMXi+BrPHwO0RdQ6JCT+g==}
 
-  '@primeuix/themes@1.2.1':
-    resolution: {integrity: sha512-DVCFDncvag47tpag3TdufDTuvUbfKnkgzmlxAQkwuMS0IlPA3wChrf9VlL2wETg/ZpJm/tHobkJBnB9FmkiqnA==}
+  '@primeuix/themes@1.2.3':
+    resolution: {integrity: sha512-GLAU2h6lhgln2w10EQalUQlgwbgQ0xZoIOLMNGfIvqU4O09L282P7rwKCKQksvAGAFt1GoO/Q1NgBSxnttr7iA==}
 
   '@primeuix/utils@0.6.0':
     resolution: {integrity: sha512-ULpB87ImNAiX36OMtyDeRceWB7N/mVlh6gGLqp/lx8UMKZlLIQH/UAFND86hYXHwNpXeNKcWfMGreb0Oc0hcZA==}
+    engines: {node: '>=12.11.0'}
+
+  '@primeuix/utils@0.6.1':
+    resolution: {integrity: sha512-tQL/ZOPgCdD+NTimlUmhyD0ey8J1XmpZE4hDHM+/fnuBicVVmlKOd5HpS748LcOVRUKbWjmEPdHX4hi5XZoC1Q==}
     engines: {node: '>=12.11.0'}
 
   '@primevue/core@4.3.6':
@@ -3841,15 +3849,21 @@ snapshots:
     dependencies:
       '@primeuix/utils': 0.6.0
 
+  '@primeuix/styled@0.7.2':
+    dependencies:
+      '@primeuix/utils': 0.6.1
+
   '@primeuix/styles@1.2.1':
     dependencies:
       '@primeuix/styled': 0.7.0
 
-  '@primeuix/themes@1.2.1':
+  '@primeuix/themes@1.2.3':
     dependencies:
-      '@primeuix/styled': 0.7.0
+      '@primeuix/styled': 0.7.2
 
   '@primeuix/utils@0.6.0': {}
+
+  '@primeuix/utils@0.6.1': {}
 
   '@primevue/core@4.3.6(vue@3.5.18(typescript@5.9.2))':
     dependencies:
